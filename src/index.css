@@ -3,17 +3,40 @@
 :root {
   --color-bg: #1a1d21;
   --color-accent: #4f9cf9;
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-text-muted: rgba(255, 255, 255, 0.45);
+  --color-icon: #ffffff;
+  --color-btn-hover: rgba(255, 255, 255, 0.1);
+  --color-sidebar: #14171a;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-accent: #ff6c37;
+  --color-text: #212121;
+  --color-text-muted: #6b6b6b;
+  --color-icon: #212121;
+  --color-btn-hover: rgba(0, 0, 0, 0.07);
+  --color-sidebar: #f3f3f3;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
   background-color: var(--color-bg);
-  color: rgba(255, 255, 255, 0.87);
+  color: var(--color-text);
   font-family: Inter, system-ui, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
