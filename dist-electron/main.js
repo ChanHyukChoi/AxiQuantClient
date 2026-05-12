@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -12,14 +12,29 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 let win;
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    width: 1280,
+    height: 800,
+    minWidth: 900,
+    minHeight: 600,
+    frame: false,
+    // OS 기본 타이틀바 제거
+    titleBarStyle: "hidden",
+    backgroundColor: "#1a1d21",
     webPreferences: {
-      preload: path.join(__dirname$1, "preload.mjs")
+      preload: path.join(__dirname$1, "preload.mjs"),
+      contextIsolation: true,
+      nodeIntegration: false
     }
   });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  ipcMain.on("window:minimize", () => win == null ? void 0 : win.minimize());
+  ipcMain.on("window:maximize", () => {
+    if (win == null ? void 0 : win.isMaximized()) {
+      win.unmaximize();
+    } else {
+      win == null ? void 0 : win.maximize();
+    }
   });
+  ipcMain.on("window:close", () => win == null ? void 0 : win.close());
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
