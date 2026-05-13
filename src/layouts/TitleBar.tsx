@@ -2,6 +2,17 @@ import { useThemeStore } from '../stores/themeStore'
 
 const isElectron = navigator.userAgent.includes('Electron')
 
+const PanelToggleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="1" y="1" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/>
+    <line x1="6" y1="1" x2="6" y2="17" stroke="currentColor" strokeWidth="1.5"/>
+  </svg>
+)
+
+interface TitleBarProps {
+  onMenuClick?: () => void
+}
+
 const MoonIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -22,7 +33,7 @@ const SunIcon = () => (
   </svg>
 )
 
-export const TitleBar = () => {
+export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
   const { theme, toggleTheme } = useThemeStore()
 
   const handleMinimize = () => {
@@ -65,20 +76,30 @@ export const TitleBar = () => {
         borderBottom: theme === 'light' ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
       } as React.CSSProperties}
     >
-      {/* 좌측: 로고 */}
-      <div
-        className="pl-4 text-base font-bold"
-        style={{ color: 'var(--color-accent)' }}
-      >
-        AxiQuant
+      {/* 좌측: 패널 토글 버튼 */}
+      <div className="flex items-center h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            title="사이드바 토글"
+            className="flex items-center justify-center w-10 h-full transition-colors duration-100"
+            style={{ background: 'transparent', color: 'var(--color-icon)' }}
+            onMouseEnter={hoverIn}
+            onMouseLeave={hoverOut}
+          >
+            <PanelToggleIcon />
+          </button>
+        )}
       </div>
 
-      {/* 중앙: 앱 이름 */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2 text-xs"
-        style={{ color: 'var(--color-text-muted)' }}
-      >
-        출입 관제 시스템
+      {/* 중앙: 프로그램명 */}
+      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+        <span className="text-sm font-bold" style={{ color: 'var(--color-accent)' }}>
+          AxiQuant
+        </span>
+        <span className="text-[10px] leading-tight" style={{ color: 'var(--color-text-muted)' }}>
+          출입 관제 시스템
+        </span>
       </div>
 
       {/* 우측: 버튼 영역 */}

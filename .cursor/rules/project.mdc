@@ -1,0 +1,56 @@
+---
+alwaysApply: true
+---
+
+# AxiQuant Client — Cursor Rules
+
+## 프로젝트 개요
+보안/출입 관제 시스템 프론트엔드
+Electron + React 기반 데스크톱/웹 듀얼 타겟
+
+## 기술스택
+- Electron + React 18 + TypeScript
+- Vite 5, Tailwind CSS v4
+- Zustand v5 (클라이언트 상태)
+- TanStack Query (서버 상태)
+- TanStack Router (라우팅)
+- axios, React Hook Form, Zod, i18next
+
+## 코드 규칙
+- TypeScript strict, any 금지
+- 함수형 컴포넌트 + 화살표 함수
+- named export만 사용 (default export 금지)
+- 절대경로 import (@/ prefix)
+- 컴포넌트 파일명: PascalCase
+- 일반 파일명: camelCase
+- 폴더명: kebab-case
+
+## 디자인 시스템
+- 다크 테마 고정 (라이트 테마는 data-theme="light"로 토글)
+- CSS 변수만 사용 (Tailwind 커스텀 컬러 사용 안 함)
+- 주요 변수: --color-bg, --color-accent, --color-text, --color-text-muted, --color-icon, --color-btn-hover, --color-sidebar
+- Tailwind v4: tailwind.config 없음, 자동 스캔 방식
+
+## 폴더 구조
+src/
+├── assets/
+├── components/ui/
+├── features/
+├── hooks/
+├── layouts/
+├── lib/
+├── pages/
+├── stores/
+├── types/
+└── utils/
+
+## 작업 완료 후 필수
+작업이 완료되면 반드시 아래 형식으로 요약을 출력해주세요.
+
+---
+완료된 작업
+1. 파일명 (생성/수정/삭제)
+   - 주요 변경 내용 bullet
+미완료 (다음 단계)
+- 남은 작업 목록
+---
