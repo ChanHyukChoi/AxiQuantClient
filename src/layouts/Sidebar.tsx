@@ -13,9 +13,9 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   {
-    id: 'users',
+    id: 'emps',
     label: '카드 사용자',
-    path: '/users',
+    path: '/emps',
     icon: <User size={18} strokeWidth={1.8} />,
   },
   {

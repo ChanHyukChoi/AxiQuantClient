@@ -21,7 +21,7 @@ export const Badge = ({ variant = 'off', children }: BadgeProps) => {
   return (
     <span
       style={{ background, color }}
-      className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+      className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full"
     >
       {children}
     </span>

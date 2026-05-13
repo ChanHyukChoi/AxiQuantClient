@@ -14,7 +14,7 @@ export const RootLayout = () => {
 
       <div className="flex flex-row flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 flex flex-col overflow-hidden">
           <Outlet />
         </main>
       </div>

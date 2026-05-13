@@ -56,7 +56,7 @@ export const Grid = <T extends { id: number }>({
         <div
           className="flex items-center gap-2 flex-shrink-0"
           style={{
-            padding: '7px 12px',
+            padding: '9px 14px',
             background: 'var(--color-sidebar)',
             borderBottom: '0.5px solid #2a2d32',
           }}
@@ -69,12 +69,12 @@ export const Grid = <T extends { id: number }>({
                 border: '0.5px solid #2e3139',
               }}
             >
-              <Search style={{ width: 13, height: 13, color: '#3a3f4a', flexShrink: 0 }} />
+              <Search style={{ width: 14, height: 14, color: '#3a3f4a', flexShrink: 0 }} />
               <input
                 type="text"
                 placeholder={searchPlaceholder}
                 onChange={(e) => onSearch(e.target.value)}
-                className="grid-search-input flex-1 text-[12px] outline-none min-w-0"
+                className="grid-search-input flex-1 text-[13px] outline-none min-w-0"
                 style={{
                   background: 'transparent',
                   color: 'var(--color-text)',
@@ -95,9 +95,9 @@ export const Grid = <T extends { id: number }>({
                     key={col.key}
                     style={{
                       width: col.width ? col.width : undefined,
-                      padding: '6px 10px',
+                      padding: '9px 12px',
                       textAlign: 'left',
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: 500,
                       color: '#3a3f4a',
                       borderBottom: '0.5px solid #2a2d32',
@@ -114,7 +114,7 @@ export const Grid = <T extends { id: number }>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="text-center py-8 text-[12px]"
+                    className="text-center py-8 text-[13px]"
                     style={{ color: '#555a63' }}
                   >
                     불러오는 중...
@@ -140,9 +140,9 @@ export const Grid = <T extends { id: number }>({
 
         {/* footer */}
         <div
-          className="flex-shrink-0 flex items-center text-[11px]"
+          className="flex-shrink-0 flex items-center text-[12px]"
           style={{
-            padding: '5px 12px',
+            padding: '7px 14px',
             background: 'var(--color-sidebar)',
             borderTop: '0.5px solid #2a2d32',
             color: '#3a3f4a',
@@ -193,8 +193,8 @@ const GridRow = <T extends { id: number }>({
           <td
             key={col.key}
             style={{
-              padding: '6px 10px',
-              fontSize: 12,
+              padding: '9px 12px',
+              fontSize: 13,
               color: '#8a8f9a',
               borderBottom: '0.5px solid #21252b',
               whiteSpace: 'nowrap',

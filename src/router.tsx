@@ -7,20 +7,10 @@ import {
 } from '@tanstack/react-router'
 import { RootLayout } from '@/layouts/RootLayout'
 import { LoginPage } from '@/pages/LoginPage'
+import { EmpsPage } from '@/pages/EmpsPage'
+import { CardsPage } from '@/pages/CardsPage'
 
 // ─── Placeholder Pages ────────────────────────────────────────────────────────
-
-const UsersPage = () => (
-  <div className="p-6" style={{ color: 'var(--color-text)' }}>
-    카드 사용자
-  </div>
-)
-
-const CardsPage = () => (
-  <div className="p-6" style={{ color: 'var(--color-text)' }}>
-    카드
-  </div>
-)
 
 const AccessPage = () => (
   <div className="p-6" style={{ color: 'var(--color-text)' }}>
@@ -58,10 +48,10 @@ const appRoute = createRoute({
   component: RootLayout,
 })
 
-const usersRoute = createRoute({
+const empsRoute = createRoute({
   getParentRoute: () => appRoute,
-  path: '/users',
-  component: UsersPage,
+  path: '/emps',
+  component: EmpsPage,
 })
 
 const cardsRoute = createRoute({
@@ -79,7 +69,7 @@ const accessRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
-  appRoute.addChildren([usersRoute, cardsRoute, accessRoute]),
+  appRoute.addChildren([empsRoute, cardsRoute, accessRoute]),
 ])
 
 // ─── Router ───────────────────────────────────────────────────────────────────

@@ -51,7 +51,7 @@ export const LoginPage = () => {
 
     setToken(result.token)
     sseClient.connect()
-    router.navigate({ to: '/users' })
+    router.navigate({ to: '/emps' })
   }
 
   return (
