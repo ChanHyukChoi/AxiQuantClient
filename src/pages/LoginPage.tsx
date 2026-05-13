@@ -32,9 +32,9 @@ export const LoginPage = () => {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      serverUrl: '',
-      username: '',
-      password: '',
+      serverUrl: 'http://192.168.250.201:5001',
+      username: 'admin',
+      password: 'admin1234',
     },
   })
 
@@ -80,7 +80,6 @@ export const LoginPage = () => {
               <input
                 {...register('serverUrl')}
                 type="url"
-                placeholder="http://192.168.0.1:5001"
                 className="w-full rounded-md px-3 py-2 text-sm outline-none transition-colors"
                 style={inputStyle}
                 onFocus={focusStyle}
@@ -94,7 +93,6 @@ export const LoginPage = () => {
                 {...register('username')}
                 type="text"
                 autoComplete="username"
-                placeholder=""
                 className="w-full rounded-md px-3 py-2 text-sm outline-none transition-colors"
                 style={inputStyle}
                 onFocus={focusStyle}
@@ -108,7 +106,6 @@ export const LoginPage = () => {
                 {...register('password')}
                 type="password"
                 autoComplete="current-password"
-                placeholder=""
                 className="w-full rounded-md px-3 py-2 text-sm outline-none transition-colors"
                 style={inputStyle}
                 onFocus={focusStyle}
