@@ -43,15 +43,23 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
   return (
     <div
       className="flex items-center justify-between select-none shrink-0"
-      style={{
-        backgroundColor: 'var(--color-bg)',
-        height: '40px',
-        WebkitAppRegion: 'drag',
-        borderBottom: theme === 'light' ? '1px solid rgba(0,0,0,0.08)' : '1px solid rgba(255,255,255,0.06)',
-      } as React.CSSProperties}
+      style={
+        {
+          backgroundColor: 'var(--color-bg)',
+          height: '40px',
+          WebkitAppRegion: 'drag',
+          borderBottom:
+            theme === 'light'
+              ? '1px solid rgba(0,0,0,0.08)'
+              : '1px solid rgba(255,255,255,0.06)',
+        } as React.CSSProperties
+      }
     >
       {/* 좌측: 패널 토글 버튼 */}
-      <div className="flex items-center h-full" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+      <div
+        className="flex items-center h-full"
+        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+      >
         {onMenuClick && (
           <button
             onClick={onMenuClick}

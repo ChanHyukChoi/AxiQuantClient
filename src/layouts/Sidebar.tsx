@@ -12,9 +12,24 @@ interface MenuItem {
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { id: 'users',  label: '카드 사용자', path: '/users',  icon: <User size={18} strokeWidth={1.8} /> },
-  { id: 'cards',  label: '카드',       path: '/cards',  icon: <CreditCard size={18} strokeWidth={1.8} /> },
-  { id: 'access', label: '접근권한',   path: '/access', icon: <Lock size={18} strokeWidth={1.8} /> },
+  {
+    id: 'users',
+    label: '카드 사용자',
+    path: '/users',
+    icon: <User size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'cards',
+    label: '카드',
+    path: '/cards',
+    icon: <CreditCard size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'access',
+    label: '접근권한',
+    path: '/access',
+    icon: <Lock size={18} strokeWidth={1.8} />,
+  },
 ]
 
 // ─── Menu List ────────────────────────────────────────────────────────────────
@@ -29,7 +44,8 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
   <nav className="flex-1 pt-1">
     <ul className="flex flex-col gap-0.5 px-2">
       {MENU_ITEMS.map((item) => {
-        const isActive = currentPath === item.path || currentPath.startsWith(item.path + '/')
+        const isActive =
+          currentPath === item.path || currentPath.startsWith(item.path + '/')
 
         return (
           <li key={item.id}>
@@ -45,7 +61,8 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
                   : 'transparent',
               }}
               onMouseEnter={(e) => {
-                if (!isActive) e.currentTarget.style.backgroundColor = 'var(--color-btn-hover)'
+                if (!isActive)
+                  e.currentTarget.style.backgroundColor = 'var(--color-btn-hover)'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = isActive
@@ -115,11 +132,7 @@ export const Sidebar = () => {
           }}
           className="flex flex-col overflow-hidden select-none"
         >
-          <MenuList
-            isCollapsed={false}
-            currentPath={currentPath}
-            onLinkClick={toggle}
-          />
+          <MenuList isCollapsed={false} currentPath={currentPath} onLinkClick={toggle} />
         </aside>
       </>
     )
@@ -136,10 +149,7 @@ export const Sidebar = () => {
       }}
       className="flex flex-col h-full overflow-hidden select-none"
     >
-      <MenuList
-        isCollapsed={isCollapsed}
-        currentPath={currentPath}
-      />
+      <MenuList isCollapsed={isCollapsed} currentPath={currentPath} />
     </aside>
   )
 }

@@ -23,7 +23,9 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname$1, "preload.mjs"),
       contextIsolation: true,
-      nodeIntegration: false
+      nodeIntegration: false,
+      webSecurity: !VITE_DEV_SERVER_URL
+      // 개발 모드에서는 CORS 비활성화
     }
   });
   ipcMain.on("window:minimize", () => win == null ? void 0 : win.minimize());
@@ -37,6 +39,7 @@ function createWindow() {
   ipcMain.on("window:close", () => win == null ? void 0 : win.close());
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
+    win.webContents.openDevTools();
   } else {
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
