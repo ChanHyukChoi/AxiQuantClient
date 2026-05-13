@@ -1,0 +1,94 @@
+import { Loader2 } from 'lucide-react'
+import { useState } from 'react'
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'accent' | 'danger'
+  size?: 'sm' | 'md'
+  leftIcon?: React.ReactNode
+  loading?: boolean
+}
+
+const variantBase: Record<NonNullable<ButtonProps['variant']>, React.CSSProperties> = {
+  default: {
+    background: 'transparent',
+    color: 'var(--color-text-muted)',
+    borderColor: '#2e3139',
+  },
+  accent: {
+    background: '#172d4a',
+    color: 'var(--color-accent)',
+    borderColor: '#1e4570',
+  },
+  danger: {
+    background: 'transparent',
+    color: '#e06060',
+    borderColor: '#3a2020',
+  },
+}
+
+const variantHover: Record<NonNullable<ButtonProps['variant']>, React.CSSProperties> = {
+  default: {
+    background: 'var(--color-btn-hover)',
+    color: 'var(--color-text)',
+    borderColor: '#2e3139',
+  },
+  accent: {
+    background: '#1a3a5c',
+    color: 'var(--color-accent)',
+    borderColor: '#1e4570',
+  },
+  danger: {
+    background: 'var(--color-btn-hover)',
+    color: '#e06060',
+    borderColor: '#3a2020',
+  },
+}
+
+const sizeClass: Record<NonNullable<ButtonProps['size']>, string> = {
+  sm: 'text-[11px] px-2.5 py-1',
+  md: 'text-[12px] px-3 py-1.5',
+}
+
+export const Button = ({
+  variant = 'default',
+  size = 'md',
+  leftIcon,
+  loading = false,
+  disabled,
+  children,
+  className = '',
+  ...props
+}: ButtonProps) => {
+  const [hovered, setHovered] = useState(false)
+
+  const isDisabled = disabled || loading
+  const baseStyle = hovered && !isDisabled ? variantHover[variant] : variantBase[variant]
+
+  return (
+    <button
+      {...props}
+      disabled={isDisabled}
+      onMouseEnter={(e) => {
+        setHovered(true)
+        props.onMouseEnter?.(e)
+      }}
+      onMouseLeave={(e) => {
+        setHovered(false)
+        props.onMouseLeave?.(e)
+      }}
+      style={{ ...baseStyle, ...props.style }}
+      className={[
+        'inline-flex items-center gap-1.5 rounded border cursor-pointer transition-colors',
+        sizeClass[size],
+        isDisabled ? 'opacity-50 cursor-not-allowed' : '',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {loading && <Loader2 className="w-3 h-3 animate-spin" />}
+      {!loading && leftIcon && <span className="flex items-center">{leftIcon}</span>}
+      {children}
+    </button>
+  )
+}
