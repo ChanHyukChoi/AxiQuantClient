@@ -1,30 +1,6 @@
 import { Link, useRouterState } from '@tanstack/react-router'
+import { CreditCard, Lock, User } from 'lucide-react'
 import { useSidebarStore } from '@/stores/sidebarStore'
-
-// ─── SVG Icons ────────────────────────────────────────────────────────────────
-
-const UserIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-  </svg>
-)
-
-const CardIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="2" y="5" width="20" height="14" rx="2" />
-    <line x1="2" y1="10" x2="22" y2="10" />
-    <line x1="6" y1="15" x2="10" y2="15" />
-  </svg>
-)
-
-const LockIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <rect x="5" y="11" width="14" height="10" rx="2" />
-    <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-    <circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none" />
-  </svg>
-)
 
 // ─── Menu Items ────────────────────────────────────────────────────────────────
 
@@ -36,9 +12,9 @@ interface MenuItem {
 }
 
 const MENU_ITEMS: MenuItem[] = [
-  { id: 'users',  label: '카드 사용자', path: '/users',  icon: <UserIcon /> },
-  { id: 'cards',  label: '카드',       path: '/cards',  icon: <CardIcon /> },
-  { id: 'access', label: '접근권한',   path: '/access', icon: <LockIcon /> },
+  { id: 'users',  label: '카드 사용자', path: '/users',  icon: <User size={18} strokeWidth={1.8} /> },
+  { id: 'cards',  label: '카드',       path: '/cards',  icon: <CreditCard size={18} strokeWidth={1.8} /> },
+  { id: 'access', label: '접근권한',   path: '/access', icon: <Lock size={18} strokeWidth={1.8} /> },
 ]
 
 // ─── Menu List ────────────────────────────────────────────────────────────────
@@ -153,7 +129,7 @@ export const Sidebar = () => {
   return (
     <aside
       style={{
-        width: isCollapsed ? '56px' : '220px',
+        width: isCollapsed ? '50px' : '160px',
         backgroundColor: 'var(--color-sidebar)',
         transition: 'width 200ms ease',
         flexShrink: 0,

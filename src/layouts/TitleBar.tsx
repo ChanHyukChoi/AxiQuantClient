@@ -1,37 +1,11 @@
+import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-react'
 import { useThemeStore } from '../stores/themeStore'
 
 const isElectron = navigator.userAgent.includes('Electron')
 
-const PanelToggleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <rect x="1" y="1" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-    <line x1="6" y1="1" x2="6" y2="17" stroke="currentColor" strokeWidth="1.5"/>
-  </svg>
-)
-
 interface TitleBarProps {
   onMenuClick?: () => void
 }
-
-const MoonIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-)
-
-const SunIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
-    <line x1="12" y1="2"    x2="12" y2="6" />
-    <line x1="12" y1="18"   x2="12" y2="22" />
-    <line x1="2"  y1="12"   x2="6"  y2="12" />
-    <line x1="18" y1="12"   x2="22" y2="12" />
-    <line x1="4.93"  y1="4.93"  x2="7.76"  y2="7.76" />
-    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
-    <line x1="4.93"  y1="19.07" x2="7.76"  y2="16.24" />
-    <line x1="16.24" y1="7.76"  x2="19.07" y2="4.93" />
-  </svg>
-)
 
 export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
   const { theme, toggleTheme } = useThemeStore()
@@ -82,23 +56,20 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
           <button
             onClick={onMenuClick}
             title="사이드바 토글"
-            className="flex items-center justify-center w-10 h-full transition-colors duration-100"
+            className="flex items-center justify-center w-12 h-full transition-colors duration-100"
             style={{ background: 'transparent', color: 'var(--color-icon)' }}
             onMouseEnter={hoverIn}
             onMouseLeave={hoverOut}
           >
-            <PanelToggleIcon />
+            <PanelLeft size={18} />
           </button>
         )}
       </div>
 
       {/* 중앙: 프로그램명 */}
       <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-        <span className="text-sm font-bold" style={{ color: 'var(--color-accent)' }}>
+        <span className="text-base font-bold" style={{ color: 'var(--color-accent)' }}>
           AxiQuant
-        </span>
-        <span className="text-[10px] leading-tight" style={{ color: 'var(--color-text-muted)' }}>
-          출입 관제 시스템
         </span>
       </div>
 
@@ -116,7 +87,7 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
           onMouseLeave={hoverOut}
           title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
         >
-          {theme === 'dark' ? <MoonIcon /> : <SunIcon />}
+          {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
         </button>
 
         {/* 윈도우 컨트롤: Electron 전용 */}
@@ -131,9 +102,7 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
               onMouseLeave={hoverOut}
               title="최소화"
             >
-              <svg width="10" height="1" viewBox="0 0 10 1" fill="none">
-                <rect width="10" height="1" fill="currentColor" />
-              </svg>
+              <Minus size={18} strokeWidth={1.5} />
             </button>
 
             {/* 최대화 */}
@@ -145,16 +114,7 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
               onMouseLeave={hoverOut}
               title="최대화"
             >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <rect
-                  x="0.5"
-                  y="0.5"
-                  width="9"
-                  height="9"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                />
-              </svg>
+              <Square size={18} strokeWidth={1.5} />
             </button>
 
             {/* 닫기 */}
@@ -166,16 +126,7 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
               onMouseLeave={closeHoverOut}
               title="닫기"
             >
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <line
-                  x1="0.5" y1="0.5" x2="9.5" y2="9.5"
-                  stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"
-                />
-                <line
-                  x1="9.5" y1="0.5" x2="0.5" y2="9.5"
-                  stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"
-                />
-              </svg>
+              <X size={18} strokeWidth={1.5} />
             </button>
           </>
         )}
