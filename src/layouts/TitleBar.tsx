@@ -64,8 +64,12 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
           <button
             onClick={onMenuClick}
             title="사이드바 토글"
-            className="flex items-center justify-center w-12 h-full transition-colors duration-100"
-            style={{ background: 'transparent', color: 'var(--color-icon)' }}
+            className="flex items-center justify-center h-full transition-colors duration-100"
+            style={{
+              background: 'transparent',
+              color: 'var(--color-icon)',
+              width: '40px',
+            }}
             onMouseEnter={hoverIn}
             onMouseLeave={hoverOut}
           >

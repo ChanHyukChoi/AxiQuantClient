@@ -8,7 +8,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ error, className = '', style, ...props }, ref) => {
     const [focused, setFocused] = useState(false)
 
-    const borderColor = error ? '#e06060' : focused ? 'var(--color-accent)' : '#2e3139'
+    const borderColor = error
+      ? 'var(--color-btn-danger-text)'
+      : focused
+        ? 'var(--color-accent)'
+        : 'var(--color-btn-default-border)'
 
     return (
       <div className="w-full">
@@ -36,7 +40,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             .filter(Boolean)
             .join(' ')}
         />
-        {error && <p className="mt-0.5 text-[11px] text-[#e06060]">{error}</p>}
+        {error && (
+          <p className="mt-0.5 text-[11px]" style={{ color: 'var(--color-btn-danger-text)' }}>
+            {error}
+          </p>
+        )}
       </div>
     )
   },

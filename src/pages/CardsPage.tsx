@@ -80,7 +80,7 @@ export const CardsPage = () => {
         header: 'ID',
         width: 50,
         render: (value) => (
-          <span style={{ fontSize: 11, color: '#3a3f4a', fontFamily: 'monospace' }}>
+          <span style={{ fontSize: 11, color: 'var(--color-text-dim)', fontFamily: 'monospace' }}>
             {String(value)}
           </span>
         ),
@@ -138,14 +138,14 @@ export const CardsPage = () => {
   // ─── Drawer header ─────────────────────────────────────────────────────────
 
   const drawerHeader = selectedCard ? (
-    <div className="pb-3" style={{ borderBottom: '0.5px solid #2a2d32' }}>
+    <div className="pb-3" style={{ borderBottom: '0.5px solid var(--color-border)' }}>
       <div className="flex items-center gap-1.5 mb-1">
         <CreditCard size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
         <span className="text-[15px] font-medium font-mono" style={{ color: 'var(--color-text)' }}>
           {selectedCard.cardNumber}
         </span>
       </div>
-      <span className="text-[12px]" style={{ color: '#555a63' }}>
+      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
         {selectedCard.empId != null
           ? (empNameMap[selectedCard.empId] ?? selectedCard.empName ?? '—')
           : '미배정'}
@@ -154,9 +154,9 @@ export const CardsPage = () => {
         <span
           className="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full font-mono"
           style={{
-            background: '#1e2127',
-            color: '#555a63',
-            border: '0.5px solid #2a2d32',
+            background: 'var(--color-btn-hover)',
+            color: 'var(--color-text-subtle)',
+            border: '0.5px solid var(--color-border)',
             width: 'fit-content',
           }}
         >
@@ -178,7 +178,7 @@ export const CardsPage = () => {
         style={{
           height: 42,
           background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid #2a2d32',
+          borderBottom: '0.5px solid var(--color-border)',
         }}
       >
         <div className="flex items-center gap-1.5">
@@ -225,13 +225,13 @@ export const CardsPage = () => {
         >
           {!selectedCard ? (
             <div className="flex items-center justify-center h-full">
-              <span className="text-[12px]" style={{ color: '#555a63' }}>
+              <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
                 목록에서 항목을 선택하세요
               </span>
             </div>
           ) : (
             <div className="flex items-center justify-center h-full">
-              <span className="text-[12px]" style={{ color: '#555a63' }}>
+              <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
                 카드 상세 준비 중
               </span>
             </div>

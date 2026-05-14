@@ -41,8 +41,8 @@ interface MenuListProps {
 }
 
 const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
-  <nav className="flex-1 pt-1">
-    <ul className="flex flex-col gap-0.5 px-2">
+  <nav className="flex-1">
+    <ul className="flex flex-col">
       {MENU_ITEMS.map((item) => {
         const isActive =
           currentPath === item.path || currentPath.startsWith(item.path + '/')
@@ -53,8 +53,10 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
               to={item.path}
               title={isCollapsed ? item.label : undefined}
               onClick={onLinkClick}
-              className="flex items-center gap-3 rounded-md px-2.5 py-2 w-full transition-colors duration-100"
+              className="flex items-center h-10 w-full transition-colors duration-100"
               style={{
+                paddingLeft: 11,
+                gap: 8,
                 color: isActive ? 'var(--color-accent)' : 'var(--color-text)',
                 backgroundColor: isActive
                   ? 'color-mix(in srgb, var(--color-accent) 20%, transparent)'
@@ -70,13 +72,12 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
                   : 'transparent'
               }}
             >
-              <span className="shrink-0">{item.icon}</span>
+              {item.icon}
               <span
                 className="text-sm font-medium whitespace-nowrap overflow-hidden"
                 style={{
                   opacity: isCollapsed ? 0 : 1,
-                  width: isCollapsed ? 0 : 'auto',
-                  maxWidth: isCollapsed ? 0 : '160px',
+                  maxWidth: isCollapsed ? 0 : 120,
                   transition: 'opacity 150ms ease, max-width 200ms ease',
                 }}
               >
@@ -93,63 +94,25 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export const Sidebar = () => {
-  const { isElectron, isCollapsed, isOpen, toggle } = useSidebarStore()
+  const { isElectron, isCollapsed, isOpen } = useSidebarStore()
   const routerState = useRouterState()
   const currentPath = routerState.location.pathname
 
-  // ── 웹 환경 ──────────────────────────────────────────────────────────────────
-  if (!isElectron) {
-    return (
-      <>
-        {/* Backdrop */}
-        <div
-          onClick={toggle}
-          aria-hidden="true"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            top: '40px',
-            backgroundColor: 'rgba(0,0,0,0.45)',
-            zIndex: 40,
-            opacity: isOpen ? 1 : 0,
-            pointerEvents: isOpen ? 'auto' : 'none',
-            transition: 'opacity 200ms ease',
-          }}
-        />
+  const collapsed = isElectron ? isCollapsed : !isOpen
 
-        {/* Sidebar Panel */}
-        <aside
-          style={{
-            position: 'fixed',
-            top: '40px',
-            left: 0,
-            bottom: 0,
-            width: '220px',
-            backgroundColor: 'var(--color-sidebar)',
-            transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-            transition: 'transform 200ms ease',
-            zIndex: 50,
-          }}
-          className="flex flex-col overflow-hidden select-none"
-        >
-          <MenuList isCollapsed={false} currentPath={currentPath} onLinkClick={toggle} />
-        </aside>
-      </>
-    )
-  }
-
-  // ── Electron 환경 ─────────────────────────────────────────────────────────────
   return (
     <aside
       style={{
-        width: isCollapsed ? '50px' : '160px',
+        width: collapsed ? '40px' : '160px',
         backgroundColor: 'var(--color-sidebar)',
+        borderRight: '0.5px solid var(--color-border)',
         transition: 'width 200ms ease',
         flexShrink: 0,
+        overflow: 'hidden',
       }}
-      className="flex flex-col h-full overflow-hidden select-none"
+      className="flex flex-col h-full select-none"
     >
-      <MenuList isCollapsed={isCollapsed} currentPath={currentPath} />
+      <MenuList isCollapsed={collapsed} currentPath={currentPath} />
     </aside>
   )
 }

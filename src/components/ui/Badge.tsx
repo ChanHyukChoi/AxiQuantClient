@@ -3,27 +3,20 @@ interface BadgeProps {
   children: React.ReactNode
 }
 
-const variantStyle: Record<
-  NonNullable<BadgeProps['variant']>,
-  { background: string; color: string }
-> = {
-  on: { background: '#0d2b1a', color: '#4caf7d' },
-  off: { background: '#222428', color: '#555a63' },
-  lost: { background: '#2b1616', color: '#e06060' },
-  visit: { background: '#1e1a2e', color: '#7f77dd' },
-  issue: { background: '#172135', color: '#4f9cf9' },
-  card: { background: '#1e1a2e', color: '#7f77dd' },
+const variantStyle: Record<NonNullable<BadgeProps['variant']>, React.CSSProperties> = {
+  on:    { background: 'var(--badge-on-bg)',    color: 'var(--badge-on-text)' },
+  off:   { background: 'var(--badge-off-bg)',   color: 'var(--badge-off-text)' },
+  lost:  { background: 'var(--badge-lost-bg)',  color: 'var(--badge-lost-text)' },
+  visit: { background: 'var(--badge-visit-bg)', color: 'var(--badge-visit-text)' },
+  issue: { background: 'var(--badge-issue-bg)', color: 'var(--badge-issue-text)' },
+  card:  { background: 'var(--badge-card-bg)',  color: 'var(--badge-card-text)' },
 }
 
-export const Badge = ({ variant = 'off', children }: BadgeProps) => {
-  const { background, color } = variantStyle[variant]
-
-  return (
-    <span
-      style={{ background, color }}
-      className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full"
-    >
-      {children}
-    </span>
-  )
-}
+export const Badge = ({ variant = 'off', children }: BadgeProps) => (
+  <span
+    style={variantStyle[variant]}
+    className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+  >
+    {children}
+  </span>
+)

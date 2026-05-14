@@ -9,6 +9,34 @@
   --color-icon: #ffffff;
   --color-btn-hover: rgba(255, 255, 255, 0.1);
   --color-sidebar: #14171a;
+
+  /* 테두리 */
+  --color-border: #2a2d32;
+  --color-border-subtle: #21252b;
+
+  /* 텍스트 계층 */
+  --color-text-dim: #3a3f4a;
+  --color-text-subtle: #555a63;
+  --color-cell: #8a8f9a;
+
+  /* 테이블/리스트 행 */
+  --color-row-selected: #172135;
+
+  /* 버튼 variant */
+  --color-btn-default-border: #2e3139;
+  --color-btn-accent-bg: #172d4a;
+  --color-btn-accent-border: #1e4570;
+  --color-btn-accent-hover: #1a3a5c;
+  --color-btn-danger-text: #e06060;
+  --color-btn-danger-border: #3a2020;
+
+  /* Badge */
+  --badge-on-bg: #0d2b1a;    --badge-on-text: #4caf7d;
+  --badge-off-bg: #222428;   --badge-off-text: #555a63;
+  --badge-lost-bg: #2b1616;  --badge-lost-text: #e06060;
+  --badge-visit-bg: #1e1a2e; --badge-visit-text: #7f77dd;
+  --badge-issue-bg: #172135; --badge-issue-text: #4f9cf9;
+  --badge-card-bg: #1e1a2e;  --badge-card-text: #7f77dd;
 }
 
 [data-theme="light"] {
@@ -19,6 +47,34 @@
   --color-icon: #212121;
   --color-btn-hover: rgba(0, 0, 0, 0.07);
   --color-sidebar: #f3f3f3;
+
+  /* 테두리 */
+  --color-border: #e5e7eb;
+  --color-border-subtle: #f3f4f6;
+
+  /* 텍스트 계층 */
+  --color-text-dim: #9ca3af;
+  --color-text-subtle: #9ca3af;
+  --color-cell: #374151;
+
+  /* 테이블/리스트 행 */
+  --color-row-selected: #eff6ff;
+
+  /* 버튼 variant */
+  --color-btn-default-border: #d1d5db;
+  --color-btn-accent-bg: #eff6ff;
+  --color-btn-accent-border: #bfdbfe;
+  --color-btn-accent-hover: #dbeafe;
+  --color-btn-danger-text: #dc2626;
+  --color-btn-danger-border: #fecaca;
+
+  /* Badge */
+  --badge-on-bg: #dcfce7;    --badge-on-text: #16a34a;
+  --badge-off-bg: #f3f4f6;   --badge-off-text: #6b7280;
+  --badge-lost-bg: #fee2e2;  --badge-lost-text: #dc2626;
+  --badge-visit-bg: #ede9fe; --badge-visit-text: #7c3aed;
+  --badge-issue-bg: #dbeafe; --badge-issue-text: #2563eb;
+  --badge-card-bg: #ede9fe;  --badge-card-text: #7c3aed;
 }
 
 @layer base {

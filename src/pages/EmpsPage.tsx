@@ -42,7 +42,7 @@ const Avatar = ({ name, size }: { name: string; size: 26 | 46 }) => (
     style={{
       width: size,
       height: size,
-      background: '#1a3a5c',
+      background: 'var(--color-btn-accent-bg)',
       color: 'var(--color-accent)',
       fontSize: size === 26 ? 12 : 18,
     }}
@@ -54,7 +54,7 @@ const Avatar = ({ name, size }: { name: string; size: 26 | 46 }) => (
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
     className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
-    style={{ color: '#555a63', borderBottom: '0.5px solid #2a2d32' }}
+    style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
   >
     {children}
   </p>
@@ -70,7 +70,7 @@ const FRow = ({
   children: React.ReactNode
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
-    <span className="text-[12px] flex items-center gap-1.5 flex-shrink-0" style={{ color: '#555a63' }}>
+    <span className="text-[12px] flex items-center gap-1.5 flex-shrink-0" style={{ color: 'var(--color-text-subtle)' }}>
       {icon}
       {label}
     </span>
@@ -98,15 +98,15 @@ const FieldValue = ({
 )
 
 const CardItem = ({ card }: { card: CardInfo }) => (
-  <div className="rounded p-2.5 mb-2" style={{ border: '0.5px solid #2a2d32' }}>
+  <div className="rounded p-2.5 mb-2" style={{ border: '0.5px solid var(--color-border)' }}>
     <div className="flex items-center justify-between">
       <Badge variant="card">카드</Badge>
       <Badge variant={card.isActive ? 'on' : 'off'}>{card.isActive ? '활성' : '반납'}</Badge>
     </div>
-    <p className="text-[13px] font-mono mt-1.5" style={{ color: '#8a8f9a' }}>
+    <p className="text-[13px] font-mono mt-1.5" style={{ color: 'var(--color-cell)' }}>
       {card.cardNumber}
     </p>
-    <div className="flex gap-2 mt-1" style={{ fontSize: 12, color: '#555a63' }}>
+    <div className="flex gap-2 mt-1" style={{ fontSize: 12, color: 'var(--color-text-subtle)' }}>
       {card.issuedAt && <span>발급: {card.issuedAt}</span>}
       {card.expiredAt && (
         <span>
@@ -214,7 +214,7 @@ export const EmpsPage = () => {
         header: 'ID',
         width: 50,
         render: (value) => (
-          <span style={{ fontSize: 11, color: '#3a3f4a', fontFamily: 'monospace' }}>
+          <span style={{ fontSize: 11, color: 'var(--color-text-dim)', fontFamily: 'monospace' }}>
             {String(value)}
           </span>
         ),
@@ -282,22 +282,22 @@ export const EmpsPage = () => {
   const drawerHeader = selectedEmp ? (
     <div
       className="flex items-start gap-3 pb-3"
-      style={{ borderBottom: '0.5px solid #2a2d32' }}
+      style={{ borderBottom: '0.5px solid var(--color-border)' }}
     >
       <Avatar name={selectedEmp.name} size={46} />
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-[15px] font-medium leading-tight" style={{ color: 'var(--color-text)' }}>
           {selectedEmp.name}
         </span>
-        <span className="text-[12px]" style={{ color: '#555a63' }}>
+        <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
           {selectedEmp.department ?? '—'} · {'—'}
         </span>
         <span
           className="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full font-mono"
           style={{
-            background: '#1e2127',
-            color: '#555a63',
-            border: '0.5px solid #2a2d32',
+            background: 'var(--color-btn-hover)',
+            color: 'var(--color-text-subtle)',
+            border: '0.5px solid var(--color-border)',
             width: 'fit-content',
           }}
         >
@@ -437,7 +437,7 @@ export const EmpsPage = () => {
     if (!selectedEmp) return null
     if (selectedCards.length === 0) {
       return (
-        <p className="text-[12px] text-center py-4" style={{ color: '#555a63' }}>
+        <p className="text-[12px] text-center py-4" style={{ color: 'var(--color-text-subtle)' }}>
           발급된 카드가 없습니다
         </p>
       )
@@ -455,8 +455,8 @@ export const EmpsPage = () => {
 
   const renderBioTab = () => (
     <div className="flex flex-col items-center justify-center py-8 gap-2">
-      <Fingerprint size={32} style={{ color: '#2e3139' }} />
-      <span className="text-[12px]" style={{ color: '#555a63' }}>
+      <Fingerprint size={32} style={{ color: 'var(--color-border)' }} />
+      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
         바이오 기능 준비 중
       </span>
     </div>
@@ -466,7 +466,7 @@ export const EmpsPage = () => {
 
   const drawerChildren = !selectedEmp ? (
     <div className="flex items-center justify-center h-full">
-      <span className="text-[12px]" style={{ color: '#555a63' }}>
+      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
         목록에서 항목을 선택하세요
       </span>
     </div>
@@ -488,7 +488,7 @@ export const EmpsPage = () => {
         style={{
           height: 42,
           background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid #2a2d32',
+          borderBottom: '0.5px solid var(--color-border)',
         }}
       >
         <div className="flex items-center gap-1.5">

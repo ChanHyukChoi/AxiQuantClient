@@ -12,17 +12,17 @@ const variantBase: Record<NonNullable<ButtonProps['variant']>, React.CSSProperti
   default: {
     background: 'transparent',
     color: 'var(--color-text-muted)',
-    borderColor: '#2e3139',
+    borderColor: 'var(--color-btn-default-border)',
   },
   accent: {
-    background: '#172d4a',
+    background: 'var(--color-btn-accent-bg)',
     color: 'var(--color-accent)',
-    borderColor: '#1e4570',
+    borderColor: 'var(--color-btn-accent-border)',
   },
   danger: {
     background: 'transparent',
-    color: '#e06060',
-    borderColor: '#3a2020',
+    color: 'var(--color-btn-danger-text)',
+    borderColor: 'var(--color-btn-danger-border)',
   },
 }
 
@@ -30,17 +30,17 @@ const variantHover: Record<NonNullable<ButtonProps['variant']>, React.CSSPropert
   default: {
     background: 'var(--color-btn-hover)',
     color: 'var(--color-text)',
-    borderColor: '#2e3139',
+    borderColor: 'var(--color-btn-default-border)',
   },
   accent: {
-    background: '#1a3a5c',
+    background: 'var(--color-btn-accent-hover)',
     color: 'var(--color-accent)',
-    borderColor: '#1e4570',
+    borderColor: 'var(--color-btn-accent-border)',
   },
   danger: {
     background: 'var(--color-btn-hover)',
-    color: '#e06060',
-    borderColor: '#3a2020',
+    color: 'var(--color-btn-danger-text)',
+    borderColor: 'var(--color-btn-danger-border)',
   },
 }
 

@@ -14,7 +14,7 @@ export const Tab = ({ items, activeKey, onChange }: TabProps) => {
   return (
     <div
       className="flex border-b"
-      style={{ borderColor: '#2a2d32' }}
+      style={{ borderColor: 'var(--color-border)' }}
     >
       {items.map((item) => {
         const isActive = item.key === activeKey
@@ -25,7 +25,7 @@ export const Tab = ({ items, activeKey, onChange }: TabProps) => {
             onClick={() => onChange(item.key)}
             className="flex-1 flex items-center justify-center gap-1 py-1.5 text-[11px] cursor-pointer border-b-2 transition-colors"
             style={{
-              color: isActive ? 'var(--color-accent)' : '#555a63',
+              color: isActive ? 'var(--color-accent)' : 'var(--color-text-subtle)',
               borderColor: isActive ? 'var(--color-accent)' : 'transparent',
               background: 'transparent',
             }}

@@ -32,7 +32,7 @@ export const Drawer = ({
           background: transparent;
         }
         .drawer-scroll::-webkit-scrollbar-thumb {
-          background: #2e3139;
+          background: var(--color-border);
           border-radius: 2px;
         }
       `}</style>
@@ -41,7 +41,7 @@ export const Drawer = ({
         style={{
           width,
           background: 'var(--color-sidebar)',
-          borderLeft: '0.5px solid #2a2d32',
+          borderLeft: '0.5px solid var(--color-border)',
         }}
       >
         {/* header */}
@@ -75,7 +75,7 @@ export const Drawer = ({
         {footer && (
           <div
             className="flex-shrink-0"
-            style={{ borderTop: '0.5px solid #2a2d32' }}
+            style={{ borderTop: '0.5px solid var(--color-border)' }}
           >
             {footer}
           </div>

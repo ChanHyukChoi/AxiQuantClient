@@ -12,7 +12,7 @@ interface SidebarState {
 export const useSidebarStore = create<SidebarState>((set) => ({
   isElectron,
   isCollapsed: false,
-  isOpen: false,
+  isOpen: true,
   toggle: () => {
     if (isElectron) {
       set((state) => ({ isCollapsed: !state.isCollapsed }))

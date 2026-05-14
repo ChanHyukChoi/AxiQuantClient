@@ -40,7 +40,9 @@ export const LoginPage = () => {
 
   const onSubmit = async (values: LoginFormValues) => {
     setErrorMessage(null)
-    axiosInstance.defaults.baseURL = values.serverUrl
+    // Electron: 직접 연결 / 웹 브라우저: Vite proxy 사용 (CORS 우회)
+    const isElectron = navigator.userAgent.includes('Electron')
+    axiosInstance.defaults.baseURL = isElectron ? values.serverUrl : ''
 
     const result = await login(values.username, values.password)
 

@@ -41,7 +41,7 @@ export const Modal = ({
         className="rounded-md p-5 min-w-[280px] max-w-[400px] w-full"
         style={{
           background: 'var(--color-sidebar)',
-          border: '0.5px solid #2a2d32',
+          border: '0.5px solid var(--color-border)',
         }}
       >
         <p
