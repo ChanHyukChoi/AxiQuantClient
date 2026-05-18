@@ -1,4 +1,4 @@
-import { asRecordArray, firstNumber } from '@/lib/wireJson'
+import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
 import type { AuditActionType, AuditLogItem, PagedAuditLogResponse } from '@/types/api/audit'
 
 const str = (row: Record<string, unknown>, keys: string[]): string => {

@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import type { CreateScpRequest, ScpInfo, UpdateScpRequest } from '@/types/api'
 
 export const getScpList = async (): Promise<ScpInfo[] | null> => {

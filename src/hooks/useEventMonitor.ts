@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getAccessLog, getAlarmLog } from '@/api/eventMonitor'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { AccessLogParams, AlarmLogParams } from '@/types/api/eventMonitor'
 
 export const useAccessLog = (params: AccessLogParams, enabled: boolean) =>

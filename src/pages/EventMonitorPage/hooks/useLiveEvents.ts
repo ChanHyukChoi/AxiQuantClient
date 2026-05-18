@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { deviceEventToRecord, nextEventId, resetLiveEventSeq } from '@/lib/eventMonitorMappers'
-import { sseClient } from '@/lib/sse'
+import { deviceEventToRecord, nextEventId, resetLiveEventSeq } from '@/lib/eventMonitor/eventRecords'
+import { sseClient } from '@/lib/infra/sse'
 import type { EventRecord } from '@/types/api/eventMonitor'
 import type { DeviceEventMessage } from '@/types/api/sse'
 

@@ -1,4 +1,4 @@
-import { asRecordArray } from '@/lib/wireJson'
+import { asRecordArray } from '@/lib/wire/wireJson'
 import type { CreateHolidayRequest, HolidayInfo, UpdateHolidayRequest } from '@/types/api/holiday'
 
 const bool = (v: unknown): boolean => {

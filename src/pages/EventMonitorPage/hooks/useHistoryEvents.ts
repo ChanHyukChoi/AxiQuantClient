@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { accessLogToRecord, alarmLogToRecord } from '@/lib/eventMonitorMappers'
+import { accessLogToRecord, alarmLogToRecord } from '@/lib/eventMonitor/eventRecords'
 import { useAccessLog, useAlarmLog } from '@/hooks/useEventMonitor'
 import type { AccessLogParams, AlarmLogParams, EventRecord } from '@/types/api/eventMonitor'
 

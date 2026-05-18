@@ -4,7 +4,7 @@ import { createOutput, deleteOutput, getOutputList, updateOutput } from '@/api/o
 import { createReader, deleteReader, getReaderList, updateReader } from '@/api/reader'
 import { createScp, deleteScp, getScpList, updateScp } from '@/api/scp'
 import { createSio, deleteSio, getSioList, updateSio } from '@/api/sio'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type {
   CreateInputRequest,
   CreateOutputRequest,

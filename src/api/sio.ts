@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import type { CreateSioRequest, SioInfo, UpdateSioRequest } from '@/types/api'
 
 export const getSioList = async (scpId: number): Promise<SioInfo[] | null> => {

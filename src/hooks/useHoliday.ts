@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createHoliday, deleteHoliday, getHolidayList, updateHoliday } from '@/api/holiday'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { CreateHolidayRequest, UpdateHolidayRequest } from '@/types/api'
 
 export const useHolidayList = () =>

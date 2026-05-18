@@ -5,7 +5,7 @@ import {
   getTimezoneList,
   updateTimezone,
 } from '@/api/timezone'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { CreateTimezoneRequest, UpdateTimezoneRequest } from '@/types/api'
 
 export const useTimezoneList = () =>

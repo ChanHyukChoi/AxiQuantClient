@@ -1,6 +1,6 @@
-import { axiosInstance } from '@/lib/axios'
-import { isApiNotReady } from '@/lib/apiErrors'
-import { parseAuditPaged } from '@/lib/auditMappers'
+import { axiosInstance } from '@/lib/infra/axios'
+import { isApiNotReady } from '@/lib/wire/apiErrors'
+import { parseAuditPaged } from '@/lib/mappers/auditMappers'
 import type { AuditLogParams, PagedAuditLogResponse } from '@/types/api/audit'
 
 export type AuditLogResult = PagedAuditLogResponse & { apiNotReady?: boolean }

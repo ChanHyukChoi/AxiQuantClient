@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import type { CreateReaderRequest, ReaderInfo, UpdateReaderRequest } from '@/types/api'
 
 export const getReaderList = async (scpId: number): Promise<ReaderInfo[] | null> => {

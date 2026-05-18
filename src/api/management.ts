@@ -1,9 +1,9 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import {
   parseTestEventStatus,
   startTestEventsToWire,
   wireToTestEventStatus,
-} from '@/lib/managementMappers'
+} from '@/lib/mappers/managementMappers'
 import type { LogLevelInfo, StartTestEventsRequest, TestEventStatus } from '@/types/api'
 
 export const getLogLevel = async (target?: string): Promise<LogLevelInfo | null> => {

@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import type { CardfmtInfo, CreateCardfmtRequest, UpdateCardfmtRequest } from '@/types/api'
 
 export const getCardfmtList = async (): Promise<CardfmtInfo[] | null> => {

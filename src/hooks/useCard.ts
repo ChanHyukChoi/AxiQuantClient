@@ -8,7 +8,7 @@ import {
   getCardList,
   updateCard,
 } from '@/api/card'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { AddCardAccLvRequest, CardAccLvInfo, CreateCardRequest, UpdateCardRequest } from '@/types/api'
 
 export const useCardList = () =>

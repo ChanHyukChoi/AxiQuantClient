@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createArea, deleteArea, getAreaList, updateArea } from '@/api/area'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { CreateAreaRequest, UpdateAreaRequest } from '@/types/api'
 
 export const useAreas = () =>

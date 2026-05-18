@@ -75,30 +75,51 @@ AxiQuant Client는 **출입 관제 시스템**의 프론트엔드입니다.
 
 ```
 axiquant-client/
-├── electron/                  # Electron 메인 프로세스
-│   ├── main.ts                # BrowserWindow 생성, IPC 핸들러
-│   └── preload.ts             # 렌더러 ↔ 메인 브릿지 (contextBridge)
+├── electron/                      # Electron 메인 프로세스
+│   ├── main.ts
+│   └── preload.ts
 │
-├── src/                       # React 렌더러 프로세스 (웹 UI)
-│   ├── api/                   # 서버 API 호출 함수 모음
-│   ├── components/
-│   │   └── ui/                # 공용 UI 컴포넌트
-│   ├── features/              # 도메인별 복합 기능 (현재 확장 예정)
-│   ├── hooks/                 # TanStack Query 래퍼 훅 모음
-│   ├── layouts/               # 앱 레이아웃 컴포넌트
-│   ├── lib/                   # 전역 인스턴스, 설정
-│   ├── pages/                 # 라우트별 페이지 컴포넌트
-│   ├── stores/                # Zustand 전역 상태
-│   ├── types/                 # TypeScript 타입 정의
-│   ├── utils/                 # 순수 유틸 함수 (현재 확장 예정)
-│   ├── index.css              # CSS 변수, 글로벌 스타일
-│   ├── main.tsx               # React 진입점 (ReactDOM.createRoot)
-│   └── router.tsx             # TanStack Router 라우트 트리
+├── src/
+│   ├── api/                       # HTTP 호출 (axios, try/catch)
+│   ├── components/ui/             # 공용 UI (Grid, Drawer, Button …)
+│   ├── hooks/                     # TanStack Query 래퍼
+│   ├── layouts/                   # RootLayout, TitleBar, Sidebar
+│   ├── lib/
+│   │   ├── infra/                 # axios, SSE
+│   │   ├── query/                 # queryKeys
+│   │   ├── wire/                  # wireJson, apiErrors
+│   │   ├── mappers/               # wire ↔ UI 변환
+│   │   ├── eventMonitor/          # EventRecord 표시 변환
+│   │   └── userPermissions.ts
+│   ├── pages/                     # 라우트 페이지 (단일 파일 + 도메인 폴더)
+│   │   ├── LoginPage.tsx
+│   │   ├── EmpsPage.tsx, CardsPage.tsx, AccessPage.tsx
+│   │   ├── AreaPage/              # 구역
+│   │   ├── CardFmtPage/           # 카드 포맷
+│   │   ├── DevicesPage/           # SCP/SIO/입출력/리더 트리
+│   │   ├── EventMonitorPage/      # 실시간·이력 모니터
+│   │   ├── UsersPage/             # 사용자·권한
+│   │   └── AuditLogPage/          # 운영 기록
+│   ├── stores/                    # Zustand (auth, sidebar, theme)
+│   ├── types/
+│   │   ├── api/                   # 도메인별 API 타입 + index.ts 배럴
+│   │   └── electron.d.ts
+│   ├── index.css
+│   ├── main.tsx
+│   └── router.tsx
 │
-├── DOCS.md                    # 이 문서
+├── DOCS.md
+├── README.md
 ├── package.json
 ├── tsconfig.json
 └── vite.config.ts
+```
+
+### 데이터 흐름 (요약)
+
+```
+페이지 → hooks/useXxx → api/xxx.ts → lib/mappers/* (필요 시) → axiosInstance → 서버
+                ↑ SSE OnXxxChanged → useSseInvalidate → invalidateQueries
 ```
 
 ---
@@ -131,26 +152,33 @@ Electron의 **메인 프로세스**. Node.js 환경에서 실행됩니다.
 
 ### `src/api/`
 
-서버와 통신하는 **순수 함수들**. 각 도메인별 파일로 분리되어 있습니다.  
-모두 `try/catch`로 에러를 처리하고 실패 시 `null` 또는 `false`를 반환합니다.
+서버와 통신하는 **순수 함수**. 도메인별 파일 분리.  
+대부분 `try/catch` 후 `null` / `false` / 빈 페이지 반환.  
+proto/WPF wire와 다른 필드는 **`lib/mappers/*Mappers.ts`**에서 변환 후 호출합니다.
 
-| 파일            | 도메인                   | 주요 엔드포인트                  |
-| --------------- | ------------------------ | -------------------------------- |
-| `auth.ts`       | 인증                     | `POST /api/auth/login`           |
-| `emps.ts`       | 사원(카드 사용자)        | `GET/POST/PUT/DELETE /api/emps`  |
-| `card.ts`       | 카드                     | `GET/POST/PUT/DELETE /api/card`  |
-| `acclv.ts`      | 접근권한                 | `GET/POST/PUT/DELETE /api/acclv` |
-| `area.ts`       | 구역                     | `GET/POST/PUT/DELETE /api/area`  |
-| `scp.ts`        | 보안 컨트롤러(SCP)       | `/api/scp`                       |
-| `sio.ts`        | SIO 모듈                 | `/api/scp/:id/sio`               |
-| `input.ts`      | 입력 포트                | `/api/scp/:id/input`             |
-| `output.ts`     | 출력 포트                | `/api/scp/:id/output`            |
-| `reader.ts`     | 카드 리더                | `/api/scp/:id/reader`            |
-| `cardfmt.ts`    | 카드 포맷                | `/api/cardfmt`                   |
-| `holiday.ts`    | 휴일 설정                | `/api/holiday`                   |
-| `timezone.ts`   | 시간대 설정              | `/api/timezone`                  |
-| `modules.ts`    | 시스템 모듈 상태         | `/api/modules`                   |
-| `management.ts` | 로그 레벨, 테스트 이벤트 | `/api/management`                |
+| 파일 | 도메인 | 주요 엔드포인트 | mapper |
+| ---- | ------ | --------------- | ------ |
+| `auth.ts` | 인증 | `POST /api/auth/login` | — |
+| `emps.ts` | 사원 (flat body) | `/api/emps` | `empsMappers` (`udef: "{}"`, `deleted` 제외) |
+| `card.ts` | 카드 (`{ card }` 래퍼) | `/api/card` | `cardMappers` |
+| `acclv.ts` | 접근권한 (`{ acclv }`) | `/api/acclv` | `acclvMappers` |
+| `area.ts` | 구역 (`{ area }`) | `/api/area` | — |
+| `scp.ts` | SCP | `/api/scp` | — |
+| `sio.ts` | SIO | `/api/scp/:id/sio` | — |
+| `input.ts` | 입력 | `/api/scp/:id/input` | — |
+| `output.ts` | 출력 | `/api/scp/:id/output` | — |
+| `reader.ts` | 리더 | `/api/scp/:id/reader` | — |
+| `cardfmt.ts` | 카드 포맷 | `/api/cardfmt` | — |
+| `holiday.ts` | 휴일 | `/api/holiday` | `holidayMappers` (`repeat` ↔ `isRecurring`) |
+| `timezone.ts` | 시간대 | `/api/timezone` | `timezoneMappers` (`intervals[]`) |
+| `modules.ts` | 모듈 상태 | `/api/modules` | `moduleMappers` |
+| `management.ts` | 로그·테스트 이벤트 | `/api/management/*` | `managementMappers` |
+| `users.ts` | 사용자 (flat) | `/api/users` | `userMappers` |
+| `audit.ts` | 운영 기록 | `GET /api/audit-log` | `auditMappers` |
+| `eventMonitor.ts` | 출입·경보 이력 | `/api/access-log`, `/api/alarm-log` | `eventMonitorMappers` |
+
+**404 미구현 API** (`users`, `audit-log`, `access-log`, `alarm-log`):  
+빈 목록 + `apiNotReady` 플래그. 해당 페이지에 안내 배너 표시.
 
 ---
 
@@ -164,13 +192,21 @@ Electron의 **메인 프로세스**. Node.js 환경에서 실행됩니다.
                 ↓ 캐시 히트 시 즉시 반환
 ```
 
-| 훅                    | 제공 기능                                                                                  |
-| --------------------- | ------------------------------------------------------------------------------------------ |
-| `useEmps.ts`          | `useEmpList`, `useCreateEmp`, `useUpdateEmp`, `useDeleteEmp`                               |
-| `useCard.ts`          | `useCardList`, `useCreateCard`, `useUpdateCard`, `useDeleteCard`, `useCardAccLvList`       |
-| `useAccLv.ts`         | `useAccLvList`, `useCreateAccLv`, `useUpdateAccLv`, `useDeleteAccLv`, `useAccLvReaderList` |
-| `useSseInvalidate.ts` | SSE 이벤트 수신 시 관련 쿼리 자동 무효화                                                   |
-| 나머지                | 각 도메인 CRUD 훅 동일 패턴                                                                |
+| 훅 | 제공 기능 |
+| --- | --- |
+| `useEmps.ts` | 사원 CRUD |
+| `useCard.ts` | 카드 CRUD, 카드별 접근권한 |
+| `useAccLv.ts` | 접근권한 CRUD, 리더 매핑 |
+| `useArea.ts` | 구역 |
+| `useDevices.ts` | SCP 트리 (scp/sio/input/output/reader 통합) |
+| `useScp.ts`, `useSio.ts`, `useInput.ts`, `useOutput.ts`, `useReader.ts` | 장치 하위 리소스 |
+| `useCardfmt.ts` | 카드 포맷 |
+| `useHoliday.ts`, `useTimezone.ts` | 휴일·시간대 |
+| `useModules.ts` | 모듈 목록 |
+| `useUsers.ts` | 사용자 CRUD |
+| `useAuditLog.ts` | 운영 기록 페이징 |
+| `useEventMonitor.ts` | 출입·경보 이력 API |
+| `useSseInvalidate.ts` | SSE → 쿼리 무효화 (14종 invalidate + 장치 하위) |
 
 #### `useSseInvalidate.ts` — 실시간 자동 갱신
 
@@ -188,31 +224,46 @@ SSE로 서버 이벤트를 수신하면 해당 TanStack Query 캐시를 자동�
 
 ### `src/lib/`
 
-#### `axios.ts`
+| 경로 | 용도 |
+| ---- | ---- |
+| `infra/axios.ts` | `axiosInstance`, Bearer 주입, HTTP 401 → 로그아웃 |
+| `infra/sse.ts` | `SseClient` (fetch 스트림), Bearer, **SSE 401 → 로그아웃**, 5초 재연결 |
+| `query/queryKeys.ts` | TanStack Query 키 중앙 관리 |
+| `wire/wireJson.ts` | `firstNumber`, `optionalString`, `asRecordArray` — 구·신 필드명 흡수 |
+| `wire/apiErrors.ts` | `isApiNotReady` (HTTP 404) |
+| `userPermissions.ts` | 사용자 메뉴 권한 정의·정규화 (`normalizePermissions` 등) |
+| `mappers/cardMappers.ts` | 카드 proto `id`/`emp`/`flags` ↔ UI `cid`/`cardNumber` |
+| `mappers/empsMappers.ts` | 사원 flat wire payload (`udef: "{}"`) |
+| `mappers/holidayMappers.ts` | `repeat` ↔ `isRecurring` |
+| `mappers/timezoneMappers.ts` | `TzInfo` + `intervals[]` ↔ UI 시간 필드 |
+| `mappers/acclvMappers.ts` | `description` ↔ `ext` JSON |
+| `mappers/moduleMappers.ts` | `moduleType`, `connectedAt` → UI 표시 필드 |
+| `mappers/managementMappers.ts` | test-events `emitting`/`minIntervalMs` ↔ `isRunning`/`intervalMs` |
+| `mappers/userMappers.ts` | users flat wire, `permissions` |
+| `mappers/auditMappers.ts` | audit-log 페이징 파싱 |
+| `mappers/eventMonitorMappers.ts` | access/alarm 로그 wire 파싱 |
+| `eventMonitor/eventRecords.ts` | SSE·이력 → `EventRecord` 표시 변환 |
 
-전역 `axiosInstance` 설정:
+#### `infra/axios.ts`
 
-- **요청 인터셉터**: 모든 요청에 `Authorization: Bearer {token}` 헤더 자동 주입
-- **응답 인터셉터**: 401 응답 시 토큰 삭제 + `/login`으로 자동 리다이렉트
+- 요청: `Authorization: Bearer {token}`
+- 응답 401: `clearToken()` + `/login`
 
-#### `sse.ts`
+#### `infra/sse.ts`
 
-커스텀 `SseClient` 클래스. 브라우저 기본 `EventSource` 대신 `fetch + ReadableStream`을 사용합니다.  
-이유: JWT `Authorization` 헤더를 `EventSource`는 설정할 수 없기 때문입니다.
+- `fetch` + `ReadableStream` (EventSource는 Bearer 불가)
+- `GET /api/events/stream` + Bearer
+- 401 시 재연결 없이 로그아웃
+- `OnEventReceived` 등 이벤트명으로 `dispatch`
 
-- 연결 끊김 시 5초 후 자동 재연결
-- `on(eventName, callback)` / `off()` 로 이벤트 구독/해제
-- 싱글톤 `sseClient` 인스턴스를 앱 전역에서 공유
-
-#### `queryKeys.ts`
-
-TanStack Query의 **쿼리 키 중앙 관리**.  
-쿼리 키를 한 곳에서 관리해 `invalidateQueries` 호출 시 일관성을 보장합니다.
+#### `query/queryKeys.ts` (예)
 
 ```ts
-queryKeys.emps.all // ['emps']
-queryKeys.card.all // ['card']
-queryKeys.card.acclv(5) // ['card', 5, 'acclv']
+queryKeys.emps.all           // ['emps']
+queryKeys.card.all           // ['card']
+queryKeys.users.all()        // ['users']
+queryKeys.auditLog.list(p)   // ['auditLog', params]
+queryKeys.eventMonitor.accessLog(p)
 ```
 
 ---
@@ -257,25 +308,24 @@ CSS 변수 값이 전환됩니다.
 
 ---
 
-### `src/types/api.ts`
+### `src/types/api/`
 
-서버 API의 **모든 타입 정의** 단일 파일.  
-인터페이스, Request 타입 등을 도메인별로 구분해 선언합니다.
+도메인별 타입 파일 + `index.ts` 배럴 export.
 
-주요 타입:
+| 파일 | 주요 타입 |
+| ---- | --------- |
+| `emp.ts` | `EmpInfo` (WPF flat 14필드) |
+| `card.ts` | `CardInfo` (`cid`, `cardNumber` — 서버 `id`와 동일 값) |
+| `acclv.ts` | `AccLvInfo`, `AccLvRdrInfo` |
+| `timezone.ts` | `TimezoneInfo`, `TimezoneInterval` |
+| `user.ts` | `UserInfo`, `UserPermissions` |
+| `audit.ts` | `AuditLogItem`, `PagedAuditLogResponse` |
+| `eventMonitor.ts` | `EventRecord`, `AccessLogItem`, `PagedLogResponse` |
+| `sse.ts` | `DeviceEventMessage`, `SseEventName` |
+| `module.ts`, `management.ts`, … | 기타 도메인 |
 
-```ts
-EmpInfo        { id, name, employeeNumber, department?, email?, phone? }
-CardInfo       { cid, cardNumber, empId?, empName?, isActive, issuedAt?, expiredAt? }
-AccLvInfo      { id, name, description? }
-ScpInfo        { id, name, ipAddress, port, isOnline? }
-LoginResponse  { token, expiresAt }
-SseEventName   'device-event' | 'access-event' | 'alarm-event' | ...
-```
-
-> **주의**: `CardInfo`는 `id` 대신 `cid`를 PK로 사용합니다.  
-> Grid 컴포넌트는 `T extends { id: number }`를 요구하므로,  
-> `CardsPage`에서 `CardRow = CardInfo & { id: number }` 로컬 타입으로 정규화해서 사용합니다.
+> **Card**: 서버 proto `id` = 카드번호. UI는 `cid`/`cardNumber` 사용.  
+> `CardsPage`에서 `CardRow = CardInfo & { id: number }`로 Grid 호환.
 
 ---
 
@@ -316,14 +366,20 @@ SseEventName   'device-event' | 'access-event' | 'alarm-event' | ...
 
 ### `src/pages/`
 
-각 라우트에 대응하는 **페이지 컴포넌트**. 레이아웃은 `Grid + Drawer` 패턴을 따릅니다.
+라우트별 페이지. 복잡한 화면은 **도메인 폴더** (`index.tsx` + 탭/훅/유틸).
 
-| 파일            | 라우트    | 설명                           |
-| --------------- | --------- | ------------------------------ |
-| `LoginPage.tsx` | `/login`  | 로그인 (서버 주소 입력 + 인증) |
-| `EmpsPage.tsx`  | `/emps`   | 카드 사용자(사원) 관리         |
-| `CardsPage.tsx` | `/cards`  | 카드 관리                      |
-| `AccessPage`    | `/access` | 접근권한 (placeholder)         |
+| 경로 | 라우트 | 설명 |
+| ---- | ------ | ---- |
+| `LoginPage.tsx` | `/login` | 로그인·서버 주소 |
+| `EmpsPage.tsx` | `/emps` | 사원(카드 사용자) |
+| `CardsPage.tsx` | `/cards` | 카드 (번호 = 서버 `id`) |
+| `AccessPage.tsx` | `/access` | 접근권한·리더·시간대 목록 |
+| `DevicesPage/` | `/devices` | SCP 장치 트리 |
+| `AreaPage/` | `/area` | 구역 |
+| `CardFmtPage/` | `/cardfmt` | 카드 포맷 |
+| `EventMonitorPage/` | `/monitor` | 실시간 SSE + 이력 조회 |
+| `UsersPage/` | `/users` | 사용자·메뉴 권한 |
+| `AuditLogPage/` | `/audit` | 운영 기록 |
 
 #### 페이지 공통 레이아웃 패턴
 
@@ -457,10 +513,9 @@ SseEventName   'device-event' | 'access-event' | 'alarm-event' | ...
 │  - Authorization: Bearer 헤더로 인증                      │
 │                                                          │
 │  useSseInvalidate() 에서 이벤트 → 쿼리 무효화 매핑:       │
-│  OnCardChanged      → queryKeys.card.all                 │
-│  OnScpChanged       → queryKeys.scp.all                  │
-│  OnAccLvChanged     → queryKeys.acclv.all                │
-│  ... (총 12개 이벤트 매핑)                                 │
+│  OnCardChanged, OnScpChanged, OnAreaChanged, … (14종)    │
+│  OnModuleStatusChanged, OnEventReceived (라이브 모니터)   │
+│  useSseInvalidate → queryKeys.* invalidate               │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -553,10 +608,16 @@ rootRoute (Outlet만 렌더)
 ├── indexRoute  /        → redirect → /login
 ├── loginRoute  /login   → LoginPage (TitleBar 있음, Sidebar 없음)
 │
-└── appRoute    _app     → RootLayout (TitleBar + Sidebar 레이아웃)
-    ├── empsRoute   /emps    → EmpsPage
-    ├── cardsRoute  /cards   → CardsPage
-    └── accessRoute /access  → AccessPage
+└── appRoute    _app     → RootLayout (TitleBar + Sidebar)
+    ├── /emps      → EmpsPage
+    ├── /cards     → CardsPage
+    ├── /access    → AccessPage
+    ├── /devices   → DevicesPage
+    ├── /area      → AreaPage
+    ├── /cardfmt   → CardFmtPage
+    ├── /monitor   → EventMonitorPage
+    ├── /users     → UsersPage
+    └── /audit     → AuditLogPage
 ```
 
 `appRoute`는 `path` 없이 `id: '_app'`만 가진 **레이아웃 라우트**입니다.  

@@ -1,4 +1,4 @@
-import { asRecordArray, optionalString } from '@/lib/wireJson'
+import { asRecordArray, optionalString } from '@/lib/wire/wireJson'
 import type { ModuleInfo } from '@/types/api/module'
 
 export const wireToModuleInfo = (row: Record<string, unknown>): ModuleInfo => {

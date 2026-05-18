@@ -1,5 +1,5 @@
-import { axiosInstance } from '@/lib/axios'
-import { parseTimezoneList, timezoneToWire } from '@/lib/timezoneMappers'
+import { axiosInstance } from '@/lib/infra/axios'
+import { parseTimezoneList, timezoneToWire } from '@/lib/mappers/timezoneMappers'
 import type {
   CreateTimezoneRequest,
   TimezoneInfo,

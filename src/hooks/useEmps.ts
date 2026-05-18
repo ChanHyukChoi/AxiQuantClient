@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createEmp, deleteEmp, getEmpList, updateEmp } from '@/api/emps'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { CreateEmpRequest, UpdateEmpRequest } from '@/types/api'
 
 export const useEmpList = () =>

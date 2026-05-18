@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import { router } from '@/router'
 import { useAuthStore } from '@/stores/authStore'
 import type { SseEventName } from '@/types/api'

@@ -1,7 +1,7 @@
-import { axiosInstance } from '@/lib/axios'
-import { isApiNotReady } from '@/lib/apiErrors'
-import { asRecordArray, firstNumber } from '@/lib/wireJson'
-import { wireToAccessLogItem, wireToAlarmLogItem } from '@/lib/eventMonitorMappers'
+import { axiosInstance } from '@/lib/infra/axios'
+import { isApiNotReady } from '@/lib/wire/apiErrors'
+import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
+import { wireToAccessLogItem, wireToAlarmLogItem } from '@/lib/mappers/eventMonitorMappers'
 import type {
   AccessLogParams,
   AlarmLogParams,

@@ -1,5 +1,5 @@
-import { axiosInstance } from '@/lib/axios'
-import { parseModuleList } from '@/lib/moduleMappers'
+import { axiosInstance } from '@/lib/infra/axios'
+import { parseModuleList } from '@/lib/mappers/moduleMappers'
 import type { ModuleInfo } from '@/types/api'
 
 export const getModuleList = async (): Promise<ModuleInfo[] | null> => {

@@ -1,6 +1,6 @@
-import { axiosInstance } from '@/lib/axios'
-import { isApiNotReady } from '@/lib/apiErrors'
-import { parseUserList, userInfoToWire } from '@/lib/userMappers'
+import { axiosInstance } from '@/lib/infra/axios'
+import { isApiNotReady } from '@/lib/wire/apiErrors'
+import { parseUserList, userInfoToWire } from '@/lib/mappers/userMappers'
 import type { CreateUserRequest, UpdateUserRequest, UserInfo } from '@/types/api/user'
 
 export type UserWriteResult = { ok: true } | { ok: false; message: string }

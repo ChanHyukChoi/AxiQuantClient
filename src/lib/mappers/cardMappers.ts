@@ -1,4 +1,4 @@
-import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wire/wireJson'
 import type { CardInfo, CreateCardRequest, UpdateCardRequest } from '@/types/api/card'
 
 const FLAG_EXEMPT_APB = 0x01

@@ -33,16 +33,26 @@ Electron + React 기반 데스크톱/웹 듀얼 타겟
 
 ## 폴더 구조
 src/
-├── assets/
+├── api/                 # HTTP (도메인별, mapper 연동)
 ├── components/ui/
-├── features/
-├── hooks/
+├── hooks/               # TanStack Query
 ├── layouts/
 ├── lib/
-├── pages/
+│   ├── infra/           # axios, sse
+│   ├── query/           # queryKeys
+│   ├── wire/            # wireJson, apiErrors
+│   ├── mappers/         # 도메인 wire ↔ UI 변환
+│   ├── eventMonitor/    # EventRecord 표시 변환
+│   └── userPermissions.ts
+├── pages/               # 라우트 (단일 tsx + AreaPage/DevicesPage/…)
 ├── stores/
-├── types/
-└── utils/
+└── types/api/           # 도메인 타입 + index.ts 배럴
+
+## API 레이어
+- 서버 proto/WPF wire 기준. UI 필드는 `lib/mappers/*Mappers.ts`에서 변환
+- `api/`는 mapper 결과를 axios로 전송. 컴포넌트는 `hooks/`만 사용
+- Card: `id` = 카드번호, `{ card }` 래퍼
+- emps/users: flat body
 
 ## 작업 완료 후 필수
 작업이 완료되면 반드시 아래 형식으로 요약을 출력해주세요.

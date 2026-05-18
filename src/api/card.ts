@@ -1,11 +1,11 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import {
   createCardToWire,
   parseCardList,
   resolveCardId,
   updateCardToWire,
-} from '@/lib/cardMappers'
-import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
+} from '@/lib/mappers/cardMappers'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wire/wireJson'
 import type {
   AddCardAccLvRequest,
   CardAccLvInfo,

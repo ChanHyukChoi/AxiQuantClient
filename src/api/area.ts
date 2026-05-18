@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+import { axiosInstance } from '@/lib/infra/axios'
 import type { AreaInfo, CreateAreaRequest, UpdateAreaRequest } from '@/types/api'
 
 export const getAreaList = async (): Promise<AreaInfo[] | null> => {

@@ -16,7 +16,7 @@ import {
   type ScpChildData,
 } from '@/pages/DevicesPage/utils/buildTree'
 import { useScps } from '@/hooks/useDevices'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { InputInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 
 const DEFAULT_EXPANDED = new Set(['group:controllers', 'group:standalone'])

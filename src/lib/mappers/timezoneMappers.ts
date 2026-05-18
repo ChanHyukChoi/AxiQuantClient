@@ -1,4 +1,4 @@
-import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wire/wireJson'
 import type {
   CreateTimezoneRequest,
   TimezoneInfo,

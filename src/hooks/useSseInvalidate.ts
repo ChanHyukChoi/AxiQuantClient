@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { sseClient } from '@/lib/sse'
-import { queryKeys } from '@/lib/queryKeys'
+import { sseClient } from '@/lib/infra/sse'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { SseEventName } from '@/types/api'
 
 const eventKeyMap: Partial<Record<string, readonly unknown[]>> = {

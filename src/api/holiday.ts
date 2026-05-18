@@ -1,5 +1,5 @@
-import { axiosInstance } from '@/lib/axios'
-import { holidayToWire, parseHolidayList } from '@/lib/holidayMappers'
+import { axiosInstance } from '@/lib/infra/axios'
+import { holidayToWire, parseHolidayList } from '@/lib/mappers/holidayMappers'
 import type { CreateHolidayRequest, HolidayInfo, UpdateHolidayRequest } from '@/types/api'
 
 export const getHolidayList = async (): Promise<HolidayInfo[] | null> => {

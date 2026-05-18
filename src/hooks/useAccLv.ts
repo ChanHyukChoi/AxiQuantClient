@@ -8,7 +8,7 @@ import {
   getAccLvReaderList,
   updateAccLv,
 } from '@/api/acclv'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { AccLvRdrInfo, AddAccLvReaderRequest, CreateAccLvRequest, UpdateAccLvRequest } from '@/types/api'
 
 export const useAccLvList = () =>

@@ -5,7 +5,7 @@ import {
   getCardfmtList,
   updateCardfmt,
 } from '@/api/cardfmt'
-import { queryKeys } from '@/lib/queryKeys'
+import { queryKeys } from '@/lib/query/queryKeys'
 import type { CreateCardfmtRequest, UpdateCardfmtRequest } from '@/types/api'
 
 export const useCardFmts = () =>

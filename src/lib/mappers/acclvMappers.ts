@@ -1,4 +1,4 @@
-import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wire/wireJson'
 import type { AccLvInfo, CreateAccLvRequest, UpdateAccLvRequest } from '@/types/api/acclv'
 
 const parseExtDescription = (ext: string | undefined): string | undefined => {

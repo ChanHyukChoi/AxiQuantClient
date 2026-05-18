@@ -1,5 +1,5 @@
-import { normalizePermissions } from '@/pages/UsersPage/permissions'
-import { asRecordArray, firstNumber } from '@/lib/wireJson'
+import { normalizePermissions } from '@/lib/userPermissions'
+import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
 import type { UserInfo, UserPermissions } from '@/types/api/user'
 
 const str = (row: Record<string, unknown>, keys: string[]): string => {

@@ -1,6 +1,6 @@
-import { axiosInstance } from '@/lib/axios'
-import { accLvToWire, parseAccLvList } from '@/lib/acclvMappers'
-import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
+import { axiosInstance } from '@/lib/infra/axios'
+import { accLvToWire, parseAccLvList } from '@/lib/mappers/acclvMappers'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wire/wireJson'
 import type {
   AccLvInfo,
   AccLvRdrInfo,
