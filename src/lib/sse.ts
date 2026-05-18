@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios'
+import { router } from '@/router'
 import { useAuthStore } from '@/stores/authStore'
 import type { SseEventName } from '@/types/api'
 
@@ -69,6 +70,12 @@ export class SseClient {
           },
           signal,
         })
+
+        if (response.status === 401) {
+          useAuthStore.getState().clearToken()
+          void router.navigate({ to: '/login' })
+          break
+        }
 
         if (!response.ok || !response.body) {
           throw new Error(`SSE 연결 실패: ${response.status}`)

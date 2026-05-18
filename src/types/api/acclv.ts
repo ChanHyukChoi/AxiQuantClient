@@ -1,7 +1,11 @@
 export interface AccLvInfo {
   id: number
   name: string
+  /** 서버 proto에 없음 — `ext` JSON에 저장 */
   description?: string
+  active?: boolean
+  opermode?: number
+  escort?: number
 }
 
 export type CreateAccLvRequest = Omit<AccLvInfo, 'id'>

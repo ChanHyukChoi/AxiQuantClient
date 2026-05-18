@@ -1,4 +1,9 @@
 import { axiosInstance } from '@/lib/axios'
+import {
+  parseTestEventStatus,
+  startTestEventsToWire,
+  wireToTestEventStatus,
+} from '@/lib/managementMappers'
 import type { LogLevelInfo, StartTestEventsRequest, TestEventStatus } from '@/types/api'
 
 export const getLogLevel = async (target?: string): Promise<LogLevelInfo | null> => {
@@ -23,10 +28,8 @@ export const setLogLevel = async (target: string, level: string): Promise<boolea
 
 export const getTestEventStatus = async (): Promise<TestEventStatus | null> => {
   try {
-    const { data } = await axiosInstance.get<TestEventStatus>(
-      '/api/management/test-events/status',
-    )
-    return data
+    const { data } = await axiosInstance.get<unknown>('/api/management/test-events/status')
+    return parseTestEventStatus(data)
   } catch {
     return null
   }
@@ -36,11 +39,11 @@ export const startTestEvents = async (
   options?: StartTestEventsRequest,
 ): Promise<TestEventStatus | null> => {
   try {
-    const { data } = await axiosInstance.post<TestEventStatus>(
+    const { data } = await axiosInstance.post<unknown>(
       '/api/management/test-events/start',
-      options ?? {},
+      startTestEventsToWire(options),
     )
-    return data
+    return parseTestEventStatus(data) ?? wireToTestEventStatus({ emitting: true, isRunning: true })
   } catch {
     return null
   }

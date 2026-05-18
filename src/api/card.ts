@@ -1,4 +1,10 @@
 import { axiosInstance } from '@/lib/axios'
+import {
+  createCardToWire,
+  parseCardList,
+  resolveCardId,
+  updateCardToWire,
+} from '@/lib/cardMappers'
 import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
 import type {
   AddCardAccLvRequest,
@@ -9,7 +15,7 @@ import type {
 } from '@/types/api'
 
 const normalizeCardAccLvRow = (row: Record<string, unknown>): CardAccLvInfo => ({
-  cid: firstNumber(row, ['cid', 'cardId']),
+  cid: firstNumber(row, ['cid', 'cardId', 'id']),
   alvid: firstNumber(row, ['alvid', 'accLvId']),
   state: 'state' in row ? firstNumber(row, ['state']) : undefined,
   acttm: optionalString(row, 'acttm'),
@@ -19,16 +25,18 @@ const normalizeCardAccLvRow = (row: Record<string, unknown>): CardAccLvInfo => (
 
 export const getCardList = async (): Promise<CardInfo[] | null> => {
   try {
-    const { data } = await axiosInstance.get<CardInfo[]>('/api/card')
-    return data
+    const { data } = await axiosInstance.get<unknown>('/api/card')
+    return parseCardList(data)
   } catch {
     return null
   }
 }
 
 export const createCard = async (card: CreateCardRequest): Promise<boolean> => {
+  const id = resolveCardId(card.cardNumber)
+  if (id <= 0) return false
   try {
-    await axiosInstance.post('/api/card', { card })
+    await axiosInstance.post('/api/card', { card: createCardToWire(card) })
     return true
   } catch {
     return false
@@ -36,8 +44,10 @@ export const createCard = async (card: CreateCardRequest): Promise<boolean> => {
 }
 
 export const updateCard = async (id: number, card: UpdateCardRequest): Promise<boolean> => {
+  const nid = Math.trunc(id)
+  if (!Number.isFinite(nid) || nid <= 0) return false
   try {
-    await axiosInstance.put(`/api/card/${id}`, { card })
+    await axiosInstance.put(`/api/card/${nid}`, { card: updateCardToWire(card, nid) })
     return true
   } catch {
     return false

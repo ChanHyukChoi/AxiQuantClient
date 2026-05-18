@@ -11,7 +11,9 @@ export const UsersPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isCreating, setIsCreating] = useState(false)
 
-  const { data: userList, isLoading, isError } = useUsers()
+  const { data: userResult, isLoading, isError } = useUsers()
+  const userList = userResult?.users
+  const apiNotReady = userResult?.apiNotReady
 
   const filteredUsers = useMemo(() => {
     const list = userList ?? []
@@ -69,6 +71,19 @@ export const UsersPage = () => {
           추가
         </Button>
       </div>
+
+      {apiNotReady ? (
+        <div
+          className="mx-3 mt-2 px-3 py-2 rounded text-[12px]"
+          style={{
+            background: 'var(--color-btn-hover)',
+            color: 'var(--color-text-muted)',
+            border: '0.5px solid var(--color-border)',
+          }}
+        >
+          사용자 관리 API가 서버에 아직 구현되지 않았습니다. 목록은 비어 있으며 저장 시 안내 메시지가 표시됩니다.
+        </div>
+      ) : null}
 
       <div className="flex flex-1 overflow-hidden">
         <UserListPane

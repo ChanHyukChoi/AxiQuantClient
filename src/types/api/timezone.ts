@@ -1,8 +1,18 @@
+export interface TimezoneInterval {
+  idx: number
+  dmask: number
+  hmask: number
+  stm: string
+  etm: string
+}
+
 export interface TimezoneInfo {
   id: number
   name: string
-  startTime: string
-  endTime: string
+  intervals: TimezoneInterval[]
+  /** UI·레거시 — 첫 interval 또는 서버 alias */
+  startTime?: string
+  endTime?: string
   daysOfWeek?: number
 }
 

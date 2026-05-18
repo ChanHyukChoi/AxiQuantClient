@@ -170,6 +170,19 @@ export const EventMonitorPage = () => {
         onPrint={handlePrint}
       />
 
+      {mode === 'history' && history.apiNotReady ? (
+        <div
+          className="mx-3 mt-2 px-3 py-2 rounded text-[12px]"
+          style={{
+            background: 'var(--color-btn-hover)',
+            color: 'var(--color-text-muted)',
+            border: '0.5px solid var(--color-border)',
+          }}
+        >
+          출입·경보 이력 API가 서버에 아직 구현되지 않았습니다.
+        </div>
+      ) : null}
+
       <div className="flex flex-1 overflow-hidden">
         <EventGrid
           events={displayEvents}

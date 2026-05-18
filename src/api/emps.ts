@@ -122,10 +122,17 @@ const logEmpAxiosError = (op: string, error: unknown) => {
   }
 }
 
+const isDeletedEmp = (row: EmpInfo | Record<string, unknown>): boolean => {
+  if (typeof row !== 'object' || row === null) return false
+  const d = (row as Record<string, unknown>).deleted
+  return d === true || d === 1 || d === '1'
+}
+
 export const getEmpList = async (): Promise<EmpInfo[] | null> => {
   try {
     const { data } = await axiosInstance.get<EmpInfo[]>('/api/emps')
-    return data
+    if (!Array.isArray(data)) return data
+    return data.filter((e) => !isDeletedEmp(e))
   } catch (error) {
     logEmpAxiosError('GET /api/emps', error)
     return null

@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios'
+import { isApiNotReady } from '@/lib/apiErrors'
 import { asRecordArray, firstNumber } from '@/lib/wireJson'
 import { wireToAccessLogItem, wireToAlarmLogItem } from '@/lib/eventMonitorMappers'
 import type {
@@ -9,7 +10,11 @@ import type {
   AlarmLogItem,
 } from '@/types/api/eventMonitor'
 
-const emptyPaged = <T>(): PagedLogResponse<T> => ({ items: [], total: 0 })
+const emptyPaged = <T>(apiNotReady?: boolean): PagedLogResponse<T> & { apiNotReady?: boolean } => ({
+  items: [],
+  total: 0,
+  ...(apiNotReady ? { apiNotReady: true } : {}),
+})
 
 const parsePaged = <T>(
   data: unknown,
@@ -39,7 +44,8 @@ export const getAccessLog = async (
   try {
     const { data } = await axiosInstance.get<unknown>('/api/access-log', { params })
     return parsePaged(data, wireToAccessLogItem)
-  } catch {
+  } catch (error) {
+    if (isApiNotReady(error)) return emptyPaged(true)
     return emptyPaged()
   }
 }
@@ -50,7 +56,8 @@ export const getAlarmLog = async (
   try {
     const { data } = await axiosInstance.get<unknown>('/api/alarm-log', { params })
     return parsePaged(data, wireToAlarmLogItem)
-  } catch {
+  } catch (error) {
+    if (isApiNotReady(error)) return emptyPaged(true)
     return emptyPaged()
   }
 }

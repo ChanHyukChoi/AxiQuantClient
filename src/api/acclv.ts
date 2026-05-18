@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios'
+import { accLvToWire, parseAccLvList } from '@/lib/acclvMappers'
 import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
 import type {
   AccLvInfo,
@@ -19,8 +20,8 @@ const normalizeAccLvRdrRow = (row: Record<string, unknown>): AccLvRdrInfo => ({
 
 export const getAccLvList = async (): Promise<AccLvInfo[] | null> => {
   try {
-    const { data } = await axiosInstance.get<AccLvInfo[]>('/api/acclv')
-    return data
+    const { data } = await axiosInstance.get<unknown>('/api/acclv')
+    return parseAccLvList(data)
   } catch {
     return null
   }
@@ -28,7 +29,7 @@ export const getAccLvList = async (): Promise<AccLvInfo[] | null> => {
 
 export const createAccLv = async (acclv: CreateAccLvRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/acclv', { acclv: { id: 0, ...acclv } })
+    await axiosInstance.post('/api/acclv', { acclv: accLvToWire(acclv, 0) })
     return true
   } catch {
     return false
@@ -37,7 +38,7 @@ export const createAccLv = async (acclv: CreateAccLvRequest): Promise<boolean> =
 
 export const updateAccLv = async (id: number, acclv: UpdateAccLvRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/acclv/${id}`, { acclv: { id, ...acclv } })
+    await axiosInstance.put(`/api/acclv/${id}`, { acclv: accLvToWire(acclv, id) })
     return true
   } catch {
     return false
