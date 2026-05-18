@@ -8,30 +8,48 @@ import {
 import { queryKeys } from '@/lib/queryKeys'
 import type { CreateCardfmtRequest, UpdateCardfmtRequest } from '@/types/api'
 
-export const useCardfmtList = () =>
-  useQuery({ queryKey: queryKeys.cardfmt.all, queryFn: getCardfmtList })
+export const useCardFmts = () =>
+  useQuery({
+    queryKey: queryKeys.cardFmts.all(),
+    queryFn: getCardfmtList,
+  })
 
-export const useCreateCardfmt = () => {
+export const useCreateCardFmt = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (data: CreateCardfmtRequest) => createCardfmt(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.cardfmt.all }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.cardFmts.all() }),
   })
 }
 
-export const useUpdateCardfmt = () => {
+export const useUpdateCardFmt = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: UpdateCardfmtRequest }) =>
       updateCardfmt(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.cardfmt.all }),
+    onSuccess: (_result, { id }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.cardFmts.all() })
+      void qc.invalidateQueries({ queryKey: queryKeys.cardFmts.detail(id) })
+    },
   })
 }
 
-export const useDeleteCardfmt = () => {
+export const useDeleteCardFmt = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => deleteCardfmt(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.cardfmt.all }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.cardFmts.all() }),
   })
 }
+
+/** @deprecated useCardFmts */
+export const useCardfmtList = useCardFmts
+
+/** @deprecated useCreateCardFmt */
+export const useCreateCardfmt = useCreateCardFmt
+
+/** @deprecated useUpdateCardFmt */
+export const useUpdateCardfmt = useUpdateCardFmt
+
+/** @deprecated useDeleteCardFmt */
+export const useDeleteCardfmt = useDeleteCardFmt

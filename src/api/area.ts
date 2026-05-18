@@ -12,19 +12,16 @@ export const getAreaList = async (): Promise<AreaInfo[] | null> => {
 
 export const createArea = async (area: CreateAreaRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/area', area)
+    await axiosInstance.post('/api/area', { area: { id: 0, ...area } })
     return true
   } catch {
     return false
   }
 }
 
-export const updateArea = async (
-  id: number,
-  area: UpdateAreaRequest,
-): Promise<boolean> => {
+export const updateArea = async (id: number, area: UpdateAreaRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/area/${id}`, area)
+    await axiosInstance.put(`/api/area/${id}`, { area: { id, ...area } })
     return true
   } catch {
     return false

@@ -10,7 +10,9 @@ export const useCreateEmp = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (data: CreateEmpRequest) => createEmp(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.emps.all }),
+    onSuccess: (result) => {
+      if (result.ok) void qc.invalidateQueries({ queryKey: queryKeys.emps.all })
+    },
   })
 }
 
@@ -18,7 +20,9 @@ export const useUpdateEmp = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: UpdateEmpRequest }) => updateEmp(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.emps.all }),
+    onSuccess: (result) => {
+      if (result.ok) void qc.invalidateQueries({ queryKey: queryKeys.emps.all })
+    },
   })
 }
 
@@ -26,6 +30,8 @@ export const useDeleteEmp = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => deleteEmp(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.emps.all }),
+    onSuccess: (result) => {
+      if (result.ok) void qc.invalidateQueries({ queryKey: queryKeys.emps.all })
+    },
   })
 }

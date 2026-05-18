@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
 import type {
   AccLvInfo,
   AccLvRdrInfo,
@@ -6,6 +7,15 @@ import type {
   CreateAccLvRequest,
   UpdateAccLvRequest,
 } from '@/types/api'
+
+const normalizeAccLvRdrRow = (row: Record<string, unknown>): AccLvRdrInfo => ({
+  alv: firstNumber(row, ['alv', 'accLvId']),
+  scp: firstNumber(row, ['scp', 'scpId']),
+  rdr: firstNumber(row, ['rdr', 'readerId']),
+  tz: 'tz' in row ? firstNumber(row, ['tz']) : undefined,
+  readerName: optionalString(row, 'readerName'),
+  scpName: optionalString(row, 'scpName'),
+})
 
 export const getAccLvList = async (): Promise<AccLvInfo[] | null> => {
   try {
@@ -18,19 +28,16 @@ export const getAccLvList = async (): Promise<AccLvInfo[] | null> => {
 
 export const createAccLv = async (acclv: CreateAccLvRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/acclv', acclv)
+    await axiosInstance.post('/api/acclv', { acclv: { id: 0, ...acclv } })
     return true
   } catch {
     return false
   }
 }
 
-export const updateAccLv = async (
-  id: number,
-  acclv: UpdateAccLvRequest,
-): Promise<boolean> => {
+export const updateAccLv = async (id: number, acclv: UpdateAccLvRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/acclv/${id}`, acclv)
+    await axiosInstance.put(`/api/acclv/${id}`, { acclv: { id, ...acclv } })
     return true
   } catch {
     return false
@@ -46,23 +53,25 @@ export const deleteAccLv = async (id: number): Promise<boolean> => {
   }
 }
 
-export const getAccLvReaderList = async (
-  alvId: number,
-): Promise<AccLvRdrInfo[] | null> => {
+export const getAccLvReaderList = async (alvId: number): Promise<AccLvRdrInfo[] | null> => {
   try {
-    const { data } = await axiosInstance.get<AccLvRdrInfo[]>(`/api/acclv/${alvId}/reader`)
-    return data
+    const { data } = await axiosInstance.get<unknown>(`/api/acclv/${alvId}/reader`)
+    return asRecordArray(data).map(normalizeAccLvRdrRow)
   } catch {
     return null
   }
 }
 
-export const addAccLvReader = async (
-  alvId: number,
-  rdr: AddAccLvReaderRequest,
-): Promise<boolean> => {
+export const addAccLvReader = async (alvId: number, rdr: AddAccLvReaderRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post(`/api/acclv/${alvId}/reader`, rdr)
+    await axiosInstance.post(`/api/acclv/${alvId}/reader`, {
+      rdr: {
+        alv: alvId,
+        scp: rdr.scpId,
+        rdr: rdr.readerId,
+        tz: rdr.tz ?? 0,
+      },
+    })
     return true
   } catch {
     return false

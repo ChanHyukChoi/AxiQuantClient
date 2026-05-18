@@ -1,4 +1,5 @@
 import { axiosInstance } from '@/lib/axios'
+import { asRecordArray, firstNumber, optionalString } from '@/lib/wireJson'
 import type {
   AddCardAccLvRequest,
   CardAccLvInfo,
@@ -6,6 +7,15 @@ import type {
   CreateCardRequest,
   UpdateCardRequest,
 } from '@/types/api'
+
+const normalizeCardAccLvRow = (row: Record<string, unknown>): CardAccLvInfo => ({
+  cid: firstNumber(row, ['cid', 'cardId']),
+  alvid: firstNumber(row, ['alvid', 'accLvId']),
+  state: 'state' in row ? firstNumber(row, ['state']) : undefined,
+  acttm: optionalString(row, 'acttm'),
+  dacttm: optionalString(row, 'dacttm'),
+  ext: optionalString(row, 'ext'),
+})
 
 export const getCardList = async (): Promise<CardInfo[] | null> => {
   try {
@@ -18,19 +28,16 @@ export const getCardList = async (): Promise<CardInfo[] | null> => {
 
 export const createCard = async (card: CreateCardRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/card', card)
+    await axiosInstance.post('/api/card', { card })
     return true
   } catch {
     return false
   }
 }
 
-export const updateCard = async (
-  id: number,
-  card: UpdateCardRequest,
-): Promise<boolean> => {
+export const updateCard = async (id: number, card: UpdateCardRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/card/${id}`, card)
+    await axiosInstance.put(`/api/card/${id}`, { card })
     return true
   } catch {
     return false
@@ -48,19 +55,18 @@ export const deleteCard = async (id: number): Promise<boolean> => {
 
 export const getCardAccLvList = async (cid: number): Promise<CardAccLvInfo[] | null> => {
   try {
-    const { data } = await axiosInstance.get<CardAccLvInfo[]>(`/api/card/${cid}/acclv`)
-    return data
+    const { data } = await axiosInstance.get<unknown>(`/api/card/${cid}/acclv`)
+    return asRecordArray(data).map(normalizeCardAccLvRow)
   } catch {
     return null
   }
 }
 
-export const addCardAccLv = async (
-  cid: number,
-  acclv: AddCardAccLvRequest,
-): Promise<boolean> => {
+export const addCardAccLv = async (cid: number, acclv: AddCardAccLvRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post(`/api/card/${cid}/acclv`, acclv)
+    await axiosInstance.post(`/api/card/${cid}/acclv`, {
+      acclv: { cid, alvid: acclv.accLvId, state: 0 },
+    })
     return true
   } catch {
     return false

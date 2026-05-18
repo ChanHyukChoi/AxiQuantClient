@@ -10,25 +10,18 @@ export const getSioList = async (scpId: number): Promise<SioInfo[] | null> => {
   }
 }
 
-export const createSio = async (
-  scpId: number,
-  sio: CreateSioRequest,
-): Promise<boolean> => {
+export const createSio = async (scpId: number, sio: CreateSioRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post(`/api/scp/${scpId}/sio`, sio)
+    await axiosInstance.post(`/api/scp/${scpId}/sio`, { sio: { id: -1, scp: scpId, ...sio } })
     return true
   } catch {
     return false
   }
 }
 
-export const updateSio = async (
-  scpId: number,
-  id: number,
-  sio: UpdateSioRequest,
-): Promise<boolean> => {
+export const updateSio = async (scpId: number, id: number, sio: UpdateSioRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/scp/${scpId}/sio/${id}`, sio)
+    await axiosInstance.put(`/api/scp/${scpId}/sio/${id}`, { sio: { id, scp: scpId, ...sio } })
     return true
   } catch {
     return false

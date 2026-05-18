@@ -9,7 +9,7 @@ import {
   updateCard,
 } from '@/api/card'
 import { queryKeys } from '@/lib/queryKeys'
-import type { AddCardAccLvRequest, CreateCardRequest, UpdateCardRequest } from '@/types/api'
+import type { AddCardAccLvRequest, CardAccLvInfo, CreateCardRequest, UpdateCardRequest } from '@/types/api'
 
 export const useCardList = () =>
   useQuery({ queryKey: queryKeys.card.all, queryFn: getCardList })
@@ -39,7 +39,7 @@ export const useDeleteCard = () => {
 }
 
 export const useCardAccLvList = (cid: number) =>
-  useQuery({
+  useQuery<CardAccLvInfo[] | null, Error>({
     queryKey: queryKeys.card.acclv(cid),
     queryFn: () => getCardAccLvList(cid),
     enabled: cid > 0,

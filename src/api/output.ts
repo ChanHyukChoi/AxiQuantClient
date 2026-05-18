@@ -10,12 +10,9 @@ export const getOutputList = async (scpId: number): Promise<OutputInfo[] | null>
   }
 }
 
-export const createOutput = async (
-  scpId: number,
-  output: CreateOutputRequest,
-): Promise<boolean> => {
+export const createOutput = async (scpId: number, output: CreateOutputRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post(`/api/scp/${scpId}/output`, output)
+    await axiosInstance.post(`/api/scp/${scpId}/output`, { output: { id: -1, scp: scpId, ...output } })
     return true
   } catch {
     return false
@@ -28,7 +25,7 @@ export const updateOutput = async (
   output: UpdateOutputRequest,
 ): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/scp/${scpId}/output/${id}`, output)
+    await axiosInstance.put(`/api/scp/${scpId}/output/${id}`, { output: { id, scp: scpId, ...output } })
     return true
   } catch {
     return false

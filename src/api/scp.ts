@@ -12,7 +12,7 @@ export const getScpList = async (): Promise<ScpInfo[] | null> => {
 
 export const createScp = async (scp: CreateScpRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/scp', scp)
+    await axiosInstance.post('/api/scp', { scp: { id: 0, ...scp } })
     return true
   } catch {
     return false
@@ -21,7 +21,7 @@ export const createScp = async (scp: CreateScpRequest): Promise<boolean> => {
 
 export const updateScp = async (id: number, scp: UpdateScpRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/scp/${id}`, scp)
+    await axiosInstance.put(`/api/scp/${id}`, { scp: { id, ...scp } })
     return true
   } catch {
     return false

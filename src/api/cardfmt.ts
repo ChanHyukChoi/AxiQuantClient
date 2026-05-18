@@ -12,19 +12,16 @@ export const getCardfmtList = async (): Promise<CardfmtInfo[] | null> => {
 
 export const createCardfmt = async (cardfmt: CreateCardfmtRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/cardfmt', cardfmt)
+    await axiosInstance.post('/api/cardfmt', { cardfmt: { id: 0, ...cardfmt } })
     return true
   } catch {
     return false
   }
 }
 
-export const updateCardfmt = async (
-  id: number,
-  cardfmt: UpdateCardfmtRequest,
-): Promise<boolean> => {
+export const updateCardfmt = async (id: number, cardfmt: UpdateCardfmtRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/cardfmt/${id}`, cardfmt)
+    await axiosInstance.put(`/api/cardfmt/${id}`, { cardfmt: { id, ...cardfmt } })
     return true
   } catch {
     return false

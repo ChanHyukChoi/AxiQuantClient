@@ -18,7 +18,7 @@ export const createTimezone = async (
   timezone: CreateTimezoneRequest,
 ): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/timezone', timezone)
+    await axiosInstance.post('/api/timezone', { timezone: { id: 0, ...timezone } })
     return true
   } catch {
     return false
@@ -30,7 +30,7 @@ export const updateTimezone = async (
   timezone: UpdateTimezoneRequest,
 ): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/timezone/${id}`, timezone)
+    await axiosInstance.put(`/api/timezone/${id}`, { timezone: { id, ...timezone } })
     return true
   } catch {
     return false

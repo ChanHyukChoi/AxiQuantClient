@@ -12,19 +12,16 @@ export const getHolidayList = async (): Promise<HolidayInfo[] | null> => {
 
 export const createHoliday = async (holiday: CreateHolidayRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post('/api/holiday', holiday)
+    await axiosInstance.post('/api/holiday', { holiday: { id: 0, ...holiday } })
     return true
   } catch {
     return false
   }
 }
 
-export const updateHoliday = async (
-  id: number,
-  holiday: UpdateHolidayRequest,
-): Promise<boolean> => {
+export const updateHoliday = async (id: number, holiday: UpdateHolidayRequest): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/holiday/${id}`, holiday)
+    await axiosInstance.put(`/api/holiday/${id}`, { holiday: { id, ...holiday } })
     return true
   } catch {
     return false

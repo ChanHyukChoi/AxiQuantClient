@@ -3,14 +3,17 @@ import { createArea, deleteArea, getAreaList, updateArea } from '@/api/area'
 import { queryKeys } from '@/lib/queryKeys'
 import type { CreateAreaRequest, UpdateAreaRequest } from '@/types/api'
 
-export const useAreaList = () =>
-  useQuery({ queryKey: queryKeys.area.all, queryFn: getAreaList })
+export const useAreas = () =>
+  useQuery({
+    queryKey: queryKeys.areas.all(),
+    queryFn: getAreaList,
+  })
 
 export const useCreateArea = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (data: CreateAreaRequest) => createArea(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.area.all }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.areas.all() }),
   })
 }
 
@@ -18,7 +21,10 @@ export const useUpdateArea = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }: { id: number; data: UpdateAreaRequest }) => updateArea(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.area.all }),
+    onSuccess: (_result, { id }) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.areas.all() })
+      void qc.invalidateQueries({ queryKey: queryKeys.areas.detail(id) })
+    },
   })
 }
 
@@ -26,6 +32,9 @@ export const useDeleteArea = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => deleteArea(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.area.all }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.areas.all() }),
   })
 }
+
+/** @deprecated useAreas */
+export const useAreaList = useAreas

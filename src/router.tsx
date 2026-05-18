@@ -9,14 +9,13 @@ import { RootLayout } from '@/layouts/RootLayout'
 import { LoginPage } from '@/pages/LoginPage'
 import { EmpsPage } from '@/pages/EmpsPage'
 import { CardsPage } from '@/pages/CardsPage'
-
-// ─── Placeholder Pages ────────────────────────────────────────────────────────
-
-const AccessPage = () => (
-  <div className="p-6" style={{ color: 'var(--color-text)' }}>
-    접근권한
-  </div>
-)
+import { AccessPage } from '@/pages/AccessPage'
+import { DevicesPage } from '@/pages/DevicesPage'
+import { AreaPage } from '@/pages/AreaPage'
+import { CardFmtPage } from '@/pages/CardFmtPage'
+import { EventMonitorPage } from '@/pages/EventMonitorPage'
+import { UsersPage } from '@/pages/UsersPage'
+import { AuditLogPage } from '@/pages/AuditLogPage'
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -66,10 +65,56 @@ const accessRoute = createRoute({
   component: AccessPage,
 })
 
+const devicesRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/devices',
+  component: DevicesPage,
+})
+
+const areaRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/area',
+  component: AreaPage,
+})
+
+const cardfmtRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/cardfmt',
+  component: CardFmtPage,
+})
+
+const monitorRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/monitor',
+  component: EventMonitorPage,
+})
+
+const usersRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/users',
+  component: UsersPage,
+})
+
+const auditRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/audit',
+  component: AuditLogPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
-  appRoute.addChildren([empsRoute, cardsRoute, accessRoute]),
+  appRoute.addChildren([
+    empsRoute,
+    cardsRoute,
+    accessRoute,
+    devicesRoute,
+    areaRoute,
+    cardfmtRoute,
+    monitorRoute,
+    usersRoute,
+    auditRoute,
+  ]),
 ])
 
 // ─── Router ───────────────────────────────────────────────────────────────────

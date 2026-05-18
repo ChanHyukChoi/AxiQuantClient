@@ -10,12 +10,9 @@ export const getReaderList = async (scpId: number): Promise<ReaderInfo[] | null>
   }
 }
 
-export const createReader = async (
-  scpId: number,
-  reader: CreateReaderRequest,
-): Promise<boolean> => {
+export const createReader = async (scpId: number, reader: CreateReaderRequest): Promise<boolean> => {
   try {
-    await axiosInstance.post(`/api/scp/${scpId}/reader`, reader)
+    await axiosInstance.post(`/api/scp/${scpId}/reader`, { reader: { id: -1, scp: scpId, ...reader } })
     return true
   } catch {
     return false
@@ -28,7 +25,7 @@ export const updateReader = async (
   reader: UpdateReaderRequest,
 ): Promise<boolean> => {
   try {
-    await axiosInstance.put(`/api/scp/${scpId}/reader/${id}`, reader)
+    await axiosInstance.put(`/api/scp/${scpId}/reader/${id}`, { reader: { id, scp: scpId, ...reader } })
     return true
   } catch {
     return false

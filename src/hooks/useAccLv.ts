@@ -9,7 +9,7 @@ import {
   updateAccLv,
 } from '@/api/acclv'
 import { queryKeys } from '@/lib/queryKeys'
-import type { AddAccLvReaderRequest, CreateAccLvRequest, UpdateAccLvRequest } from '@/types/api'
+import type { AccLvRdrInfo, AddAccLvReaderRequest, CreateAccLvRequest, UpdateAccLvRequest } from '@/types/api'
 
 export const useAccLvList = () =>
   useQuery({ queryKey: queryKeys.acclv.all, queryFn: getAccLvList })
@@ -40,7 +40,7 @@ export const useDeleteAccLv = () => {
 }
 
 export const useAccLvReaderList = (alvId: number) =>
-  useQuery({
+  useQuery<AccLvRdrInfo[] | null, Error>({
     queryKey: queryKeys.acclv.reader(alvId),
     queryFn: () => getAccLvReaderList(alvId),
     enabled: alvId > 0,

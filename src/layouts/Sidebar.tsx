@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { CreditCard, Lock, User } from 'lucide-react'
+import { Activity, Binary, ClipboardList, Cpu, CreditCard, Lock, MapPin, User, UserCog } from 'lucide-react'
 import { useSidebarStore } from '@/stores/sidebarStore'
 
 // ─── Menu Items ────────────────────────────────────────────────────────────────
@@ -29,6 +29,42 @@ const MENU_ITEMS: MenuItem[] = [
     label: '접근권한',
     path: '/access',
     icon: <Lock size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'devices',
+    label: '장치',
+    path: '/devices',
+    icon: <Cpu size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'area',
+    label: '영역',
+    path: '/area',
+    icon: <MapPin size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'cardfmt',
+    label: '카드 형식',
+    path: '/cardfmt',
+    icon: <Binary size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'monitor',
+    label: '이벤트 모니터',
+    path: '/monitor',
+    icon: <Activity size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'users',
+    label: '사용자',
+    path: '/users',
+    icon: <UserCog size={18} strokeWidth={1.8} />,
+  },
+  {
+    id: 'audit',
+    label: '운영 기록',
+    path: '/audit',
+    icon: <ClipboardList size={18} strokeWidth={1.8} />,
   },
 ]
 
