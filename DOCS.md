@@ -91,9 +91,9 @@ axiquant-client/
 │   │   ├── mappers/               # wire ↔ UI 변환
 │   │   ├── eventMonitor/          # EventRecord 표시 변환
 │   │   └── userPermissions.ts
-│   ├── pages/                     # 라우트 페이지 (단일 파일 + 도메인 폴더)
-│   │   ├── LoginPage.tsx
-│   │   ├── EmpsPage.tsx, CardsPage.tsx, AccessPage.tsx
+│   ├── pages/                     # 라우트 페이지 (도메인 폴더)
+│   │   ├── LoginPage/
+│   │   ├── EmpsPage/, CardsPage/, AccessPage/
 │   │   ├── AreaPage/              # 구역
 │   │   ├── CardFmtPage/           # 카드 포맷
 │   │   ├── DevicesPage/           # SCP/SIO/입출력/리더 트리
@@ -370,10 +370,10 @@ CSS 변수 값이 전환됩니다.
 
 | 경로 | 라우트 | 설명 |
 | ---- | ------ | ---- |
-| `LoginPage.tsx` | `/login` | 로그인·서버 주소 |
-| `EmpsPage.tsx` | `/emps` | 사원(카드 사용자) |
-| `CardsPage.tsx` | `/cards` | 카드 (번호 = 서버 `id`) |
-| `AccessPage.tsx` | `/access` | 접근권한·리더·시간대 목록 |
+| `LoginPage/` | `/login` | 로그인·서버 주소 |
+| `EmpsPage/` | `/emps` | 사원(카드 사용자) |
+| `CardsPage/` | `/cards` | 카드 (번호 = 서버 `id`) |
+| `AccessPage/` | `/access` | 접근권한·리더·시간대 목록 |
 | `DevicesPage/` | `/devices` | SCP 장치 트리 |
 | `AreaPage/` | `/area` | 구역 |
 | `CardFmtPage/` | `/cardfmt` | 카드 포맷 |

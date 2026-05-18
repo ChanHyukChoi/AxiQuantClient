@@ -1,138 +1,38 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import {
-  DoorOpen,
-  Plus,
-  Shield,
-  Trash2,
-  Pencil,
-  X,
-  Check,
-  Cpu,
-  ScanLine,
-  Clock,
-} from 'lucide-react'
-import { ListPanel } from '@/components/ui/ListPanel'
+import { Check, Clock, Cpu, Pencil, ScanLine, Shield, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/ui/Drawer'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Modal } from '@/components/ui/Modal'
+import { IdNameTable } from '@/pages/AccessPage/components/IdNameTable'
+import { SectionBlock } from '@/pages/AccessPage/components/SectionBlock'
+import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
 import {
-  useAccLvList,
   useAccLvReaderList,
-  useUpdateAccLv,
   useDeleteAccLv,
+  useUpdateAccLv,
 } from '@/hooks/useAccLv'
 import { useScpList } from '@/hooks/useScp'
 import { useTimezoneList } from '@/hooks/useTimezone'
-import type { AccLvRdrInfo, UpdateAccLvRequest } from '@/types/api'
+import type { AccLvInfo, AccLvRdrInfo, UpdateAccLvRequest } from '@/types/api'
 
-const accLvSchema = z.object({
-  name: z.string().min(1, '권한명을 입력하세요'),
-})
-
-type AccLvFormValues = z.infer<typeof accLvSchema>
-
-const SectionBlock = ({
-  icon,
-  title,
-  children,
-}: {
-  icon: React.ReactNode
-  title: string
-  children: React.ReactNode
-}) => (
-  <div className="mb-5">
-    <div className="flex items-center gap-1.5 mb-2">
-      <span style={{ color: 'var(--color-text-subtle)' }}>{icon}</span>
-      <span className="text-[12px] font-medium" style={{ color: 'var(--color-text)' }}>
-        {title}
-      </span>
-    </div>
-    {children}
-  </div>
-)
-
-const IdNameTable = ({ rows }: { rows: { id: number; name: string }[] }) => {
-  const [hovered, setHovered] = useState<number | null>(null)
-
-  return (
-    <table className="w-full border-collapse">
-      <thead>
-        <tr>
-          <th
-            className="text-[10px] font-medium py-1.5 px-2 text-left border-b border-[#21252b]"
-            style={{ color: '#3a3f4a' }}
-          >
-            ID
-          </th>
-          <th
-            className="text-[10px] font-medium py-1.5 px-2 text-left border-b border-[#21252b]"
-            style={{ color: '#3a3f4a' }}
-          >
-            명칭
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.length === 0 ? (
-          <tr>
-            <td
-              colSpan={2}
-              className="text-[12px] py-2 px-2"
-              style={{ color: 'var(--color-text-subtle)' }}
-            >
-              —
-            </td>
-          </tr>
-        ) : (
-          rows.map((row, idx) => {
-            const isLast = idx === rows.length - 1
-            return (
-              <tr
-                key={`${row.id}-${idx}`}
-                onMouseEnter={() => setHovered(idx)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  background: hovered === idx ? 'var(--color-btn-hover)' : 'transparent',
-                }}
-              >
-                <td
-                  className="py-1.5 px-2 font-mono text-[11px]"
-                  style={{
-                    color: '#555a63',
-                    borderBottom: isLast ? 'none' : '1px solid #1e2127',
-                  }}
-                >
-                  {row.id}
-                </td>
-                <td
-                  className="text-[12px] py-1.5 px-2"
-                  style={{
-                    color: 'var(--color-text)',
-                    borderBottom: isLast ? 'none' : '1px solid #1e2127',
-                  }}
-                >
-                  {row.name}
-                </td>
-              </tr>
-            )
-          })
-        )}
-      </tbody>
-    </table>
-  )
+interface AccessDrawerProps {
+  selectedAccLv: AccLvInfo | null
+  onDeleted: () => void
+  onEditModeChange?: (editing: boolean) => void
 }
 
-export const AccessPage = () => {
-  const [selectedId, setSelectedId] = useState<number | null>(null)
+export const AccessDrawer = ({
+  selectedAccLv,
+  onDeleted,
+  onEditModeChange,
+}: AccessDrawerProps) => {
+  const selectedId = selectedAccLv?.id ?? null
   const [editMode, setEditMode] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
-  const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
   const { data: readerList, isLoading: readerLoading } = useAccLvReaderList(selectedId ?? 0)
   const { data: scpList } = useScpList()
   const { data: timezoneList, isLoading: timezoneLoading } = useTimezoneList()
@@ -144,17 +44,10 @@ export const AccessPage = () => {
     resolver: zodResolver(accLvSchema),
   })
 
-  const selectedAccLv = useMemo(
-    () => accLvList?.find((a) => a.id === selectedId) ?? null,
-    [accLvList, selectedId],
-  )
-
-  const filteredList = useMemo(() => {
-    if (!accLvList) return []
-    if (!searchQuery.trim()) return accLvList
-    const q = searchQuery.toLowerCase()
-    return accLvList.filter((a) => a.name.toLowerCase().includes(q))
-  }, [accLvList, searchQuery])
+  const setEditing = (editing: boolean) => {
+    setEditMode(editing)
+    onEditModeChange?.(editing)
+  }
 
   const scpNameMap = useMemo(() => {
     if (!scpList) return {} as Record<number, string>
@@ -193,11 +86,11 @@ export const AccessPage = () => {
   const onEditClick = () => {
     if (!selectedAccLv) return
     updateForm.reset({ name: selectedAccLv.name })
-    setEditMode(true)
+    setEditing(true)
   }
 
   const handleCancelEdit = () => {
-    setEditMode(false)
+    setEditing(false)
     updateForm.reset()
   }
 
@@ -212,7 +105,7 @@ export const AccessPage = () => {
       {
         onSuccess: (ok) => {
           if (!ok) return
-          setEditMode(false)
+          setEditing(false)
         },
       },
     )
@@ -226,7 +119,7 @@ export const AccessPage = () => {
       onSuccess: (ok) => {
         if (!ok) return
         setDeleteModalOpen(false)
-        setSelectedId(null)
+        onDeleted()
       },
     })
   }
@@ -338,44 +231,10 @@ export const AccessPage = () => {
   )
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <div
-        className="flex items-center justify-between flex-shrink-0 px-3"
-        style={{
-          height: 42,
-          background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid #2a2d32',
-        }}
-      >
-        <div className="flex items-center gap-1.5">
-          <DoorOpen style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
-            접근 권한
-          </span>
-        </div>
-        <Button variant="accent" leftIcon={<Plus size={12} />}>
-          추가
-        </Button>
-      </div>
-
-      <div className="flex flex-1 overflow-hidden">
-        <ListPanel
-          items={filteredList.map((a) => ({ id: a.id, label: a.name }))}
-          selectedId={selectedId ?? undefined}
-          onItemClick={(item) => {
-            if (editMode) setEditMode(false)
-            setSelectedId(item.id)
-          }}
-          onSearch={setSearchQuery}
-          searchPlaceholder="권한 검색..."
-          totalCount={filteredList.length}
-          width={240}
-          loading={accLvLoading}
-        />
-        <Drawer header={drawerHeader} actions={drawerActions ?? undefined} fill>
-          {drawerBody}
-        </Drawer>
-      </div>
+    <>
+      <Drawer header={drawerHeader} actions={drawerActions ?? undefined} fill>
+        {drawerBody}
+      </Drawer>
 
       <Modal
         open={deleteModalOpen}
@@ -387,6 +246,6 @@ export const AccessPage = () => {
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteModalOpen(false)}
       />
-    </div>
+    </>
   )
 }

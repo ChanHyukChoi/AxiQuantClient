@@ -37,15 +37,42 @@ const stateToActive = (state: number): boolean => state > 0
 
 const activeToState = (isActive: boolean): number => (isActive ? 1 : 0)
 
+/** WPF CardsPage 유형 라벨 ↔ 서버 ctype (AdminClient 기준) */
+const CTYPE_BY_LABEL: Record<string, number> = {
+  직원: 1,
+  방문: 2,
+  발급: 3,
+}
+
+const CTYPE_TO_LABEL: Record<number, string> = {
+  1: '직원',
+  2: '방문',
+  3: '발급',
+}
+
 const ctypeFromType = (type?: string): number => {
-  if (!type?.trim()) return 0
-  const n = Number(type)
+  const t = type?.trim()
+  if (!t) return 0
+  const byLabel = CTYPE_BY_LABEL[t]
+  if (byLabel != null) return byLabel
+  const n = Number(t)
   return Number.isFinite(n) ? Math.trunc(n) : 0
 }
 
 const typeFromCtype = (ctype: number, fallback?: string): string | undefined => {
-  if (fallback?.trim()) return fallback
-  return ctype > 0 ? String(ctype) : undefined
+  const fb = fallback?.trim()
+  if (fb) {
+    if (CTYPE_BY_LABEL[fb] != null) return fb
+    const n = Number(fb)
+    if (Number.isFinite(n) && CTYPE_TO_LABEL[Math.trunc(n)]) return CTYPE_TO_LABEL[Math.trunc(n)]
+    return fb
+  }
+  return CTYPE_TO_LABEL[ctype] ?? (ctype > 0 ? String(ctype) : undefined)
+}
+
+const wireOptionalString = (v?: string): string | undefined => {
+  const t = v?.trim()
+  return t ? t : undefined
 }
 
 export const resolveCardId = (cardNumber: string): number => {
@@ -103,21 +130,26 @@ export const cardToWire = (
 ): Record<string, unknown> => {
   const flags = flagsFromBools(card.exemptApb, card.exemptPin)
   const state = activeToState(card.isActive)
+  const issued = wireOptionalString(card.issuedAt)
+  const expired = wireOptionalString(card.expiredAt)
 
-  return {
+  const wire: Record<string, unknown> = {
     id,
     name: card.name ?? '',
-    issue: card.issuedAt ?? '',
     ctype: ctypeFromType(card.type),
     state,
     flags,
     emp: card.empId ?? 0,
     pin: '',
-    acttm: card.issuedAt ?? '',
-    dacttm: card.expiredAt ?? '',
-    modified: '',
-    ext: '',
   }
+
+  if (issued) {
+    wire.issue = issued
+    wire.acttm = issued
+  }
+  if (expired) wire.dacttm = expired
+
+  return wire
 }
 
 export const createCardToWire = (card: CreateCardRequest): Record<string, unknown> => {

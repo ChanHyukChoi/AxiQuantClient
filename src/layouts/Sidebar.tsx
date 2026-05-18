@@ -1,5 +1,15 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { Activity, Binary, ClipboardList, Cpu, CreditCard, Lock, MapPin, User, UserCog } from 'lucide-react'
+import {
+  Activity,
+  Binary,
+  ClipboardList,
+  Cpu,
+  CreditCard,
+  Lock,
+  MapPin,
+  User,
+  UserCog,
+} from 'lucide-react'
 import { useSidebarStore } from '@/stores/sidebarStore'
 
 // ─── Menu Items ────────────────────────────────────────────────────────────────
@@ -110,7 +120,7 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
             >
               {item.icon}
               <span
-                className="text-sm font-medium whitespace-nowrap overflow-hidden"
+                className="text-base font-medium whitespace-nowrap overflow-hidden"
                 style={{
                   opacity: isCollapsed ? 0 : 1,
                   maxWidth: isCollapsed ? 0 : 120,
