@@ -9,6 +9,14 @@ export const queryKeys = {
     inputs: (scpId: number) => ['devices', 'inputs', scpId] as const,
     outputs: (scpId: number) => ['devices', 'outputs', scpId] as const,
   },
+  deviceControl: {
+    scps: () => ['deviceControl', 'scps'] as const,
+    sios: (scpId: number) => ['deviceControl', 'sios', scpId] as const,
+    readers: (scpId: number) => ['deviceControl', 'readers', scpId] as const,
+    inputs: (scpId: number) => ['deviceControl', 'inputs', scpId] as const,
+    outputs: (scpId: number) => ['deviceControl', 'outputs', scpId] as const,
+    modules: () => ['deviceControl', 'modules'] as const,
+  },
   /** @deprecated devices.scps() 사용 */
   scp: { all: ['devices', 'scps'] as const },
   /** @deprecated devices.sios() 사용 */
@@ -53,5 +61,10 @@ export const queryKeys = {
   },
   auditLog: {
     list: (params: AuditLogParams) => ['auditLog', params] as const,
+  },
+  alarmSettings: {
+    alarms: () => ['alarmSettings', 'alarms'] as const,
+    priorities: () => ['alarmSettings', 'priorities'] as const,
+    mails: () => ['alarmSettings', 'mails'] as const,
   },
 }

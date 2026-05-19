@@ -1,6 +1,7 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 import {
   Activity,
+  Bell,
   Binary,
   ClipboardList,
   Cpu,
@@ -26,55 +27,61 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'emps',
     label: '카드 사용자',
     path: '/emps',
-    icon: <User size={18} strokeWidth={1.8} />,
+    icon: <User size={18} strokeWidth={2} />,
   },
   {
     id: 'cards',
     label: '카드',
     path: '/cards',
-    icon: <CreditCard size={18} strokeWidth={1.8} />,
+    icon: <CreditCard size={18} strokeWidth={2} />,
   },
   {
     id: 'access',
     label: '접근권한',
     path: '/access',
-    icon: <Lock size={18} strokeWidth={1.8} />,
+    icon: <Lock size={18} strokeWidth={2} />,
   },
   {
     id: 'devices',
     label: '장치',
     path: '/devices',
-    icon: <Cpu size={18} strokeWidth={1.8} />,
+    icon: <Cpu size={18} strokeWidth={2} />,
   },
   {
     id: 'area',
     label: '영역',
     path: '/area',
-    icon: <MapPin size={18} strokeWidth={1.8} />,
+    icon: <MapPin size={18} strokeWidth={2} />,
   },
   {
     id: 'cardfmt',
     label: '카드 형식',
     path: '/cardfmt',
-    icon: <Binary size={18} strokeWidth={1.8} />,
+    icon: <Binary size={18} strokeWidth={2} />,
   },
   {
     id: 'monitor',
     label: '이벤트 모니터',
     path: '/monitor',
-    icon: <Activity size={18} strokeWidth={1.8} />,
+    icon: <Activity size={18} strokeWidth={2} />,
+  },
+  {
+    id: 'alarm-settings',
+    label: '경보 설정',
+    path: '/alarm-settings',
+    icon: <Bell size={18} strokeWidth={2} />,
   },
   {
     id: 'users',
     label: '사용자',
     path: '/users',
-    icon: <UserCog size={18} strokeWidth={1.8} />,
+    icon: <UserCog size={18} strokeWidth={2} />,
   },
   {
     id: 'audit',
     label: '운영 기록',
     path: '/audit',
-    icon: <ClipboardList size={18} strokeWidth={1.8} />,
+    icon: <ClipboardList size={18} strokeWidth={2} />,
   },
 ]
 
@@ -86,9 +93,16 @@ interface MenuListProps {
   onLinkClick?: () => void
 }
 
+const navItemStyle = (active: boolean): React.CSSProperties => ({
+  paddingLeft: 14,
+  gap: 12,
+  color: active ? 'var(--color-accent)' : 'var(--color-text)',
+  backgroundColor: active ? 'var(--color-accent-subtle)' : 'transparent',
+})
+
 const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
   <nav className="flex-1">
-    <ul className="flex flex-col">
+    <ul className="flex flex-col gap-0.5">
       {MENU_ITEMS.map((item) => {
         const isActive =
           currentPath === item.path || currentPath.startsWith(item.path + '/')
@@ -99,28 +113,22 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
               to={item.path}
               title={isCollapsed ? item.label : undefined}
               onClick={onLinkClick}
-              className="flex items-center h-10 w-full transition-colors duration-100"
-              style={{
-                paddingLeft: 11,
-                gap: 8,
-                color: isActive ? 'var(--color-accent)' : 'var(--color-text)',
-                backgroundColor: isActive
-                  ? 'color-mix(in srgb, var(--color-accent) 20%, transparent)'
-                  : 'transparent',
-              }}
+              className={`flex items-center h-10 w-full text-sm leading-snug transition-colors duration-100 ${
+                isActive ? 'font-medium' : 'font-normal'
+              }`}
+              style={navItemStyle(isActive)}
               onMouseEnter={(e) => {
-                if (!isActive)
+                if (!isActive) {
                   e.currentTarget.style.backgroundColor = 'var(--color-btn-hover)'
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = isActive
-                  ? 'color-mix(in srgb, var(--color-accent) 20%, transparent)'
-                  : 'transparent'
+                Object.assign(e.currentTarget.style, navItemStyle(isActive))
               }}
             >
               {item.icon}
               <span
-                className="text-base font-medium whitespace-nowrap overflow-hidden"
+                className="whitespace-nowrap overflow-hidden"
                 style={{
                   opacity: isCollapsed ? 0 : 1,
                   maxWidth: isCollapsed ? 0 : 120,

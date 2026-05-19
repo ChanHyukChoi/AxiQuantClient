@@ -4,20 +4,35 @@ interface SearchFieldProps {
   placeholder?: string
   value?: string
   onChange: (value: string) => void
-  className?: string
 }
 
 export const SearchField = ({
   placeholder = '검색',
   value,
   onChange,
-  className = '',
 }: SearchFieldProps) => (
-  <div className={['app-search-field', className].filter(Boolean).join(' ')}>
-    <Search className="app-search-icon" aria-hidden />
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 6,
+      padding: '4px 8px',
+      borderRadius: 4,
+      background: 'var(--color-search-bg)',
+      border: '0.5px solid var(--color-search-border)',
+    }}
+  >
+    <Search aria-hidden size={13} color="var(--color-search-icon)" />
     <input
       type="text"
-      className="app-search-input"
+      style={{
+        background: 'transparent',
+        color: 'var(--color-text)',
+        fontSize: 12,
+        outline: 'none',
+        minWidth: 0,
+        flex: 1,
+      }}
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}

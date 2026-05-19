@@ -2,11 +2,14 @@ import { Outlet } from '@tanstack/react-router'
 import { TitleBar } from '@/layouts/TitleBar'
 import { Sidebar } from '@/layouts/Sidebar'
 import { useSidebarStore } from '@/stores/sidebarStore'
+import { ToastHost } from '@/components/ui/Toast'
+import { useDeviceControlSse } from '@/hooks/useDeviceControlSse'
 import { useSseInvalidate } from '@/hooks/useSseInvalidate'
 
 export const RootLayout = () => {
   const { toggle } = useSidebarStore()
   useSseInvalidate()
+  useDeviceControlSse()
 
   return (
     <div className="flex flex-col h-screen">
@@ -18,6 +21,7 @@ export const RootLayout = () => {
           <Outlet />
         </main>
       </div>
+      <ToastHost />
     </div>
   )
 }

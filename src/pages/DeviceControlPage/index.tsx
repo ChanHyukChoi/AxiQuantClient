@@ -1,32 +1,34 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
-import { Cpu, Download, Plus, Printer } from 'lucide-react'
+import { Cpu } from 'lucide-react'
 import { getInputList } from '@/api/input'
 import { getOutputList } from '@/api/output'
 import { getReaderList } from '@/api/reader'
 import { getSioList } from '@/api/sio'
-import { Button } from '@/components/ui/Button'
-import { DetailDrawer } from '@/pages/DevicesPage/DetailDrawer'
-import { TreePane } from '@/pages/DevicesPage/TreePane'
+import { DetailDrawer } from '@/pages/DeviceControlPage/DetailDrawer'
+import { TreePane } from '@/pages/DeviceControlPage/TreePane'
 import {
   ancestorKeys,
   buildDeviceTree,
   collectScpIdsFromKeys,
   parseDeviceNodeKey,
   type ScpChildData,
-} from '@/pages/DevicesPage/utils/buildTree'
-import { useScps } from '@/hooks/useDevices'
+} from '@/pages/DeviceControlPage/utils/buildTree'
+import type { DeviceTypeFilter } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { useModules, useScps } from '@/hooks/useDeviceControl'
 import { queryKeys } from '@/lib/query/queryKeys'
 import type { InputInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 
-const DEFAULT_EXPANDED = new Set(['group:controllers', 'group:standalone'])
+const DEFAULT_EXPANDED = new Set(['group:controllers', 'group:standalone', 'group:modules'])
 
 export const DevicesPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
+  const [typeFilter, setTypeFilter] = useState<DeviceTypeFilter>('all')
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [expandedKeys, setExpandedKeys] = useState<Set<string>>(() => new Set(DEFAULT_EXPANDED))
 
   const { data: scps, isLoading: scpsLoading, isError: scpsError } = useScps()
+  const { data: modules, isLoading: modulesLoading, isError: modulesError } = useModules()
 
   const scpIdsToLoad = useMemo(() => {
     const keys = [...expandedKeys]
@@ -42,7 +44,7 @@ export const DevicesPage = () => {
 
   const sioQueries = useQueries({
     queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.devices.sios(scpId),
+      queryKey: queryKeys.deviceControl.sios(scpId),
       queryFn: () => getSioList(scpId),
       enabled: scpId > 0,
     })),
@@ -50,7 +52,7 @@ export const DevicesPage = () => {
 
   const readerQueries = useQueries({
     queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.devices.readers(scpId),
+      queryKey: queryKeys.deviceControl.readers(scpId),
       queryFn: () => getReaderList(scpId),
       enabled: scpId > 0,
     })),
@@ -58,7 +60,7 @@ export const DevicesPage = () => {
 
   const inputQueries = useQueries({
     queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.devices.inputs(scpId),
+      queryKey: queryKeys.deviceControl.inputs(scpId),
       queryFn: () => getInputList(scpId),
       enabled: scpId > 0,
     })),
@@ -66,7 +68,7 @@ export const DevicesPage = () => {
 
   const outputQueries = useQueries({
     queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.devices.outputs(scpId),
+      queryKey: queryKeys.deviceControl.outputs(scpId),
       queryFn: () => getOutputList(scpId),
       enabled: scpId > 0,
     })),
@@ -96,9 +98,11 @@ export const DevicesPage = () => {
       buildDeviceTree({
         scps: scps ?? [],
         childDataByScp,
+        modules: modules ?? [],
         searchQuery,
+        typeFilter,
       }),
-    [scps, childDataByScp, searchQuery],
+    [scps, childDataByScp, modules, searchQuery, typeFilter],
   )
 
   const parsed = useMemo(
@@ -120,12 +124,20 @@ export const DevicesPage = () => {
   )
 
   const childDataForParsed = useMemo(() => {
-    if (!parsed || parsed.scpId <= 0) return undefined
-    return childDataByScp.get(parsed.scpId)
+    if (!parsed || parsed.kind === 'module') return undefined
+    if (parsed.kind === 'reader' && parsed.standalone) {
+      for (const [scpId, data] of childDataByScp) {
+        const found = data.readers.find((r) => r.id === parsed.entityId)
+        if (found) return childDataByScp.get(scpId)
+      }
+      return undefined
+    }
+    if (parsed.scpId > 0) return childDataByScp.get(parsed.scpId)
+    return undefined
   }, [parsed, childDataByScp])
 
   const scp = useMemo(() => {
-    if (!parsed) return null
+    if (!parsed || parsed.kind === 'module') return null
     if (parsed.kind === 'scp') return resolveScp(parsed.entityId)
     if (parsed.scpId > 0) return resolveScp(parsed.scpId)
     return null
@@ -138,15 +150,12 @@ export const DevicesPage = () => {
 
   const reader = useMemo((): ReaderInfo | null => {
     if (!parsed || parsed.kind !== 'reader') return null
-    if (parsed.standalone) {
-      for (const data of childDataByScp.values()) {
-        const found = data.readers.find((r) => r.id === parsed.entityId)
-        if (found) return found
-      }
-      return null
+    for (const data of childDataByScp.values()) {
+      const found = data.readers.find((r) => r.id === parsed.entityId)
+      if (found) return found
     }
-    return childDataForParsed?.readers.find((r) => r.id === parsed.entityId) ?? null
-  }, [parsed, childDataForParsed, childDataByScp])
+    return null
+  }, [parsed, childDataByScp])
 
   const input = useMemo((): InputInfo | null => {
     if (!parsed || parsed.kind !== 'input' || !childDataForParsed) return null
@@ -196,17 +205,6 @@ export const DevicesPage = () => {
             장치
           </span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <Button variant="default" leftIcon={<Download size={12} />}>
-           보내기
-          </Button>
-          <Button variant="default" leftIcon={<Printer size={12} />}>
-            인쇄
-          </Button>
-          <Button variant="accent" leftIcon={<Plus size={12} />} disabled title="추가 — 준비 중">
-            추가
-          </Button>
-        </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
@@ -215,9 +213,12 @@ export const DevicesPage = () => {
           selectedKey={selectedKey}
           expandedKeys={expandedKeys}
           searchQuery={searchQuery}
+          typeFilter={typeFilter}
           loading={scpsLoading}
-          error={scpsError}
+          error={scpsError || modulesError}
+          modulesLoading={modulesLoading}
           onSearch={setSearchQuery}
+          onTypeFilterChange={setTypeFilter}
           onToggle={handleToggle}
           onSelect={handleSelect}
         />
@@ -232,6 +233,7 @@ export const DevicesPage = () => {
           childData={childDataForParsed}
           childLoading={childLoading}
           scpNameMap={scpNameMap}
+          modules={modules}
         />
       </div>
     </div>

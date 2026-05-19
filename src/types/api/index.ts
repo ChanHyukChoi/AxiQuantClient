@@ -25,6 +25,12 @@ export type { TimezoneInfo, CreateTimezoneRequest, UpdateTimezoneRequest } from 
 export type { CardfmtInfo, CreateCardfmtRequest, UpdateCardfmtRequest } from './cardfmt'
 export type { ModuleInfo } from './module'
 export type {
+  ReaderControlAction,
+  OutputControlAction,
+  ReaderControlRequest,
+  OutputControlRequest,
+} from './deviceControl'
+export type {
   LogLevelInfo,
   SetLogLevelRequest,
   TestEventStatus,
@@ -53,3 +59,14 @@ export type {
   AlarmLogItem,
   PagedLogResponse,
 } from './eventMonitor'
+export type {
+  AlarmInfo,
+  CreateAlarmRequest,
+  UpdateAlarmRequest,
+  AlarmPriorityInfo,
+  CreateAlarmPriorityRequest,
+  UpdateAlarmPriorityRequest,
+  AlarmMailInfo,
+  CreateAlarmMailRequest,
+  UpdateAlarmMailRequest,
+} from './alarmSettings'

@@ -34,87 +34,90 @@ export const Grid = <T extends { id: number }>({
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
-        {/* toolbar */}
-        <div
-          className="flex items-center gap-2 flex-shrink-0"
-          style={{
-            padding: '7px 12px',
-            background: 'var(--color-sidebar)',
-            borderBottom: '0.5px solid var(--color-border)',
-          }}
-        >
-          {onSearch && (
-            <SearchField
-              placeholder={searchPlaceholder}
-              onChange={onSearch}
-              className="flex-1 max-w-[260px]"
-            />
-          )}
-          {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
-        </div>
+      {/* toolbar */}
+      <div
+        className="flex items-center gap-2 flex-shrink-0"
+        style={{
+          padding: '7px 12px',
+          background: 'var(--color-sidebar)',
+          borderBottom: '0.5px solid var(--color-border)',
+        }}
+      >
+        {onSearch && <SearchField placeholder={searchPlaceholder} onChange={onSearch} />}
+        {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
+      </div>
 
-        {/* table */}
-        <div className="flex-1 overflow-auto app-scrollbar">
-          <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
-            <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-sidebar)' }}>
+      {/* table */}
+      <div className="flex-1 overflow-auto app-scrollbar">
+        <table
+          style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}
+        >
+          <thead
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 10,
+              background: 'var(--color-sidebar)',
+            }}
+          >
+            <tr>
+              {columns.map((col) => (
+                <th
+                  key={col.key}
+                  style={{
+                    width: col.width ?? undefined,
+                    padding: '6px 10px',
+                    textAlign: 'left',
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: 'var(--color-text-dim)',
+                    borderBottom: '0.5px solid var(--color-border)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {col.header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
               <tr>
-                {columns.map((col) => (
-                  <th
-                    key={col.key}
-                    style={{
-                      width: col.width ?? undefined,
-                      padding: '6px 10px',
-                      textAlign: 'left',
-                      fontSize: 11,
-                      fontWeight: 500,
-                      color: 'var(--color-text-dim)',
-                      borderBottom: '0.5px solid var(--color-border)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {col.header}
-                  </th>
-                ))}
+                <td
+                  colSpan={columns.length}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
+                  불러오는 중...
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td
-                    colSpan={columns.length}
-                    className="text-center py-8 text-[12px]"
-                    style={{ color: 'var(--color-text-subtle)' }}
-                  >
-                    불러오는 중...
-                  </td>
-                </tr>
-              ) : (
-                data.map((row) => (
-                  <GridRow
-                    key={row.id}
-                    row={row}
-                    columns={columns}
-                    isSelected={row.id === selectedId}
-                    onRowClick={onRowClick}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+            ) : (
+              data.map((row) => (
+                <GridRow
+                  key={row.id}
+                  row={row}
+                  columns={columns}
+                  isSelected={row.id === selectedId}
+                  onRowClick={onRowClick}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
-        {/* footer */}
-        <div
-          className="flex-shrink-0 flex items-center text-[11px]"
-          style={{
-            padding: '5px 12px',
-            background: 'var(--color-sidebar)',
-            borderTop: '0.5px solid var(--color-border)',
-            color: 'var(--color-text-dim)',
-          }}
-        >
-          전체 {count}건
-        </div>
+      {/* footer */}
+      <div
+        className="flex-shrink-0 flex items-center text-[11px]"
+        style={{
+          padding: '5px 12px',
+          background: 'var(--color-sidebar)',
+          borderTop: '0.5px solid var(--color-border)',
+          color: 'var(--color-text-dim)',
+        }}
+      >
+        전체 {count}건
+      </div>
     </div>
   )
 }
@@ -126,7 +129,12 @@ interface GridRowProps<T extends { id: number }> {
   onRowClick?: (row: T) => void
 }
 
-const GridRow = <T extends { id: number }>({ row, columns, isSelected, onRowClick }: GridRowProps<T>) => (
+const GridRow = <T extends { id: number }>({
+  row,
+  columns,
+  isSelected,
+  onRowClick,
+}: GridRowProps<T>) => (
   <tr
     onClick={() => onRowClick?.(row)}
     style={{
@@ -135,7 +143,8 @@ const GridRow = <T extends { id: number }>({ row, columns, isSelected, onRowClic
     }}
     onMouseEnter={(e) => {
       if (!isSelected)
-        (e.currentTarget as HTMLTableRowElement).style.background = 'var(--color-btn-hover)'
+        (e.currentTarget as HTMLTableRowElement).style.background =
+          'var(--color-btn-hover)'
     }}
     onMouseLeave={(e) => {
       if (!isSelected)

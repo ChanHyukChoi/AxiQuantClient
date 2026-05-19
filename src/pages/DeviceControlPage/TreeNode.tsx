@@ -1,10 +1,12 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import type { DeviceTreeNode } from '@/pages/DevicesPage/utils/buildTree'
+import type { DeviceTreeNode } from '@/pages/DeviceControlPage/utils/buildTree'
 import {
   DEVICE_ICON_COLORS,
   DEVICE_ICONS,
+  MODULE_ICON,
+  MODULE_ICON_COLOR,
   statusDotColor,
-} from '@/pages/DevicesPage/utils/deviceHelpers'
+} from '@/pages/DeviceControlPage/utils/deviceHelpers'
 
 interface TreeNodeProps {
   node: DeviceTreeNode
@@ -28,12 +30,20 @@ export const TreeNode = ({
   const isSelected = selectedKey === node.key
   const isGroup = node.kind === 'group'
 
-  const Icon = node.kind === 'group' ? null : DEVICE_ICONS[node.kind]
-  const iconColor = node.kind === 'group' ? undefined : DEVICE_ICON_COLORS[node.kind]
+  const Icon =
+    node.kind === 'module'
+      ? MODULE_ICON
+      : node.kind === 'group'
+        ? null
+        : DEVICE_ICONS[node.kind]
+  const iconColor =
+    node.kind === 'module'
+      ? MODULE_ICON_COLOR
+      : node.kind === 'group'
+        ? undefined
+        : DEVICE_ICON_COLORS[node.kind]
 
-  const handleRowClick = () => {
-    onSelect(node.key)
-  }
+  const handleRowClick = () => onSelect(node.key)
 
   const handleChevronClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -75,7 +85,7 @@ export const TreeNode = ({
           {node.label}
         </span>
 
-        {isSelected && !isGroup ? (
+        {!isGroup ? (
           <span
             className="flex-shrink-0 rounded-full"
             style={{

@@ -12,6 +12,7 @@
 
   /* 브랜드·강조 */
   --color-accent: #4f9cf9;
+  --color-accent-subtle: color-mix(in srgb, var(--color-accent) 10%, transparent);
   --color-success: #4caf7d;
 
   /* 본문 텍스트 */
@@ -75,23 +76,23 @@
 
 [data-theme='light'] {
   --color-bg: #ffffff;
-  --color-sidebar: #f3f3f3;
+  --color-sidebar: #f9f9f8;
 
   --color-accent: #ff6c37;
   --color-success: #4caf7d;
 
-  --color-text: #212121;
-  --color-text-muted: #6b6b6b;
-  --color-icon: #212121;
+  --color-text: #1a1a1a;
+  --color-text-muted: #5c5c5c;
+  --color-icon: #1a1a1a;
 
   --color-text-dim: #9ca3af;
   --color-text-subtle: #9ca3af;
   --color-cell: #374151;
 
-  --color-border: #e5e7eb;
+  --color-border: #e8e8e6;
   --color-border-subtle: #f3f4f6;
 
-  --color-btn-hover: rgba(0, 0, 0, 0.07);
+  --color-btn-hover: rgba(0, 0, 0, 0.05);
   --color-row-selected: #eff6ff;
 
   --color-btn-default-border: #d1d5db;

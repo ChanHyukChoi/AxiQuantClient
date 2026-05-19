@@ -1,20 +1,27 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { Activity, Check, Info, Layers, Pencil, Trash2, X } from 'lucide-react'
+import { useForm, type Resolver } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Check, Info, Layers, Pencil, Sliders, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/ui/Drawer'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
-import { ChildrenTab } from '@/pages/DevicesPage/tabs/ChildrenTab'
-import type { DeviceFormValues } from '@/pages/DevicesPage/formTypes'
-import { InfoTab } from '@/pages/DevicesPage/tabs/InfoTab'
-import type { ParsedDeviceNode } from '@/pages/DevicesPage/utils/buildTree'
-import type { ScpChildData } from '@/pages/DevicesPage/utils/buildTree'
+import {
+  deviceControlFormSchema,
+  type DeviceControlFormValues,
+} from '@/pages/DeviceControlPage/formTypes'
+import { ChildrenTab } from '@/pages/DeviceControlPage/tabs/ChildrenTab'
+import { ControlTab } from '@/pages/DeviceControlPage/tabs/ControlTab'
+import { InfoTab } from '@/pages/DeviceControlPage/tabs/InfoTab'
+import type { ParsedDeviceNode, ScpChildData } from '@/pages/DeviceControlPage/utils/buildTree'
 import {
   DEVICE_ICON_COLORS,
   DEVICE_ICONS,
   entityLabel,
+  findModuleConnectedAt,
   isDeviceActive,
-} from '@/pages/DevicesPage/utils/deviceHelpers'
+  MODULE_ICON,
+  MODULE_ICON_COLOR,
+} from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import {
   useDeleteInput,
   useDeleteOutput,
@@ -26,8 +33,8 @@ import {
   useUpdateReader,
   useUpdateScp,
   useUpdateSio,
-} from '@/hooks/useDevices'
-import type { InputInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
+} from '@/hooks/useDeviceControl'
+import type { InputInfo, ModuleInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 
 interface DetailDrawerProps {
   selectedKey: string | null
@@ -40,11 +47,12 @@ interface DetailDrawerProps {
   childData: ScpChildData | undefined
   childLoading: boolean
   scpNameMap: Record<number, string>
+  modules: ModuleInfo[] | null | undefined
 }
 
-const emptyForm: DeviceFormValues = { name: '', active: 0 }
+const emptyForm: DeviceControlFormValues = { name: '', active: 0 }
 
-const scpToForm = (s: ScpInfo): DeviceFormValues => ({
+const scpToForm = (s: ScpInfo): DeviceControlFormValues => ({
   name: s.name,
   active: s.active,
   connstr: s.connstr,
@@ -53,7 +61,7 @@ const scpToForm = (s: ScpInfo): DeviceFormValues => ({
   ext: s.ext,
 })
 
-const sioToForm = (s: SioInfo): DeviceFormValues => ({
+const sioToForm = (s: SioInfo): DeviceControlFormValues => ({
   name: s.name,
   active: s.active,
   scp: s.scp,
@@ -63,22 +71,15 @@ const sioToForm = (s: SioInfo): DeviceFormValues => ({
   ext: s.ext,
 })
 
-const readerToForm = (r: ReaderInfo): DeviceFormValues => ({
+const readerToForm = (r: ReaderInfo): DeviceControlFormValues => ({
   name: r.name,
   active: r.active,
   scp: r.scp,
   sio: r.sio,
   addr: r.addr,
-  cdfmt: r.cdfmt,
-  kpadmode: r.kpadmode,
-  ledmode: r.ledmode,
-  osdpflag: r.osdpflag,
-  apbmode: r.apbmode,
-  ext: r.ext,
-  args: r.args,
 })
 
-const inputToForm = (i: InputInfo): DeviceFormValues => ({
+const inputToForm = (i: InputInfo): DeviceControlFormValues => ({
   name: i.name,
   active: i.active,
   scp: i.scp,
@@ -86,12 +87,9 @@ const inputToForm = (i: InputInfo): DeviceFormValues => ({
   addr: i.addr,
   ifcode: i.ifcode,
   mode: i.mode,
-  delayentry: i.delayentry,
-  delayexit: i.delayexit,
-  ext: i.ext,
 })
 
-const outputToForm = (o: OutputInfo): DeviceFormValues => ({
+const outputToForm = (o: OutputInfo): DeviceControlFormValues => ({
   name: o.name,
   active: o.active,
   scp: o.scp,
@@ -99,7 +97,6 @@ const outputToForm = (o: OutputInfo): DeviceFormValues => ({
   addr: o.addr,
   defpulse: o.defpulse,
   mode: o.mode,
-  ext: o.ext,
 })
 
 const omitIdScp = <T extends { id: number; scp: number }>(row: T): Omit<T, 'id' | 'scp'> => {
@@ -108,16 +105,6 @@ const omitIdScp = <T extends { id: number; scp: number }>(row: T): Omit<T, 'id' 
   void scp
   return rest
 }
-
-const StatusPlaceholder = () => (
-  <div
-    className="flex flex-col items-center justify-center py-10 gap-2"
-    style={{ color: 'var(--color-text-subtle)' }}
-  >
-    <Activity size={24} strokeWidth={1.5} style={{ opacity: 0.5 }} />
-    <p className="text-[12px]">상태 모니터링 — 준비 중</p>
-  </div>
-)
 
 export const DetailDrawer = ({
   selectedKey,
@@ -130,6 +117,7 @@ export const DetailDrawer = ({
   childData,
   childLoading,
   scpNameMap,
+  modules,
 }: DetailDrawerProps) => {
   const [activeTab, setActiveTab] = useState('info')
   const [editMode, setEditMode] = useState(false)
@@ -147,12 +135,24 @@ export const DetailDrawer = ({
   const deleteInputMut = useDeleteInput()
   const deleteOutputMut = useDeleteOutput()
 
-  const { register, handleSubmit, reset } = useForm<DeviceFormValues>({
+  const { register, handleSubmit, reset } = useForm<DeviceControlFormValues>({
     defaultValues: emptyForm,
+    resolver: zodResolver(deviceControlFormSchema) as Resolver<DeviceControlFormValues>,
   })
+
+  const lastConnectedAt = useMemo(
+    () => findModuleConnectedAt(modules, scp),
+    [modules, scp],
+  )
+
+  const selectedModule = useMemo(() => {
+    if (!parsed || parsed.kind !== 'module') return null
+    return modules?.find((m) => m.moduleType === parsed.moduleType) ?? null
+  }, [parsed, modules])
 
   const selectedLabel = useMemo(() => {
     if (!parsed) return ''
+    if (parsed.kind === 'module') return parsed.moduleType
     if (parsed.kind === 'scp' && scp) return entityLabel('scp', scp)
     if (parsed.kind === 'sio' && sio) return entityLabel('sio', sio)
     if (parsed.kind === 'reader' && reader) return entityLabel('reader', reader)
@@ -170,7 +170,10 @@ export const DetailDrawer = ({
     return 0
   }, [parsed, scp, sio, reader, input, output])
 
-  const canMutate = parsed != null && !(parsed.kind === 'reader' && parsed.standalone && parsed.scpId <= 0)
+  const canMutate =
+    parsed != null &&
+    parsed.kind !== 'module' &&
+    !(parsed.kind === 'reader' && parsed.standalone && (reader?.scp ?? 0) <= 0)
 
   useEffect(() => {
     setEditMode(false)
@@ -179,7 +182,7 @@ export const DetailDrawer = ({
   }, [selectedKey])
 
   useEffect(() => {
-    if (!parsed) return
+    if (!parsed || parsed.kind === 'module') return
     if (scp && parsed.kind === 'scp') reset(scpToForm(scp))
     else if (sio && parsed.kind === 'sio') reset(sioToForm(sio))
     else if (reader && parsed.kind === 'reader') reset(readerToForm(reader))
@@ -188,18 +191,20 @@ export const DetailDrawer = ({
   }, [parsed, scp, sio, reader, input, output, reset])
 
   const drawerTabs = useMemo(() => {
-    if (!parsed) return undefined
+    if (!parsed || parsed.kind === 'module') return undefined
     if (parsed.kind === 'scp' || parsed.kind === 'sio') {
       return [
         { key: 'info', label: '정보', icon: <Info size={12} /> },
         { key: 'children', label: '하위장치', icon: <Layers size={12} /> },
-        { key: 'status', label: '상태', icon: <Activity size={12} /> },
       ]
     }
-    return [
-      { key: 'info', label: '정보', icon: <Info size={12} /> },
-      { key: 'status', label: '상태', icon: <Activity size={12} /> },
-    ]
+    if (parsed.kind === 'reader' || parsed.kind === 'input' || parsed.kind === 'output') {
+      return [
+        { key: 'info', label: '정보', icon: <Info size={12} /> },
+        { key: 'control', label: '제어', icon: <Sliders size={12} /> },
+      ]
+    }
+    return undefined
   }, [parsed])
 
   const handleEdit = () => {
@@ -219,29 +224,27 @@ export const DetailDrawer = ({
 
   const handleSave = handleSubmit(async (values) => {
     if (!parsed || !canMutate) return
-    if (!values.name?.trim()) {
-      setSaveError('이름을 입력하세요.')
-      return
-    }
     setSaveError(null)
     let ok = false
 
     if (parsed.kind === 'scp' && scp) {
-      const data = {
-        name: String(values.name),
-        active: Number(values.active) || 0,
-        connstr: String(values.connstr ?? ''),
-        model: Number(values.model) || 0,
-        ctype: Number(values.ctype) || 0,
-        ext: String(values.ext ?? ''),
-      }
-      ok = await updateScpMut.mutateAsync({ id: scp.id, data })
+      ok = await updateScpMut.mutateAsync({
+        id: scp.id,
+        data: {
+          name: values.name,
+          active: Number(values.active) || 0,
+          connstr: String(values.connstr ?? ''),
+          model: Number(values.model) || 0,
+          ctype: Number(values.ctype) || 0,
+          ext: String(values.ext ?? ''),
+        },
+      })
     } else if (parsed.kind === 'sio' && sio) {
       ok = await updateSioMut.mutateAsync({
         scpId: parsed.scpId,
         id: sio.id,
         data: {
-          name: String(values.name),
+          name: values.name,
           active: Number(values.active) || 0,
           port: Number(values.port) || 0,
           addr: Number(values.addr) || 0,
@@ -250,33 +253,45 @@ export const DetailDrawer = ({
         },
       })
     } else if (parsed.kind === 'reader' && reader) {
+      const scpId = parsed.standalone ? reader.scp : parsed.scpId
       const base = omitIdScp(reader)
       ok = await updateReaderMut.mutateAsync({
-        scpId: parsed.scpId,
+        scpId,
         id: reader.id,
-        data: { ...base, ...values, name: String(values.name), active: Number(values.active) || 0 },
+        data: { ...base, name: values.name, active: Number(values.active) || 0 },
       })
     } else if (parsed.kind === 'input' && input) {
       const base = omitIdScp(input)
       ok = await updateInputMut.mutateAsync({
         scpId: parsed.scpId,
         id: input.id,
-        data: { ...base, ...values, name: String(values.name), active: Number(values.active) || 0 },
+        data: {
+          ...base,
+          name: values.name,
+          active: Number(values.active) || 0,
+          addr: Number(values.addr) || input.addr,
+          ifcode: Number(values.ifcode) || input.ifcode,
+          mode: Number(values.mode) || input.mode,
+        },
       })
     } else if (parsed.kind === 'output' && output) {
       const base = omitIdScp(output)
       ok = await updateOutputMut.mutateAsync({
         scpId: parsed.scpId,
         id: output.id,
-        data: { ...base, ...values, name: String(values.name), active: Number(values.active) || 0 },
+        data: {
+          ...base,
+          name: values.name,
+          active: Number(values.active) || 0,
+          addr: Number(values.addr) || output.addr,
+          defpulse: Number(values.defpulse) || output.defpulse,
+          mode: Number(values.mode) || output.mode,
+        },
       })
     }
 
-    if (ok) {
-      setEditMode(false)
-    } else {
-      setSaveError('저장하지 못했습니다. 서버 응답을 확인하세요.')
-    }
+    if (ok) setEditMode(false)
+    else setSaveError('저장하지 못했습니다. 서버 응답을 확인하세요.')
   })
 
   const handleDeleteConfirm = async () => {
@@ -284,10 +299,15 @@ export const DetailDrawer = ({
     let ok = false
 
     if (parsed.kind === 'scp') ok = await deleteScpMut.mutateAsync(parsed.entityId)
-    else if (parsed.kind === 'sio') ok = await deleteSioMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
-    else if (parsed.kind === 'reader') ok = await deleteReaderMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
-    else if (parsed.kind === 'input') ok = await deleteInputMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
-    else if (parsed.kind === 'output') ok = await deleteOutputMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
+    else if (parsed.kind === 'sio')
+      ok = await deleteSioMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
+    else if (parsed.kind === 'reader') {
+      const scpId = parsed.standalone ? (reader?.scp ?? 0) : parsed.scpId
+      ok = await deleteReaderMut.mutateAsync({ scpId, id: parsed.entityId })
+    } else if (parsed.kind === 'input')
+      ok = await deleteInputMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
+    else if (parsed.kind === 'output')
+      ok = await deleteOutputMut.mutateAsync({ scpId: parsed.scpId, id: parsed.entityId })
 
     if (ok) setDeleteOpen(false)
   }
@@ -306,8 +326,11 @@ export const DetailDrawer = ({
     deleteInputMut.isPending ||
     deleteOutputMut.isPending
 
-  const headerKind = parsed?.kind ?? 'scp'
-  const HeaderIcon = parsed ? DEVICE_ICONS[parsed.kind] : Info
+  const headerKind = parsed?.kind === 'module' ? 'module' : (parsed?.kind ?? 'scp')
+  const HeaderIcon =
+    parsed?.kind === 'module' ? MODULE_ICON : parsed ? DEVICE_ICONS[parsed.kind] : Info
+  const headerColor =
+    parsed?.kind === 'module' ? MODULE_ICON_COLOR : DEVICE_ICON_COLORS[headerKind as keyof typeof DEVICE_ICON_COLORS]
 
   const drawerHeader = parsed ? (
     <div
@@ -320,7 +343,7 @@ export const DetailDrawer = ({
           width: 40,
           height: 40,
           background: 'var(--color-btn-hover)',
-          color: DEVICE_ICON_COLORS[headerKind],
+          color: headerColor,
         }}
       >
         <HeaderIcon size={20} strokeWidth={1.6} />
@@ -330,30 +353,32 @@ export const DetailDrawer = ({
           {selectedLabel}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-          {parsed.kind === 'reader' && parsed.standalone
-            ? '단독 리더'
-            : parsed.scpId > 0
-              ? scpNameMap[parsed.scpId] ?? `SCP #${parsed.scpId}`
-              : '—'}
+          {parsed.kind === 'module'
+            ? '진단 모니터'
+            : parsed.kind === 'reader' && parsed.standalone
+              ? '단독 리더'
+              : parsed.scpId > 0
+                ? scpNameMap[parsed.scpId] ?? `SCP #${parsed.scpId}`
+                : '—'}
         </span>
-        <span
-          className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full font-mono w-fit"
-          style={{
-            background: 'var(--color-btn-hover)',
-            color: 'var(--color-text-subtle)',
-            border: '0.5px solid var(--color-border)',
-          }}
-        >
-          {isDeviceActive(selectedActive) ? '활성' : '비활성'} · #{parsed.entityId}
-        </span>
+        {parsed.kind !== 'module' ? (
+          <span
+            className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full font-mono w-fit"
+            style={{
+              background: 'var(--color-btn-hover)',
+              color: 'var(--color-text-subtle)',
+              border: '0.5px solid var(--color-border)',
+            }}
+          >
+            {isDeviceActive(selectedActive) ? '활성' : '비활성'} · #{parsed.entityId}
+          </span>
+        ) : null}
       </div>
     </div>
-  ) : (
-    <div />
-  )
+  ) : null
 
   const drawerActions =
-    parsed ? (
+    parsed && parsed.kind !== 'module' ? (
       editMode ? (
         <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
           {saveError ? (
@@ -401,16 +426,31 @@ export const DetailDrawer = ({
         트리에서 장치를 선택하세요
       </span>
     </div>
+  ) : parsed.kind === 'module' ? (
+    <InfoTab
+      parsed={parsed}
+      moduleInfo={selectedModule}
+      scp={null}
+      sio={null}
+      reader={null}
+      input={null}
+      output={null}
+      lastConnectedAt={null}
+      editMode={false}
+      register={register}
+    />
   ) : (
     <>
       {activeTab === 'info' && (
         <InfoTab
           parsed={parsed}
+          moduleInfo={selectedModule}
           scp={scp}
           sio={sio}
           reader={reader}
           input={input}
           output={output}
+          lastConnectedAt={lastConnectedAt}
           editMode={editMode}
           register={register}
         />
@@ -423,7 +463,9 @@ export const DetailDrawer = ({
           loading={childLoading}
         />
       )}
-      {activeTab === 'status' && <StatusPlaceholder />}
+      {activeTab === 'control' && (
+        <ControlTab parsed={parsed} reader={reader} input={input} />
+      )}
     </>
   )
 

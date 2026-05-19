@@ -31,56 +31,56 @@ export const ListPanel = ({
 
   return (
     <div
-        className="flex flex-col flex-shrink-0 overflow-hidden"
-        style={{ width, borderRight: '0.5px solid var(--color-border)' }}
-      >
-        {/* toolbar */}
-        {onSearch && (
-          <div
-            className="flex items-center flex-shrink-0"
-            style={{
-              padding: '7px 12px',
-              background: 'var(--color-sidebar)',
-              borderBottom: '0.5px solid var(--color-border)',
-            }}
-          >
-            <SearchField placeholder={searchPlaceholder} onChange={onSearch} className="w-full" />
-          </div>
-        )}
-
-        {/* list */}
-        <div className="flex-1 overflow-y-auto app-scrollbar">
-          {loading ? (
-            <div
-              className="flex items-center justify-center py-8 text-[12px]"
-              style={{ color: 'var(--color-text-subtle)' }}
-            >
-              불러오는 중...
-            </div>
-          ) : (
-            items.map((item) => (
-              <ListPanelRow
-                key={item.id}
-                item={item}
-                isSelected={item.id === selectedId}
-                onItemClick={onItemClick}
-              />
-            ))
-          )}
-        </div>
-
-        {/* footer */}
+      className="flex flex-col flex-shrink-0 overflow-hidden"
+      style={{ width, borderRight: '0.5px solid var(--color-border)' }}
+    >
+      {/* toolbar */}
+      {onSearch && (
         <div
-          className="flex-shrink-0 flex items-center text-[11px]"
+          className="flex items-center flex-shrink-0"
           style={{
-            padding: '5px 12px',
+            padding: '7px 12px',
             background: 'var(--color-sidebar)',
-            borderTop: '0.5px solid var(--color-border)',
-            color: 'var(--color-text-dim)',
+            borderBottom: '0.5px solid var(--color-border)',
           }}
         >
-          전체 {count}건
+          <SearchField placeholder={searchPlaceholder} onChange={onSearch} />
         </div>
+      )}
+
+      {/* list */}
+      <div className="flex-1 overflow-y-auto app-scrollbar">
+        {loading ? (
+          <div
+            className="flex items-center justify-center py-8 text-[12px]"
+            style={{ color: 'var(--color-text-subtle)' }}
+          >
+            불러오는 중...
+          </div>
+        ) : (
+          items.map((item) => (
+            <ListPanelRow
+              key={item.id}
+              item={item}
+              isSelected={item.id === selectedId}
+              onItemClick={onItemClick}
+            />
+          ))
+        )}
+      </div>
+
+      {/* footer */}
+      <div
+        className="flex-shrink-0 flex items-center text-[11px]"
+        style={{
+          padding: '5px 12px',
+          background: 'var(--color-sidebar)',
+          borderTop: '0.5px solid var(--color-border)',
+          color: 'var(--color-text-dim)',
+        }}
+      >
+        전체 {count}건
+      </div>
     </div>
   )
 }
@@ -117,11 +117,17 @@ const ListPanelRow = ({ item, isSelected, onItemClick }: ListPanelRowProps) => (
       {item.id}
     </span>
     <div className="flex flex-col min-w-0">
-      <span className="text-[12px] font-medium truncate" style={{ color: 'var(--color-text)' }}>
+      <span
+        className="text-[12px] font-medium truncate"
+        style={{ color: 'var(--color-text)' }}
+      >
         {item.label}
       </span>
       {item.subLabel && (
-        <span className="text-[11px] mt-0.5 truncate" style={{ color: 'var(--color-text-subtle)' }}>
+        <span
+          className="text-[11px] mt-0.5 truncate"
+          style={{ color: 'var(--color-text-subtle)' }}
+        >
           {item.subLabel}
         </span>
       )}

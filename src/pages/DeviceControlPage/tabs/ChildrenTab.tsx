@@ -1,7 +1,7 @@
 import { ArrowLeftFromLine, ArrowRightToLine, Cpu, ScanLine } from 'lucide-react'
-import type { ScpChildData } from '@/pages/DevicesPage/utils/buildTree'
-import { isDeviceActive } from '@/pages/DevicesPage/utils/deviceHelpers'
 import { Badge } from '@/components/ui/Badge'
+import type { ScpChildData } from '@/pages/DeviceControlPage/utils/buildTree'
+import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import type { ScpInfo, SioInfo } from '@/types/api'
 
 interface ChildrenTabProps {
@@ -61,6 +61,12 @@ const DeviceListSection = ({
   </div>
 )
 
+const EmptyChildren = () => (
+  <p className="text-[12px] py-6 text-center" style={{ color: 'var(--color-text-subtle)' }}>
+    하위 장치 없음
+  </p>
+)
+
 export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) => {
   if (loading) {
     return (
@@ -84,6 +90,10 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
     const readers = data.readers.filter((r) => r.sio === sio.id)
     const inputs = data.inputs.filter((i) => i.sio === sio.id)
     const outputs = data.outputs.filter((o) => o.sio === sio.id)
+    const total = readers.length + inputs.length + outputs.length
+
+    if (total === 0) return <EmptyChildren />
+
     return (
       <div>
         <p className="text-[12px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
@@ -95,6 +105,11 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
       </div>
     )
   }
+
+  const total =
+    data.sios.length + data.readers.length + data.inputs.length + data.outputs.length
+
+  if (total === 0) return <EmptyChildren />
 
   return (
     <div>

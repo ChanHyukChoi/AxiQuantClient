@@ -10,12 +10,13 @@ import { LoginPage } from '@/pages/LoginPage'
 import { EmpsPage } from '@/pages/EmpsPage'
 import { CardsPage } from '@/pages/CardsPage'
 import { AccessPage } from '@/pages/AccessPage'
-import { DevicesPage } from '@/pages/DevicesPage'
+import { DevicesPage } from '@/pages/DeviceControlPage'
 import { AreaPage } from '@/pages/AreaPage'
 import { CardFmtPage } from '@/pages/CardFmtPage'
 import { EventMonitorPage } from '@/pages/EventMonitorPage'
 import { UsersPage } from '@/pages/UsersPage'
 import { AuditLogPage } from '@/pages/AuditLogPage'
+import { AlarmSettingsPage } from '@/pages/AlarmSettingsPage'
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -101,6 +102,12 @@ const auditRoute = createRoute({
   component: AuditLogPage,
 })
 
+const alarmSettingsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/alarm-settings',
+  component: AlarmSettingsPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
@@ -114,6 +121,7 @@ const routeTree = rootRoute.addChildren([
     monitorRoute,
     usersRoute,
     auditRoute,
+    alarmSettingsRoute,
   ]),
 ])
 
