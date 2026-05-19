@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchField } from '@/components/ui/SearchField'
 
 export interface ListPanelItem {
   id: number
@@ -30,15 +30,7 @@ export const ListPanel = ({
   const count = totalCount ?? items.length
 
   return (
-    <>
-      <style>{`
-        .list-panel-scroll::-webkit-scrollbar { width: 4px; }
-        .list-panel-scroll::-webkit-scrollbar-track { background: transparent; }
-        .list-panel-scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
-        .list-panel-search::placeholder { color: var(--color-text-dim); }
-      `}</style>
-
-      <div
+    <div
         className="flex flex-col flex-shrink-0 overflow-hidden"
         style={{ width, borderRight: '0.5px solid var(--color-border)' }}
       >
@@ -52,27 +44,12 @@ export const ListPanel = ({
               borderBottom: '0.5px solid var(--color-border)',
             }}
           >
-            <div
-              className="flex items-center gap-1.5 w-full px-2 py-1 rounded"
-              style={{
-                background: 'var(--color-btn-hover)',
-                border: '0.5px solid var(--color-btn-default-border)',
-              }}
-            >
-              <Search style={{ width: 13, height: 13, color: 'var(--color-text-dim)', flexShrink: 0 }} />
-              <input
-                type="text"
-                placeholder={searchPlaceholder}
-                onChange={(e) => onSearch(e.target.value)}
-                className="list-panel-search flex-1 text-[12px] outline-none min-w-0"
-                style={{ background: 'transparent', color: 'var(--color-text)' }}
-              />
-            </div>
+            <SearchField placeholder={searchPlaceholder} onChange={onSearch} className="w-full" />
           </div>
         )}
 
         {/* list */}
-        <div className="flex-1 overflow-y-auto list-panel-scroll">
+        <div className="flex-1 overflow-y-auto app-scrollbar">
           {loading ? (
             <div
               className="flex items-center justify-center py-8 text-[12px]"
@@ -104,8 +81,7 @@ export const ListPanel = ({
         >
           전체 {count}건
         </div>
-      </div>
-    </>
+    </div>
   )
 }
 

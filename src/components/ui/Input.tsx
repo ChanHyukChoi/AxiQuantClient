@@ -12,7 +12,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       ? 'var(--color-btn-danger-text)'
       : focused
         ? 'var(--color-accent)'
-        : 'var(--color-btn-default-border)'
+        : 'var(--color-input-border)'
 
     return (
       <div className="w-full">
@@ -28,7 +28,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             props.onBlur?.(e)
           }}
           style={{
-            background: 'var(--color-btn-hover)',
+            background: 'var(--color-input-bg)',
             color: 'var(--color-text)',
             borderColor,
             ...style,

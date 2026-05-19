@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchField } from '@/components/ui/SearchField'
 
 export interface ColumnDef<T> {
   key: string
@@ -33,15 +33,7 @@ export const Grid = <T extends { id: number }>({
   const count = totalCount ?? data.length
 
   return (
-    <>
-      <style>{`
-        .grid-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-        .grid-scroll::-webkit-scrollbar-track { background: transparent; }
-        .grid-scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
-        .grid-search-input::placeholder { color: var(--color-text-dim); }
-      `}</style>
-
-      <div className="flex flex-col flex-1 overflow-hidden min-w-0">
+    <div className="flex flex-col flex-1 overflow-hidden min-w-0">
         {/* toolbar */}
         <div
           className="flex items-center gap-2 flex-shrink-0"
@@ -52,28 +44,17 @@ export const Grid = <T extends { id: number }>({
           }}
         >
           {onSearch && (
-            <div
-              className="flex items-center gap-1.5 flex-1 max-w-[260px] px-2 py-1 rounded"
-              style={{
-                background: 'var(--color-btn-hover)',
-                border: '0.5px solid var(--color-btn-default-border)',
-              }}
-            >
-              <Search style={{ width: 13, height: 13, color: 'var(--color-text-dim)', flexShrink: 0 }} />
-              <input
-                type="text"
-                placeholder={searchPlaceholder}
-                onChange={(e) => onSearch(e.target.value)}
-                className="grid-search-input flex-1 text-[12px] outline-none min-w-0"
-                style={{ background: 'transparent', color: 'var(--color-text)' }}
-              />
-            </div>
+            <SearchField
+              placeholder={searchPlaceholder}
+              onChange={onSearch}
+              className="flex-1 max-w-[260px]"
+            />
           )}
           {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
         </div>
 
         {/* table */}
-        <div className="flex-1 overflow-auto grid-scroll">
+        <div className="flex-1 overflow-auto app-scrollbar">
           <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-sidebar)' }}>
               <tr>
@@ -134,8 +115,7 @@ export const Grid = <T extends { id: number }>({
         >
           전체 {count}건
         </div>
-      </div>
-    </>
+    </div>
   )
 }
 

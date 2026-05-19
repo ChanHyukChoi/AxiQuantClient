@@ -28,12 +28,17 @@ Electron + React 기반 데스크톱/웹 듀얼 타겟
 ## 디자인 시스템
 - 다크 테마 고정 (라이트 테마는 data-theme="light"로 토글)
 - CSS 변수만 사용 (Tailwind 커스텀 컬러 사용 안 함)
+- **색상 단일 소스:** `src/styles/theme.css` (검색창: `--color-search-*`)
+- 공통 UI 스타일: `src/styles/ui-primitives.css` (`.app-scrollbar`, `.app-search-field`)
+- 검색 입력: `<SearchField />` (`components/ui/SearchField.tsx`) — 인라인 검색 색상 금지
+- `src/index.css`는 import·base만; 토큰 정의는 theme.css에만 추가
 - 주요 변수: --color-bg, --color-accent, --color-text, --color-text-muted, --color-icon, --color-btn-hover, --color-sidebar
 - Tailwind v4: tailwind.config 없음, 자동 스캔 방식
 
 ## 폴더 구조
 src/
 ├── api/                 # HTTP (도메인별, mapper 연동)
+├── styles/              # theme.css, ui-primitives.css
 ├── components/ui/
 ├── hooks/               # TanStack Query
 ├── layouts/

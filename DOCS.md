@@ -104,7 +104,10 @@ axiquant-client/
 │   ├── types/
 │   │   ├── api/                   # 도메인별 API 타입 + index.ts 배럴
 │   │   └── electron.d.ts
-│   ├── index.css
+│   ├── index.css                  # Tailwind + theme/ui-primitives import
+│   ├── styles/
+│   │   ├── theme.css              # 색상 토큰 단일 소스
+│   │   └── ui-primitives.css      # scrollbar, search-field
 │   ├── main.tsx
 │   └── router.tsx
 │
@@ -629,7 +632,7 @@ rootRoute (Outlet만 렌더)
 
 ### 디자인 토큰 (CSS 변수)
 
-`src/index.css`에 정의. Tailwind 커스텀 컬러를 **사용하지 않고** CSS 변수만 사용합니다.
+`src/styles/theme.css`에 정의 (`index.css`에서 import). Tailwind 커스텀 컬러를 **사용하지 않고** CSS 변수만 사용합니다. 검색창 색·스타일은 `--color-search-*`와 `SearchField` 컴포넌트로 통일합니다.
 
 ```css
 /* 다크 테마 (기본) */

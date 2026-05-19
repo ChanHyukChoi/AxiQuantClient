@@ -1,0 +1,129 @@
+/**
+ * 앱 색상 토큰 — 여기만 수정하면 테마 전체에 반영됩니다.
+ * 다크: :root  |  라이트: [data-theme='light']
+ */
+
+/* ─── 다크 (기본) ─────────────────────────────────────────────────────────── */
+
+:root {
+  /* 레이아웃·표면 */
+  --color-bg: #1a1d21;
+  --color-sidebar: #14171a;
+
+  /* 브랜드·강조 */
+  --color-accent: #4f9cf9;
+  --color-success: #4caf7d;
+
+  /* 본문 텍스트 */
+  --color-text: rgba(255, 255, 255, 0.87);
+  --color-text-muted: rgba(255, 255, 255, 0.45);
+  --color-icon: #ffffff;
+
+  /* 텍스트 계층 (헤더·보조·셀) */
+  --color-text-dim: #3a3f4a;
+  --color-text-subtle: #555a63;
+  --color-cell: #8a8f9a;
+
+  /* 테두리 */
+  --color-border: #2a2d32;
+  --color-border-subtle: #21252b;
+
+  /* 인터랙션 (호버·선택) */
+  --color-btn-hover: rgba(255, 255, 255, 0.1);
+  --color-row-selected: #172135;
+
+  /* 버튼 */
+  --color-btn-default-border: #2e3139;
+  --color-btn-accent-bg: #172d4a;
+  --color-btn-accent-border: #1e4570;
+  --color-btn-accent-hover: #1a3a5c;
+  --color-btn-danger-text: #e06060;
+  --color-btn-danger-border: #3a2020;
+  --color-btn-success-text: #4caf7d;
+  --color-btn-success-border: #1a3a5c;
+
+  /* 검색 필드 */
+  --color-search-bg: #252a32;
+  --color-search-border: #454b57;
+  --color-search-icon: #9ca3af;
+  --color-search-placeholder: #7a8494;
+
+  /* 입력(폼 Input — 검색과 분리) */
+  --color-input-bg: var(--color-btn-hover);
+  --color-input-border: var(--color-btn-default-border);
+
+  /* Badge */
+  --badge-on-bg: #0d2b1a;
+  --badge-on-text: #4caf7d;
+  --badge-off-bg: #222428;
+  --badge-off-text: #555a63;
+  --badge-lost-bg: #2b1616;
+  --badge-lost-text: #e06060;
+  --badge-visit-bg: #1e1a2e;
+  --badge-visit-text: #7f77dd;
+  --badge-issue-bg: #172135;
+  --badge-issue-text: #4f9cf9;
+  --badge-card-bg: #1e1a2e;
+  --badge-card-text: #7f77dd;
+
+  /* 피드백 */
+  --color-error-text: #e06060;
+  --color-error-text-alt: #c75c5c;
+}
+
+/* ─── 라이트 ──────────────────────────────────────────────────────────────── */
+
+[data-theme='light'] {
+  --color-bg: #ffffff;
+  --color-sidebar: #f3f3f3;
+
+  --color-accent: #ff6c37;
+  --color-success: #4caf7d;
+
+  --color-text: #212121;
+  --color-text-muted: #6b6b6b;
+  --color-icon: #212121;
+
+  --color-text-dim: #9ca3af;
+  --color-text-subtle: #9ca3af;
+  --color-cell: #374151;
+
+  --color-border: #e5e7eb;
+  --color-border-subtle: #f3f4f6;
+
+  --color-btn-hover: rgba(0, 0, 0, 0.07);
+  --color-row-selected: #eff6ff;
+
+  --color-btn-default-border: #d1d5db;
+  --color-btn-accent-bg: #eff6ff;
+  --color-btn-accent-border: #bfdbfe;
+  --color-btn-accent-hover: #dbeafe;
+  --color-btn-danger-text: #dc2626;
+  --color-btn-danger-border: #fecaca;
+  --color-btn-success-text: #4caf7d;
+  --color-btn-success-border: #1a3a5c;
+
+  --color-search-bg: rgba(0, 0, 0, 0.04);
+  --color-search-border: #d1d5db;
+  --color-search-icon: #6b7280;
+  --color-search-placeholder: #9ca3af;
+
+  --color-input-bg: var(--color-btn-hover);
+  --color-input-border: var(--color-btn-default-border);
+
+  --badge-on-bg: #dcfce7;
+  --badge-on-text: #16a34a;
+  --badge-off-bg: #f3f4f6;
+  --badge-off-text: #6b7280;
+  --badge-lost-bg: #fee2e2;
+  --badge-lost-text: #dc2626;
+  --badge-visit-bg: #ede9fe;
+  --badge-visit-text: #7c3aed;
+  --badge-issue-bg: #dbeafe;
+  --badge-issue-text: #2563eb;
+  --badge-card-bg: #ede9fe;
+  --badge-card-text: #7c3aed;
+
+  --color-error-text: #dc2626;
+  --color-error-text-alt: #dc2626;
+}

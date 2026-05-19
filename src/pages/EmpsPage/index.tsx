@@ -69,13 +69,13 @@ export const EmpsPage = () => {
       >
         <div className="flex items-center gap-1.5">
           <BadgeCheck style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span className="text-base font-medium" style={{ color: 'var(--color-text)' }}>
             카드 사용자
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <Button variant="default" leftIcon={<Download size={12} />}>
-           보내기
+            보내기
           </Button>
           <Button variant="default" leftIcon={<Printer size={12} />}>
             인쇄
@@ -101,7 +101,11 @@ export const EmpsPage = () => {
           totalCount={filteredEmps.length}
           loading={empLoading}
           actions={
-            <Button variant="default" size="sm" leftIcon={<SlidersHorizontal size={12} />}>
+            <Button
+              variant="default"
+              size="sm"
+              leftIcon={<SlidersHorizontal size={12} />}
+            >
               필터
             </Button>
           }

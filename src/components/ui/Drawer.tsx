@@ -26,20 +26,7 @@ export const Drawer = ({
   children,
 }: DrawerProps) => {
   return (
-    <>
-      <style>{`
-        .drawer-scroll::-webkit-scrollbar {
-          width: 4px;
-        }
-        .drawer-scroll::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .drawer-scroll::-webkit-scrollbar-thumb {
-          background: var(--color-border);
-          border-radius: 2px;
-        }
-      `}</style>
-      <div
+    <div
         className={
           fill
             ? 'flex flex-col flex-1 min-w-0 overflow-hidden'
@@ -72,7 +59,7 @@ export const Drawer = ({
 
         {/* content */}
         <div
-          className="flex-1 overflow-y-auto drawer-scroll"
+          className="flex-1 overflow-y-auto app-scrollbar"
           style={{ padding: '11px 13px' }}
         >
           {children}
@@ -87,7 +74,6 @@ export const Drawer = ({
             {footer}
           </div>
         )}
-      </div>
-    </>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { SearchField } from '@/components/ui/SearchField'
 import type { CardfmtInfo } from '@/types/api'
 
 interface CardFmtListPaneProps {
@@ -20,14 +20,6 @@ export const CardFmtListPane = ({
   onSearch,
   onSelect,
 }: CardFmtListPaneProps) => (
-  <>
-    <style>{`
-      .cardfmt-list-scroll::-webkit-scrollbar { width: 4px; }
-      .cardfmt-list-scroll::-webkit-scrollbar-track { background: transparent; }
-      .cardfmt-list-scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
-      .cardfmt-list-search::placeholder { color: var(--color-text-dim); }
-    `}</style>
-
     <div
       className="flex flex-col flex-shrink-0 overflow-hidden"
       style={{ width: 220, borderRight: '0.5px solid var(--color-border)' }}
@@ -40,26 +32,15 @@ export const CardFmtListPane = ({
           borderBottom: '0.5px solid var(--color-border)',
         }}
       >
-        <div
-          className="flex items-center gap-1.5 w-full px-2 py-1 rounded"
-          style={{
-            background: 'var(--color-btn-hover)',
-            border: '0.5px solid var(--color-btn-default-border)',
-          }}
-        >
-          <Search style={{ width: 13, height: 13, color: 'var(--color-text-dim)', flexShrink: 0 }} />
-          <input
-            type="text"
-            value={searchQuery}
-            placeholder="형식명 검색..."
-            onChange={(e) => onSearch(e.target.value)}
-            className="cardfmt-list-search flex-1 text-[12px] outline-none min-w-0"
-            style={{ background: 'transparent', color: 'var(--color-text)' }}
-          />
-        </div>
+        <SearchField
+          value={searchQuery}
+          placeholder="형식명 검색..."
+          onChange={onSearch}
+          className="w-full"
+        />
       </div>
 
-      <div className="flex-1 overflow-y-auto cardfmt-list-scroll">
+      <div className="flex-1 overflow-y-auto app-scrollbar">
         {loading ? (
           <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
             불러오는 중...
@@ -133,5 +114,4 @@ export const CardFmtListPane = ({
         전체 {items.length}건
       </div>
     </div>
-  </>
 )

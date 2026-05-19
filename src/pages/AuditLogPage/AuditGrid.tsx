@@ -39,12 +39,7 @@ export const AuditGrid = ({
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
-      <style>{`
-        .audit-grid-scroll::-webkit-scrollbar { width: 4px; height: 4px; }
-        .audit-grid-scroll::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 2px; }
-      `}</style>
-
-      <div className="flex-1 overflow-auto audit-grid-scroll">
+      <div className="flex-1 overflow-auto app-scrollbar">
         <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
           <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-sidebar)' }}>
             <tr>
