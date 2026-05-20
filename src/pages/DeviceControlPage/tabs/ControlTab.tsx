@@ -1,10 +1,15 @@
 import { Bell, DoorOpen, Lock, ToggleLeft, ToggleRight, Zap } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/primitive/Button'
 import { useControlOutput, useControlReader } from '@/hooks/useDeviceControl'
 import type { ParsedDeviceNode } from '@/pages/DeviceControlPage/utils/buildTree'
 import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import { useToastStore } from '@/stores/toastStore'
-import type { InputInfo, OutputControlAction, ReaderControlAction, ReaderInfo } from '@/types/api'
+import type {
+  InputInfo,
+  OutputControlAction,
+  ReaderControlAction,
+  ReaderInfo,
+} from '@/types/api'
 
 interface ControlTabProps {
   parsed: ParsedDeviceNode | null
@@ -125,7 +130,10 @@ export const ControlTab = ({ parsed, reader, input }: ControlTabProps) => {
         {input ? (
           <div
             className="rounded-md px-3 py-2.5"
-            style={{ border: '0.5px solid var(--color-border)', background: 'var(--color-btn-hover)' }}
+            style={{
+              border: '0.5px solid var(--color-border)',
+              background: 'var(--color-btn-hover)',
+            }}
           >
             <p className="text-[12px] mb-1" style={{ color: 'var(--color-text-subtle)' }}>
               현재 상태

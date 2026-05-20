@@ -1,6 +1,7 @@
 export { Button } from './Button'
 export { Input } from './Input'
 export { Badge } from './Badge'
+export { SearchField } from './SearchField'
 export { Tab } from './Tab'
 export type { TabItem } from './Tab'
 export { Drawer } from './Drawer'

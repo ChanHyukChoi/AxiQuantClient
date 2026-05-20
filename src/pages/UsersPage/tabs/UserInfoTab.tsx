@@ -1,6 +1,6 @@
 import { Globe, Hash, Key, Lock, Tag, ToggleLeft, ToggleRight } from 'lucide-react'
 import type { UseFormRegister } from 'react-hook-form'
-import { Input } from '@/components/ui/Input'
+import { Input } from '@/components/primitive/Input'
 import type { UserEditFormValues } from '@/pages/UsersPage/formTypes'
 
 interface UserInfoTabProps {
@@ -21,7 +21,10 @@ const FRow = ({
   children: React.ReactNode
 }) => (
   <div className="flex justify-between items-center py-1.5 gap-2">
-    <span className="text-[12px] flex items-center gap-1.5 flex-shrink-0" style={{ color: 'var(--color-text-subtle)' }}>
+    <span
+      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      style={{ color: 'var(--color-text-subtle)' }}
+    >
       {icon}
       {label}
     </span>
@@ -71,7 +74,10 @@ export const UserInfoTab = ({
       {editMode ? (
         <ToggleBtn on={values.active} onClick={onToggleActive} />
       ) : (
-        <span className="text-[12px]" style={{ color: values.active ? '#4caf7d' : 'var(--color-text-dim)' }}>
+        <span
+          className="text-[12px]"
+          style={{ color: values.active ? '#4caf7d' : 'var(--color-text-dim)' }}
+        >
           {values.active ? '활성' : '비활성'}
         </span>
       )}
@@ -90,7 +96,12 @@ export const UserInfoTab = ({
     {editMode && (
       <>
         <FRow icon={<Key size={12} />} label="비밀번호">
-          <Input type="password" {...register('password')} className="max-w-[180px]" autoComplete="new-password" />
+          <Input
+            type="password"
+            {...register('password')}
+            className="max-w-[180px]"
+            autoComplete="new-password"
+          />
         </FRow>
         <FRow icon={<Key size={12} />} label="비밀번호 확인">
           <Input

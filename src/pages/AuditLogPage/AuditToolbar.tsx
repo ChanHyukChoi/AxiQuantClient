@@ -1,5 +1,4 @@
-import { Download, Printer } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { ExportButton, PrintButton } from '@/components/page-actions'
 import { ACTION_TYPE_OPTIONS, DATA_TYPE_OPTIONS } from '@/pages/AuditLogPage/utils/auditBadge'
 import type { DatePreset } from '@/pages/EventMonitorPage/utils/dateRange'
 import type { UserInfo } from '@/types/api/user'
@@ -65,9 +64,9 @@ export const AuditToolbar = ({
     <div className="flex items-center gap-2 flex-wrap">
       {(
         [
-          ['today', '오늘'],
-          ['7d', '최근 7일'],
-          ['30d', '최근 30일'],
+          ['today', '??'],
+          ['7d', '?? 7?'],
+          ['30d', '?? 30?'],
         ] as const
       ).map(([p, label]) => (
         <button
@@ -108,7 +107,7 @@ export const AuditToolbar = ({
         onChange={(e) => onUserIdChange(e.target.value === '' ? '' : Number(e.target.value))}
         style={{ ...selectStyle, minWidth: 120 }}
       >
-        <option value="">사용자 전체</option>
+        <option value="">??? ??</option>
         {users.map((u) => (
           <option key={u.id} value={u.id}>
             {u.name} ({u.loginId})
@@ -117,7 +116,7 @@ export const AuditToolbar = ({
       </select>
 
       <select value={actionType} onChange={(e) => onActionTypeChange(e.target.value)} style={selectStyle}>
-        <option value="">동작 전체</option>
+        <option value="">?? ??</option>
         {ACTION_TYPE_OPTIONS.map((a) => (
           <option key={a} value={a}>
             {a}
@@ -126,7 +125,7 @@ export const AuditToolbar = ({
       </select>
 
       <select value={dataType} onChange={(e) => onDataTypeChange(e.target.value)} style={selectStyle}>
-        <option value="">데이터 전체</option>
+        <option value="">??? ??</option>
         {DATA_TYPE_OPTIONS.map((d) => (
           <option key={d} value={d}>
             {d}
@@ -135,8 +134,8 @@ export const AuditToolbar = ({
       </select>
 
       <div className="flex items-center gap-1 ml-auto">
-        <Button size="sm" variant="default" onClick={onExport} leftIcon={<Download size={14} />} title="보내기" />
-        <Button size="sm" variant="default" onClick={onPrint} leftIcon={<Printer size={14} />} title="인쇄" />
+        <ExportButton size="sm" showLabel={false} onClick={onExport} />
+        <PrintButton size="sm" showLabel={false} onClick={onPrint} />
       </div>
     </div>
   </div>

@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Bell, Check, Mail, Pencil, Plus, Trash2, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
+import { Modal } from '@/components/primitive/Modal'
 import { AlarmSelectModal } from '@/pages/AlarmSettingsPage/components/AlarmSelectModal'
-import { alarmMailSchema, type AlarmMailFormValues } from '@/pages/AlarmSettingsPage/formTypes'
+import {
+  alarmMailSchema,
+  type AlarmMailFormValues,
+} from '@/pages/AlarmSettingsPage/formTypes'
 import { mailToUpdatePayload } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
 import { useDeleteAlarmMail, useUpdateAlarmMail } from '@/hooks/useAlarmSettings'
 import type { AlarmInfo, AlarmMailInfo } from '@/types/api'
@@ -39,10 +42,12 @@ export const AlarmMailDrawer = ({
   const updateMut = useUpdateAlarmMail()
   const deleteMut = useDeleteAlarmMail()
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm<AlarmMailFormValues>({
-    resolver: zodResolver(alarmMailSchema),
-    defaultValues: { name: '', alarmIds: [], emails: [''] },
-  })
+  const { register, handleSubmit, reset, setValue, watch } = useForm<AlarmMailFormValues>(
+    {
+      resolver: zodResolver(alarmMailSchema),
+      defaultValues: { name: '', alarmIds: [], emails: [''] },
+    },
+  )
 
   const alarmIds = watch('alarmIds')
   const emails = watch('emails')
@@ -131,7 +136,10 @@ export const AlarmMailDrawer = ({
         <Mail size={20} strokeWidth={1.6} />
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-[15px] font-medium truncate" style={{ color: 'var(--color-text)' }}>
+        <span
+          className="text-[15px] font-medium truncate"
+          style={{ color: 'var(--color-text)' }}
+        >
           {item.name?.trim() || `\uc774\uba54\uc77c \uacbd\ubcf4 #${item.id}`}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
@@ -144,7 +152,9 @@ export const AlarmMailDrawer = ({
     </div>
   ) : (
     <div className="pb-3 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-      {'\uc88c\uce21 \ubaa9\ub85d\uc5d0\uc11c \uc774\uba54\uc77c \uacbd\ubcf4\ub97c \uc120\ud0dd\ud558\uc138\uc694.'}
+      {
+        '\uc88c\uce21 \ubaa9\ub85d\uc5d0\uc11c \uc774\uba54\uc77c \uacbd\ubcf4\ub97c \uc120\ud0dd\ud558\uc138\uc694.'
+      }
     </div>
   )
 
@@ -157,7 +167,12 @@ export const AlarmMailDrawer = ({
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
-          <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancel}>
+          <Button
+            variant="default"
+            size="sm"
+            leftIcon={<X size={12} />}
+            onClick={handleCancel}
+          >
             {'\ucde8\uc18c'}
           </Button>
           <Button
@@ -181,7 +196,12 @@ export const AlarmMailDrawer = ({
         >
           {'\uc0ad\uc81c'}
         </Button>
-        <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={handleEdit}>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={handleEdit}
+        >
           {'\uc218\uc815'}
         </Button>
       </>
@@ -194,7 +214,10 @@ export const AlarmMailDrawer = ({
         {item && editMode ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <span className="text-[11px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
+              <span
+                className="text-[11px] font-medium"
+                style={{ color: 'var(--color-text-subtle)' }}
+              >
                 {'\uba85\uce6d'}
               </span>
               <Input {...register('name')} />
@@ -202,7 +225,10 @@ export const AlarmMailDrawer = ({
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
+                <span
+                  className="text-[11px] font-medium"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   {'\uc5f0\uacb0 \uacbd\ubcf4'}
                 </span>
                 <Button
@@ -216,7 +242,10 @@ export const AlarmMailDrawer = ({
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {alarmIds.length === 0 ? (
-                  <span className="text-[11px]" style={{ color: 'var(--color-text-dim)' }}>
+                  <span
+                    className="text-[11px]"
+                    style={{ color: 'var(--color-text-dim)' }}
+                  >
                     {'\uc120\ud0dd\ub41c \uacbd\ubcf4 \uc5c6\uc74c'}
                   </span>
                 ) : (
@@ -247,10 +276,18 @@ export const AlarmMailDrawer = ({
 
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
+                <span
+                  className="text-[11px] font-medium"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   {'\uc218\uc2e0 \uc774\uba54\uc77c'}
                 </span>
-                <Button variant="default" size="sm" leftIcon={<Plus size={12} />} onClick={addEmailRow}>
+                <Button
+                  variant="default"
+                  size="sm"
+                  leftIcon={<Plus size={12} />}
+                  onClick={addEmailRow}
+                >
                   {'\ucd94\uac00'}
                 </Button>
               </div>
@@ -269,16 +306,27 @@ export const AlarmMailDrawer = ({
             </div>
           </div>
         ) : item ? (
-          <div className="flex flex-col gap-3 text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
+          <div
+            className="flex flex-col gap-3 text-[12px]"
+            style={{ color: 'var(--color-text-muted)' }}
+          >
             <p>
-              <span style={{ color: 'var(--color-text-subtle)' }}>{'\uc5f0\uacb0 \uacbd\ubcf4: '}</span>
+              <span style={{ color: 'var(--color-text-subtle)' }}>
+                {'\uc5f0\uacb0 \uacbd\ubcf4: '}
+              </span>
               {(item.alarmIds ?? []).length === 0
                 ? '\u2014'
-                : (item.alarmIds ?? []).map((id) => alarmNameMap[id] ?? `#${id}`).join(', ')}
+                : (item.alarmIds ?? [])
+                    .map((id) => alarmNameMap[id] ?? `#${id}`)
+                    .join(', ')}
             </p>
             <p>
-              <span style={{ color: 'var(--color-text-subtle)' }}>{'\uc218\uc2e0\uc790: '}</span>
-              {(item.emails ?? []).length === 0 ? '\u2014' : (item.emails ?? []).join(', ')}
+              <span style={{ color: 'var(--color-text-subtle)' }}>
+                {'\uc218\uc2e0\uc790: '}
+              </span>
+              {(item.emails ?? []).length === 0
+                ? '\u2014'
+                : (item.emails ?? []).join(', ')}
             </p>
           </div>
         ) : null}

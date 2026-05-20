@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { DoorOpen, Plus } from 'lucide-react'
-import { ListPanel } from '@/components/ui/ListPanel'
-import { Button } from '@/components/ui/Button'
+import { ListPanel } from '@/components/primitive/ListPanel'
+import { Button } from '@/components/primitive/Button'
 import { AccessDrawer } from '@/pages/AccessPage/AccessDrawer'
 import { useAccLvList } from '@/hooks/useAccLv'
 
@@ -36,7 +36,10 @@ export const AccessPage = () => {
       >
         <div className="flex items-center gap-1.5">
           <DoorOpen style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[13px] font-medium"
+            style={{ color: 'var(--color-text)' }}
+          >
             접근 권한
           </span>
         </div>

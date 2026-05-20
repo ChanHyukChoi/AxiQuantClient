@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Plus, UserCog } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/primitive/Button'
 import { UserDrawer } from '@/pages/UsersPage/UserDrawer'
 import { UserListPane } from '@/pages/UsersPage/UserListPane'
 import { useUsers } from '@/hooks/useUsers'
@@ -63,11 +63,19 @@ export const UsersPage = () => {
       >
         <div className="flex items-center gap-1.5">
           <UserCog style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[13px] font-medium"
+            style={{ color: 'var(--color-text)' }}
+          >
             사용자
           </span>
         </div>
-        <Button size="sm" variant="accent" leftIcon={<Plus size={14} />} onClick={handleAdd}>
+        <Button
+          size="sm"
+          variant="accent"
+          leftIcon={<Plus size={14} />}
+          onClick={handleAdd}
+        >
           추가
         </Button>
       </div>
@@ -81,7 +89,8 @@ export const UsersPage = () => {
             border: '0.5px solid var(--color-border)',
           }}
         >
-          사용자 관리 API가 서버에 아직 구현되지 않았습니다. 목록은 비어 있으며 저장 시 안내 메시지가 표시됩니다.
+          사용자 관리 API가 서버에 아직 구현되지 않았습니다. 목록은 비어 있으며 저장 시
+          안내 메시지가 표시됩니다.
         </div>
       ) : null}
 

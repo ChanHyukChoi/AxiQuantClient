@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/primitive/Button'
 import { AlarmPriorityDrawer } from '@/pages/AlarmSettingsPage/components/AlarmPriorityDrawer'
 import { AlarmPriorityListPane } from '@/pages/AlarmSettingsPage/components/AlarmPriorityListPane'
 import { useAlarmPriorities, useCreateAlarmPriority } from '@/hooks/useAlarmSettings'

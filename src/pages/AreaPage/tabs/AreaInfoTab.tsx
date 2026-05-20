@@ -1,9 +1,9 @@
 import { Controller, type Control } from 'react-hook-form'
 import type { UseFormRegister } from 'react-hook-form'
 import { Hash, RefreshCw, Settings, SlidersHorizontal, Tag, Users } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Badge } from '@/components/primitive/Badge'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
 import type { AreaEditFormValues } from '@/pages/AreaPage/formTypes'
 import {
   isAreaActive,
@@ -24,7 +24,10 @@ interface AreaInfoTabProps {
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
     className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
-    style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
+    style={{
+      color: 'var(--color-text-subtle)',
+      borderBottom: '0.5px solid var(--color-border)',
+    }}
   >
     {children}
   </p>
@@ -40,7 +43,10 @@ const FRow = ({
   children: React.ReactNode
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
-    <span className="text-[12px] flex items-center gap-1.5 flex-shrink-0" style={{ color: 'var(--color-text-subtle)' }}>
+    <span
+      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      style={{ color: 'var(--color-text-subtle)' }}
+    >
       {icon}
       {label}
     </span>
@@ -86,7 +92,10 @@ export const AreaInfoTab = ({
                   onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
                   className="accent-[var(--color-accent)]"
                 />
-                <span className="text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
+                <span
+                  className="text-[12px]"
+                  style={{ color: 'var(--color-text-muted)' }}
+                >
                   활성
                 </span>
               </label>
@@ -101,9 +110,16 @@ export const AreaInfoTab = ({
 
       <FRow icon={<Users size={12} />} label="최대 수용">
         {editMode ? (
-          <Input type="number" {...register('occmax', { valueAsNumber: true })} style={{ width: 100 }} />
+          <Input
+            type="number"
+            {...register('occmax', { valueAsNumber: true })}
+            style={{ width: 100 }}
+          />
         ) : (
-          <span className="text-[13px] font-mono text-right" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[13px] font-mono text-right"
+            style={{ color: 'var(--color-text)' }}
+          >
             {area.occmax}
           </span>
         )}
@@ -137,11 +153,17 @@ export const AreaInfoTab = ({
 
       <div
         className="rounded-md p-3 mb-3"
-        style={{ border: '0.5px solid var(--color-border)', background: 'var(--color-btn-hover)' }}
+        style={{
+          border: '0.5px solid var(--color-border)',
+          background: 'var(--color-btn-hover)',
+        }}
       >
         <div className="flex items-end justify-between gap-2 mb-2">
           <div>
-            <p className="text-[11px] mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
+            <p
+              className="text-[11px] mb-0.5"
+              style={{ color: 'var(--color-text-subtle)' }}
+            >
               현재 점유
             </p>
             <p

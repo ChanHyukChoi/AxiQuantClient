@@ -1,4 +1,4 @@
-import { SearchField } from '@/components/ui/SearchField'
+import { SearchField } from '@/components/primitive/SearchField'
 import { TreeNode } from '@/pages/DeviceControlPage/TreeNode'
 import type { DeviceTreeNode } from '@/pages/DeviceControlPage/utils/buildTree'
 import type { DeviceTypeFilter } from '@/pages/DeviceControlPage/utils/deviceHelpers'
@@ -83,7 +83,10 @@ export const TreePane = ({
 
       <div className="flex-1 overflow-y-auto app-scrollbar">
         {loading ? (
-          <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+          <p
+            className="text-[12px] text-center py-8"
+            style={{ color: 'var(--color-text-subtle)' }}
+          >
             불러오는 중...
           </p>
         ) : error ? (
@@ -91,7 +94,10 @@ export const TreePane = ({
             장치 목록을 불러오지 못했습니다.
           </p>
         ) : tree.length === 0 ? (
-          <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+          <p
+            className="text-[12px] text-center py-8"
+            style={{ color: 'var(--color-text-subtle)' }}
+          >
             {searchQuery.trim() ? '검색 결과가 없습니다.' : '등록된 장치가 없습니다.'}
           </p>
         ) : (
@@ -108,7 +114,10 @@ export const TreePane = ({
           ))
         )}
         {modulesLoading && !loading ? (
-          <p className="text-[11px] text-center py-2" style={{ color: 'var(--color-text-dim)' }}>
+          <p
+            className="text-[11px] text-center py-2"
+            style={{ color: 'var(--color-text-dim)' }}
+          >
             모듈 상태 갱신 중...
           </p>
         ) : null}

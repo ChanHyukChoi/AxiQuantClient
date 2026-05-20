@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/primitive/Button'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
 interface EventGridProps {
@@ -38,7 +38,8 @@ const TypeBadge = ({ type }: { type: EventRecord['type'] }) => {
 }
 
 const AckCell = ({ row }: { row: EventRecord }) => {
-  if (row.type !== 'alarm') return <span style={{ color: 'var(--color-text-dim)' }}>—</span>
+  if (row.type !== 'alarm')
+    return <span style={{ color: 'var(--color-text-dim)' }}>—</span>
   return row.acked ? (
     <span
       className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full"
@@ -88,45 +89,73 @@ export const EventGrid = ({
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
       <div className="flex-1 overflow-auto app-scrollbar">
-        <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-sidebar)' }}>
+        <table
+          style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}
+        >
+          <thead
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 10,
+              background: 'var(--color-sidebar)',
+            }}
+          >
             <tr>
-              {['일시', '종류', '이벤트', '카드 번호', '카드 사용자', '제어기', '장치', 'ACK'].map(
-                (h) => (
-                  <th
-                    key={h}
-                    style={{
-                      padding: '6px 10px',
-                      textAlign: 'left',
-                      fontSize: 11,
-                      fontWeight: 500,
-                      color: 'var(--color-text-dim)',
-                      borderBottom: '0.5px solid var(--color-border)',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {h}
-                  </th>
-                ),
-              )}
+              {[
+                '일시',
+                '종류',
+                '이벤트',
+                '카드 번호',
+                '카드 사용자',
+                '제어기',
+                '장치',
+                'ACK',
+              ].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    padding: '6px 10px',
+                    textAlign: 'left',
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: 'var(--color-text-dim)',
+                    borderBottom: '0.5px solid var(--color-border)',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} className="text-center py-8 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <td
+                  colSpan={8}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   불러오는 중...
                 </td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan={8} className="text-center py-8 text-[12px]" style={{ color: '#e06060' }}>
+                <td
+                  colSpan={8}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: '#e06060' }}
+                >
                   이력을 불러오지 못했습니다.
                 </td>
               </tr>
             ) : events.length === 0 ? (
               <tr>
-                <td colSpan={8} className="text-center py-8 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <td
+                  colSpan={8}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   표시할 이벤트가 없습니다.
                 </td>
               </tr>
@@ -142,10 +171,14 @@ export const EventGrid = ({
                       cursor: 'pointer',
                     }}
                     onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLTableRowElement).style.background = rowHoverBg(row, selected)
+                      ;(e.currentTarget as HTMLTableRowElement).style.background =
+                        rowHoverBg(row, selected)
                     }}
                     onMouseLeave={(e) => {
-                      ;(e.currentTarget as HTMLTableRowElement).style.background = rowBg(row, selected)
+                      ;(e.currentTarget as HTMLTableRowElement).style.background = rowBg(
+                        row,
+                        selected,
+                      )
                     }}
                   >
                     <td style={cellStyle}>{row.ts}</td>

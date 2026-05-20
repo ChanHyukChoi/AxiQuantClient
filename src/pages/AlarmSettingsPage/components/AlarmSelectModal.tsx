@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { SearchField } from '@/components/ui/SearchField'
+import { Button } from '@/components/primitive/Button'
+import { SearchField } from '@/components/primitive/SearchField'
 import type { AlarmInfo } from '@/types/api'
 
 interface AlarmSelectModalProps {
@@ -64,7 +64,10 @@ export const AlarmSelectModal = ({
           className="flex items-center justify-between px-3 py-2.5 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[13px] font-medium"
+            style={{ color: 'var(--color-text)' }}
+          >
             경보 선택
           </span>
           <button
@@ -77,13 +80,24 @@ export const AlarmSelectModal = ({
           </button>
         </div>
 
-        <div className="px-3 py-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
-          <SearchField placeholder="경보 검색..." value={query} onChange={setQuery} className="w-full" />
+        <div
+          className="px-3 py-2 border-b"
+          style={{ borderColor: 'var(--color-border)' }}
+        >
+          <SearchField
+            placeholder="경보 검색..."
+            value={query}
+            onChange={setQuery}
+            className="w-full"
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto app-scrollbar min-h-[200px] max-h-[40vh]">
           {filtered.length === 0 ? (
-            <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+            <p
+              className="text-[12px] text-center py-8"
+              style={{ color: 'var(--color-text-subtle)' }}
+            >
               {query.trim() ? '검색 결과가 없습니다.' : '등록된 경보가 없습니다.'}
             </p>
           ) : (
@@ -98,7 +112,10 @@ export const AlarmSelectModal = ({
                   checked={checked.has(alarm.id)}
                   onChange={() => toggle(alarm.id)}
                 />
-                <span className="text-[12px] flex-1 truncate" style={{ color: 'var(--color-text)' }}>
+                <span
+                  className="text-[12px] flex-1 truncate"
+                  style={{ color: 'var(--color-text)' }}
+                >
                   {alarm.name || `경보 #${alarm.id}`}
                 </span>
               </label>

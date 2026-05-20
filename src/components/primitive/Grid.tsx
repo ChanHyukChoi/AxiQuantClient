@@ -1,4 +1,4 @@
-import { SearchField } from '@/components/ui/SearchField'
+import { SearchField } from '@/components/primitive/SearchField'
 
 export interface ColumnDef<T> {
   key: string

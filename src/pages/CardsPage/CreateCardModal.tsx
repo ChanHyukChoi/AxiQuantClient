@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { Controller, useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
 import { selectLikeStyle } from '@/pages/CardsPage/components/CardFieldUi'
 import { createCardSchema, type CreateCardFormValues } from '@/pages/CardsPage/formTypes'
 import { useCreateCard } from '@/hooks/useCard'
@@ -74,21 +74,33 @@ export const CreateCardModal = ({ open, empList, onClose }: CreateCardModalProps
         className="rounded-md p-5 w-[320px]"
         style={{ background: 'var(--color-sidebar)', border: '0.5px solid #2a2d32' }}
       >
-        <p className="text-[13px] font-medium mb-4" style={{ color: 'var(--color-text)' }}>
+        <p
+          className="text-[13px] font-medium mb-4"
+          style={{ color: 'var(--color-text)' }}
+        >
           카드 추가
         </p>
-        <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="flex flex-col">
+        <form
+          onSubmit={createForm.handleSubmit(onCreateSubmit)}
+          className="flex flex-col"
+        >
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
               카드 번호
             </label>
-            <Input {...createForm.register('cardNum')} error={createForm.formState.errors.cardNum?.message} />
+            <Input
+              {...createForm.register('cardNum')}
+              error={createForm.formState.errors.cardNum?.message}
+            />
           </div>
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
               명칭
             </label>
-            <Input {...createForm.register('name')} error={createForm.formState.errors.name?.message} />
+            <Input
+              {...createForm.register('name')}
+              error={createForm.formState.errors.name?.message}
+            />
           </div>
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/primitive/Button'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
 interface EventDetailPanelProps {
@@ -47,10 +47,16 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
       }}
     >
       <div className="px-3 pt-3 pb-2 flex-shrink-0">
-        <p className="text-[13px] font-medium mb-0.5" style={{ color: 'var(--color-text)' }}>
+        <p
+          className="text-[13px] font-medium mb-0.5"
+          style={{ color: 'var(--color-text)' }}
+        >
           {event.event}
         </p>
-        <p className="text-[11px] font-mono" style={{ color: 'var(--color-text-subtle)' }}>
+        <p
+          className="text-[11px] font-mono"
+          style={{ color: 'var(--color-text-subtle)' }}
+        >
           {event.ts}
         </p>
       </div>
@@ -65,7 +71,10 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
       </div>
 
       {event.type === 'alarm' && (
-        <div className="p-3 flex-shrink-0" style={{ borderTop: '0.5px solid var(--color-border)' }}>
+        <div
+          className="p-3 flex-shrink-0"
+          style={{ borderTop: '0.5px solid var(--color-border)' }}
+        >
           {event.acked ? (
             <div
               className="text-center text-[12px] font-medium py-2 rounded"

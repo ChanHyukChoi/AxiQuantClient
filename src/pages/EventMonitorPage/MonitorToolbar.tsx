@@ -1,13 +1,7 @@
-import {
-  Activity,
-  Download,
-  Pause,
-  Play,
-  Printer,
-  Trash2,
-} from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Activity, Pause, Play, Trash2 } from 'lucide-react'
+import { Button } from '@/components/primitive/Button'
+import { ExportButton, PrintButton } from '@/components/page-actions'
+import { Input } from '@/components/primitive/Input'
 import type { ScpInfo } from '@/types/api'
 import type { DatePreset } from '@/pages/EventMonitorPage/utils/dateRange'
 
@@ -41,7 +35,9 @@ interface MonitorToolbarProps {
 const modeBtnStyle = (active: boolean): React.CSSProperties => ({
   background: active ? 'var(--color-btn-accent-bg)' : 'transparent',
   color: active ? 'var(--color-accent)' : 'var(--color-text-muted)',
-  borderColor: active ? 'var(--color-btn-accent-border)' : 'var(--color-btn-default-border)',
+  borderColor: active
+    ? 'var(--color-btn-accent-border)'
+    : 'var(--color-btn-default-border)',
 })
 
 const pillStyle = (active: boolean, variant: TypeFilter): React.CSSProperties => {
@@ -52,8 +48,10 @@ const pillStyle = (active: boolean, variant: TypeFilter): React.CSSProperties =>
       border: '0.5px solid var(--color-btn-default-border)',
     }
   }
-  if (variant === 'access') return { background: '#0d2b1a', color: '#4caf7d', border: '0.5px solid #1a3d28' }
-  if (variant === 'alarm') return { background: '#2b1616', color: '#e06060', border: '0.5px solid #3a2020' }
+  if (variant === 'access')
+    return { background: '#0d2b1a', color: '#4caf7d', border: '0.5px solid #1a3d28' }
+  if (variant === 'alarm')
+    return { background: '#2b1616', color: '#e06060', border: '0.5px solid #3a2020' }
   return {
     background: 'var(--color-btn-accent-bg)',
     color: 'var(--color-accent)',
@@ -99,27 +97,44 @@ export const MonitorToolbar = ({
   return (
     <div
       className="flex flex-col flex-shrink-0"
-      style={{ background: 'var(--color-sidebar)', borderBottom: '0.5px solid var(--color-border)' }}
+      style={{
+        background: 'var(--color-sidebar)',
+        borderBottom: '0.5px solid var(--color-border)',
+      }}
     >
       <div className="flex items-center gap-3 px-3" style={{ height: 42, minHeight: 42 }}>
         <div className="flex items-center gap-1.5 flex-shrink-0">
           <Activity style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[13px] font-medium"
+            style={{ color: 'var(--color-text)' }}
+          >
             이벤트 모니터
           </span>
         </div>
 
         <div className="flex items-center gap-1">
-          <Button size="sm" style={modeBtnStyle(mode === 'live')} onClick={() => onModeChange('live')}>
+          <Button
+            size="sm"
+            style={modeBtnStyle(mode === 'live')}
+            onClick={() => onModeChange('live')}
+          >
             실시간
           </Button>
-          <Button size="sm" style={modeBtnStyle(mode === 'history')} onClick={() => onModeChange('history')}>
+          <Button
+            size="sm"
+            style={modeBtnStyle(mode === 'history')}
+            onClick={() => onModeChange('history')}
+          >
             이력 조회
           </Button>
         </div>
 
         {mode === 'live' && (
-          <div className="flex items-center gap-1.5 text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
+          <div
+            className="flex items-center gap-1.5 text-[11px]"
+            style={{ color: 'var(--color-text-muted)' }}
+          >
             <span
               className="inline-block rounded-full"
               style={{
@@ -143,18 +158,27 @@ export const MonitorToolbar = ({
                 leftIcon={paused ? <Play size={14} /> : <Pause size={14} />}
                 title={paused ? '재개' : '일시정지'}
               />
-              <Button size="sm" variant="default" onClick={onClear} leftIcon={<Trash2 size={14} />} title="초기화" />
+              <Button
+                size="sm"
+                variant="default"
+                onClick={onClear}
+                leftIcon={<Trash2 size={14} />}
+                title="초기화"
+              />
             </>
           ) : (
             <>
-              <Button size="sm" variant="default" onClick={onExport} leftIcon={<Download size={14} />} title="보내기" />
-              <Button size="sm" variant="default" onClick={onPrint} leftIcon={<Printer size={14} />} title="인쇄" />
+              <ExportButton size="sm" showLabel={false} onClick={onExport} />
+              <PrintButton size="sm" showLabel={false} onClick={onPrint} />
             </>
           )}
         </div>
       </div>
 
-      <div className="flex items-center gap-2 px-3 flex-wrap" style={{ minHeight: 38, paddingBottom: 8, paddingTop: 4 }}>
+      <div
+        className="flex items-center gap-2 px-3 flex-wrap"
+        style={{ minHeight: 38, paddingBottom: 8, paddingTop: 4 }}
+      >
         {(['all', 'access', 'alarm'] as const).map((f) => (
           <button
             key={f}

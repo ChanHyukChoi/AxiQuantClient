@@ -8,8 +8,8 @@ import {
   Tag,
   User,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
-import { Input } from '@/components/ui/Input'
+import { Badge } from '@/components/primitive/Badge'
+import { Input } from '@/components/primitive/Input'
 import {
   CheckboxLook,
   FRow,
@@ -18,7 +18,11 @@ import {
   selectLikeStyle,
   typeBadgeVariant,
 } from '@/pages/CardsPage/components/CardFieldUi'
-import { cardStatusLabel, cardTypeLabel, type CardRow } from '@/pages/CardsPage/utils/cardPageHelpers'
+import {
+  cardStatusLabel,
+  cardTypeLabel,
+  type CardRow,
+} from '@/pages/CardsPage/utils/cardPageHelpers'
 import type { UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
 import type { EmpInfo } from '@/types/api'
 

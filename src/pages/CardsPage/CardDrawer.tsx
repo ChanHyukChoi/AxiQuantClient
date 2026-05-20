@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, CreditCard, DoorOpen, History, Pencil, Trash2, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Badge } from '@/components/primitive/Badge'
+import { Button } from '@/components/primitive/Button'
+import { Modal } from '@/components/primitive/Modal'
 import { typeBadgeVariant } from '@/pages/CardsPage/components/CardFieldUi'
 import { updateCardSchema, type UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
 import { CardAccessTab } from '@/pages/CardsPage/tabs/CardAccessTab'
@@ -126,7 +126,10 @@ export const CardDrawer = ({
     : undefined
 
   const drawerHeader = card ? (
-    <div className="flex items-start gap-3 pb-3" style={{ borderBottom: '0.5px solid var(--color-border)' }}>
+    <div
+      className="flex items-start gap-3 pb-3"
+      style={{ borderBottom: '0.5px solid var(--color-border)' }}
+    >
       <div
         className="w-[42px] h-[42px] rounded-lg flex items-center justify-center flex-shrink-0"
         style={{ background: '#1a3a5c' }}
@@ -134,12 +137,19 @@ export const CardDrawer = ({
         <CreditCard size={22} style={{ color: 'var(--color-accent)' }} />
       </div>
       <div className="flex flex-col gap-0 min-w-0 flex-1">
-        <span className="text-[13px] font-medium font-mono leading-tight" style={{ color: 'var(--color-text)' }}>
+        <span
+          className="text-[13px] font-medium font-mono leading-tight"
+          style={{ color: 'var(--color-text)' }}
+        >
           {card.cardNumber}
         </span>
         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-          <Badge variant={typeBadgeVariant(cardTypeLabel(card))}>{cardTypeLabel(card)}</Badge>
-          <Badge variant={cardStatusLabel(card) === '활성' ? 'on' : 'off'}>{cardStatusLabel(card)}</Badge>
+          <Badge variant={typeBadgeVariant(cardTypeLabel(card))}>
+            {cardTypeLabel(card)}
+          </Badge>
+          <Badge variant={cardStatusLabel(card) === '활성' ? 'on' : 'off'}>
+            {cardStatusLabel(card)}
+          </Badge>
         </div>
         <span
           className="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full font-mono mt-1.5"
@@ -158,40 +168,48 @@ export const CardDrawer = ({
     <div />
   )
 
-  const drawerActions = card
-    ? editMode
-      ? (
-          <>
-            <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancelEdit}>
-              취소
-            </Button>
-            <Button
-              variant="accent"
-              size="sm"
-              leftIcon={<Check size={12} />}
-              loading={isUpdating}
-              onClick={handleSave}
-            >
-              저장
-            </Button>
-          </>
-        )
-      : (
-          <>
-            <Button
-              variant="danger"
-              size="sm"
-              leftIcon={<Trash2 size={12} />}
-              onClick={() => setDeleteModalOpen(true)}
-            >
-              삭제
-            </Button>
-            <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={onEditClick}>
-              수정
-            </Button>
-          </>
-        )
-    : null
+  const drawerActions = card ? (
+    editMode ? (
+      <>
+        <Button
+          variant="default"
+          size="sm"
+          leftIcon={<X size={12} />}
+          onClick={handleCancelEdit}
+        >
+          취소
+        </Button>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Check size={12} />}
+          loading={isUpdating}
+          onClick={handleSave}
+        >
+          저장
+        </Button>
+      </>
+    ) : (
+      <>
+        <Button
+          variant="danger"
+          size="sm"
+          leftIcon={<Trash2 size={12} />}
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          삭제
+        </Button>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={onEditClick}
+        >
+          수정
+        </Button>
+      </>
+    )
+  ) : null
 
   const drawerChildren = !card ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
@@ -215,7 +233,9 @@ export const CardDrawer = ({
           onExemptPinChange={setExemptPin}
         />
       )}
-      {activeTab === 'access' && <CardAccessTab card={card} accLvNamesDisplay={accLvNamesDisplay} />}
+      {activeTab === 'access' && (
+        <CardAccessTab card={card} accLvNamesDisplay={accLvNamesDisplay} />
+      )}
       {activeTab === 'hist' && <CardHistTab card={card} />}
     </>
   )

@@ -655,7 +655,7 @@ export default MyComponent
 
 - 파일명: `PascalCase.tsx`
 - `any` 타입 금지, TypeScript strict 모드
-- 절대경로 import: `@/components/ui/Button`
+- 절대경로 import: `@/components/basic/Button`, `@/components/page-actions`
 
 ---
 

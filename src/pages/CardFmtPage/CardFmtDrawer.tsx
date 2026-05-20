@@ -2,13 +2,19 @@ import { useEffect, useState } from 'react'
 import { useForm, type UseFormRegister } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Binary, Check, Hash, Pencil, Settings, Trash2, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
+import { Modal } from '@/components/primitive/Modal'
 import { BitVisualizer } from '@/pages/CardFmtPage/BitVisualizer'
-import { cardFmtEditSchema, type CardFmtEditFormValues } from '@/pages/CardFmtPage/formTypes'
-import { cardfmtToForm, formToCardfmtPayload } from '@/pages/CardFmtPage/utils/cardFmtHelpers'
+import {
+  cardFmtEditSchema,
+  type CardFmtEditFormValues,
+} from '@/pages/CardFmtPage/formTypes'
+import {
+  cardfmtToForm,
+  formToCardfmtPayload,
+} from '@/pages/CardFmtPage/utils/cardFmtHelpers'
 import { useDeleteCardFmt, useUpdateCardFmt } from '@/hooks/useCardfmt'
 import type { CardfmtInfo } from '@/types/api'
 
@@ -48,7 +54,10 @@ const EMPTY_CARD_FMT: CardfmtInfo = {
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
     className="text-[12px] font-medium tracking-wide pb-1.5 mb-2 mt-4 first:mt-0"
-    style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
+    style={{
+      color: 'var(--color-text-subtle)',
+      borderBottom: '0.5px solid var(--color-border)',
+    }}
   >
     {children}
   </p>
@@ -64,7 +73,10 @@ const FRow = ({
   children: React.ReactNode
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
-    <span className="text-[12px] flex items-center gap-1.5 flex-shrink-0" style={{ color: 'var(--color-text-subtle)' }}>
+    <span
+      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      style={{ color: 'var(--color-text-subtle)' }}
+    >
       {icon}
       {label}
     </span>
@@ -75,12 +87,18 @@ const FRow = ({
 const BitStatCard = ({ label, value }: { label: string; value: number }) => (
   <div
     className="rounded p-2.5"
-    style={{ border: '0.5px solid var(--color-border)', background: 'var(--color-btn-hover)' }}
+    style={{
+      border: '0.5px solid var(--color-border)',
+      background: 'var(--color-btn-hover)',
+    }}
   >
     <p className="text-[10px] mb-1" style={{ color: 'var(--color-text-dim)' }}>
       {label}
     </p>
-    <p className="text-[16px] font-mono font-medium" style={{ color: 'var(--color-text)' }}>
+    <p
+      className="text-[16px] font-mono font-medium"
+      style={{ color: 'var(--color-text)' }}
+    >
       {value}
     </p>
   </div>
@@ -99,7 +117,11 @@ const EditNumCell = ({
     <label className="text-[10px] mb-1 block" style={{ color: 'var(--color-text-dim)' }}>
       {label}
     </label>
-    <Input type="number" {...register(name, { valueAsNumber: true })} className="w-full" />
+    <Input
+      type="number"
+      {...register(name, { valueAsNumber: true })}
+      className="w-full"
+    />
   </div>
 )
 
@@ -118,9 +140,16 @@ const NumField = ({
 }) => (
   <FRow icon={<Hash size={12} />} label={label}>
     {editMode ? (
-      <Input type="number" {...register(name, { valueAsNumber: true })} style={{ width: 100 }} />
+      <Input
+        type="number"
+        {...register(name, { valueAsNumber: true })}
+        style={{ width: 100 }}
+      />
     ) : (
-      <span className="text-[13px] font-mono text-right" style={{ color: 'var(--color-text)' }}>
+      <span
+        className="text-[13px] font-mono text-right"
+        style={{ color: 'var(--color-text)' }}
+      >
         {value}
       </span>
     )}
@@ -208,7 +237,10 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
       </div>
       <div className="flex flex-col gap-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-[15px] font-medium leading-tight truncate" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[15px] font-medium leading-tight truncate"
+            style={{ color: 'var(--color-text)' }}
+          >
             {cardfmt.name?.trim() || `형식 #${cardfmt.id}`}
           </span>
           <span
@@ -243,7 +275,12 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
-          <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancel}>
+          <Button
+            variant="default"
+            size="sm"
+            leftIcon={<X size={12} />}
+            onClick={handleCancel}
+          >
             취소
           </Button>
           <Button
@@ -267,7 +304,12 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
         >
           삭제
         </Button>
-        <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={handleEdit}>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={handleEdit}
+        >
           수정
         </Button>
       </>
@@ -303,10 +345,34 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
         </span>
       </FRow>
 
-      <NumField label="시설 코드" name="facility" value={display.facility} editMode={editMode} register={register} />
-      <NumField label="카드 오프셋" name="idOffset" value={display.idOffset} editMode={editMode} register={register} />
-      <NumField label="최소 자릿수" name="minDigits" value={display.minDigits} editMode={editMode} register={register} />
-      <NumField label="최대 자릿수" name="maxDigits" value={display.maxDigits} editMode={editMode} register={register} />
+      <NumField
+        label="시설 코드"
+        name="facility"
+        value={display.facility}
+        editMode={editMode}
+        register={register}
+      />
+      <NumField
+        label="카드 오프셋"
+        name="idOffset"
+        value={display.idOffset}
+        editMode={editMode}
+        register={register}
+      />
+      <NumField
+        label="최소 자릿수"
+        name="minDigits"
+        value={display.minDigits}
+        editMode={editMode}
+        register={register}
+      />
+      <NumField
+        label="최대 자릿수"
+        name="maxDigits"
+        value={display.maxDigits}
+        editMode={editMode}
+        register={register}
+      />
 
       <SectionTitle>비트 구조</SectionTitle>
 
@@ -326,7 +392,10 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
           <EditNumCell label="funcId" name="funcId" register={register} />
           <EditNumCell label="flags" name="flags" register={register} />
           <div className="col-span-2">
-            <label className="text-[10px] mb-1 block" style={{ color: 'var(--color-text-dim)' }}>
+            <label
+              className="text-[10px] mb-1 block"
+              style={{ color: 'var(--color-text-dim)' }}
+            >
               ext
             </label>
             <Input {...register('ext')} className="w-full" />

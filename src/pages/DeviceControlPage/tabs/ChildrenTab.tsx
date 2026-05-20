@@ -1,5 +1,5 @@
 import { ArrowLeftFromLine, ArrowRightToLine, Cpu, ScanLine } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/primitive/Badge'
 import type { ScpChildData } from '@/pages/DeviceControlPage/utils/buildTree'
 import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import type { ScpInfo, SioInfo } from '@/types/api'
@@ -14,7 +14,10 @@ interface ChildrenTabProps {
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
     className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
-    style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
+    style={{
+      color: 'var(--color-text-subtle)',
+      borderBottom: '0.5px solid var(--color-border)',
+    }}
   >
     {children}
   </p>
@@ -62,7 +65,10 @@ const DeviceListSection = ({
 )
 
 const EmptyChildren = () => (
-  <p className="text-[12px] py-6 text-center" style={{ color: 'var(--color-text-subtle)' }}>
+  <p
+    className="text-[12px] py-6 text-center"
+    style={{ color: 'var(--color-text-subtle)' }}
+  >
     하위 장치 없음
   </p>
 )
@@ -100,8 +106,16 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
           SIO «{sio.name}» 하위
         </p>
         <DeviceListSection icon={<ScanLine size={12} />} title="리더" items={readers} />
-        <DeviceListSection icon={<ArrowRightToLine size={12} />} title="입력" items={inputs} />
-        <DeviceListSection icon={<ArrowLeftFromLine size={12} />} title="출력" items={outputs} />
+        <DeviceListSection
+          icon={<ArrowRightToLine size={12} />}
+          title="입력"
+          items={inputs}
+        />
+        <DeviceListSection
+          icon={<ArrowLeftFromLine size={12} />}
+          title="출력"
+          items={outputs}
+        />
       </div>
     )
   }
@@ -117,9 +131,21 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
         SCP «{scp.name}» 전체 하위
       </p>
       <DeviceListSection icon={<Cpu size={12} />} title="SIO" items={data.sios} />
-      <DeviceListSection icon={<ScanLine size={12} />} title="리더" items={data.readers} />
-      <DeviceListSection icon={<ArrowRightToLine size={12} />} title="입력" items={data.inputs} />
-      <DeviceListSection icon={<ArrowLeftFromLine size={12} />} title="출력" items={data.outputs} />
+      <DeviceListSection
+        icon={<ScanLine size={12} />}
+        title="리더"
+        items={data.readers}
+      />
+      <DeviceListSection
+        icon={<ArrowRightToLine size={12} />}
+        title="입력"
+        items={data.inputs}
+      />
+      <DeviceListSection
+        icon={<ArrowLeftFromLine size={12} />}
+        title="출력"
+        items={data.outputs}
+      />
     </div>
   )
 }

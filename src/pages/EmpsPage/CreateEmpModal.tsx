@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
 import { createEmpSchema, type CreateEmpFormValues } from '@/pages/EmpsPage/formTypes'
 import { useCreateEmp } from '@/hooks/useEmps'
 import type { CreateEmpRequest } from '@/types/api'
@@ -87,7 +87,10 @@ export const CreateEmpModal = ({ open, onClose }: CreateEmpModalProps) => {
         className="rounded-md p-5 w-[320px]"
         style={{ background: 'var(--color-sidebar)', border: '0.5px solid #2a2d32' }}
       >
-        <p className="text-[13px] font-medium mb-4" style={{ color: 'var(--color-text)' }}>
+        <p
+          className="text-[13px] font-medium mb-4"
+          style={{ color: 'var(--color-text)' }}
+        >
           사용자 추가
         </p>
         <form
@@ -98,7 +101,10 @@ export const CreateEmpModal = ({ open, onClose }: CreateEmpModalProps) => {
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
               이름
             </label>
-            <Input {...createForm.register('name')} error={createForm.formState.errors.name?.message} />
+            <Input
+              {...createForm.register('name')}
+              error={createForm.formState.errors.name?.message}
+            />
           </div>
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
@@ -125,13 +131,19 @@ export const CreateEmpModal = ({ open, onClose }: CreateEmpModalProps) => {
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
               부서
             </label>
-            <Input type="number" {...createForm.register('dept', { valueAsNumber: true })} />
+            <Input
+              type="number"
+              {...createForm.register('dept', { valueAsNumber: true })}
+            />
           </div>
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
               직급(lv)
             </label>
-            <Input type="number" {...createForm.register('lv', { valueAsNumber: true })} />
+            <Input
+              type="number"
+              {...createForm.register('lv', { valueAsNumber: true })}
+            />
           </div>
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
@@ -143,7 +155,10 @@ export const CreateEmpModal = ({ open, onClose }: CreateEmpModalProps) => {
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>
               이메일
             </label>
-            <Input {...createForm.register('email')} error={createForm.formState.errors.email?.message} />
+            <Input
+              {...createForm.register('email')}
+              error={createForm.formState.errors.email?.message}
+            />
           </div>
           {createForm.formState.errors.root?.message ? (
             <p className="text-[11px] mb-2 leading-snug" style={{ color: '#c75c5c' }}>

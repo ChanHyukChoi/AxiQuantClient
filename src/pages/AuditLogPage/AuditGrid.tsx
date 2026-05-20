@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/primitive/Button'
 import { actionBadgeStyle } from '@/pages/AuditLogPage/utils/auditBadge'
 import type { AuditLogItem } from '@/types/api/audit'
 
@@ -40,44 +40,71 @@ export const AuditGrid = ({
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
       <div className="flex-1 overflow-auto app-scrollbar">
-        <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
-          <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--color-sidebar)' }}>
+        <table
+          style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}
+        >
+          <thead
+            style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 10,
+              background: 'var(--color-sidebar)',
+            }}
+          >
             <tr>
-              {['시간', '사용자', '클라이언트 유형', '동작 유형', '데이터 유형', '컨트롤러', '데이터'].map(
-                (h) => (
-                  <th
-                    key={h}
-                    style={{
-                      padding: '6px 10px',
-                      textAlign: 'left',
-                      fontSize: 11,
-                      fontWeight: 500,
-                      color: 'var(--color-text-dim)',
-                      borderBottom: '0.5px solid var(--color-border)',
-                    }}
-                  >
-                    {h}
-                  </th>
-                ),
-              )}
+              {[
+                '시간',
+                '사용자',
+                '클라이언트 유형',
+                '동작 유형',
+                '데이터 유형',
+                '컨트롤러',
+                '데이터',
+              ].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    padding: '6px 10px',
+                    textAlign: 'left',
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: 'var(--color-text-dim)',
+                    borderBottom: '0.5px solid var(--color-border)',
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <td
+                  colSpan={7}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   불러오는 중...
                 </td>
               </tr>
             ) : error ? (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-[12px]" style={{ color: '#e06060' }}>
+                <td
+                  colSpan={7}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: '#e06060' }}
+                >
                   운영 기록을 불러오지 못했습니다.
                 </td>
               </tr>
             ) : items.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-8 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <td
+                  colSpan={7}
+                  className="text-center py-8 text-[12px]"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   표시할 기록이 없습니다.
                 </td>
               </tr>

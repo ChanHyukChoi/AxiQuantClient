@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Bell, Mail, Star } from 'lucide-react'
-import { Tab } from '@/components/ui/Tab'
-import type { TabItem } from '@/components/ui/Tab'
+import { Tab } from '@/components/primitive/Tab'
+import type { TabItem } from '@/components/primitive/Tab'
 import { AlarmMailTab } from '@/pages/AlarmSettingsPage/tabs/AlarmMailTab'
 import { AlarmPriorityTab } from '@/pages/AlarmSettingsPage/tabs/AlarmPriorityTab'
 import { AlarmRulesTab } from '@/pages/AlarmSettingsPage/tabs/AlarmRulesTab'
@@ -29,14 +29,21 @@ export const AlarmSettingsPage = () => {
       >
         <div className="flex items-center gap-1.5">
           <Bell style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[13px] font-medium"
+            style={{ color: 'var(--color-text)' }}
+          >
             경보 설정
           </span>
         </div>
       </div>
 
       <div className="flex-shrink-0 px-3 pt-2">
-        <Tab items={PAGE_TABS} activeKey={activeTab} onChange={(k) => setActiveTab(k as AlarmSettingsTab)} />
+        <Tab
+          items={PAGE_TABS}
+          activeKey={activeTab}
+          onChange={(k) => setActiveTab(k as AlarmSettingsTab)}
+        />
       </div>
 
       <div className="flex flex-1 overflow-hidden min-h-0">

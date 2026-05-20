@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Info, Pencil, Shield, Trash2, User, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Modal } from '@/components/primitive/Modal'
 import { userEditSchema, type UserEditFormValues } from '@/pages/UsersPage/formTypes'
 import { UserInfoTab } from '@/pages/UsersPage/tabs/UserInfoTab'
 import { UserPermissionsTab } from '@/pages/UsersPage/tabs/UserPermissionsTab'
@@ -39,10 +39,11 @@ export const UserDrawer = ({
   const updateMut = useUpdateUser()
   const deleteMut = useDeleteUser()
 
-  const { register, handleSubmit, reset, control, watch, setValue } = useForm<UserEditFormValues>({
-    resolver: zodResolver(userEditSchema),
-    defaultValues: emptyUserForm(),
-  })
+  const { register, handleSubmit, reset, control, watch, setValue } =
+    useForm<UserEditFormValues>({
+      resolver: zodResolver(userEditSchema),
+      defaultValues: emptyUserForm(),
+    })
 
   const values = watch()
 
@@ -58,12 +59,13 @@ export const UserDrawer = ({
     if (user) reset(userToForm(user))
   }, [user?.id, user, isCreating, reset])
 
-  const drawerTabs = user || isCreating
-    ? [
-        { key: 'info', label: '기본 정보', icon: <Info size={12} /> },
-        { key: 'permissions', label: '권한', icon: <Shield size={12} /> },
-      ]
-    : undefined
+  const drawerTabs =
+    user || isCreating
+      ? [
+          { key: 'info', label: '기본 정보', icon: <Info size={12} /> },
+          { key: 'permissions', label: '권한', icon: <Shield size={12} /> },
+        ]
+      : undefined
 
   const handleEdit = () => {
     if (!user) return
@@ -133,11 +135,17 @@ export const UserDrawer = ({
         header={
           headerTitle ? (
             <div>
-              <p className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
+              <p
+                className="text-[14px] font-medium"
+                style={{ color: 'var(--color-text)' }}
+              >
                 {headerTitle}
               </p>
               {!isCreating && user && (
-                <p className="text-[11px] font-mono mt-0.5" style={{ color: 'var(--color-text-subtle)' }}>
+                <p
+                  className="text-[11px] font-mono mt-0.5"
+                  style={{ color: 'var(--color-text-subtle)' }}
+                >
                   {user.loginId}
                 </p>
               )}
@@ -157,7 +165,12 @@ export const UserDrawer = ({
         actions={
           user && !isCreating && !editMode ? (
             <>
-              <Button size="sm" variant="default" leftIcon={<Pencil size={13} />} onClick={handleEdit}>
+              <Button
+                size="sm"
+                variant="default"
+                leftIcon={<Pencil size={13} />}
+                onClick={handleEdit}
+              >
                 수정
               </Button>
               <Button
@@ -171,10 +184,20 @@ export const UserDrawer = ({
             </>
           ) : showActions ? (
             <>
-              <Button size="sm" variant="accent" leftIcon={<Check size={13} />} onClick={() => void handleSave()}>
+              <Button
+                size="sm"
+                variant="accent"
+                leftIcon={<Check size={13} />}
+                onClick={() => void handleSave()}
+              >
                 저장
               </Button>
-              <Button size="sm" variant="default" leftIcon={<X size={13} />} onClick={handleCancel}>
+              <Button
+                size="sm"
+                variant="default"
+                leftIcon={<X size={13} />}
+                onClick={handleCancel}
+              >
                 취소
               </Button>
             </>

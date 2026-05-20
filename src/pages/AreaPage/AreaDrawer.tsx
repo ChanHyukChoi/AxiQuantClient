@@ -1,20 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Check,
-  Info,
-  MapPin,
-  Pencil,
-  ScanLine,
-  Trash2,
-  Users,
-  X,
-} from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Modal } from '@/components/ui/Modal'
+import { Check, Info, MapPin, Pencil, ScanLine, Trash2, Users, X } from 'lucide-react'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
+import { Modal } from '@/components/primitive/Modal'
 import { areaEditSchema, type AreaEditFormValues } from '@/pages/AreaPage/formTypes'
 import { AreaInfoTab } from '@/pages/AreaPage/tabs/AreaInfoTab'
 import { AreaOccupantsTab } from '@/pages/AreaPage/tabs/AreaOccupantsTab'
@@ -160,11 +151,15 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
         <MapPin size={20} strokeWidth={1.6} />
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-[15px] font-medium leading-tight truncate" style={{ color: 'var(--color-text)' }}>
+        <span
+          className="text-[15px] font-medium leading-tight truncate"
+          style={{ color: 'var(--color-text)' }}
+        >
           {area.name?.trim() || `영역 #${area.id}`}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-          {isAreaActive(area.active) ? '활성' : '비활성'} · 점유 {area.occup}/{area.occmax}
+          {isAreaActive(area.active) ? '활성' : '비활성'} · 점유 {area.occup}/
+          {area.occmax}
         </span>
         <span
           className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full font-mono w-fit"
@@ -191,7 +186,12 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
-          <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancel}>
+          <Button
+            variant="default"
+            size="sm"
+            leftIcon={<X size={12} />}
+            onClick={handleCancel}
+          >
             취소
           </Button>
           <Button
@@ -215,7 +215,12 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
         >
           삭제
         </Button>
-        <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={handleEdit}>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={handleEdit}
+        >
           수정
         </Button>
       </>
@@ -298,9 +303,15 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div
             className="rounded-md p-5 w-[300px]"
-            style={{ background: 'var(--color-sidebar)', border: '0.5px solid var(--color-border)' }}
+            style={{
+              background: 'var(--color-sidebar)',
+              border: '0.5px solid var(--color-border)',
+            }}
           >
-            <p className="text-[13px] font-medium mb-1" style={{ color: 'var(--color-text)' }}>
+            <p
+              className="text-[13px] font-medium mb-1"
+              style={{ color: 'var(--color-text)' }}
+            >
               점유 설정 (occset)
             </p>
             <p className="text-[11px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
@@ -327,7 +338,11 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
               >
                 취소
               </Button>
-              <Button variant="accent" loading={updateAreaMut.isPending} onClick={handleSetOccupancyConfirm}>
+              <Button
+                variant="accent"
+                loading={updateAreaMut.isPending}
+                onClick={handleSetOccupancyConfirm}
+              >
                 적용
               </Button>
             </div>

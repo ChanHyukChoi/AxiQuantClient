@@ -2,18 +2,14 @@ import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Clock, Cpu, Pencil, ScanLine, Shield, Trash2, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
+import { Modal } from '@/components/primitive/Modal'
 import { IdNameTable } from '@/pages/AccessPage/components/IdNameTable'
 import { SectionBlock } from '@/pages/AccessPage/components/SectionBlock'
 import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
-import {
-  useAccLvReaderList,
-  useDeleteAccLv,
-  useUpdateAccLv,
-} from '@/hooks/useAccLv'
+import { useAccLvReaderList, useDeleteAccLv, useUpdateAccLv } from '@/hooks/useAccLv'
 import { useScpList } from '@/hooks/useScp'
 import { useTimezoneList } from '@/hooks/useTimezone'
 import type { AccLvInfo, AccLvRdrInfo, UpdateAccLvRequest } from '@/types/api'
@@ -33,7 +29,9 @@ export const AccessDrawer = ({
   const [editMode, setEditMode] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 
-  const { data: readerList, isLoading: readerLoading } = useAccLvReaderList(selectedId ?? 0)
+  const { data: readerList, isLoading: readerLoading } = useAccLvReaderList(
+    selectedId ?? 0,
+  )
   const { data: scpList } = useScpList()
   const { data: timezoneList, isLoading: timezoneLoading } = useTimezoneList()
 
@@ -125,7 +123,10 @@ export const AccessDrawer = ({
   }
 
   const drawerHeader = selectedAccLv ? (
-    <div className="flex items-start gap-3 pb-3" style={{ borderBottom: '0.5px solid var(--color-border)' }}>
+    <div
+      className="flex items-start gap-3 pb-3"
+      style={{ borderBottom: '0.5px solid var(--color-border)' }}
+    >
       <div
         className="w-[38px] h-[38px] rounded-lg flex items-center justify-center flex-shrink-0"
         style={{ background: '#1a3a5c' }}
@@ -134,9 +135,15 @@ export const AccessDrawer = ({
       </div>
       <div className="flex flex-col gap-1 min-w-0 flex-1">
         {editMode ? (
-          <Input {...updateForm.register('name')} error={updateForm.formState.errors.name?.message} />
+          <Input
+            {...updateForm.register('name')}
+            error={updateForm.formState.errors.name?.message}
+          />
         ) : (
-          <span className="text-[14px] font-medium leading-tight" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="text-[14px] font-medium leading-tight"
+            style={{ color: 'var(--color-text)' }}
+          >
             {selectedAccLv.name}
           </span>
         )}
@@ -157,40 +164,48 @@ export const AccessDrawer = ({
     <div />
   )
 
-  const drawerActions = selectedAccLv
-    ? editMode
-      ? (
-          <>
-            <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancelEdit}>
-              취소
-            </Button>
-            <Button
-              variant="accent"
-              size="sm"
-              leftIcon={<Check size={12} />}
-              loading={isUpdating}
-              onClick={handleSave}
-            >
-              저장
-            </Button>
-          </>
-        )
-      : (
-          <>
-            <Button
-              variant="danger"
-              size="sm"
-              leftIcon={<Trash2 size={12} />}
-              onClick={() => setDeleteModalOpen(true)}
-            >
-              삭제
-            </Button>
-            <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={onEditClick}>
-              수정
-            </Button>
-          </>
-        )
-    : null
+  const drawerActions = selectedAccLv ? (
+    editMode ? (
+      <>
+        <Button
+          variant="default"
+          size="sm"
+          leftIcon={<X size={12} />}
+          onClick={handleCancelEdit}
+        >
+          취소
+        </Button>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Check size={12} />}
+          loading={isUpdating}
+          onClick={handleSave}
+        >
+          저장
+        </Button>
+      </>
+    ) : (
+      <>
+        <Button
+          variant="danger"
+          size="sm"
+          leftIcon={<Trash2 size={12} />}
+          onClick={() => setDeleteModalOpen(true)}
+        >
+          삭제
+        </Button>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={onEditClick}
+        >
+          수정
+        </Button>
+      </>
+    )
+  ) : null
 
   const drawerBody = !selectedAccLv ? (
     <div className="flex items-center justify-center min-h-[160px]">

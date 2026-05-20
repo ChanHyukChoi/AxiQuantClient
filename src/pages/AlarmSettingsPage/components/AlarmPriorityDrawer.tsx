@@ -2,12 +2,18 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Pencil, Star, Trash2, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Modal } from '@/components/ui/Modal'
-import { alarmPrioritySchema, type AlarmPriorityFormValues } from '@/pages/AlarmSettingsPage/formTypes'
-import { normalizeHexColor, priorityToUpdatePayload } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Input } from '@/components/primitive/Input'
+import { Modal } from '@/components/primitive/Modal'
+import {
+  alarmPrioritySchema,
+  type AlarmPriorityFormValues,
+} from '@/pages/AlarmSettingsPage/formTypes'
+import {
+  normalizeHexColor,
+  priorityToUpdatePayload,
+} from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
 import { useDeleteAlarmPriority, useUpdateAlarmPriority } from '@/hooks/useAlarmSettings'
 import type { AlarmPriorityInfo } from '@/types/api'
 
@@ -29,10 +35,11 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
   const updateMut = useUpdateAlarmPriority()
   const deleteMut = useDeleteAlarmPriority()
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm<AlarmPriorityFormValues>({
-    resolver: zodResolver(alarmPrioritySchema),
-    defaultValues: { priority: 0, color: '#4f9cf9' },
-  })
+  const { register, handleSubmit, reset, setValue, watch } =
+    useForm<AlarmPriorityFormValues>({
+      resolver: zodResolver(alarmPrioritySchema),
+      defaultValues: { priority: 0, color: '#4f9cf9' },
+    })
 
   const color = watch('color')
 
@@ -61,7 +68,11 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
     setSaveError(null)
     const ok = await updateMut.mutateAsync({
       id: item.id,
-      data: { ...priorityToUpdatePayload(item), ...values, color: normalizeHexColor(values.color) },
+      data: {
+        ...priorityToUpdatePayload(item),
+        ...values,
+        color: normalizeHexColor(values.color),
+      },
     })
     if (ok) setEditMode(false)
     else setSaveError('?�?�하지 못했?�니??')
@@ -100,7 +111,10 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
         </span>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full" style={{ background: hex }} />
-          <span className="text-[12px] font-mono" style={{ color: 'var(--color-text-subtle)' }}>
+          <span
+            className="text-[12px] font-mono"
+            style={{ color: 'var(--color-text-subtle)' }}
+          >
             {hex}
           </span>
         </div>
@@ -121,7 +135,12 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
-          <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancel}>
+          <Button
+            variant="default"
+            size="sm"
+            leftIcon={<X size={12} />}
+            onClick={handleCancel}
+          >
             취소
           </Button>
           <Button
@@ -145,7 +164,12 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
         >
           ??��
         </Button>
-        <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={handleEdit}>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={handleEdit}
+        >
           ?�정
         </Button>
       </>
@@ -158,39 +182,55 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
         {item && editMode ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <span className="text-[11px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
+              <span
+                className="text-[11px] font-medium"
+                style={{ color: 'var(--color-text-subtle)' }}
+              >
                 ?�선?�위
               </span>
               <Input type="number" {...register('priority', { valueAsNumber: true })} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="text-[11px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
+              <span
+                className="text-[11px] font-medium"
+                style={{ color: 'var(--color-text-subtle)' }}
+              >
                 ?�상
               </span>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
                   value={hex}
-                  onChange={(e) => setValue('color', e.target.value, { shouldDirty: true })}
+                  onChange={(e) =>
+                    setValue('color', e.target.value, { shouldDirty: true })
+                  }
                   className="w-10 h-8 cursor-pointer border-0 p-0 bg-transparent"
                 />
                 <Input
                   value={color}
-                  onChange={(e) => setValue('color', e.target.value, { shouldDirty: true })}
+                  onChange={(e) =>
+                    setValue('color', e.target.value, { shouldDirty: true })
+                  }
                   placeholder="#RRGGBB"
                 />
               </div>
             </div>
           </div>
         ) : item ? (
-          <div className="flex flex-col gap-3 text-[12px]" style={{ color: 'var(--color-text-muted)' }}>
+          <div
+            className="flex flex-col gap-3 text-[12px]"
+            style={{ color: 'var(--color-text-muted)' }}
+          >
             <p>
               <span style={{ color: 'var(--color-text-subtle)' }}>?�선?�위: </span>
               {item.priority}
             </p>
             <div className="flex items-center gap-2">
               <span style={{ color: 'var(--color-text-subtle)' }}>?�상: </span>
-              <span className="w-4 h-4 rounded-full" style={{ background: normalizeHexColor(item.color) }} />
+              <span
+                className="w-4 h-4 rounded-full"
+                style={{ background: normalizeHexColor(item.color) }}
+              />
               <span className="font-mono">{normalizeHexColor(item.color)}</span>
             </div>
           </div>

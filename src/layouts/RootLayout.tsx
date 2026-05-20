@@ -2,7 +2,7 @@ import { Outlet } from '@tanstack/react-router'
 import { TitleBar } from '@/layouts/TitleBar'
 import { Sidebar } from '@/layouts/Sidebar'
 import { useSidebarStore } from '@/stores/sidebarStore'
-import { ToastHost } from '@/components/ui/Toast'
+import { ToastHost } from '@/components/primitive/Toast'
 import { useDeviceControlSse } from '@/hooks/useDeviceControlSse'
 import { useSseInvalidate } from '@/hooks/useSseInvalidate'
 

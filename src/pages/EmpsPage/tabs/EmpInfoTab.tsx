@@ -10,7 +10,7 @@ import {
   User,
   Users,
 } from 'lucide-react'
-import { Input } from '@/components/ui/Input'
+import { Input } from '@/components/primitive/Input'
 import { FRow, FieldValue, SectionTitle } from '@/pages/EmpsPage/components/EmpFieldUi'
 import type { EmpInfo, UpdateEmpRequest } from '@/types/api'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
@@ -33,7 +33,11 @@ export const EmpInfoTab = ({ emp, editMode, register, errors }: EmpInfoTabProps)
     <div>
       <SectionTitle>기본 정보</SectionTitle>
       <FRow icon={<User size={12} />} label="이름">
-        {editMode ? <Input {...register('name')} style={{ width: 148 }} /> : val(emp.name)}
+        {editMode ? (
+          <Input {...register('name')} style={{ width: 148 }} />
+        ) : (
+          val(emp.name)
+        )}
       </FRow>
       <FRow icon={<Hash size={12} />} label="사번">
         {val(emp.udef, true)}
@@ -52,7 +56,11 @@ export const EmpInfoTab = ({ emp, editMode, register, errors }: EmpInfoTabProps)
       </FRow>
       <FRow icon={<Network size={12} />} label="부서">
         {editMode ? (
-          <Input type="number" {...register('dept', { valueAsNumber: true })} style={{ width: 148 }} />
+          <Input
+            type="number"
+            {...register('dept', { valueAsNumber: true })}
+            style={{ width: 148 }}
+          />
         ) : (
           val(emp.dept !== 0 ? String(emp.dept) : undefined)
         )}
@@ -64,11 +72,19 @@ export const EmpInfoTab = ({ emp, editMode, register, errors }: EmpInfoTabProps)
       <div className="mt-4" />
       <SectionTitle>연락처</SectionTitle>
       <FRow icon={<Phone size={12} />} label="전화">
-        {editMode ? <Input {...register('tel')} style={{ width: 148 }} /> : val(emp.tel, true)}
+        {editMode ? (
+          <Input {...register('tel')} style={{ width: 148 }} />
+        ) : (
+          val(emp.tel, true)
+        )}
       </FRow>
       <FRow icon={<Mail size={12} />} label="이메일">
         {editMode ? (
-          <Input {...register('email')} error={errors.email?.message} style={{ width: 148 }} />
+          <Input
+            {...register('email')}
+            error={errors.email?.message}
+            style={{ width: 148 }}
+          />
         ) : (
           <FieldValue small>{emp.email.trim() !== '' ? emp.email : '—'}</FieldValue>
         )}

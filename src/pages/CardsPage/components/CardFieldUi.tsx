@@ -1,10 +1,13 @@
 import { Check } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/primitive/Badge'
 
 export const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
     className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
-    style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
+    style={{
+      color: 'var(--color-text-subtle)',
+      borderBottom: '0.5px solid var(--color-border)',
+    }}
   >
     {children}
   </p>
@@ -20,7 +23,10 @@ export const FRow = ({
   children: React.ReactNode
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
-    <span className="text-[12px] flex items-center gap-1.5 flex-shrink-0" style={{ color: 'var(--color-text-subtle)' }}>
+    <span
+      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      style={{ color: 'var(--color-text-subtle)' }}
+    >
       {icon}
       {label}
     </span>
@@ -38,7 +44,11 @@ export const FieldValue = ({
   small?: boolean
 }) => (
   <span
-    className={['text-right', mono ? 'font-mono' : '', small ? 'text-[12px]' : 'text-[13px]']
+    className={[
+      'text-right',
+      mono ? 'font-mono' : '',
+      small ? 'text-[12px]' : 'text-[13px]',
+    ]
       .filter(Boolean)
       .join(' ')}
     style={{ color: 'var(--color-text)' }}
@@ -54,7 +64,9 @@ export const selectLikeStyle: React.CSSProperties = {
   borderColor: 'var(--color-btn-default-border)',
 }
 
-export const typeBadgeVariant = (type: string): NonNullable<React.ComponentProps<typeof Badge>['variant']> => {
+export const typeBadgeVariant = (
+  type: string,
+): NonNullable<React.ComponentProps<typeof Badge>['variant']> => {
   if (type === '방문') return 'visit'
   if (type === '발급') return 'issue'
   return 'card'

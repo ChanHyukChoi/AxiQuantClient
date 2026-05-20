@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
-import { CreditCard, Download, Plus, Printer, SlidersHorizontal } from 'lucide-react'
-import { Grid } from '@/components/ui/Grid'
-import { Button } from '@/components/ui/Button'
+import { CreditCard, SlidersHorizontal } from 'lucide-react'
+import { Grid } from '@/components/primitive/Grid'
+import { Button } from '@/components/primitive/Button'
+import { AddButton, ExportButton, PrintButton } from '@/components/page-actions'
+import { PageHeader } from '@/layouts/PageHeader'
 import { CardDrawer } from '@/pages/CardsPage/CardDrawer'
 import { CreateCardModal } from '@/pages/CardsPage/CreateCardModal'
 import { useCardColumns } from '@/pages/CardsPage/useCardColumns'
@@ -74,32 +76,17 @@ export const CardsPage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div
-        className="flex items-center justify-between flex-shrink-0 px-3"
-        style={{
-          height: 42,
-          background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid var(--color-border)',
-        }}
-      >
-        <div className="flex items-center gap-1.5">
-          <CreditCard style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
-            카드
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Button variant="default" leftIcon={<Download size={12} />}>
-           보내기
-          </Button>
-          <Button variant="default" leftIcon={<Printer size={12} />}>
-            인쇄
-          </Button>
-          <Button variant="accent" leftIcon={<Plus size={12} />} onClick={() => setCreateModalOpen(true)}>
-            추가
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="카드"
+        icon={<CreditCard size={15} />}
+        actions={
+          <>
+            <ExportButton />
+            <PrintButton />
+            <AddButton onClick={() => setCreateModalOpen(true)} />
+          </>
+        }
+      />
 
       <div className="flex flex-1 overflow-hidden">
         <Grid
@@ -112,7 +99,11 @@ export const CardsPage = () => {
           totalCount={filteredCards.length}
           loading={cardLoading}
           actions={
-            <Button variant="default" size="sm" leftIcon={<SlidersHorizontal size={12} />}>
+            <Button
+              variant="default"
+              size="sm"
+              leftIcon={<SlidersHorizontal size={12} />}
+            >
               필터
             </Button>
           }

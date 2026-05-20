@@ -1,6 +1,9 @@
-import { SearchField } from '@/components/ui/SearchField'
-import { Badge } from '@/components/ui/Badge'
-import { deviceDisplayLabel, isAlarmActive } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
+import { SearchField } from '@/components/primitive/SearchField'
+import { Badge } from '@/components/primitive/Badge'
+import {
+  deviceDisplayLabel,
+  isAlarmActive,
+} from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
 import type { AlarmInfo } from '@/types/api'
 
 interface AlarmRulesListPaneProps {
@@ -36,16 +39,15 @@ export const AlarmRulesListPane = ({
         borderBottom: '0.5px solid var(--color-border)',
       }}
     >
-      <SearchField
-        value={searchQuery}
-        placeholder="경보명 검색..."
-        onChange={onSearch}
-      />
+      <SearchField value={searchQuery} placeholder="경보명 검색..." onChange={onSearch} />
     </div>
 
     <div className="flex-1 overflow-y-auto app-scrollbar">
       {loading ? (
-        <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+        <p
+          className="text-[12px] text-center py-8"
+          style={{ color: 'var(--color-text-subtle)' }}
+        >
           불러오는 중...
         </p>
       ) : error ? (
@@ -53,7 +55,10 @@ export const AlarmRulesListPane = ({
           경보 목록을 불러오지 못했습니다.
         </p>
       ) : alarms.length === 0 ? (
-        <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+        <p
+          className="text-[12px] text-center py-8"
+          style={{ color: 'var(--color-text-subtle)' }}
+        >
           {searchQuery.trim() ? '검색 결과가 없습니다.' : '등록된 경보가 없습니다.'}
         </p>
       ) : (
@@ -75,14 +80,17 @@ export const AlarmRulesListPane = ({
               style={{
                 background: isSelected ? 'var(--color-row-selected)' : 'transparent',
                 borderBottom: '0.5px solid var(--color-border-subtle)',
-                borderRight: isSelected ? '2px solid var(--color-accent)' : '2px solid transparent',
+                borderRight: isSelected
+                  ? '2px solid var(--color-accent)'
+                  : '2px solid transparent',
               }}
               onMouseEnter={(e) => {
                 if (!isSelected)
-                  (e.currentTarget as HTMLDivElement).style.background = 'var(--color-btn-hover)'
+                  (e.currentTarget as HTMLDivElement).style.background =
+                    'var(--color-btn-hover)'
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLDivElement).style.background = isSelected
+                ;(e.currentTarget as HTMLDivElement).style.background = isSelected
                   ? 'var(--color-row-selected)'
                   : 'transparent'
               }}
@@ -98,7 +106,10 @@ export const AlarmRulesListPane = ({
                   {isAlarmActive(alarm.active) ? '활성' : '비활성'}
                 </Badge>
               </div>
-              <p className="text-[11px] mt-1 truncate" style={{ color: 'var(--color-text-subtle)' }}>
+              <p
+                className="text-[11px] mt-1 truncate"
+                style={{ color: 'var(--color-text-subtle)' }}
+              >
                 {deviceDisplayLabel(alarm.deviceType, alarm.deviceId, scpNameMap)}
               </p>
             </div>

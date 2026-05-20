@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { Check, X } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { SearchField } from '@/components/ui/SearchField'
+import { Button } from '@/components/primitive/Button'
+import { SearchField } from '@/components/primitive/SearchField'
 import { getInputList } from '@/api/input'
 import { getOutputList } from '@/api/output'
 import { getReaderList } from '@/api/reader'
@@ -19,7 +19,11 @@ import {
 import { useModules, useScps } from '@/hooks/useDeviceControl'
 import { queryKeys } from '@/lib/query/queryKeys'
 
-const DEFAULT_EXPANDED = new Set(['group:controllers', 'group:standalone', 'group:modules'])
+const DEFAULT_EXPANDED = new Set([
+  'group:controllers',
+  'group:standalone',
+  'group:modules',
+])
 
 interface DevicePickerModalProps {
   open: boolean
@@ -38,10 +42,16 @@ const findNodeLabel = (key: string, nodes: DeviceTreeNode[]): string | null => {
   return null
 }
 
-export const DevicePickerModal = ({ open, onCancel, onConfirm }: DevicePickerModalProps) => {
+export const DevicePickerModal = ({
+  open,
+  onCancel,
+  onConfirm,
+}: DevicePickerModalProps) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
-  const [expandedKeys, setExpandedKeys] = useState<Set<string>>(() => new Set(DEFAULT_EXPANDED))
+  const [expandedKeys, setExpandedKeys] = useState<Set<string>>(
+    () => new Set(DEFAULT_EXPANDED),
+  )
 
   const { data: scps, isLoading: scpsLoading, isError: scpsError } = useScps()
   const { data: modules, isLoading: modulesLoading } = useModules()
@@ -152,7 +162,8 @@ export const DevicePickerModal = ({ open, onCancel, onConfirm }: DevicePickerMod
 
   if (!open) return null
 
-  const canSelect = selectedKey != null && parseDeviceNodeKey(selectedKey)?.kind !== 'module'
+  const canSelect =
+    selectedKey != null && parseDeviceNodeKey(selectedKey)?.kind !== 'module'
   const loading = scpsLoading || modulesLoading
 
   return (
@@ -175,7 +186,10 @@ export const DevicePickerModal = ({ open, onCancel, onConfirm }: DevicePickerMod
             className="flex items-center justify-between px-3 py-2.5 border-b"
             style={{ borderColor: 'var(--color-border)' }}
           >
-            <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+            <span
+              className="text-[13px] font-medium"
+              style={{ color: 'var(--color-text)' }}
+            >
               장치 선택
             </span>
             <button
@@ -209,7 +223,10 @@ export const DevicePickerModal = ({ open, onCancel, onConfirm }: DevicePickerMod
                 불러오는 중...
               </p>
             ) : scpsError ? (
-              <p className="text-[12px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
+              <p
+                className="text-[12px] text-center py-8 px-3"
+                style={{ color: '#c75c5c' }}
+              >
                 장치 목록을 불러오지 못했습니다.
               </p>
             ) : (

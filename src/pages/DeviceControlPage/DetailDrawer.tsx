@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Info, Layers, Pencil, Sliders, Trash2, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Modal } from '@/components/primitive/Modal'
 import {
   deviceControlFormSchema,
   type DeviceControlFormValues,
@@ -12,7 +12,10 @@ import {
 import { ChildrenTab } from '@/pages/DeviceControlPage/tabs/ChildrenTab'
 import { ControlTab } from '@/pages/DeviceControlPage/tabs/ControlTab'
 import { InfoTab } from '@/pages/DeviceControlPage/tabs/InfoTab'
-import type { ParsedDeviceNode, ScpChildData } from '@/pages/DeviceControlPage/utils/buildTree'
+import type {
+  ParsedDeviceNode,
+  ScpChildData,
+} from '@/pages/DeviceControlPage/utils/buildTree'
 import {
   DEVICE_ICON_COLORS,
   DEVICE_ICONS,
@@ -34,7 +37,14 @@ import {
   useUpdateScp,
   useUpdateSio,
 } from '@/hooks/useDeviceControl'
-import type { InputInfo, ModuleInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
+import type {
+  InputInfo,
+  ModuleInfo,
+  OutputInfo,
+  ReaderInfo,
+  ScpInfo,
+  SioInfo,
+} from '@/types/api'
 
 interface DetailDrawerProps {
   selectedKey: string | null
@@ -99,7 +109,9 @@ const outputToForm = (o: OutputInfo): DeviceControlFormValues => ({
   mode: o.mode,
 })
 
-const omitIdScp = <T extends { id: number; scp: number }>(row: T): Omit<T, 'id' | 'scp'> => {
+const omitIdScp = <T extends { id: number; scp: number }>(
+  row: T,
+): Omit<T, 'id' | 'scp'> => {
   const { id, scp, ...rest } = row
   void id
   void scp
@@ -330,7 +342,9 @@ export const DetailDrawer = ({
   const HeaderIcon =
     parsed?.kind === 'module' ? MODULE_ICON : parsed ? DEVICE_ICONS[parsed.kind] : Info
   const headerColor =
-    parsed?.kind === 'module' ? MODULE_ICON_COLOR : DEVICE_ICON_COLORS[headerKind as keyof typeof DEVICE_ICON_COLORS]
+    parsed?.kind === 'module'
+      ? MODULE_ICON_COLOR
+      : DEVICE_ICON_COLORS[headerKind as keyof typeof DEVICE_ICON_COLORS]
 
   const drawerHeader = parsed ? (
     <div
@@ -349,7 +363,10 @@ export const DetailDrawer = ({
         <HeaderIcon size={20} strokeWidth={1.6} />
       </div>
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-[15px] font-medium leading-tight truncate" style={{ color: 'var(--color-text)' }}>
+        <span
+          className="text-[15px] font-medium leading-tight truncate"
+          style={{ color: 'var(--color-text)' }}
+        >
           {selectedLabel}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
@@ -358,7 +375,7 @@ export const DetailDrawer = ({
             : parsed.kind === 'reader' && parsed.standalone
               ? '단독 리더'
               : parsed.scpId > 0
-                ? scpNameMap[parsed.scpId] ?? `SCP #${parsed.scpId}`
+                ? (scpNameMap[parsed.scpId] ?? `SCP #${parsed.scpId}`)
                 : '—'}
         </span>
         {parsed.kind !== 'module' ? (
@@ -382,12 +399,20 @@ export const DetailDrawer = ({
       editMode ? (
         <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
           {saveError ? (
-            <p className="text-[11px] leading-snug text-right" style={{ color: '#c75c5c' }}>
+            <p
+              className="text-[11px] leading-snug text-right"
+              style={{ color: '#c75c5c' }}
+            >
               {saveError}
             </p>
           ) : null}
           <div className="flex justify-end gap-1.5">
-            <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancel}>
+            <Button
+              variant="default"
+              size="sm"
+              leftIcon={<X size={12} />}
+              onClick={handleCancel}
+            >
               취소
             </Button>
             <Button
@@ -413,7 +438,13 @@ export const DetailDrawer = ({
           >
             삭제
           </Button>
-          <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={handleEdit} disabled={!canMutate}>
+          <Button
+            variant="accent"
+            size="sm"
+            leftIcon={<Pencil size={12} />}
+            onClick={handleEdit}
+            disabled={!canMutate}
+          >
             수정
           </Button>
         </>

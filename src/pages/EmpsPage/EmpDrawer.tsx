@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Check, CreditCard, Fingerprint, Pencil, Trash2, User, X } from 'lucide-react'
-import { Drawer } from '@/components/ui/Drawer'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
+import { Drawer } from '@/components/primitive/Drawer'
+import { Button } from '@/components/primitive/Button'
+import { Modal } from '@/components/primitive/Modal'
 import { Avatar } from '@/pages/EmpsPage/components/EmpFieldUi'
 import { updateEmpEmailSchema } from '@/pages/EmpsPage/formTypes'
 import { EmpBioTab } from '@/pages/EmpsPage/tabs/EmpBioTab'
@@ -36,8 +36,14 @@ export const EmpDrawer = ({
   const updateEmpMut = useUpdateEmp()
   const deleteEmpMut = useDeleteEmp()
 
-  const { register, handleSubmit, reset, setError, clearErrors, formState: { errors } } =
-    useForm<UpdateEmpRequest>()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<UpdateEmpRequest>()
 
   useEffect(() => {
     setActiveTab('info')
@@ -115,7 +121,10 @@ export const EmpDrawer = ({
     >
       <Avatar name={emp.name} size={46} />
       <div className="flex flex-col gap-1 min-w-0">
-        <span className="text-[15px] font-medium leading-tight" style={{ color: 'var(--color-text)' }}>
+        <span
+          className="text-[15px] font-medium leading-tight"
+          style={{ color: 'var(--color-text)' }}
+        >
           {emp.name}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
@@ -147,7 +156,12 @@ export const EmpDrawer = ({
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
-          <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={handleCancel}>
+          <Button
+            variant="default"
+            size="sm"
+            leftIcon={<X size={12} />}
+            onClick={handleCancel}
+          >
             취소
           </Button>
           <Button
@@ -174,7 +188,12 @@ export const EmpDrawer = ({
         >
           삭제
         </Button>
-        <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={handleEdit}>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Pencil size={12} />}
+          onClick={handleEdit}
+        >
           수정
         </Button>
       </>
@@ -189,7 +208,9 @@ export const EmpDrawer = ({
     </div>
   ) : (
     <>
-      {activeTab === 'info' && <EmpInfoTab emp={emp} editMode={editMode} register={register} errors={errors} />}
+      {activeTab === 'info' && (
+        <EmpInfoTab emp={emp} editMode={editMode} register={register} errors={errors} />
+      )}
       {activeTab === 'card' && <EmpCardTab cards={selectedCards} />}
       {activeTab === 'bio' && <EmpBioTab />}
     </>

@@ -1,8 +1,12 @@
 import { useMemo } from 'react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/primitive/Badge'
 import { typeBadgeVariant } from '@/pages/CardsPage/components/CardFieldUi'
-import { cardStatusLabel, cardTypeLabel, type CardRow } from '@/pages/CardsPage/utils/cardPageHelpers'
-import type { ColumnDef } from '@/components/ui/Grid'
+import {
+  cardStatusLabel,
+  cardTypeLabel,
+  type CardRow,
+} from '@/pages/CardsPage/utils/cardPageHelpers'
+import type { ColumnDef } from '@/components/primitive/Grid'
 
 export const useCardColumns = (empNameMap: Record<number, string>) =>
   useMemo<ColumnDef<CardRow>[]>(
@@ -12,7 +16,13 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: 'ID',
         width: 50,
         render: (value) => (
-          <span style={{ fontSize: 11, color: 'var(--color-text-dim)', fontFamily: 'monospace' }}>
+          <span
+            style={{
+              fontSize: 11,
+              color: 'var(--color-text-dim)',
+              fontFamily: 'monospace',
+            }}
+          >
             {String(value)}
           </span>
         ),
@@ -28,7 +38,9 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: '카드 번호',
         width: 110,
         render: (value) => (
-          <span style={{ fontFamily: 'monospace', fontSize: 11 }}>{String(value ?? '')}</span>
+          <span style={{ fontFamily: 'monospace', fontSize: 11 }}>
+            {String(value ?? '')}
+          </span>
         ),
       },
       {
@@ -45,7 +57,9 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: '유형',
         width: 72,
         render: (_, row) => (
-          <Badge variant={typeBadgeVariant(cardTypeLabel(row))}>{cardTypeLabel(row)}</Badge>
+          <Badge variant={typeBadgeVariant(cardTypeLabel(row))}>
+            {cardTypeLabel(row)}
+          </Badge>
         ),
       },
       {
@@ -53,7 +67,9 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: '상태',
         width: 72,
         render: (_, row) => (
-          <Badge variant={cardStatusLabel(row) === '활성' ? 'on' : 'off'}>{cardStatusLabel(row)}</Badge>
+          <Badge variant={cardStatusLabel(row) === '활성' ? 'on' : 'off'}>
+            {cardStatusLabel(row)}
+          </Badge>
         ),
       },
       {

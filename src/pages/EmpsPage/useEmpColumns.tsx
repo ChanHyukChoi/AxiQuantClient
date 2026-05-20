@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/primitive/Badge'
 import { Avatar } from '@/pages/EmpsPage/components/EmpFieldUi'
-import type { ColumnDef } from '@/components/ui/Grid'
+import type { ColumnDef } from '@/components/primitive/Grid'
 import type { EmpInfo } from '@/types/api'
 
 export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
@@ -12,7 +12,13 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         header: 'ID',
         width: 50,
         render: (value) => (
-          <span style={{ fontSize: 11, color: 'var(--color-text-dim)', fontFamily: 'monospace' }}>
+          <span
+            style={{
+              fontSize: 11,
+              color: 'var(--color-text-dim)',
+              fontFamily: 'monospace',
+            }}
+          >
             {String(value)}
           </span>
         ),
@@ -62,9 +68,11 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         header: '이메일',
         width: 140,
         render: (value) =>
-          value && String(value).trim() !== ''
-            ? <span style={{ fontSize: 11 }}>{String(value)}</span>
-            : '—',
+          value && String(value).trim() !== '' ? (
+            <span style={{ fontSize: 11 }}>{String(value)}</span>
+          ) : (
+            '—'
+          ),
       },
       {
         key: 'cardCount',

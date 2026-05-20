@@ -1,14 +1,21 @@
 import type { UseFormRegister } from 'react-hook-form'
 import { Clock, Hash, Settings, Tag } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
-import { Input } from '@/components/ui/Input'
+import { Badge } from '@/components/primitive/Badge'
+import { Input } from '@/components/primitive/Input'
 import type { DeviceControlFormValues } from '@/pages/DeviceControlPage/formTypes'
 import type { ParsedDeviceNode } from '@/pages/DeviceControlPage/utils/buildTree'
 import {
   formatConnectedAt,
   isDeviceActive,
 } from '@/pages/DeviceControlPage/utils/deviceHelpers'
-import type { InputInfo, ModuleInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
+import type {
+  InputInfo,
+  ModuleInfo,
+  OutputInfo,
+  ReaderInfo,
+  ScpInfo,
+  SioInfo,
+} from '@/types/api'
 
 interface InfoTabProps {
   parsed: ParsedDeviceNode | null
@@ -26,7 +33,10 @@ interface InfoTabProps {
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
     className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
-    style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
+    style={{
+      color: 'var(--color-text-subtle)',
+      borderBottom: '0.5px solid var(--color-border)',
+    }}
   >
     {children}
   </p>
@@ -53,9 +63,17 @@ const FRow = ({
   </div>
 )
 
-const FieldValue = ({ children, mono }: { children: React.ReactNode; mono?: boolean }) => (
+const FieldValue = ({
+  children,
+  mono,
+}: {
+  children: React.ReactNode
+  mono?: boolean
+}) => (
   <span
-    className={['text-right text-[13px]', mono ? 'font-mono' : ''].filter(Boolean).join(' ')}
+    className={['text-right text-[13px]', mono ? 'font-mono' : '']
+      .filter(Boolean)
+      .join(' ')}
     style={{ color: 'var(--color-text)' }}
   >
     {children}
@@ -83,7 +101,11 @@ const NumField = ({
 }) => (
   <FRow icon={<Hash size={12} />} label={label}>
     {editMode ? (
-      <Input type="number" {...register(name, { valueAsNumber: true })} style={{ width: 100 }} />
+      <Input
+        type="number"
+        {...register(name, { valueAsNumber: true })}
+        style={{ width: 100 }}
+      />
     ) : (
       <FieldValue mono>{value}</FieldValue>
     )}
@@ -182,15 +204,46 @@ export const InfoTab = ({
     return (
       <div>
         <SectionTitle>주제어기 (SCP)</SectionTitle>
-        <StrField label="이름" name="name" value={scp.name} editMode={editMode} register={register} />
+        <StrField
+          label="이름"
+          name="name"
+          value={scp.name}
+          editMode={editMode}
+          register={register}
+        />
         <ActiveField active={scp.active} editMode={editMode} register={register} />
-        <StrField label="연결문자열" name="connstr" value={scp.connstr} editMode={editMode} register={register} mono />
-        <NumField label="모델" name="model" value={scp.model} editMode={editMode} register={register} />
-        <NumField label="통신유형" name="ctype" value={scp.ctype} editMode={editMode} register={register} />
+        <StrField
+          label="연결문자열"
+          name="connstr"
+          value={scp.connstr}
+          editMode={editMode}
+          register={register}
+          mono
+        />
+        <NumField
+          label="모델"
+          name="model"
+          value={scp.model}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="통신유형"
+          name="ctype"
+          value={scp.ctype}
+          editMode={editMode}
+          register={register}
+        />
         <FRow icon={<Clock size={12} />} label="마지막 통신">
           <FieldValue>{formatConnectedAt(lastConnectedAt ?? '')}</FieldValue>
         </FRow>
-        <StrField label="확장" name="ext" value={scp.ext} editMode={editMode} register={register} />
+        <StrField
+          label="확장"
+          name="ext"
+          value={scp.ext}
+          editMode={editMode}
+          register={register}
+        />
       </div>
     )
   }
@@ -199,16 +252,52 @@ export const InfoTab = ({
     return (
       <div>
         <SectionTitle>부제어기 (SIO)</SectionTitle>
-        <StrField label="이름" name="name" value={sio.name} editMode={editMode} register={register} />
+        <StrField
+          label="이름"
+          name="name"
+          value={sio.name}
+          editMode={editMode}
+          register={register}
+        />
         <ActiveField active={sio.active} editMode={editMode} register={register} />
-        <NumField label="SCP" name="scp" value={sio.scp} editMode={editMode} register={register} />
-        <NumField label="포트" name="port" value={sio.port} editMode={editMode} register={register} />
-        <NumField label="주소" name="addr" value={sio.addr} editMode={editMode} register={register} />
-        <NumField label="모델" name="model" value={sio.model} editMode={editMode} register={register} />
+        <NumField
+          label="SCP"
+          name="scp"
+          value={sio.scp}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="포트"
+          name="port"
+          value={sio.port}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="주소"
+          name="addr"
+          value={sio.addr}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="모델"
+          name="model"
+          value={sio.model}
+          editMode={editMode}
+          register={register}
+        />
         <FRow icon={<Clock size={12} />} label="마지막 통신">
           <FieldValue>{formatConnectedAt(lastConnectedAt ?? '')}</FieldValue>
         </FRow>
-        <StrField label="확장" name="ext" value={sio.ext} editMode={editMode} register={register} />
+        <StrField
+          label="확장"
+          name="ext"
+          value={sio.ext}
+          editMode={editMode}
+          register={register}
+        />
       </div>
     )
   }
@@ -217,11 +306,35 @@ export const InfoTab = ({
     return (
       <div>
         <SectionTitle>리더</SectionTitle>
-        <StrField label="이름" name="name" value={reader.name} editMode={editMode} register={register} />
+        <StrField
+          label="이름"
+          name="name"
+          value={reader.name}
+          editMode={editMode}
+          register={register}
+        />
         <ActiveField active={reader.active} editMode={editMode} register={register} />
-        <NumField label="주소" name="addr" value={reader.addr} editMode={editMode} register={register} />
-        <NumField label="SCP" name="scp" value={reader.scp} editMode={editMode} register={register} />
-        <NumField label="SIO" name="sio" value={reader.sio} editMode={editMode} register={register} />
+        <NumField
+          label="주소"
+          name="addr"
+          value={reader.addr}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="SCP"
+          name="scp"
+          value={reader.scp}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="SIO"
+          name="sio"
+          value={reader.sio}
+          editMode={editMode}
+          register={register}
+        />
       </div>
     )
   }
@@ -230,13 +343,49 @@ export const InfoTab = ({
     return (
       <div>
         <SectionTitle>입력</SectionTitle>
-        <StrField label="이름" name="name" value={input.name} editMode={editMode} register={register} />
+        <StrField
+          label="이름"
+          name="name"
+          value={input.name}
+          editMode={editMode}
+          register={register}
+        />
         <ActiveField active={input.active} editMode={editMode} register={register} />
-        <NumField label="주소" name="addr" value={input.addr} editMode={editMode} register={register} />
-        <NumField label="SCP" name="scp" value={input.scp} editMode={editMode} register={register} />
-        <NumField label="SIO" name="sio" value={input.sio} editMode={editMode} register={register} />
-        <NumField label="모드" name="mode" value={input.mode} editMode={editMode} register={register} />
-        <NumField label="인터페이스" name="ifcode" value={input.ifcode} editMode={editMode} register={register} />
+        <NumField
+          label="주소"
+          name="addr"
+          value={input.addr}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="SCP"
+          name="scp"
+          value={input.scp}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="SIO"
+          name="sio"
+          value={input.sio}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="모드"
+          name="mode"
+          value={input.mode}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="인터페이스"
+          name="ifcode"
+          value={input.ifcode}
+          editMode={editMode}
+          register={register}
+        />
       </div>
     )
   }
@@ -245,13 +394,49 @@ export const InfoTab = ({
     return (
       <div>
         <SectionTitle>출력</SectionTitle>
-        <StrField label="이름" name="name" value={output.name} editMode={editMode} register={register} />
+        <StrField
+          label="이름"
+          name="name"
+          value={output.name}
+          editMode={editMode}
+          register={register}
+        />
         <ActiveField active={output.active} editMode={editMode} register={register} />
-        <NumField label="주소" name="addr" value={output.addr} editMode={editMode} register={register} />
-        <NumField label="SCP" name="scp" value={output.scp} editMode={editMode} register={register} />
-        <NumField label="SIO" name="sio" value={output.sio} editMode={editMode} register={register} />
-        <NumField label="기본펄스" name="defpulse" value={output.defpulse} editMode={editMode} register={register} />
-        <NumField label="모드" name="mode" value={output.mode} editMode={editMode} register={register} />
+        <NumField
+          label="주소"
+          name="addr"
+          value={output.addr}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="SCP"
+          name="scp"
+          value={output.scp}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="SIO"
+          name="sio"
+          value={output.sio}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="기본펄스"
+          name="defpulse"
+          value={output.defpulse}
+          editMode={editMode}
+          register={register}
+        />
+        <NumField
+          label="모드"
+          name="mode"
+          value={output.mode}
+          editMode={editMode}
+          register={register}
+        />
       </div>
     )
   }
