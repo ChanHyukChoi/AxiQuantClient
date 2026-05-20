@@ -45,6 +45,13 @@ function createWindow() {
     }
   })
   ipcMain.on('window:close', () => win?.close())
+  ipcMain.handle('window:isMaximized', () => win?.isMaximized() ?? false)
+
+  const notifyMaximized = () => {
+    win?.webContents.send('window:maximized-changed', win.isMaximized())
+  }
+  win.on('maximize', notifyMaximized)
+  win.on('unmaximize', notifyMaximized)
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)

@@ -27,65 +27,68 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'emps',
     label: '카드 사용자',
     path: '/emps',
-    icon: <User size={18} strokeWidth={2} />,
+    icon: <User size={28} strokeWidth={2} />,
   },
   {
     id: 'cards',
     label: '카드',
     path: '/cards',
-    icon: <CreditCard size={18} strokeWidth={2} />,
+    icon: <CreditCard size={28} strokeWidth={2} />,
   },
   {
     id: 'access',
     label: '접근권한',
     path: '/access',
-    icon: <Lock size={18} strokeWidth={2} />,
+    icon: <Lock size={28} strokeWidth={2} />,
   },
   {
     id: 'devices',
     label: '장치',
     path: '/devices',
-    icon: <Cpu size={18} strokeWidth={2} />,
+    icon: <Cpu size={28} strokeWidth={2} />,
   },
   {
     id: 'area',
     label: '영역',
     path: '/area',
-    icon: <MapPin size={18} strokeWidth={2} />,
+    icon: <MapPin size={28} strokeWidth={2} />,
   },
   {
     id: 'cardfmt',
     label: '카드 형식',
     path: '/cardfmt',
-    icon: <Binary size={18} strokeWidth={2} />,
+    icon: <Binary size={28} strokeWidth={2} />,
   },
   {
     id: 'monitor',
     label: '이벤트 모니터',
     path: '/monitor',
-    icon: <Activity size={18} strokeWidth={2} />,
+    icon: <Activity size={28} strokeWidth={2} />,
   },
   {
     id: 'alarm-settings',
     label: '경보 설정',
     path: '/alarm-settings',
-    icon: <Bell size={18} strokeWidth={2} />,
+    icon: <Bell size={28} strokeWidth={2} />,
   },
   {
     id: 'users',
     label: '사용자',
     path: '/users',
-    icon: <UserCog size={18} strokeWidth={2} />,
+    icon: <UserCog size={28} strokeWidth={2} />,
   },
   {
     id: 'audit',
     label: '운영 기록',
     path: '/audit',
-    icon: <ClipboardList size={18} strokeWidth={2} />,
+    icon: <ClipboardList size={28} strokeWidth={2} />,
   },
 ]
 
 // ─── Menu List ────────────────────────────────────────────────────────────────
+
+const SIDEBAR_WIDTH_COLLAPSED = 58
+const NAV_PADDING_LEFT = 14
 
 interface MenuListProps {
   isCollapsed: boolean
@@ -94,10 +97,11 @@ interface MenuListProps {
 }
 
 const navItemStyle = (active: boolean): React.CSSProperties => ({
-  paddingLeft: 14,
+  paddingLeft: NAV_PADDING_LEFT,
   gap: 12,
   color: active ? 'var(--color-accent)' : 'var(--color-text)',
   backgroundColor: active ? 'var(--color-accent-subtle)' : 'transparent',
+  height: '50px',
 })
 
 const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
@@ -126,7 +130,7 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
                 Object.assign(e.currentTarget.style, navItemStyle(isActive))
               }}
             >
-              {item.icon}
+              <span className="shrink-0 flex items-center">{item.icon}</span>
               <span
                 className="whitespace-nowrap overflow-hidden"
                 style={{
@@ -157,7 +161,7 @@ export const Sidebar = () => {
   return (
     <aside
       style={{
-        width: collapsed ? '40px' : '160px',
+        width: collapsed ? `${SIDEBAR_WIDTH_COLLAPSED}px` : '240px',
         backgroundColor: 'var(--color-sidebar)',
         borderRight: '0.5px solid var(--color-border)',
         transition: 'width 200ms ease',

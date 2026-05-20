@@ -37,6 +37,12 @@ function createWindow() {
     }
   });
   ipcMain.on("window:close", () => win == null ? void 0 : win.close());
+  ipcMain.handle("window:isMaximized", () => (win == null ? void 0 : win.isMaximized()) ?? false);
+  const notifyMaximized = () => {
+    win == null ? void 0 : win.webContents.send("window:maximized-changed", win.isMaximized());
+  };
+  win.on("maximize", notifyMaximized);
+  win.on("unmaximize", notifyMaximized);
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);
     win.webContents.openDevTools();
