@@ -12,6 +12,7 @@ interface DrawerProps {
   actions?: React.ReactNode
   footer?: React.ReactNode
   children: React.ReactNode
+  fontSize?: number
 }
 
 export const Drawer = ({
@@ -24,6 +25,7 @@ export const Drawer = ({
   actions,
   footer,
   children,
+  fontSize = 15,
 }: DrawerProps) => {
   return (
     <div
@@ -51,7 +53,12 @@ export const Drawer = ({
       {/* tabs */}
       {tabs && tabs.length > 0 && onTabChange && (
         <div className="flex-shrink-0">
-          <Tab items={tabs} activeKey={activeTab} onChange={onTabChange} />
+          <Tab
+            items={tabs}
+            activeKey={activeTab}
+            onChange={onTabChange}
+            fontSize={fontSize}
+          />
         </div>
       )}
 

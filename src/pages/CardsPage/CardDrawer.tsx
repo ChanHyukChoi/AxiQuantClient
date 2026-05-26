@@ -29,6 +29,7 @@ interface CardDrawerProps {
   onEditModeChange?: (editing: boolean) => void
 }
 
+const FONT_SIZE = 15
 export const CardDrawer = ({
   card,
   empList,
@@ -119,41 +120,72 @@ export const CardDrawer = ({
 
   const drawerTabs = card
     ? [
-        { key: 'info', label: '기본', icon: <CreditCard size={12} /> },
-        { key: 'access', label: '접근권한', icon: <DoorOpen size={12} /> },
-        { key: 'hist', label: '최근이력', icon: <History size={12} /> },
+        {
+          key: 'info',
+          label: '기본',
+          icon: <CreditCard size={12} />,
+          fontSize: FONT_SIZE,
+        },
+        {
+          key: 'access',
+          label: '접근권한',
+          icon: <DoorOpen size={12} />,
+          fontSize: FONT_SIZE,
+        },
+        {
+          key: 'hist',
+          label: '최근이력',
+          icon: <History size={12} />,
+          fontSize: FONT_SIZE,
+        },
       ]
     : undefined
 
   const drawerHeader = card ? (
-    <div
-      className="flex items-stretch gap-3 pb-3"
-      style={{ borderBottom: '0.5px solid var(--color-border)' }}
-    >
+    <div className="pb-3 w-full min-w-0">
       <div
-        className="rounded-lg flex items-center justify-center flex-shrink-0"
+        className="w-full min-w-0"
         style={{
-          background: 'var(--color-btn-accent-bg)',
-          width: '42px',
-          height: '42px',
+          border: '0.5px solid var(--color-btn-default-border)',
+          borderRadius: 8,
+          background: 'var(--color-btn-default-bg)',
+          padding: '12px 14px',
         }}
       >
-        <CreditCard size={30} style={{ color: 'var(--color-btn-accent-text)' }} />
-      </div>
-      <div className="flex gap-0 min-w-0 flex-1 ">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <CreditCard
+            size={16}
+            className="flex-shrink-0"
+            style={{ color: 'var(--color-accent)' }}
+          />
+          <span
+            className="font-medium leading-tight truncate min-w-0"
+            style={{ color: 'var(--color-text)', fontSize: 20 }}
+          >
+            {card.name}
+          </span>
+        </div>
         <span
-          className="font-medium leading-tight self-center"
-          style={{ color: 'var(--color-text)', fontSize: 20 }}
+          className="block font-mono leading-tight mt-1"
+          style={{
+            color: 'var(--badge-off-text)',
+            letterSpacing: '0.05em',
+            paddingLeft: 22,
+            fontSize: FONT_SIZE,
+          }}
         >
-          {card.name}
+          {card.cardNumber}
         </span>
-        <div className="flex items-center gap-1.5 flex-wrap ml-2">
-          <Badge variant={typeBadgeVariant(cardTypeLabel(card))}>
-            {cardTypeLabel(card)}
-          </Badge>
-          <Badge variant={cardStatusLabel(card) === '활성' ? 'on' : 'off'}>
-            {cardStatusLabel(card)}
-          </Badge>
+        <div className="flex justify-between items-center mt-2 gap-2">
+          <span className="flex-1 min-w-0" aria-hidden />
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <Badge variant={typeBadgeVariant(cardTypeLabel(card))}>
+              {cardTypeLabel(card)}
+            </Badge>
+            <Badge variant={cardStatusLabel(card) === '활성' ? 'on' : 'off'}>
+              {cardStatusLabel(card)}
+            </Badge>
+          </div>
         </div>
       </div>
     </div>
@@ -206,7 +238,7 @@ export const CardDrawer = ({
 
   const drawerChildren = !card ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <span style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}>
         목록에서 항목을 선택하세요
       </span>
     </div>
@@ -227,9 +259,13 @@ export const CardDrawer = ({
         />
       )}
       {activeTab === 'access' && (
-        <CardAccessTab card={card} accLvNamesDisplay={accLvNamesDisplay} />
+        <CardAccessTab
+          card={card}
+          accLvNamesDisplay={accLvNamesDisplay}
+          fontSize={FONT_SIZE}
+        />
       )}
-      {activeTab === 'hist' && <CardHistTab card={card} />}
+      {activeTab === 'hist' && <CardHistTab card={card} fontSize={FONT_SIZE} />}
     </>
   )
 

@@ -26,6 +26,10 @@ import {
 import type { UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
 import type { EmpInfo } from '@/types/api'
 
+const FONT_SIZE = 15
+
+const fieldFontStyle = { fontSize: FONT_SIZE } as const
+
 interface CardInfoTabProps {
   card: CardRow
   editMode: boolean
@@ -60,27 +64,31 @@ export const CardInfoTab = ({
 
   return (
     <div>
-      <SectionTitle>카드 정보</SectionTitle>
-      <FRow icon={<CreditCard size={12} />} label="카드 번호">
+      <SectionTitle fontSize={FONT_SIZE}>카드 정보</SectionTitle>
+      <FRow icon={<CreditCard size={15} />} label="카드 번호" fontSize={FONT_SIZE}>
         {editMode ? (
-          <Input {...register('cardNum')} style={{ width: 148 }} />
+          <Input {...register('cardNum')} style={{ width: 148, ...fieldFontStyle }} />
         ) : (
-          <FieldValue mono>{card.cardNumber}</FieldValue>
+          <FieldValue mono fontSize={FONT_SIZE}>
+            {card.cardNumber}
+          </FieldValue>
         )}
       </FRow>
-      <FRow icon={<Tag size={12} />} label="명칭">
+      <FRow icon={<Tag size={15} />} label="명칭" fontSize={FONT_SIZE}>
         {editMode ? (
           <Input {...register('name')} style={{ width: 148 }} />
         ) : (
-          <FieldValue>{card.name?.trim() ? card.name : '—'}</FieldValue>
+          <FieldValue fontSize={FONT_SIZE}>
+            {card.name?.trim() ? card.name : '—'}
+          </FieldValue>
         )}
       </FRow>
-      <FRow icon={<Layers size={12} />} label="유형">
+      <FRow icon={<Layers size={15} />} label="유형" fontSize={FONT_SIZE}>
         {editMode ? (
           <select
             {...register('type')}
-            className="w-full text-[12px] px-2 py-1 rounded border outline-none"
-            style={{ ...selectLikeStyle, width: 148 }}
+            className="w-full px-2 py-1 rounded border outline-none"
+            style={{ ...selectLikeStyle, width: 148, ...fieldFontStyle }}
           >
             <option value="직원">직원</option>
             <option value="방문">방문</option>
@@ -90,12 +98,12 @@ export const CardInfoTab = ({
           <Badge variant={typeBadgeVariant(t)}>{t}</Badge>
         )}
       </FRow>
-      <FRow icon={<CircleCheck size={12} />} label="상태">
+      <FRow icon={<CircleCheck size={15} />} label="상태" fontSize={FONT_SIZE}>
         {editMode ? (
           <select
             {...register('status')}
-            className="w-full text-[12px] px-2 py-1 rounded border outline-none"
-            style={{ ...selectLikeStyle, width: 148 }}
+            className="w-full px-2 py-1 rounded border outline-none"
+            style={{ ...selectLikeStyle, width: 148, ...fieldFontStyle }}
           >
             <option value="활성">활성</option>
             <option value="비활성">비활성</option>
@@ -106,16 +114,16 @@ export const CardInfoTab = ({
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle>사용자</SectionTitle>
-      <FRow icon={<User size={12} />} label="카드 사용자">
+      <SectionTitle fontSize={FONT_SIZE}>사용자</SectionTitle>
+      <FRow icon={<User size={15} />} label="카드 사용자" fontSize={FONT_SIZE}>
         {editMode ? (
           <Controller
             name="empId"
             control={control}
             render={({ field }) => (
               <select
-                className="w-full text-[12px] px-2 py-1 rounded border outline-none"
-                style={{ ...selectLikeStyle, width: 148 }}
+                className="w-full px-2 py-1 rounded border outline-none"
+                style={{ ...selectLikeStyle, width: 148, ...fieldFontStyle }}
                 value={field.value === undefined ? '' : String(field.value)}
                 onChange={(e) => {
                   const v = e.target.value
@@ -132,26 +140,22 @@ export const CardInfoTab = ({
             )}
           />
         ) : (
-          <FieldValue>{empLabel}</FieldValue>
+          <FieldValue fontSize={FONT_SIZE}>{empLabel}</FieldValue>
         )}
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle>기간</SectionTitle>
-      <FRow icon={<CalendarCheck size={12} />} label="활성 일시">
-        <span className="text-[11px] text-right" style={{ color: 'var(--color-text)' }}>
-          {activeAt}
-        </span>
+      <SectionTitle fontSize={FONT_SIZE}>기간</SectionTitle>
+      <FRow icon={<CalendarCheck size={15} />} label="활성 일시" fontSize={FONT_SIZE}>
+        <FieldValue fontSize={FONT_SIZE}>{activeAt}</FieldValue>
       </FRow>
-      <FRow icon={<CalendarX size={12} />} label="비활성 일시">
-        <span className="text-[11px] text-right" style={{ color: 'var(--color-text)' }}>
-          {inactiveAt}
-        </span>
+      <FRow icon={<CalendarX size={15} />} label="비활성 일시" fontSize={FONT_SIZE}>
+        <FieldValue fontSize={FONT_SIZE}>{inactiveAt}</FieldValue>
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle>옵션</SectionTitle>
-      <FRow icon={<span className="w-3" />} label="APB 면제">
+      <SectionTitle fontSize={FONT_SIZE}>옵션</SectionTitle>
+      <FRow icon={<span />} label="APB 면제" fontSize={FONT_SIZE}>
         {editMode ? (
           <label className="flex items-center justify-end gap-2 cursor-pointer">
             <input
@@ -167,7 +171,7 @@ export const CardInfoTab = ({
           </span>
         )}
       </FRow>
-      <FRow icon={<span className="w-3" />} label="PIN 면제">
+      <FRow icon={<span />} label="PIN 면제" fontSize={FONT_SIZE}>
         {editMode ? (
           <label className="flex items-center justify-end gap-2 cursor-pointer">
             <input
