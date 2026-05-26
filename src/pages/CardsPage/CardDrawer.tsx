@@ -272,7 +272,6 @@ export const CardDrawer = ({
   return (
     <>
       <Drawer
-        width={400}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
         tabs={drawerTabs}

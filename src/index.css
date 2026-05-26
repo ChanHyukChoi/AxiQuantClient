@@ -31,3 +31,42 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Grid 컬럼 순서 드래그 */
+.grid-col-drag-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9999;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+  background: var(--color-sidebar);
+  border: 0.5px solid var(--color-accent);
+  color: var(--color-text);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.4);
+  will-change: transform;
+}
+
+body.grid-col-drag-active {
+  cursor: grabbing;
+}
+
+.app-grid--col-dragging th,
+.app-grid--col-dragging td {
+  transition:
+    width 0.18s ease,
+    min-width 0.18s ease,
+    max-width 0.18s ease,
+    opacity 0.15s ease;
+}
+
+.app-grid--col-dragging th[data-col-drag-source='true'] {
+  opacity: 0.4;
+}
+
+.app-grid--col-dragging th[data-col-drop-target='true'] {
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}

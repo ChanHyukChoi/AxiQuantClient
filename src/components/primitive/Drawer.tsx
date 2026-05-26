@@ -5,6 +5,7 @@ interface DrawerProps {
   width?: number
   /** true면 가로로 남은 공간을 채움 (고정 width 대신 flex-1) */
   fill?: boolean
+  className?: string
   header: React.ReactNode
   tabs?: TabItem[]
   activeTab?: string
@@ -18,6 +19,7 @@ interface DrawerProps {
 export const Drawer = ({
   width,
   fill = false,
+  className = '',
   header,
   tabs,
   activeTab = '',
@@ -29,11 +31,14 @@ export const Drawer = ({
 }: DrawerProps) => {
   return (
     <div
-      className={
+      className={[
         fill
           ? 'flex flex-col flex-1 min-w-0 overflow-hidden'
-          : 'flex flex-col flex-shrink-0 overflow-hidden'
-      }
+          : 'flex flex-col flex-shrink-0 overflow-hidden h-full w-full',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={{
         ...(fill ? {} : { width }),
         background: 'var(--color-sidebar)',

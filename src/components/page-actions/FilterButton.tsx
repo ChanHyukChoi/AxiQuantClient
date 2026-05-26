@@ -11,12 +11,15 @@ export const FilterButton = ({
   showLabel = true,
   iconSize = 15,
   fontSize = 15,
-}: FilterButtonProps) => (
+  active = false,
+  ...props
+}: FilterButtonProps & { active?: boolean }) => (
   <Button
-    variant="default"
+    variant={active ? 'accent' : 'default'}
     size={size}
     leftIcon={<SlidersHorizontal size={iconSize} />}
     style={{ fontSize }}
+    {...props}
   >
     {showLabel ? '필터' : undefined}
   </Button>

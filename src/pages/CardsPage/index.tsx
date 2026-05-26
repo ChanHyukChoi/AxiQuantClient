@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { CreditCard } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import {
   AddButton,
   ExportButton,
@@ -9,18 +10,45 @@ import {
   FilterButton,
 } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
+import { useGridLayout } from '@/hooks/useGridLayout'
 import { CardDrawer } from '@/pages/CardsPage/CardDrawer'
 import { CreateCardModal } from '@/pages/CardsPage/CreateCardModal'
+import {
+  CardListOptionsModal,
+  defaultCardListFilters,
+  isCardFiltersActive,
+  type CardListFilters,
+} from '@/pages/CardsPage/components/CardListOptionsModal'
 import { useCardColumns } from '@/pages/CardsPage/useCardColumns'
-import { cardPrimaryKey, type CardRow } from '@/pages/CardsPage/utils/cardPageHelpers'
+import {
+  cardPrimaryKey,
+  cardStatusLabel,
+  cardTypeLabel,
+  type CardRow,
+} from '@/pages/CardsPage/utils/cardPageHelpers'
 import { useCardList } from '@/hooks/useCard'
 import { useEmpList } from '@/hooks/useEmps'
 import { useAccLvList } from '@/hooks/useAccLv'
+
+const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards'
+const CARDS_GRID_LEGACY_WIDTHS_KEY = 'axiquant.grid.columns.cards'
+
+const applyCardFilters = (cards: CardRow[], filters: CardListFilters): CardRow[] =>
+  cards.filter((c) => {
+    if (filters.status !== 'all' && cardStatusLabel(c) !== filters.status) return false
+    if (filters.type !== 'all' && cardTypeLabel(c) !== filters.type) return false
+    if (filters.assignment === 'assigned' && c.empId == null) return false
+    if (filters.assignment === 'unassigned' && c.empId != null) return false
+    return true
+  })
 
 export const CardsPage = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [listFilters, setListFilters] = useState(defaultCardListFilters)
+  const [optionsModalOpen, setOptionsModalOpen] = useState(false)
+  const [optionsModalTab, setOptionsModalTab] = useState<'filter' | 'columns'>('filter')
   const [createModalOpen, setCreateModalOpen] = useState(false)
 
   const { data: cardList, isLoading: cardLoading } = useCardList()
@@ -54,29 +82,56 @@ export const CardsPage = () => {
     }, {})
   }, [accLvList])
 
+  const cardTypeOptions = useMemo(() => {
+    const set = new Set<string>()
+    for (const c of normalizedCards) set.add(cardTypeLabel(c))
+    return Array.from(set).sort((a, b) => a.localeCompare(b, 'ko'))
+  }, [normalizedCards])
+
   const filteredCards = useMemo(() => {
-    if (!normalizedCards.length) return normalizedCards
-    if (!searchQuery) return normalizedCards
+    let rows = normalizedCards
+    rows = applyCardFilters(rows, listFilters)
+    if (!searchQuery) return rows
     const q = searchQuery.toLowerCase()
-    return normalizedCards.filter((c) => {
+    return rows.filter((c) => {
       const name = (c.name ?? '').toLowerCase()
       const num = c.cardNumber.toLowerCase()
       const emp =
         c.empId != null ? (empNameMap[c.empId] ?? c.empName ?? '').toLowerCase() : ''
       return name.includes(q) || num.includes(q) || emp.includes(q)
     })
-  }, [normalizedCards, searchQuery, empNameMap])
+  }, [normalizedCards, listFilters, searchQuery, empNameMap])
 
   const selectedCard = useMemo(
     () => normalizedCards.find((c) => c.id === selectedId) ?? null,
     [normalizedCards, selectedId],
   )
 
-  const columns = useCardColumns(empNameMap)
+  const baseColumns = useCardColumns(empNameMap)
+  const {
+    columns,
+    columnOptions,
+    minGridWidth,
+    isLayoutCustomized,
+    setColumnWidth,
+    moveColumn,
+    setColumnVisible,
+    resetLayout,
+  } = useGridLayout(baseColumns, {
+    storageKey: CARDS_GRID_LAYOUT_KEY,
+    legacyWidthsKey: CARDS_GRID_LEGACY_WIDTHS_KEY,
+  })
+
+  const optionsActive = isCardFiltersActive(listFilters) || isLayoutCustomized
 
   const handleRowClick = (row: CardRow) => {
     if (editMode) setEditMode(false)
     setSelectedId(row.id)
+  }
+
+  const openOptions = (tab: 'filter' | 'columns') => {
+    setOptionsModalTab(tab)
+    setOptionsModalOpen(true)
   }
 
   return (
@@ -94,26 +149,55 @@ export const CardsPage = () => {
         }
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <Grid
-          columns={columns}
-          data={filteredCards}
-          selectedId={selectedId ?? undefined}
-          onRowClick={handleRowClick}
-          onSearch={setSearchQuery}
-          totalCount={filteredCards.length}
-          loading={cardLoading}
-          actions={<FilterButton />}
-        />
-        <CardDrawer
-          card={selectedCard}
-          empList={empList ?? undefined}
-          empNameMap={empNameMap}
-          accLvNameMap={accLvNameMap}
-          onDeleted={() => setSelectedId(null)}
-          onEditModeChange={setEditMode}
-        />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={minGridWidth}
+        minDrawerWidth={320}
+        defaultDrawerWidth={400}
+        storageKey="axiquant.drawer.cards"
+        main={
+          <Grid
+            columns={columns}
+            data={filteredCards}
+            selectedId={selectedId ?? undefined}
+            onRowClick={handleRowClick}
+            onSearch={setSearchQuery}
+            totalCount={filteredCards.length}
+            loading={cardLoading}
+            resizableColumns
+            onColumnWidthChange={setColumnWidth}
+            reorderableColumns
+            onColumnReorder={moveColumn}
+            actions={
+              <FilterButton
+                active={optionsActive}
+                onClick={() => openOptions('filter')}
+              />
+            }
+          />
+        }
+        drawer={
+          <CardDrawer
+            card={selectedCard}
+            empList={empList ?? undefined}
+            empNameMap={empNameMap}
+            accLvNameMap={accLvNameMap}
+            onDeleted={() => setSelectedId(null)}
+            onEditModeChange={setEditMode}
+          />
+        }
+      />
+
+      <CardListOptionsModal
+        open={optionsModalOpen}
+        initialTab={optionsModalTab}
+        filters={listFilters}
+        typeOptions={cardTypeOptions}
+        columnOptions={columnOptions}
+        onApplyFilters={setListFilters}
+        onColumnVisibleChange={setColumnVisible}
+        onResetLayout={resetLayout}
+        onClose={() => setOptionsModalOpen(false)}
+      />
 
       <CreateCardModal
         open={createModalOpen}

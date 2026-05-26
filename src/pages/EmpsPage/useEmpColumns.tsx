@@ -11,6 +11,7 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         key: 'id',
         header: 'ID',
         width: 50,
+        sortable: true,
         render: (value) => (
           <span
             style={{
@@ -27,6 +28,7 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         key: 'name',
         header: '이름',
         width: 120,
+        sortable: true,
         render: (_, row) => (
           <div className="flex items-center gap-2">
             <Avatar name={row.name} size={26} />
@@ -38,6 +40,7 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         key: 'udef',
         header: '사번',
         width: 70,
+        sortable: true,
         render: (value) =>
           value ? (
             <span style={{ fontFamily: 'monospace', fontSize: 11 }}>{String(value)}</span>
@@ -49,6 +52,7 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         key: 'dept',
         header: '부서',
         width: 90,
+        sortable: true,
         render: (value) => {
           const n = typeof value === 'number' ? value : Number(value)
           return Number.isFinite(n) && n !== 0 ? String(n) : '—'

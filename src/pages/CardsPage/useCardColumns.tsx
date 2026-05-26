@@ -17,6 +17,8 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'cardNumber',
         header: '카드 번호',
         width: 110,
+        sortable: true,
+        hideable: false,
         render: (value) => (
           <span style={{ fontSize: FONT_SIZE, color: 'var(--color-accent)' }}>
             {String(value ?? '')}
@@ -27,6 +29,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'name',
         header: '명칭',
         width: 90,
+        sortable: true,
         render: (value) => (
           <span style={{ fontSize: FONT_SIZE, color: 'var(--color-text-cell)' }}>
             {String(value ?? '')}
@@ -37,6 +40,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'empId',
         header: '카드 사용자',
         width: 90,
+        sortable: true,
         render: (value, row) => {
           if (value == null) return ''
           return empNameMap[value as number] ?? row.empName ?? ''
@@ -47,6 +51,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: '유형',
         width: 72,
         align: 'center',
+        sortable: true,
         render: (_, row) => (
           <Badge variant={typeBadgeVariant(cardTypeLabel(row))}>
             {cardTypeLabel(row)}
@@ -58,6 +63,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: '상태',
         width: 72,
         align: 'center',
+        sortable: true,
         render: (_, row) => (
           <Badge variant={cardStatusLabel(row) === '활성' ? 'on' : 'off'}>
             {cardStatusLabel(row)}
@@ -68,6 +74,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'lastAccess',
         header: '마지막 접근 일시',
         width: 130,
+        sortable: true,
         render: (_, row) => (row.lastAccess?.trim() ? row.lastAccess : ''),
       },
     ],

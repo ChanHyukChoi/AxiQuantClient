@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { DoorOpen, Plus } from 'lucide-react'
 import { ListPanel } from '@/components/primitive/ListPanel'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { Button } from '@/components/primitive/Button'
 import { AccessDrawer } from '@/pages/AccessPage/AccessDrawer'
 import { useAccLvList } from '@/hooks/useAccLv'
@@ -48,26 +49,34 @@ export const AccessPage = () => {
         </Button>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
-        <ListPanel
-          items={filteredList.map((a) => ({ id: a.id, label: a.name }))}
-          selectedId={selectedId ?? undefined}
-          onItemClick={(item) => {
-            if (editMode) setEditMode(false)
-            setSelectedId(item.id)
-          }}
-          onSearch={setSearchQuery}
-          searchPlaceholder="권한 검색..."
-          totalCount={filteredList.length}
-          width={240}
-          loading={accLvLoading}
-        />
-        <AccessDrawer
-          selectedAccLv={selectedAccLv}
-          onDeleted={() => setSelectedId(null)}
-          onEditModeChange={setEditMode}
-        />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={240}
+        minDrawerWidth={360}
+        defaultDrawerWidth={480}
+        storageKey="axiquant.drawer.access"
+        main={
+          <ListPanel
+            items={filteredList.map((a) => ({ id: a.id, label: a.name }))}
+            selectedId={selectedId ?? undefined}
+            onItemClick={(item) => {
+              if (editMode) setEditMode(false)
+              setSelectedId(item.id)
+            }}
+            onSearch={setSearchQuery}
+            searchPlaceholder="권한 검색..."
+            totalCount={filteredList.length}
+            width={240}
+            loading={accLvLoading}
+          />
+        }
+        drawer={
+          <AccessDrawer
+            selectedAccLv={selectedAccLv}
+            onDeleted={() => setSelectedId(null)}
+            onEditModeChange={setEditMode}
+          />
+        }
+      />
     </div>
   )
 }
