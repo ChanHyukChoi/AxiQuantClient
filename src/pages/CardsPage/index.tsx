@@ -1,8 +1,13 @@
 import { useMemo, useState } from 'react'
-import { CreditCard, SlidersHorizontal } from 'lucide-react'
+import { CreditCard } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
-import { Button } from '@/components/primitive/Button'
-import { AddButton, ExportButton, PrintButton } from '@/components/page-actions'
+import {
+  AddButton,
+  ExportButton,
+  ImportButton,
+  PrintButton,
+  FilterButton,
+} from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { CardDrawer } from '@/pages/CardsPage/CardDrawer'
 import { CreateCardModal } from '@/pages/CardsPage/CreateCardModal'
@@ -81,6 +86,7 @@ export const CardsPage = () => {
         icon={<CreditCard size={15} />}
         actions={
           <>
+            <ImportButton />
             <ExportButton />
             <PrintButton />
             <AddButton onClick={() => setCreateModalOpen(true)} />
@@ -94,19 +100,10 @@ export const CardsPage = () => {
           data={filteredCards}
           selectedId={selectedId ?? undefined}
           onRowClick={handleRowClick}
-          searchPlaceholder="카드번호, 명칭, 사용자 검색..."
           onSearch={setSearchQuery}
           totalCount={filteredCards.length}
           loading={cardLoading}
-          actions={
-            <Button
-              variant="default"
-              size="sm"
-              leftIcon={<SlidersHorizontal size={12} />}
-            >
-              필터
-            </Button>
-          }
+          actions={<FilterButton />}
         />
         <CardDrawer
           card={selectedCard}

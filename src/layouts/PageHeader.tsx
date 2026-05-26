@@ -4,7 +4,7 @@ interface PageHeaderProps {
   title: string
   icon?: ReactNode
   actions?: ReactNode
-  /** default 50px ù CardsPage baseline */
+  /** default 50px ÔøΩ CardsPage baseline */
   height?: number
 }
 

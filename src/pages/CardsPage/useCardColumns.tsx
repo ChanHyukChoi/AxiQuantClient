@@ -8,22 +8,18 @@ import {
 } from '@/pages/CardsPage/utils/cardPageHelpers'
 import type { ColumnDef } from '@/components/primitive/Grid'
 
+const FONT_SIZE = 15
+
 export const useCardColumns = (empNameMap: Record<number, string>) =>
   useMemo<ColumnDef<CardRow>[]>(
     () => [
       {
-        key: 'id',
-        header: 'ID',
-        width: 50,
+        key: 'cardNumber',
+        header: '카드 번호',
+        width: 110,
         render: (value) => (
-          <span
-            style={{
-              fontSize: 11,
-              color: 'var(--color-text-dim)',
-              fontFamily: 'monospace',
-            }}
-          >
-            {String(value)}
+          <span style={{ fontSize: FONT_SIZE, color: 'var(--color-accent)' }}>
+            {String(value ?? '')}
           </span>
         ),
       },
@@ -31,14 +27,8 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'name',
         header: '명칭',
         width: 90,
-        render: (_, row) => (row.name?.trim() ? row.name : '—'),
-      },
-      {
-        key: 'cardNumber',
-        header: '카드 번호',
-        width: 110,
         render: (value) => (
-          <span style={{ fontFamily: 'monospace', fontSize: 11 }}>
+          <span style={{ fontSize: FONT_SIZE, color: 'var(--color-text-cell)' }}>
             {String(value ?? '')}
           </span>
         ),
@@ -48,14 +38,15 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         header: '카드 사용자',
         width: 90,
         render: (value, row) => {
-          if (value == null) return '—'
-          return empNameMap[value as number] ?? row.empName ?? '—'
+          if (value == null) return ''
+          return empNameMap[value as number] ?? row.empName ?? ''
         },
       },
       {
         key: 'type',
         header: '유형',
         width: 72,
+        align: 'center',
         render: (_, row) => (
           <Badge variant={typeBadgeVariant(cardTypeLabel(row))}>
             {cardTypeLabel(row)}
@@ -66,6 +57,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'isActive',
         header: '상태',
         width: 72,
+        align: 'center',
         render: (_, row) => (
           <Badge variant={cardStatusLabel(row) === '활성' ? 'on' : 'off'}>
             {cardStatusLabel(row)}
@@ -76,7 +68,7 @@ export const useCardColumns = (empNameMap: Record<number, string>) =>
         key: 'lastAccess',
         header: '마지막 접근 일시',
         width: 130,
-        render: (_, row) => (row.lastAccess?.trim() ? row.lastAccess : '—'),
+        render: (_, row) => (row.lastAccess?.trim() ? row.lastAccess : ''),
       },
     ],
     [empNameMap],

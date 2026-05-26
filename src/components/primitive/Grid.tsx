@@ -4,6 +4,7 @@ export interface ColumnDef<T> {
   key: string
   header: string
   width?: number
+  align?: 'left' | 'center' | 'right'
   render?: (value: unknown, row: T) => React.ReactNode
 }
 
@@ -24,7 +25,6 @@ export const Grid = <T extends { id: number }>({
   data,
   selectedId,
   onRowClick,
-  searchPlaceholder = '검색',
   onSearch,
   actions,
   totalCount,
@@ -43,7 +43,7 @@ export const Grid = <T extends { id: number }>({
           borderBottom: '0.5px solid var(--color-border)',
         }}
       >
-        {onSearch && <SearchField placeholder={searchPlaceholder} onChange={onSearch} />}
+        {onSearch && <SearchField onChange={onSearch} />}
         {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
       </div>
 
@@ -67,9 +67,9 @@ export const Grid = <T extends { id: number }>({
                   style={{
                     width: col.width ?? undefined,
                     padding: '6px 10px',
-                    textAlign: 'left',
-                    fontSize: 11,
-                    fontWeight: 500,
+                    textAlign: col.align ?? 'left',
+                    fontSize: 15,
+                    fontWeight: 'bold',
                     color: 'var(--color-text-dim)',
                     borderBottom: '0.5px solid var(--color-border)',
                     whiteSpace: 'nowrap',
@@ -85,8 +85,8 @@ export const Grid = <T extends { id: number }>({
               <tr>
                 <td
                   colSpan={columns.length}
-                  className="text-center py-8 text-[12px]"
-                  style={{ color: 'var(--color-text-subtle)' }}
+                  className="text-center py-8"
+                  style={{ color: 'var(--color-text-subtle)', fontSize: 15 }}
                 >
                   불러오는 중...
                 </td>
@@ -108,12 +108,13 @@ export const Grid = <T extends { id: number }>({
 
       {/* footer */}
       <div
-        className="flex-shrink-0 flex items-center text-[11px]"
+        className="flex-shrink-0 flex items-center"
         style={{
           padding: '5px 12px',
           background: 'var(--color-sidebar)',
           borderTop: '0.5px solid var(--color-border)',
-          color: 'var(--color-text-dim)',
+          color: 'var(--color-text-cell)',
+          fontSize: 15,
         }}
       >
         전체 {count}건
@@ -159,12 +160,13 @@ const GridRow = <T extends { id: number }>({
           key={col.key}
           style={{
             padding: '6px 10px',
-            fontSize: 12,
+            fontSize: 15,
             color: 'var(--color-cell)',
             borderBottom: '0.5px solid var(--color-border-subtle)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
+            textAlign: col.align ?? 'left',
           }}
         >
           {cell}

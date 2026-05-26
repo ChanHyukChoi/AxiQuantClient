@@ -6,11 +6,7 @@ interface SearchFieldProps {
   onChange: (value: string) => void
 }
 
-export const SearchField = ({
-  placeholder = '검색',
-  value,
-  onChange,
-}: SearchFieldProps) => (
+export const SearchField = ({ value, onChange }: SearchFieldProps) => (
   <div
     style={{
       display: 'flex',
@@ -28,12 +24,12 @@ export const SearchField = ({
       style={{
         background: 'transparent',
         color: 'var(--color-text)',
-        fontSize: 12,
+        fontSize: 15,
         outline: 'none',
         minWidth: 0,
         flex: 1,
       }}
-      placeholder={placeholder}
+      placeholder="검색..."
       value={value}
       onChange={(e) => onChange(e.target.value)}
     />

@@ -17,6 +17,7 @@ export const AddButton = ({
   title = '추가',
   size = 'md',
   showLabel = true,
+  fontSize = 15,
   children = '추가',
 }: AddButtonProps) => (
   <Button
@@ -27,6 +28,7 @@ export const AddButton = ({
     disabled={disabled}
     className={className}
     title={title}
+    style={{ fontSize }}
   >
     {showLabel ? children : undefined}
   </Button>

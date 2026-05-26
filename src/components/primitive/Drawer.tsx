@@ -15,7 +15,7 @@ interface DrawerProps {
 }
 
 export const Drawer = ({
-  width = 268,
+  width,
   fill = false,
   header,
   tabs,
@@ -27,53 +27,51 @@ export const Drawer = ({
 }: DrawerProps) => {
   return (
     <div
-        className={
-          fill
-            ? 'flex flex-col flex-1 min-w-0 overflow-hidden'
-            : 'flex flex-col flex-shrink-0 overflow-hidden'
-        }
-        style={{
-          ...(fill ? {} : { width }),
-          background: 'var(--color-sidebar)',
-          borderLeft: '0.5px solid var(--color-border)',
-        }}
+      className={
+        fill
+          ? 'flex flex-col flex-1 min-w-0 overflow-hidden'
+          : 'flex flex-col flex-shrink-0 overflow-hidden'
+      }
+      style={{
+        ...(fill ? {} : { width }),
+        background: 'var(--color-sidebar)',
+        borderLeft: '0.5px solid var(--color-border)',
+      }}
+    >
+      {/* header */}
+      <div className="flex-shrink-0 p-3 pb-0">{header}</div>
+
+      {/* actions */}
+      {actions && (
+        <div className="flex-shrink-0 flex items-center justify-end gap-1.5 px-3 mb-2 mt-2">
+          {actions}
+        </div>
+      )}
+
+      {/* tabs */}
+      {tabs && tabs.length > 0 && onTabChange && (
+        <div className="flex-shrink-0">
+          <Tab items={tabs} activeKey={activeTab} onChange={onTabChange} />
+        </div>
+      )}
+
+      {/* content */}
+      <div
+        className="flex-1 overflow-y-auto app-scrollbar"
+        style={{ padding: '11px 13px' }}
       >
-        {/* header */}
-        <div className="flex-shrink-0 p-3 pb-0">
-          {header}
-        </div>
+        {children}
+      </div>
 
-        {/* actions */}
-        {actions && (
-          <div className="flex-shrink-0 flex items-center justify-end gap-1.5 px-3 mb-2 mt-2">
-            {actions}
-          </div>
-        )}
-
-        {/* tabs */}
-        {tabs && tabs.length > 0 && onTabChange && (
-          <div className="flex-shrink-0">
-            <Tab items={tabs} activeKey={activeTab} onChange={onTabChange} />
-          </div>
-        )}
-
-        {/* content */}
+      {/* footer */}
+      {footer && (
         <div
-          className="flex-1 overflow-y-auto app-scrollbar"
-          style={{ padding: '11px 13px' }}
+          className="flex-shrink-0"
+          style={{ borderTop: '0.5px solid var(--color-border)' }}
         >
-          {children}
+          {footer}
         </div>
-
-        {/* footer */}
-        {footer && (
-          <div
-            className="flex-shrink-0"
-            style={{ borderTop: '0.5px solid var(--color-border)' }}
-          >
-            {footer}
-          </div>
-        )}
+      )}
     </div>
   )
 }

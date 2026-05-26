@@ -127,23 +127,27 @@ export const CardDrawer = ({
 
   const drawerHeader = card ? (
     <div
-      className="flex items-start gap-3 pb-3"
+      className="flex items-stretch gap-3 pb-3"
       style={{ borderBottom: '0.5px solid var(--color-border)' }}
     >
       <div
-        className="w-[42px] h-[42px] rounded-lg flex items-center justify-center flex-shrink-0"
-        style={{ background: '#1a3a5c' }}
+        className="rounded-lg flex items-center justify-center flex-shrink-0"
+        style={{
+          background: 'var(--color-btn-accent-bg)',
+          width: '42px',
+          height: '42px',
+        }}
       >
-        <CreditCard size={22} style={{ color: 'var(--color-accent)' }} />
+        <CreditCard size={30} style={{ color: 'var(--color-btn-accent-text)' }} />
       </div>
-      <div className="flex flex-col gap-0 min-w-0 flex-1">
+      <div className="flex gap-0 min-w-0 flex-1 ">
         <span
-          className="text-[13px] font-medium font-mono leading-tight"
-          style={{ color: 'var(--color-text)' }}
+          className="font-medium leading-tight self-center"
+          style={{ color: 'var(--color-text)', fontSize: 20 }}
         >
-          {card.cardNumber}
+          {card.name}
         </span>
-        <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap ml-2">
           <Badge variant={typeBadgeVariant(cardTypeLabel(card))}>
             {cardTypeLabel(card)}
           </Badge>
@@ -151,17 +155,6 @@ export const CardDrawer = ({
             {cardStatusLabel(card)}
           </Badge>
         </div>
-        <span
-          className="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full font-mono mt-1.5"
-          style={{
-            background: 'var(--color-btn-hover)',
-            color: 'var(--color-text-subtle)',
-            border: '0.5px solid var(--color-border)',
-            width: 'fit-content',
-          }}
-        >
-          #{card.cid}
-        </span>
       </div>
     </div>
   ) : (
@@ -174,7 +167,7 @@ export const CardDrawer = ({
         <Button
           variant="default"
           size="sm"
-          leftIcon={<X size={12} />}
+          leftIcon={<X size={15} />}
           onClick={handleCancelEdit}
         >
           취소
@@ -182,7 +175,7 @@ export const CardDrawer = ({
         <Button
           variant="accent"
           size="sm"
-          leftIcon={<Check size={12} />}
+          leftIcon={<Check size={15} />}
           loading={isUpdating}
           onClick={handleSave}
         >
@@ -194,7 +187,7 @@ export const CardDrawer = ({
         <Button
           variant="danger"
           size="sm"
-          leftIcon={<Trash2 size={12} />}
+          leftIcon={<Trash2 size={15} />}
           onClick={() => setDeleteModalOpen(true)}
         >
           삭제
@@ -202,7 +195,7 @@ export const CardDrawer = ({
         <Button
           variant="accent"
           size="sm"
-          leftIcon={<Pencil size={12} />}
+          leftIcon={<Pencil size={15} />}
           onClick={onEditClick}
         >
           수정
@@ -243,6 +236,7 @@ export const CardDrawer = ({
   return (
     <>
       <Drawer
+        width={400}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
         tabs={drawerTabs}

@@ -106,7 +106,7 @@ const navItemStyle = (active: boolean): React.CSSProperties => ({
 
 const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
   <nav className="flex-1">
-    <ul className="flex flex-col gap-0.5">
+    <ul className="flex flex-col">
       {MENU_ITEMS.map((item) => {
         const isActive =
           currentPath === item.path || currentPath.startsWith(item.path + '/')

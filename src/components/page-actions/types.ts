@@ -7,6 +7,7 @@ export interface PageActionButtonProps extends Pick<
   size?: 'sm' | 'md'
   /** false면 라벨 없이 title만 (툴바 아이콘 버튼) */
   showLabel?: boolean
+  fontSize?: number
 }
 
 export const pageActionIconSize = (size: NonNullable<PageActionButtonProps['size']>) =>

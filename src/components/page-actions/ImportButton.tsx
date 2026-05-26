@@ -1,11 +1,11 @@
-import { Download } from 'lucide-react'
+import { Import } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import {
   pageActionIconSize,
   type PageActionButtonProps,
 } from '@/components/page-actions/types'
 
-export const ExportButton = ({
+export const ImportButton = ({
   onClick,
   disabled,
   className,
@@ -16,13 +16,13 @@ export const ExportButton = ({
   <Button
     variant="default"
     size={size}
-    leftIcon={<Download size={pageActionIconSize(size)} />}
+    leftIcon={<Import size={pageActionIconSize(size)} />}
     onClick={onClick}
     disabled={disabled}
     className={className}
-    title="내보내기"
+    title="가져오기"
     style={{ fontSize }}
   >
-    {showLabel ? '내보내기' : undefined}
+    {showLabel ? '가져오기' : undefined}
   </Button>
 )

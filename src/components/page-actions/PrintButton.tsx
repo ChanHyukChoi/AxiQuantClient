@@ -9,9 +9,9 @@ export const PrintButton = ({
   onClick,
   disabled,
   className,
-  title = '인쇄',
   size = 'md',
   showLabel = true,
+  fontSize = 15,
 }: PageActionButtonProps) => (
   <Button
     variant="default"
@@ -20,7 +20,8 @@ export const PrintButton = ({
     onClick={onClick}
     disabled={disabled}
     className={className}
-    title={title}
+    title="인쇄"
+    style={{ fontSize }}
   >
     {showLabel ? '인쇄' : undefined}
   </Button>

@@ -4,6 +4,7 @@ import { useState } from 'react'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'accent' | 'danger'
   size?: 'sm' | 'md'
+  fontSize?: number
   leftIcon?: React.ReactNode
   loading?: boolean
 }
@@ -52,6 +53,7 @@ const sizeClass: Record<NonNullable<ButtonProps['size']>, string> = {
 export const Button = ({
   variant = 'default',
   size = 'md',
+  fontSize = 15,
   leftIcon,
   loading = false,
   disabled,
@@ -76,7 +78,7 @@ export const Button = ({
         setHovered(false)
         props.onMouseLeave?.(e)
       }}
-      style={{ ...baseStyle, ...props.style }}
+      style={{ ...baseStyle, ...props.style, fontSize }}
       className={[
         'inline-flex items-center gap-1.5 rounded border cursor-pointer transition-colors',
         sizeClass[size],
