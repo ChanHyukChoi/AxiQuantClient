@@ -15,7 +15,7 @@ import {
   cardfmtToForm,
   formToCardfmtPayload,
 } from '@/pages/CardFmtPage/utils/cardFmtHelpers'
-import { useDeleteCardFmt, useUpdateCardFmt } from '@/hooks/useCardfmt'
+import { useDeleteCardFmt, useUpdateCardFmt } from '@/hooks/api/useCardfmt'
 import type { CardfmtInfo } from '@/types/api'
 
 interface CardFmtDrawerProps {

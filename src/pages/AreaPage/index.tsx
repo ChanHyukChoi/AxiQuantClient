@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { MapPin } from 'lucide-react'
 import { AreaDrawer } from '@/pages/AreaPage/AreaDrawer'
 import { AreaListPane } from '@/pages/AreaPage/AreaListPane'
-import { useAreas } from '@/hooks/useArea'
+import { useAreas } from '@/hooks/api/useArea'
 import type { AreaInfo } from '@/types/api'
 
 export const AreaPage = () => {

@@ -3,7 +3,7 @@ import { Plus, UserCog } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { UserDrawer } from '@/pages/UsersPage/UserDrawer'
 import { UserListPane } from '@/pages/UsersPage/UserListPane'
-import { useUsers } from '@/hooks/useUsers'
+import { useUsers } from '@/hooks/api/useUsers'
 import type { UserInfo } from '@/types/api/user'
 
 export const UsersPage = () => {

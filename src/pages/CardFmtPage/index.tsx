@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Binary } from 'lucide-react'
 import { CardFmtDrawer } from '@/pages/CardFmtPage/CardFmtDrawer'
 import { CardFmtListPane } from '@/pages/CardFmtPage/CardFmtListPane'
-import { useCardFmts } from '@/hooks/useCardfmt'
+import { useCardFmts } from '@/hooks/api/useCardfmt'
 import type { CardfmtInfo } from '@/types/api'
 
 export const CardFmtPage = () => {

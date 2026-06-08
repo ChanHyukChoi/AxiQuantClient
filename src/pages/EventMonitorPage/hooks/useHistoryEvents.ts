@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { accessLogToRecord, alarmLogToRecord } from '@/lib/eventMonitor/eventRecords'
-import { useAccessLog, useAlarmLog } from '@/hooks/useEventMonitor'
+import { useAccessLog, useAlarmLog } from '@/hooks/api/useEventMonitor'
 import type { AccessLogParams, AlarmLogParams, EventRecord } from '@/types/api/eventMonitor'
 
 export type HistoryTypeFilter = 'all' | 'access' | 'alarm'

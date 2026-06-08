@@ -16,7 +16,7 @@ import {
   type DeviceTreeNode,
   type ScpChildData,
 } from '@/pages/DeviceControlPage/utils/buildTree'
-import { useModules, useScps } from '@/hooks/useDeviceControl'
+import { useModules, useScps } from '@/hooks/api/useDeviceControl'
 import { queryKeys } from '@/lib/query/queryKeys'
 
 const DEFAULT_EXPANDED = new Set([

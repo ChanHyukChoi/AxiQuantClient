@@ -10,7 +10,7 @@ import { EmpBioTab } from '@/pages/EmpsPage/tabs/EmpBioTab'
 import { EmpCardTab } from '@/pages/EmpsPage/tabs/EmpCardTab'
 import { EmpInfoTab } from '@/pages/EmpsPage/tabs/EmpInfoTab'
 import { empToUpdatePayload } from '@/pages/EmpsPage/utils/empHelpers'
-import { useDeleteEmp, useUpdateEmp } from '@/hooks/useEmps'
+import { useDeleteEmp, useUpdateEmp } from '@/hooks/api/useEmps'
 import type { CardInfo, EmpInfo, UpdateEmpRequest } from '@/types/api'
 
 interface EmpDrawerProps {

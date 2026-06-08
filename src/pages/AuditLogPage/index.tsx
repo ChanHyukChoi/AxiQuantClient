@@ -10,8 +10,8 @@ import {
   toIsoStart,
   type DatePreset,
 } from '@/pages/EventMonitorPage/utils/dateRange'
-import { useAuditLog } from '@/hooks/useAuditLog'
-import { useUsers } from '@/hooks/useUsers'
+import { useAuditLog } from '@/hooks/api/useAuditLog'
+import { useUsers } from '@/hooks/api/useUsers'
 import type { AuditLogParams } from '@/types/api/audit'
 
 export const AuditLogPage = () => {

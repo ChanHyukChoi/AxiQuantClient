@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import {
   SPLIT_HANDLE_WIDTH,
   useResizableDrawerWidth,
-} from '@/hooks/useResizableDrawerWidth'
+} from '@/hooks/ui/useResizableDrawerWidth'
 
 interface SplitDrawerLayoutProps {
   main: React.ReactNode

@@ -12,7 +12,7 @@ import {
   type AlarmMailFormValues,
 } from '@/pages/AlarmSettingsPage/formTypes'
 import { mailToUpdatePayload } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
-import { useDeleteAlarmMail, useUpdateAlarmMail } from '@/hooks/useAlarmSettings'
+import { useDeleteAlarmMail, useUpdateAlarmMail } from '@/hooks/api/useAlarmSettings'
 import type { AlarmInfo, AlarmMailInfo } from '@/types/api'
 
 interface AlarmMailDrawerProps {

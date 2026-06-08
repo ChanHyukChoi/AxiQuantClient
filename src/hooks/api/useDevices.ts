@@ -174,6 +174,3 @@ export const useDeleteOutput = () => {
     onSuccess: (_r, { scpId }) => void qc.invalidateQueries({ queryKey: queryKeys.devices.outputs(scpId) }),
   })
 }
-
-/** @deprecated useScps */
-export const useScpList = useScps

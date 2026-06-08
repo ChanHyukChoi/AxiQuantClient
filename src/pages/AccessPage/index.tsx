@@ -4,7 +4,7 @@ import { ListPanel } from '@/components/primitive/ListPanel'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { Button } from '@/components/primitive/Button'
 import { AccessDrawer } from '@/pages/AccessPage/AccessDrawer'
-import { useAccLvList } from '@/hooks/useAccLv'
+import { useAccLvList } from '@/hooks/api/useAccLv'
 
 export const AccessPage = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)

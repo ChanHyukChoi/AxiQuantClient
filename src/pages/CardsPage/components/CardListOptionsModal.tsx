@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/primitive/Button'
-import type { GridColumnOption } from '@/hooks/useGridLayout'
+import type { GridColumnOption } from '@/hooks/ui/useGridLayout'
 
 export type CardListFilters = {
   status: 'all' | '활성' | '비활성'

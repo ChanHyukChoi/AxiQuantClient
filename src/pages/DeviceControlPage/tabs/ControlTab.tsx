@@ -1,6 +1,6 @@
 import { Bell, DoorOpen, Lock, ToggleLeft, ToggleRight, Zap } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
-import { useControlOutput, useControlReader } from '@/hooks/useDeviceControl'
+import { useControlOutput, useControlReader } from '@/hooks/api/useDeviceControl'
 import type { ParsedDeviceNode } from '@/pages/DeviceControlPage/utils/buildTree'
 import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import { useToastStore } from '@/stores/toastStore'

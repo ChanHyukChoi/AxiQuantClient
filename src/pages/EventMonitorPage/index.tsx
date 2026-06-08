@@ -12,7 +12,7 @@ import {
   toIsoStart,
   type DatePreset,
 } from '@/pages/EventMonitorPage/utils/dateRange'
-import { useScps } from '@/hooks/useDevices'
+import { useScps } from '@/hooks/api/useDevices'
 import type { AccessLogParams, AlarmLogParams, EventRecord } from '@/types/api/eventMonitor'
 
 const PAGE_SIZE = 50

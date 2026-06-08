@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { AlarmMailDrawer } from '@/pages/AlarmSettingsPage/components/AlarmMailDrawer'
 import { AlarmMailListPane } from '@/pages/AlarmSettingsPage/components/AlarmMailListPane'
-import { useAlarmMails, useAlarms, useCreateAlarmMail } from '@/hooks/useAlarmSettings'
+import { useAlarmMails, useAlarms, useCreateAlarmMail } from '@/hooks/api/useAlarmSettings'
 import type { AlarmMailInfo } from '@/types/api'
 
 export const AlarmMailTab = () => {

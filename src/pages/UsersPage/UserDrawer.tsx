@@ -14,7 +14,7 @@ import {
   formToUpdatePayload,
   userToForm,
 } from '@/pages/UsersPage/utils/userHelpers'
-import { useCreateUser, useDeleteUser, useUpdateUser } from '@/hooks/useUsers'
+import { useCreateUser, useDeleteUser, useUpdateUser } from '@/hooks/api/useUsers'
 import type { UserInfo } from '@/types/api/user'
 
 interface UserDrawerProps {

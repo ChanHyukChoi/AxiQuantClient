@@ -15,7 +15,7 @@ import {
   type ScpChildData,
 } from '@/pages/DeviceControlPage/utils/buildTree'
 import type { DeviceTypeFilter } from '@/pages/DeviceControlPage/utils/deviceHelpers'
-import { useModules, useScps } from '@/hooks/useDeviceControl'
+import { useModules, useScps } from '@/hooks/api/useDeviceControl'
 import { queryKeys } from '@/lib/query/queryKeys'
 import type { InputInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 

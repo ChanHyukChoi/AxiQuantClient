@@ -5,7 +5,7 @@ import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { selectLikeStyle } from '@/pages/CardsPage/components/CardFieldUi'
 import { createCardSchema, type CreateCardFormValues } from '@/pages/CardsPage/formTypes'
-import { useCreateCard } from '@/hooks/useCard'
+import { useCreateCard } from '@/hooks/api/useCard'
 import type { CreateCardRequest, EmpInfo } from '@/types/api'
 
 interface CreateCardModalProps {

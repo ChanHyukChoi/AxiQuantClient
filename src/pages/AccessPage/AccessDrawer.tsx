@@ -9,9 +9,9 @@ import { Modal } from '@/components/primitive/Modal'
 import { IdNameTable } from '@/pages/AccessPage/components/IdNameTable'
 import { SectionBlock } from '@/pages/AccessPage/components/SectionBlock'
 import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
-import { useAccLvReaderList, useDeleteAccLv, useUpdateAccLv } from '@/hooks/useAccLv'
-import { useScpList } from '@/hooks/useScp'
-import { useTimezoneList } from '@/hooks/useTimezone'
+import { useAccLvReaderList, useDeleteAccLv, useUpdateAccLv } from '@/hooks/api/useAccLv'
+import { useScps } from '@/hooks/api/useDevices'
+import { useTimezoneList } from '@/hooks/api/useTimezone'
 import type { AccLvInfo, AccLvRdrInfo, UpdateAccLvRequest } from '@/types/api'
 
 interface AccessDrawerProps {
@@ -32,7 +32,7 @@ export const AccessDrawer = ({
   const { data: readerList, isLoading: readerLoading } = useAccLvReaderList(
     selectedId ?? 0,
   )
-  const { data: scpList } = useScpList()
+  const { data: scpList } = useScps()
   const { data: timezoneList, isLoading: timezoneLoading } = useTimezoneList()
 
   const { mutate: updateAccLv, isPending: isUpdating } = useUpdateAccLv()
@@ -72,7 +72,7 @@ export const AccessDrawer = ({
     if (!readerList?.length) return []
     return readerList.map((r: AccLvRdrInfo) => ({
       id: r.rdr,
-      name: r.readerName ?? `리더 ${r.rdr}`,
+      name: r.readerName ?? `?? ${r.rdr}`,
     }))
   }, [readerList])
 
@@ -173,7 +173,7 @@ export const AccessDrawer = ({
           leftIcon={<X size={12} />}
           onClick={handleCancelEdit}
         >
-          취소
+          ??
         </Button>
         <Button
           variant="accent"
@@ -182,7 +182,7 @@ export const AccessDrawer = ({
           loading={isUpdating}
           onClick={handleSave}
         >
-          저장
+          ??
         </Button>
       </>
     ) : (
@@ -193,7 +193,7 @@ export const AccessDrawer = ({
           leftIcon={<Trash2 size={12} />}
           onClick={() => setDeleteModalOpen(true)}
         >
-          삭제
+          ??
         </Button>
         <Button
           variant="accent"
@@ -201,7 +201,7 @@ export const AccessDrawer = ({
           leftIcon={<Pencil size={12} />}
           onClick={onEditClick}
         >
-          수정
+          ??
         </Button>
       </>
     )
@@ -210,33 +210,33 @@ export const AccessDrawer = ({
   const drawerBody = !selectedAccLv ? (
     <div className="flex items-center justify-center min-h-[160px]">
       <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-        목록에서 항목을 선택하세요
+        ???? ??? ?????
       </span>
     </div>
   ) : (
     <div>
-      <SectionBlock icon={<Cpu size={12} />} title="주 제어기">
+      <SectionBlock icon={<Cpu size={12} />} title="? ???">
         {readerLoading ? (
           <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-            불러오는 중...
+            ???? ?...
           </span>
         ) : (
           <IdNameTable rows={uniqueScpRows} />
         )}
       </SectionBlock>
-      <SectionBlock icon={<ScanLine size={12} />} title="리더">
+      <SectionBlock icon={<ScanLine size={12} />} title="??">
         {readerLoading ? (
           <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-            불러오는 중...
+            ???? ?...
           </span>
         ) : (
           <IdNameTable rows={readerRows} />
         )}
       </SectionBlock>
-      <SectionBlock icon={<Clock size={12} />} title="타임존">
+      <SectionBlock icon={<Clock size={12} />} title="???">
         {timezoneLoading ? (
           <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-            불러오는 중...
+            ???? ?...
           </span>
         ) : (
           <IdNameTable rows={timezoneRows} />
@@ -258,9 +258,9 @@ export const AccessDrawer = ({
 
       <Modal
         open={deleteModalOpen}
-        title="접근 권한 삭제"
-        description={`"${selectedAccLv?.name ?? ''}" 권한을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`}
-        confirmLabel="삭제"
+        title="?? ?? ??"
+        description={`"${selectedAccLv?.name ?? ''}" ??? ????????? ? ??? ??? ? ????.`}
+        confirmLabel="??"
         variant="danger"
         loading={isDeleting}
         onConfirm={handleDeleteConfirm}

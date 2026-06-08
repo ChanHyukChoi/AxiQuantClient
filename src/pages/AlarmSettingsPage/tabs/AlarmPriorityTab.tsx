@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { AlarmPriorityDrawer } from '@/pages/AlarmSettingsPage/components/AlarmPriorityDrawer'
 import { AlarmPriorityListPane } from '@/pages/AlarmSettingsPage/components/AlarmPriorityListPane'
-import { useAlarmPriorities, useCreateAlarmPriority } from '@/hooks/useAlarmSettings'
+import { useAlarmPriorities, useCreateAlarmPriority } from '@/hooks/api/useAlarmSettings'
 import type { AlarmPriorityInfo } from '@/types/api'
 
 export const AlarmPriorityTab = () => {

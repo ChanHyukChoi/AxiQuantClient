@@ -3,8 +3,8 @@ import { TitleBar } from '@/layouts/TitleBar'
 import { Sidebar } from '@/layouts/Sidebar'
 import { useSidebarStore } from '@/stores/sidebarStore'
 import { ToastHost } from '@/components/primitive/Toast'
-import { useDeviceControlSse } from '@/hooks/useDeviceControlSse'
-import { useSseInvalidate } from '@/hooks/useSseInvalidate'
+import { useDeviceControlSse } from '@/hooks/sse/useDeviceControlSse'
+import { useSseInvalidate } from '@/hooks/sse/useSseInvalidate'
 
 export const RootLayout = () => {
   const { toggle } = useSidebarStore()

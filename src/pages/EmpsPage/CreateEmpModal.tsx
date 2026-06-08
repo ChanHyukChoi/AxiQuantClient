@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { createEmpSchema, type CreateEmpFormValues } from '@/pages/EmpsPage/formTypes'
-import { useCreateEmp } from '@/hooks/useEmps'
+import { useCreateEmp } from '@/hooks/api/useEmps'
 import type { CreateEmpRequest } from '@/types/api'
 
 interface CreateEmpModalProps {

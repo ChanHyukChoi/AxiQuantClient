@@ -14,7 +14,7 @@ import {
   normalizeHexColor,
   priorityToUpdatePayload,
 } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
-import { useDeleteAlarmPriority, useUpdateAlarmPriority } from '@/hooks/useAlarmSettings'
+import { useDeleteAlarmPriority, useUpdateAlarmPriority } from '@/hooks/api/useAlarmSettings'
 import type { AlarmPriorityInfo } from '@/types/api'
 
 interface AlarmPriorityDrawerProps {

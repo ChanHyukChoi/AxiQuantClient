@@ -20,10 +20,11 @@ let win: BrowserWindow | null
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1280,
-    height: 800,
-    minWidth: 900,
-    minHeight: 600,
+    // sidebar(240) + grid(~564) + drawer(400) + 여유
+    width: 1440,
+    height: 900,
+    minWidth: 1200,
+    minHeight: 720,
     frame: false,        // OS 기본 타이틀바 제거
     titleBarStyle: 'hidden',
     backgroundColor: '#1a1d21',

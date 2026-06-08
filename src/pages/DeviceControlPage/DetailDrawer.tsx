@@ -36,7 +36,7 @@ import {
   useUpdateReader,
   useUpdateScp,
   useUpdateSio,
-} from '@/hooks/useDeviceControl'
+} from '@/hooks/api/useDeviceControl'
 import type {
   InputInfo,
   ModuleInfo,

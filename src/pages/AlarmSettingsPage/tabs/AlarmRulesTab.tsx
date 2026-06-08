@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { AlarmRuleDrawer } from '@/pages/AlarmSettingsPage/components/AlarmRuleDrawer'
 import { AlarmRulesListPane } from '@/pages/AlarmSettingsPage/components/AlarmRulesListPane'
-import { useAlarms, useCreateAlarm } from '@/hooks/useAlarmSettings'
-import { useScps } from '@/hooks/useDeviceControl'
+import { useAlarms, useCreateAlarm } from '@/hooks/api/useAlarmSettings'
+import { useScps } from '@/hooks/api/useDeviceControl'
 import type { AlarmInfo } from '@/types/api'
 
 export const AlarmRulesTab = () => {

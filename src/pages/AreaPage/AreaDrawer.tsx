@@ -11,7 +11,7 @@ import { AreaInfoTab } from '@/pages/AreaPage/tabs/AreaInfoTab'
 import { AreaOccupantsTab } from '@/pages/AreaPage/tabs/AreaOccupantsTab'
 import { AreaReadersTab } from '@/pages/AreaPage/tabs/AreaReadersTab'
 import { areaToUpdatePayload, isAreaActive } from '@/pages/AreaPage/utils/areaHelpers'
-import { useDeleteArea, useUpdateArea } from '@/hooks/useArea'
+import { useDeleteArea, useUpdateArea } from '@/hooks/api/useArea'
 import type { AreaInfo } from '@/types/api'
 
 interface AreaDrawerProps {

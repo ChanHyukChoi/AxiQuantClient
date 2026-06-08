@@ -14,8 +14,8 @@ import {
   type EmpListFilters,
 } from '@/pages/EmpsPage/components/EmpFilterModal'
 import { useEmpColumns } from '@/pages/EmpsPage/useEmpColumns'
-import { useCardList } from '@/hooks/useCard'
-import { useEmpList } from '@/hooks/useEmps'
+import { useCardList } from '@/hooks/api/useCard'
+import { useEmpList } from '@/hooks/api/useEmps'
 import type { EmpInfo } from '@/types/api'
 
 const applyEmpFilters = (

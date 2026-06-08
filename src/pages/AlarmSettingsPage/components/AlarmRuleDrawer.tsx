@@ -16,7 +16,7 @@ import {
   deviceDisplayLabel,
   isAlarmActive,
 } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
-import { useDeleteAlarm, useUpdateAlarm } from '@/hooks/useAlarmSettings'
+import { useDeleteAlarm, useUpdateAlarm } from '@/hooks/api/useAlarmSettings'
 import type { AlarmInfo } from '@/types/api'
 
 interface AlarmRuleDrawerProps {

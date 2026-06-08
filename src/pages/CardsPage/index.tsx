@@ -10,7 +10,7 @@ import {
   FilterButton,
 } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
-import { useGridLayout } from '@/hooks/useGridLayout'
+import { useGridLayout } from '@/hooks/ui/useGridLayout'
 import { CardDrawer } from '@/pages/CardsPage/CardDrawer'
 import { CreateCardModal } from '@/pages/CardsPage/CreateCardModal'
 import {
@@ -26,9 +26,9 @@ import {
   cardTypeLabel,
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
-import { useCardList } from '@/hooks/useCard'
-import { useEmpList } from '@/hooks/useEmps'
-import { useAccLvList } from '@/hooks/useAccLv'
+import { useCardList } from '@/hooks/api/useCard'
+import { useEmpList } from '@/hooks/api/useEmps'
+import { useAccLvList } from '@/hooks/api/useAccLv'
 
 const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards'
 const CARDS_GRID_LEGACY_WIDTHS_KEY = 'axiquant.grid.columns.cards'

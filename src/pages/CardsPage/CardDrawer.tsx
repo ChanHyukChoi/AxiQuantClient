@@ -17,7 +17,7 @@ import {
   toUpdateRequest,
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
-import { useCardAccLvList, useDeleteCard, useUpdateCard } from '@/hooks/useCard'
+import { useCardAccLvList, useDeleteCard, useUpdateCard } from '@/hooks/api/useCard'
 import type { CardAccLvDisplayItem } from '@/pages/CardsPage/components/AccLvGroupCards'
 import type { AccLvInfo, CardAccLvInfo, EmpInfo } from '@/types/api'
 
