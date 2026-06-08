@@ -181,6 +181,7 @@ export const CardsPage = () => {
             empList={empList ?? undefined}
             empNameMap={empNameMap}
             accLvNameMap={accLvNameMap}
+            accLvList={accLvList ?? undefined}
             onDeleted={() => setSelectedId(null)}
             onEditModeChange={setEditMode}
           />

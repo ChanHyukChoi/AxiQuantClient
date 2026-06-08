@@ -47,34 +47,38 @@ export const SplitDrawerLayout = ({
       </div>
 
       <div
-        role="separator"
-        aria-orientation="vertical"
-        aria-label="패널 너비 조절"
-        onPointerDown={onResizePointerDown}
-        className="flex-shrink-0 touch-none"
+        className="flex flex-row flex-shrink-0 overflow-hidden h-full"
         style={{
-          width: SPLIT_HANDLE_WIDTH,
-          cursor: 'col-resize',
-          background: 'transparent',
-        }}
-        onMouseEnter={(e) => {
-          ;(e.currentTarget as HTMLDivElement).style.background =
-            'var(--color-btn-hover)'
-        }}
-        onMouseLeave={(e) => {
-          ;(e.currentTarget as HTMLDivElement).style.background = 'transparent'
-        }}
-      />
-
-      <div
-        className="flex flex-col flex-shrink-0 overflow-hidden h-full"
-        style={{
-          width: drawerWidth,
-          minWidth: minDrawerWidth,
-          maxWidth: maxDrawerWidth,
+          width: drawerWidth + SPLIT_HANDLE_WIDTH,
+          minWidth: minDrawerWidth + SPLIT_HANDLE_WIDTH,
+          maxWidth: maxDrawerWidth + SPLIT_HANDLE_WIDTH,
         }}
       >
-        {drawer}
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="패널 너비 조절"
+          onPointerDown={onResizePointerDown}
+          className="flex-shrink-0 touch-none self-stretch"
+          style={{
+            width: SPLIT_HANDLE_WIDTH,
+            cursor: 'col-resize',
+            background: 'var(--color-sidebar)',
+            borderLeft: '0.5px solid var(--color-border)',
+          }}
+          onMouseEnter={(e) => {
+            ;(e.currentTarget as HTMLDivElement).style.background =
+              'var(--color-btn-hover)'
+          }}
+          onMouseLeave={(e) => {
+            ;(e.currentTarget as HTMLDivElement).style.background =
+              'var(--color-sidebar)'
+          }}
+        />
+
+        <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+          {drawer}
+        </div>
       </div>
     </div>
   )

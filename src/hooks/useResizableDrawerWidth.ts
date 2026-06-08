@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export const SPLIT_HANDLE_WIDTH = 6
-
+export const SPLIT_HANDLE_WIDTH = 2
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max)
 

@@ -219,6 +219,8 @@ export const EmpDrawer = ({
   return (
     <>
       <Drawer
+        fill
+        borderLeft={false}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
         tabs={drawerTabs}

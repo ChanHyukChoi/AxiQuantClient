@@ -247,7 +247,12 @@ export const AccessDrawer = ({
 
   return (
     <>
-      <Drawer header={drawerHeader} actions={drawerActions ?? undefined} fill>
+      <Drawer
+        fill
+        borderLeft={false}
+        header={drawerHeader}
+        actions={drawerActions ?? undefined}
+      >
         {drawerBody}
       </Drawer>
 

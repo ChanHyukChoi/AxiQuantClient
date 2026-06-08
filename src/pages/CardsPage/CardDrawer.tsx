@@ -18,13 +18,15 @@ import {
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
 import { useCardAccLvList, useDeleteCard, useUpdateCard } from '@/hooks/useCard'
-import type { CardAccLvInfo, EmpInfo } from '@/types/api'
+import type { CardAccLvDisplayItem } from '@/pages/CardsPage/components/AccLvGroupCards'
+import type { AccLvInfo, CardAccLvInfo, EmpInfo } from '@/types/api'
 
 interface CardDrawerProps {
   card: CardRow | null
   empList: EmpInfo[] | undefined
   empNameMap: Record<number, string>
   accLvNameMap: Record<number, string>
+  accLvList?: AccLvInfo[]
   onDeleted: () => void
   onEditModeChange?: (editing: boolean) => void
 }
@@ -35,6 +37,7 @@ export const CardDrawer = ({
   empList,
   empNameMap,
   accLvNameMap,
+  accLvList,
   onDeleted,
   onEditModeChange,
 }: CardDrawerProps) => {
@@ -63,14 +66,20 @@ export const CardDrawer = ({
     onEditModeChange?.(editing)
   }
 
-  const accLvNamesDisplay = useMemo(() => {
+  const accLvItems = useMemo<CardAccLvDisplayItem[]>(() => {
     const rows: CardAccLvInfo[] = cardAccLvList ?? []
-    if (!rows.length) return '—'
-    const names = rows
-      .map((row) => accLvNameMap[row.alvid] ?? `ID ${row.alvid}`)
-      .filter(Boolean)
-    return names.length ? names.join(', ') : '—'
-  }, [cardAccLvList, accLvNameMap])
+    return rows.map((row) => {
+      const meta = accLvList?.find((a) => a.id === row.alvid)
+      const acttm = row.acttm?.trim()
+      return {
+        id: row.alvid,
+        name: accLvNameMap[row.alvid] ?? meta?.name ?? `권한 #${row.alvid}`,
+        isActive: (row.state ?? 1) > 0,
+        description: meta?.description?.trim() || undefined,
+        acttm: acttm || undefined,
+      }
+    })
+  }, [cardAccLvList, accLvNameMap, accLvList])
 
   const onEditClick = () => {
     if (!card) return
@@ -259,11 +268,7 @@ export const CardDrawer = ({
         />
       )}
       {activeTab === 'access' && (
-        <CardAccessTab
-          card={card}
-          accLvNamesDisplay={accLvNamesDisplay}
-          fontSize={FONT_SIZE}
-        />
+        <CardAccessTab card={card} accLvItems={accLvItems} fontSize={FONT_SIZE} />
       )}
       {activeTab === 'hist' && <CardHistTab card={card} fontSize={FONT_SIZE} />}
     </>
@@ -272,6 +277,8 @@ export const CardDrawer = ({
   return (
     <>
       <Drawer
+        fill
+        borderLeft={false}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
         tabs={drawerTabs}

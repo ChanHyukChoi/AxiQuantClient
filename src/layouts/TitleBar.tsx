@@ -56,7 +56,7 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
       style={
         {
           backgroundColor: 'var(--color-bg)',
-          height: '24px',
+          height: '30px',
           WebkitAppRegion: 'drag',
           borderBottom:
             theme === 'light'

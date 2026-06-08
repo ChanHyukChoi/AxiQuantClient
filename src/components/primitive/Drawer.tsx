@@ -5,6 +5,8 @@ interface DrawerProps {
   width?: number
   /** true면 가로로 남은 공간을 채움 (고정 width 대신 flex-1) */
   fill?: boolean
+  /** SplitDrawerLayout 등 외부에서 왼쪽 구분선을 그릴 때 false */
+  borderLeft?: boolean
   className?: string
   header: React.ReactNode
   tabs?: TabItem[]
@@ -19,6 +21,7 @@ interface DrawerProps {
 export const Drawer = ({
   width,
   fill = false,
+  borderLeft = true,
   className = '',
   header,
   tabs,
@@ -42,7 +45,7 @@ export const Drawer = ({
       style={{
         ...(fill ? {} : { width }),
         background: 'var(--color-sidebar)',
-        borderLeft: '0.5px solid var(--color-border)',
+        ...(borderLeft ? { borderLeft: '0.5px solid var(--color-border)' } : {}),
       }}
     >
       {/* header */}

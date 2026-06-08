@@ -1,35 +1,45 @@
-import { MapPin, Shield } from 'lucide-react'
-import { FRow, FieldValue, SectionTitle } from '@/pages/CardsPage/components/CardFieldUi'
+import { Shield } from 'lucide-react'
+import {
+  AccLvGroupCards,
+  type CardAccLvDisplayItem,
+} from '@/pages/CardsPage/components/AccLvGroupCards'
+import { LastAreaCard } from '@/pages/CardsPage/components/LastAreaCard'
+import { SectionTitle } from '@/pages/CardsPage/components/CardFieldUi'
 import type { CardRow } from '@/pages/CardsPage/utils/cardPageHelpers'
 
 interface CardAccessTabProps {
   card: CardRow
-  accLvNamesDisplay: string
+  accLvItems: CardAccLvDisplayItem[]
   fontSize: number
 }
 
 export const CardAccessTab = ({
   card,
-  accLvNamesDisplay,
+  accLvItems,
   fontSize = 15,
 }: CardAccessTabProps) => {
   const area = card.area?.trim() ? card.area : '—'
 
   return (
-    <div>
-      <SectionTitle fontSize={fontSize}>접근 권한</SectionTitle>
-      <FRow icon={<Shield size={15} />} label="권한 그룹" fontSize={fontSize}>
-        <FieldValue small fontSize={fontSize}>
-          {accLvNamesDisplay}
-        </FieldValue>
-      </FRow>
-      <div className="mt-4" />
-      <SectionTitle fontSize={fontSize}>영역</SectionTitle>
-      <FRow icon={<MapPin size={15} />} label="마지막 영역" fontSize={fontSize}>
-        <FieldValue small fontSize={fontSize}>
-          {area}
-        </FieldValue>
-      </FRow>
+    <div className="flex flex-col gap-4">
+      <section>
+        <SectionTitle fontSize={fontSize}>접근 권한</SectionTitle>
+        <div className="flex items-center gap-1.5 mb-2">
+          <Shield size={14} style={{ color: 'var(--color-text-subtle)' }} />
+          <span
+            className="text-[11px] font-medium"
+            style={{ color: 'var(--color-text-muted)' }}
+          >
+            권한 그룹 {accLvItems.length > 0 ? `(${accLvItems.length})` : ''}
+          </span>
+        </div>
+        <AccLvGroupCards items={accLvItems} fontSize={fontSize} />
+      </section>
+
+      <section>
+        <SectionTitle fontSize={fontSize}>영역</SectionTitle>
+        <LastAreaCard area={area} fontSize={fontSize} />
+      </section>
     </div>
   )
 }
