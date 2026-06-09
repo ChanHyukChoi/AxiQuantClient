@@ -1,3 +1,4 @@
+import { addCardAccLv, deleteCardAccLv } from '@/api/card'
 import type { CardInfo, CreateCardRequest, UpdateCardRequest } from '@/types/api'
 import type { UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
 
@@ -5,8 +6,12 @@ export type CardRow = CardInfo & { id: number }
 
 export const cardPrimaryKey = (c: CardInfo): number | undefined => {
   const row = c as CardInfo & { id?: number }
-  const pk = row.cid ?? row.id
-  if (typeof pk !== 'number' || !Number.isFinite(pk)) return undefined
+  let pk = row.cid ?? row.id
+  if ((pk == null || pk <= 0) && c.cardNumber.trim() !== '') {
+    const fromNum = cardIdFromNumber(c.cardNumber)
+    if (fromNum != null) pk = fromNum
+  }
+  if (typeof pk !== 'number' || !Number.isFinite(pk) || pk <= 0) return undefined
   return pk
 }
 
@@ -33,6 +38,25 @@ export const toCreateRequest = (
   exemptApb,
   exemptPin,
 })
+
+/** 카드-접근권한 연결 diff 동기화 (생성·수정 저장 후 호출) */
+export const syncCardAccLv = async (
+  cid: number,
+  beforeIds: number[],
+  afterIds: number[],
+): Promise<boolean> => {
+  const before = new Set(beforeIds)
+  const after = new Set(afterIds)
+  const toAdd = afterIds.filter((id) => !before.has(id))
+  const toRemove = beforeIds.filter((id) => !after.has(id))
+  if (toAdd.length === 0 && toRemove.length === 0) return true
+
+  const results = await Promise.all([
+    ...toAdd.map((id) => addCardAccLv(cid, { accLvId: id })),
+    ...toRemove.map((id) => deleteCardAccLv(cid, id)),
+  ])
+  return results.every(Boolean)
+}
 
 export const toUpdateRequest = (
   values: UpdateCardFormValues,

@@ -14,6 +14,9 @@ interface AccLvGroupCardsProps {
   fontSize?: number
 }
 
+/** 2개까지는 전체 표시, 3개부터 목록 영역만 스크롤 */
+const ACC_LV_VISIBLE_WITHOUT_SCROLL = 2
+
 export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) => {
   if (items.length === 0) {
     return (
@@ -31,12 +34,19 @@ export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) 
     )
   }
 
+  const listClass = [
+    'flex flex-col gap-2 w-full',
+    items.length > ACC_LV_VISIBLE_WITHOUT_SCROLL ? 'app-acc-lv-list-panel app-scrollbar' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={listClass}>
       {items.map((item) => (
         <div
           key={item.id}
-          className="flex flex-col gap-1.5 min-w-[140px] max-w-full flex-1 rounded-md px-2.5 py-2"
+          className="flex flex-col gap-1.5 w-full rounded-md px-2.5 py-2"
           style={{
             background: 'var(--color-bg)',
             border: '0.5px solid var(--color-border)',

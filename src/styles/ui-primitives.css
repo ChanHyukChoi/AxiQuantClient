@@ -36,3 +36,210 @@
 .app-scrollbar::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+/* Input / Select / Picker 공통 트리거 */
+.app-field-control {
+  padding: 0 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-input-border);
+  outline: none;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.25;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.app-field-control:hover:not(:disabled):not(.app-field-control--disabled) {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-input-border));
+}
+
+.app-field-control--focused {
+  border-color: var(--color-accent);
+}
+
+.app-field-control--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-field-control-chevron {
+  transition: transform 0.15s ease;
+}
+
+.app-field-control-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* 커스텀 Select 드롭다운 패널 */
+.app-select-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 4px;
+  border: 0.5px solid var(--color-border);
+  background: var(--color-sidebar);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.4);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.app-select-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 0 8px;
+  min-height: 22px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  line-height: 1.25;
+  transition: background 0.12s ease;
+}
+
+.app-select-option:hover:not(:disabled) {
+  background: var(--color-btn-hover);
+}
+
+.app-select-option--selected {
+  background: var(--color-accent-subtle);
+}
+
+.app-select-option--selected:hover:not(:disabled) {
+  background: var(--color-accent-subtle);
+}
+
+.app-select-option:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 모달 선택 트리거 — Select와 동일 톤 */
+.app-picker-field {
+  width: 100%;
+  padding: 0 8px;
+  line-height: 1.25;
+  border-radius: 4px;
+  border: 1px solid var(--color-input-border);
+  outline: none;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+/* Checkbox — Input·Select와 동일 톤 */
+.app-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.app-checkbox--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.app-checkbox-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app-checkbox-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 3px;
+  border: 1px solid var(--color-input-border);
+  background: var(--color-input-bg);
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.app-checkbox-box--checked {
+  background: var(--color-accent-subtle);
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-input-border));
+}
+
+.app-checkbox:hover:not(.app-checkbox--disabled) .app-checkbox-box:not(.app-checkbox-box--checked) {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-input-border));
+}
+
+/* 다중 선택 칩 미리보기 — 고정 높이, 초과 시 스크롤 */
+.app-selected-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  width: 100%;
+  max-height: 72px;
+  overflow-y: auto;
+}
+
+/* 다중 선택 모달 — 전체 선택/해제 토글 */
+.app-multi-select-toggle-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 4px;
+  border: 1px solid var(--color-input-border);
+  background: var(--color-input-bg);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.app-multi-select-toggle-all:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-input-border));
+  background: var(--color-btn-hover);
+}
+
+.app-multi-select-toggle-all:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* 접근권한 탭 — 2개까지 전체 표시, 3개부터 패널 내부 스크롤 */
+.app-acc-lv-list-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-height: calc(2 * 88px + 8px);
+  overflow-y: auto;
+}
+
+.app-picker-field:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-input-border));
+  background: color-mix(in srgb, var(--color-btn-hover) 50%, var(--color-input-bg));
+}
+
+.app-picker-field:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

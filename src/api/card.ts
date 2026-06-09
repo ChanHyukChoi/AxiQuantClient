@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { axiosInstance } from '@/lib/infra/axios'
 import {
   createCardToWire,
@@ -23,11 +24,70 @@ const normalizeCardAccLvRow = (row: Record<string, unknown>): CardAccLvInfo => (
   ext: optionalString(row, 'ext'),
 })
 
+const describeCardListRaw = (data: unknown): Record<string, unknown> => {
+  if (data == null) return { kind: 'null' }
+  if (Array.isArray(data)) {
+    return {
+      kind: 'array',
+      length: data.length,
+      sampleKeys:
+        data[0] != null && typeof data[0] === 'object'
+          ? Object.keys(data[0] as Record<string, unknown>).slice(0, 12)
+          : [],
+    }
+  }
+  if (typeof data === 'object') {
+    const o = data as Record<string, unknown>
+    return {
+      kind: 'object',
+      keys: Object.keys(o),
+      nestedLengths: {
+        items: Array.isArray(o.items) ? o.items.length : null,
+        data: Array.isArray(o.data) ? o.data.length : null,
+        cards: Array.isArray(o.cards) ? o.cards.length : null,
+        card: Array.isArray(o.card) ? o.card.length : null,
+        list: Array.isArray(o.list) ? o.list.length : null,
+      },
+    }
+  }
+  return { kind: typeof data }
+}
+
+const logCardListFetch = (data: unknown, parsed: CardInfo[] | null, error?: unknown) => {
+  if (!import.meta.env.DEV) return
+  if (error != null) {
+    if (axios.isAxiosError(error)) {
+      console.error('[api/card] GET /api/card 실패', {
+        status: error.response?.status,
+        code: error.code,
+        message: error.message,
+        responseData: error.response?.data,
+      })
+    } else {
+      console.error('[api/card] GET /api/card 실패', error)
+    }
+    return
+  }
+  console.info('[api/card] GET /api/card — 카드 목록', {
+    raw: describeCardListRaw(data),
+    parsedCount: parsed?.length ?? 0,
+    parsedSample: (parsed ?? []).slice(0, 3).map((c) => ({
+      cid: c.cid,
+      cardNumber: c.cardNumber,
+      name: c.name,
+      empId: c.empId,
+    })),
+  })
+}
+
 export const getCardList = async (): Promise<CardInfo[] | null> => {
   try {
     const { data } = await axiosInstance.get<unknown>('/api/card')
-    return parseCardList(data)
-  } catch {
+    const parsed = parseCardList(data)
+    logCardListFetch(data, parsed)
+    return parsed
+  } catch (error) {
+    logCardListFetch(null, null, error)
     return null
   }
 }

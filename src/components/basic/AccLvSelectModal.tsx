@@ -4,23 +4,30 @@ import { MultiSelectToggleAllButton } from '@/components/basic/MultiSelectToggle
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { SearchField } from '@/components/primitive/SearchField'
-import type { AlarmInfo } from '@/types/api'
 
-interface AlarmSelectModalProps {
+export interface AccLvSelectItem {
+  id: number
+  name: string
+  description?: string
+}
+
+interface AccLvSelectModalProps {
   open: boolean
-  alarms: AlarmInfo[]
+  title?: string
+  items: AccLvSelectItem[]
   selectedIds: number[]
   onCancel: () => void
   onConfirm: (ids: number[]) => void
 }
 
-export const AlarmSelectModal = ({
+export const AccLvSelectModal = ({
   open,
-  alarms,
+  title = '접근 권한 선택',
+  items,
   selectedIds,
   onCancel,
   onConfirm,
-}: AlarmSelectModalProps) => {
+}: AccLvSelectModalProps) => {
   const [query, setQuery] = useState('')
   const [checked, setChecked] = useState<Set<number>>(() => new Set(selectedIds))
 
@@ -33,10 +40,14 @@ export const AlarmSelectModal = ({
 
   if (!open) return null
 
-  const filtered = alarms.filter((a) => {
+  const filtered = items.filter((item) => {
     if (!query.trim()) return true
     const q = query.trim().toLowerCase()
-    return a.name.toLowerCase().includes(q) || String(a.id).includes(q)
+    return (
+      item.name.toLowerCase().includes(q) ||
+      (item.description?.toLowerCase().includes(q) ?? false) ||
+      String(item.id).includes(q)
+    )
   })
 
   const toggle = (id: number) => {
@@ -49,7 +60,7 @@ export const AlarmSelectModal = ({
   }
 
   const selectAllFiltered = () => {
-    setChecked(new Set(filtered.map((alarm) => alarm.id)))
+    setChecked(new Set(filtered.map((item) => item.id)))
   }
 
   const deselectAll = () => {
@@ -66,7 +77,7 @@ export const AlarmSelectModal = ({
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="경보 선택"
+        aria-label={title}
         className="flex flex-col rounded-md overflow-hidden"
         style={{
           width: 380,
@@ -80,7 +91,7 @@ export const AlarmSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
-            경보 선택
+            {title}
           </span>
           <button
             type="button"
@@ -113,12 +124,12 @@ export const AlarmSelectModal = ({
               className="text-[12px] text-center py-8"
               style={{ color: 'var(--color-text-subtle)' }}
             >
-              {query.trim() ? '검색 결과가 없습니다.' : '등록된 경보가 없습니다.'}
+              {query.trim() ? '검색 결과가 없습니다.' : '등록된 접근 권한이 없습니다.'}
             </p>
           ) : (
-            filtered.map((alarm) => (
+            filtered.map((item) => (
               <div
-                key={alarm.id}
+                key={item.id}
                 role="button"
                 tabIndex={0}
                 className="flex items-center gap-2.5 px-3.5 cursor-pointer border-b"
@@ -126,20 +137,30 @@ export const AlarmSelectModal = ({
                   borderColor: 'var(--color-border-subtle)',
                   minHeight: 28,
                 }}
-                onClick={() => toggle(alarm.id)}
+                onClick={() => toggle(item.id)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
-                    toggle(alarm.id)
+                    toggle(item.id)
                   }
                 }}
               >
-                <Checkbox checked={checked.has(alarm.id)} readOnly />
-                <span
-                  className="text-[12px] flex-1 truncate"
-                  style={{ color: 'var(--color-text)' }}
-                >
-                  {alarm.name || `경보 #${alarm.id}`}
+                <Checkbox checked={checked.has(item.id)} readOnly />
+                <span className="flex flex-col flex-1 min-w-0">
+                  <span
+                    className="text-[12px] truncate"
+                    style={{ color: 'var(--color-text)' }}
+                  >
+                    {item.name || `권한 #${item.id}`}
+                  </span>
+                  {item.description ? (
+                    <span
+                      className="text-[11px] truncate"
+                      style={{ color: 'var(--color-text-muted)' }}
+                    >
+                      {item.description}
+                    </span>
+                  ) : null}
                 </span>
               </div>
             ))

@@ -1,42 +1,35 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useForm, type Resolver } from 'react-hook-form'
+import { useForm, useWatch, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, CreditCard, DoorOpen, History, Pencil, Plus, Trash2, X } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
+import { Check, CreditCard, DoorOpen, History, Pencil, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
-import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
-import { typeBadgeVariant } from '@/pages/CardsPage/components/CardFieldUi'
+import { queryKeys } from '@/lib/query/queryKeys'
+import { CardSummaryHeader } from '@/pages/CardsPage/components/CardSummaryHeader'
+import { CardUpsertForm } from '@/pages/CardsPage/components/CardUpsertForm'
 import { updateCardSchema, type UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
 import { CardAccessTab } from '@/pages/CardsPage/tabs/CardAccessTab'
 import { CardHistTab } from '@/pages/CardsPage/tabs/CardHistTab'
 import { CardInfoTab } from '@/pages/CardsPage/tabs/CardInfoTab'
+import type { CardAccLvDisplayItem } from '@/pages/CardsPage/components/AccLvGroupCards'
 import {
   cardIdFromNumber,
   cardStatusLabel,
   cardTypeLabel,
+  syncCardAccLv,
   toCreateRequest,
   toUpdateRequest,
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
 import { useCardAccLvList, useCreateCard, useDeleteCard, useUpdateCard } from '@/hooks/api/useCard'
-import type { CardAccLvDisplayItem } from '@/pages/CardsPage/components/AccLvGroupCards'
 import type { AccLvInfo, CardAccLvInfo, EmpInfo } from '@/types/api'
 
-const CREATE_FORM_DEFAULTS: UpdateCardFormValues = {
+const FORM_DEFAULTS: UpdateCardFormValues = {
   name: '',
   cardNum: '',
   empId: undefined,
-  type: '직원',
-  status: '활성',
-}
-
-const CREATE_PLACEHOLDER: CardRow = {
-  id: 0,
-  cid: 0,
-  cardNumber: '',
-  name: '',
-  isActive: true,
   type: '직원',
   status: '활성',
 }
@@ -48,8 +41,8 @@ interface CardDrawerProps {
   empNameMap: Record<number, string>
   accLvNameMap: Record<number, string>
   accLvList?: AccLvInfo[]
-  onCreateModeChange: (active: boolean) => void
-  onCreated: (id: number) => void
+  onCreateCancel: () => void
+  onCreated: (id: number) => void | Promise<void>
   onDeleted: () => void
   onEditModeChange?: (editing: boolean) => void
 }
@@ -63,7 +56,7 @@ export const CardDrawer = ({
   empNameMap,
   accLvNameMap,
   accLvList,
-  onCreateModeChange,
+  onCreateCancel,
   onCreated,
   onDeleted,
   onEditModeChange,
@@ -74,35 +67,51 @@ export const CardDrawer = ({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [exemptApb, setExemptApb] = useState(false)
   const [exemptPin, setExemptPin] = useState(false)
+  const [selectedAccLvIds, setSelectedAccLvIds] = useState<number[]>([])
+  const [isSaving, setIsSaving] = useState(false)
+
+  const formActive = createMode || editMode
+  const qc = useQueryClient()
 
   const { data: cardAccLvList } = useCardAccLvList(selectedId ?? 0)
-  const { mutate: createCard, isPending: isCreating } = useCreateCard()
-  const { mutate: updateCard, isPending: isUpdating } = useUpdateCard()
+  const { mutateAsync: createCardAsync } = useCreateCard()
+  const { mutateAsync: updateCardAsync } = useUpdateCard()
   const { mutate: deleteCard, isPending: isDeleting } = useDeleteCard()
 
   const form = useForm<UpdateCardFormValues>({
     resolver: zodResolver(updateCardSchema) as Resolver<UpdateCardFormValues>,
+    defaultValues: FORM_DEFAULTS,
   })
+
+  const watchedName = useWatch({ control: form.control, name: 'name' })
+  const watchedCardNum = useWatch({ control: form.control, name: 'cardNum' })
+  const watchedType = useWatch({ control: form.control, name: 'type' })
+  const watchedStatus = useWatch({ control: form.control, name: 'status' })
+
+  const resetFormState = () => {
+    form.reset(FORM_DEFAULTS)
+    setExemptApb(false)
+    setExemptPin(false)
+    setSelectedAccLvIds([])
+  }
+
+  const setEditing = (editing: boolean) => {
+    setEditMode(editing)
+    onEditModeChange?.(editing)
+  }
 
   useEffect(() => {
     if (!createMode) return
     setActiveTab('info')
     setEditMode(false)
-    form.reset(CREATE_FORM_DEFAULTS)
-    setExemptApb(false)
-    setExemptPin(false)
-  }, [createMode, form])
+    resetFormState()
+  }, [createMode])
 
   useEffect(() => {
     if (createMode) return
     setActiveTab('info')
     setEditMode(false)
   }, [selectedId, createMode])
-
-  const setEditing = (editing: boolean) => {
-    setEditMode(editing)
-    onEditModeChange?.(editing)
-  }
 
   const accLvItems = useMemo<CardAccLvDisplayItem[]>(() => {
     const rows: CardAccLvInfo[] = cardAccLvList ?? []
@@ -119,6 +128,13 @@ export const CardDrawer = ({
     })
   }, [cardAccLvList, accLvNameMap, accLvList])
 
+  useEffect(() => {
+    if (!editMode || createMode || cardAccLvList == null) return
+    setSelectedAccLvIds((prev) =>
+      prev.length > 0 ? prev : accLvItems.map((item) => item.id),
+    )
+  }, [editMode, createMode, cardAccLvList, accLvItems])
+
   const onEditClick = () => {
     if (!card) return
     form.reset({
@@ -130,47 +146,61 @@ export const CardDrawer = ({
     })
     setExemptApb(!!card.exemptApb)
     setExemptPin(!!card.exemptPin)
+    setSelectedAccLvIds(accLvItems.map((item) => item.id))
     setEditing(true)
   }
 
-  const handleCancelEdit = () => {
-    setEditing(false)
-    form.reset()
+  const handleCancelForm = () => {
+    if (createMode) {
+      onCreateCancel()
+    } else {
+      setEditing(false)
+    }
+    resetFormState()
   }
 
-  const handleCancelCreate = () => {
-    onCreateModeChange(false)
-    form.reset()
+  const invalidateAccLv = (cid: number) => {
+    void qc.invalidateQueries({ queryKey: queryKeys.card.acclv(cid) })
   }
 
-  const onUpdateSubmit = (values: UpdateCardFormValues) => {
-    if (!selectedId || !card) return
-    const data = toUpdateRequest(values, card, exemptApb, exemptPin)
-    updateCard(
-      { id: selectedId, data },
-      {
-        onSuccess: (ok) => {
-          if (!ok) return
-          setEditing(false)
-        },
-      },
-    )
-  }
-
-  const onCreateSubmit = (values: UpdateCardFormValues) => {
-    const data = toCreateRequest(values, exemptApb, exemptPin)
-    createCard(data, {
-      onSuccess: (ok) => {
+  const onFormSubmit = async (values: UpdateCardFormValues) => {
+    setIsSaving(true)
+    try {
+      if (createMode) {
+        const data = toCreateRequest(values, exemptApb, exemptPin)
+        const ok = await createCardAsync(data)
         if (!ok) return
+
         const newId = cardIdFromNumber(data.cardNumber)
-        onCreateModeChange(false)
-        form.reset()
-        if (newId != null) onCreated(newId)
-      },
-    })
+        if (newId == null) return
+
+        if (selectedAccLvIds.length > 0) {
+          const synced = await syncCardAccLv(newId, [], selectedAccLvIds)
+          if (!synced) return
+          invalidateAccLv(newId)
+        }
+
+        resetFormState()
+        await onCreated(newId)
+        return
+      }
+
+      if (!selectedId || !card) return
+      const beforeIds = (cardAccLvList ?? []).map((row) => row.alvid)
+      const data = toUpdateRequest(values, card, exemptApb, exemptPin)
+      const ok = await updateCardAsync({ id: selectedId, data })
+      if (!ok) return
+
+      const synced = await syncCardAccLv(selectedId, beforeIds, selectedAccLvIds)
+      if (!synced) return
+      invalidateAccLv(selectedId)
+      setEditing(false)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  const handleSave = form.handleSubmit(createMode ? onCreateSubmit : onUpdateSubmit)
+  const handleSave = form.handleSubmit(onFormSubmit)
 
   const handleDeleteConfirm = () => {
     if (selectedId == null) return
@@ -183,8 +213,16 @@ export const CardDrawer = ({
     })
   }
 
+  const headerMode = createMode
+    ? 'create'
+    : editMode
+      ? 'edit'
+      : card
+        ? 'view'
+        : 'empty'
+
   const drawerTabs =
-    card && !createMode
+    card && !formActive
       ? [
           {
             key: 'info',
@@ -207,101 +245,23 @@ export const CardDrawer = ({
         ]
       : undefined
 
-  const drawerHeader = createMode ? (
-    <div className="pb-3 w-full min-w-0">
-      <div
-        className="w-full min-w-0"
-        style={{
-          border: '0.5px solid var(--color-border)',
-          borderRadius: 8,
-          background: 'var(--color-bg)',
-          padding: '12px 14px',
-        }}
-      >
-        <div className="flex items-center gap-1.5 min-w-0">
-          <Plus
-            size={16}
-            className="flex-shrink-0"
-            style={{ color: 'var(--color-accent)' }}
-          />
-          <span
-            className="font-medium leading-tight truncate min-w-0"
-            style={{ color: 'var(--color-text)', fontSize: 20 }}
-          >
-            카드 추가
-          </span>
-        </div>
-        <span
-          className="block leading-tight mt-1"
-          style={{
-            color: 'var(--color-text-muted)',
-            paddingLeft: 22,
-            fontSize: FONT_SIZE,
-          }}
-        >
-          새 카드 정보를 입력하세요
-        </span>
-      </div>
-    </div>
-  ) : card ? (
-    <div className="pb-3 w-full min-w-0">
-      <div
-        className="w-full min-w-0"
-        style={{
-          border: '0.5px solid var(--color-border)',
-          borderRadius: 8,
-          background: 'var(--color-bg)',
-          padding: '12px 14px',
-        }}
-      >
-        <div className="flex items-center gap-1.5 min-w-0">
-          <CreditCard
-            size={16}
-            className="flex-shrink-0"
-            style={{ color: 'var(--color-accent)' }}
-          />
-          <span
-            className="font-medium leading-tight truncate min-w-0"
-            style={{ color: 'var(--color-text)', fontSize: 20 }}
-          >
-            {card.name}
-          </span>
-        </div>
-        <span
-          className="block font-mono leading-tight mt-1"
-          style={{
-            color: 'var(--color-text-muted)',
-            letterSpacing: '0.05em',
-            paddingLeft: 22,
-            fontSize: FONT_SIZE,
-          }}
-        >
-          {card.cardNumber}
-        </span>
-        <div className="flex justify-between items-center mt-2 gap-2">
-          <span className="flex-1 min-w-0" aria-hidden />
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <Badge variant={typeBadgeVariant(cardTypeLabel(card))}>
-              {cardTypeLabel(card)}
-            </Badge>
-            <Badge variant={cardStatusLabel(card) === '활성' ? 'on' : 'off'}>
-              {cardStatusLabel(card)}
-            </Badge>
-          </div>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <div />
+  const drawerHeader = (
+    <CardSummaryHeader
+      mode={headerMode}
+      name={formActive ? watchedName : card?.name}
+      cardNumber={formActive ? watchedCardNum : card?.cardNumber}
+      type={formActive ? watchedType : card ? cardTypeLabel(card) : undefined}
+      status={formActive ? watchedStatus : card ? cardStatusLabel(card) : undefined}
+    />
   )
 
-  const drawerActions = createMode ? (
+  const drawerActions = formActive ? (
     <>
       <Button
         variant="default"
         size="sm"
         leftIcon={<X size={15} />}
-        onClick={handleCancelCreate}
+        onClick={handleCancelForm}
       >
         취소
       </Button>
@@ -309,89 +269,56 @@ export const CardDrawer = ({
         variant="accent"
         size="sm"
         leftIcon={<Check size={15} />}
-        loading={isCreating}
+        loading={isSaving}
         onClick={handleSave}
       >
         저장
       </Button>
     </>
   ) : card ? (
-    editMode ? (
-      <>
-        <Button
-          variant="default"
-          size="sm"
-          leftIcon={<X size={15} />}
-          onClick={handleCancelEdit}
-        >
-          취소
-        </Button>
-        <Button
-          variant="accent"
-          size="sm"
-          leftIcon={<Check size={15} />}
-          loading={isUpdating}
-          onClick={handleSave}
-        >
-          저장
-        </Button>
-      </>
-    ) : (
-      <>
-        <Button
-          variant="danger"
-          size="sm"
-          leftIcon={<Trash2 size={15} />}
-          onClick={() => setDeleteModalOpen(true)}
-        >
-          삭제
-        </Button>
-        <Button
-          variant="accent"
-          size="sm"
-          leftIcon={<Pencil size={15} />}
-          onClick={onEditClick}
-        >
-          수정
-        </Button>
-      </>
-    )
+    <>
+      <Button
+        variant="danger"
+        size="sm"
+        leftIcon={<Trash2 size={15} />}
+        onClick={() => setDeleteModalOpen(true)}
+      >
+        삭제
+      </Button>
+      <Button
+        variant="accent"
+        size="sm"
+        leftIcon={<Pencil size={15} />}
+        onClick={onEditClick}
+      >
+        수정
+      </Button>
+    </>
   ) : null
 
-  const drawerChildren = createMode ? (
-    <CardInfoTab
-      card={CREATE_PLACEHOLDER}
-      editMode
+  const drawerChildren = formActive ? (
+    <CardUpsertForm
+      mode={createMode ? 'create' : 'edit'}
+      baseCard={createMode ? undefined : card ?? undefined}
       register={form.register}
       control={form.control}
       empList={empList}
       empNameMap={empNameMap}
+      accLvList={accLvList}
+      accLvNameMap={accLvNameMap}
+      selectedAccLvIds={selectedAccLvIds}
+      onAccLvIdsChange={setSelectedAccLvIds}
       exemptApb={exemptApb}
       exemptPin={exemptPin}
       onExemptApbChange={setExemptApb}
       onExemptPinChange={setExemptPin}
     />
   ) : !card ? (
-    <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}>
-        목록에서 항목을 선택하세요
-      </span>
-    </div>
+    <div className="flex-1 min-h-[120px]" aria-hidden />
   ) : (
     <>
       {activeTab === 'info' && (
-        <CardInfoTab
-          card={card}
-          editMode={editMode}
-          register={form.register}
-          control={form.control}
-          empList={empList}
-          empNameMap={empNameMap}
-          exemptApb={exemptApb}
-          exemptPin={exemptPin}
-          onExemptApbChange={setExemptApb}
-          onExemptPinChange={setExemptPin}
-        />
+        <CardInfoTab card={card} empNameMap={empNameMap} />
       )}
       {activeTab === 'access' && (
         <CardAccessTab card={card} accLvItems={accLvItems} fontSize={FONT_SIZE} />

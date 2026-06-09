@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/primitive/Button'
+import { Checkbox } from '@/components/primitive/Checkbox'
+import { Select } from '@/components/primitive/Select'
 import type { GridColumnOption } from '@/hooks/ui/useGridLayout'
 
 export type CardListFilters = {
@@ -20,8 +22,6 @@ export const isCardFiltersActive = (filters: CardListFilters): boolean =>
   filters.assignment !== 'all'
 
 type OptionsTab = 'filter' | 'columns'
-
-const selectClass = 'w-full text-[12px] px-2 py-1 rounded border outline-none'
 
 interface CardListOptionsModalProps {
   open: boolean
@@ -124,73 +124,54 @@ export const CardListOptionsModal = ({
               <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
                 상태
               </span>
-              <select
+              <Select
                 value={draftFilters.status}
-                onChange={(e) =>
+                onChange={(v) =>
                   setDraftFilters((d) => ({
                     ...d,
-                    status: e.target.value as CardListFilters['status'],
+                    status: v as CardListFilters['status'],
                   }))
                 }
-                className={selectClass}
-                style={{
-                  background: 'var(--color-input-bg)',
-                  borderColor: 'var(--color-input-border)',
-                  color: 'var(--color-text)',
-                }}
-              >
-                <option value="all">전체</option>
-                <option value="활성">활성</option>
-                <option value="비활성">비활성</option>
-              </select>
+                options={[
+                  { value: 'all', label: '전체' },
+                  { value: '활성', label: '활성' },
+                  { value: '비활성', label: '비활성' },
+                ]}
+              />
             </label>
 
             <label className="flex flex-col gap-1">
               <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
                 유형
               </span>
-              <select
+              <Select
                 value={draftFilters.type}
-                onChange={(e) => setDraftFilters((d) => ({ ...d, type: e.target.value }))}
-                className={selectClass}
-                style={{
-                  background: 'var(--color-input-bg)',
-                  borderColor: 'var(--color-input-border)',
-                  color: 'var(--color-text)',
-                }}
-              >
-                <option value="all">전체</option>
-                {typeOptions.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+                onChange={(v) => setDraftFilters((d) => ({ ...d, type: v }))}
+                options={[
+                  { value: 'all', label: '전체' },
+                  ...typeOptions.map((t) => ({ value: t, label: t })),
+                ]}
+              />
             </label>
 
             <label className="flex flex-col gap-1">
               <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
                 카드 사용자
               </span>
-              <select
+              <Select
                 value={draftFilters.assignment}
-                onChange={(e) =>
+                onChange={(v) =>
                   setDraftFilters((d) => ({
                     ...d,
-                    assignment: e.target.value as CardListFilters['assignment'],
+                    assignment: v as CardListFilters['assignment'],
                   }))
                 }
-                className={selectClass}
-                style={{
-                  background: 'var(--color-input-bg)',
-                  borderColor: 'var(--color-input-border)',
-                  color: 'var(--color-text)',
-                }}
-              >
-                <option value="all">전체</option>
-                <option value="assigned">할당됨</option>
-                <option value="unassigned">미할당</option>
-              </select>
+                options={[
+                  { value: 'all', label: '전체' },
+                  { value: 'assigned', label: '할당됨' },
+                  { value: 'unassigned', label: '미할당' },
+                ]}
+              />
             </label>
           </div>
         ) : (
@@ -210,12 +191,10 @@ export const CardListOptionsModal = ({
                   className="flex items-center gap-2 px-2 py-1.5"
                   style={{ borderBottom: '0.5px solid var(--color-border-subtle)' }}
                 >
-                  <input
-                    type="checkbox"
+                  <Checkbox
                     checked={col.visible}
                     disabled={!col.hideable}
-                    onChange={(e) => onColumnVisibleChange(col.key, e.target.checked)}
-                    className="accent-[var(--color-accent)]"
+                    onChange={(v) => onColumnVisibleChange(col.key, v)}
                   />
                   <span className="text-[12px]" style={{ color: 'var(--color-text)' }}>
                     {col.header}

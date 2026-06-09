@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@/lib/query/queryKeys'
 import { CreditCard } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -25,6 +27,7 @@ import {
   cardTypeLabel,
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
+import { empDisplayName } from '@/lib/mappers/empsMappers'
 import { useCardList } from '@/hooks/api/useCard'
 import { useEmpList } from '@/hooks/api/useEmps'
 import { useAccLvList } from '@/hooks/api/useAccLv'
@@ -42,6 +45,8 @@ const applyCardFilters = (cards: CardRow[], filters: CardListFilters): CardRow[]
   })
 
 export const CardsPage = () => {
+  const qc = useQueryClient()
+  const selectionBeforeCreateRef = useRef<number | null>(null)
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -51,8 +56,8 @@ export const CardsPage = () => {
   const [createMode, setCreateMode] = useState(false)
 
   const { data: cardList, isLoading: cardLoading } = useCardList()
-  const { data: empList } = useEmpList()
-  const { data: accLvList } = useAccLvList()
+  const { data: empList, isLoading: empLoading } = useEmpList()
+  const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
 
   const normalizedCards = useMemo<CardRow[]>(
     () =>
@@ -65,16 +70,69 @@ export const CardsPage = () => {
     [cardList],
   )
 
+  useEffect(() => {
+    if (!import.meta.env.DEV) return
+    const cardRawCount = Array.isArray(cardList)
+      ? cardList.length
+      : cardList == null
+        ? null
+        : 'not-array'
+    const empRawCount = Array.isArray(empList)
+      ? empList.length
+      : empList == null
+        ? null
+        : 'not-array'
+    const accLvRawCount = Array.isArray(accLvList)
+      ? accLvList.length
+      : accLvList == null
+        ? null
+        : 'not-array'
+    console.info('[CardsPage] Drawer 참조 데이터 (카드·카드사용자·접근권한)', {
+      카드목록: {
+        loading: cardLoading,
+        apiCount: cardRawCount,
+        gridCount: normalizedCards.length,
+        droppedWithoutPrimaryKey: Array.isArray(cardList)
+          ? cardList.length - normalizedCards.length
+          : null,
+      },
+      카드사용자_직원: {
+        loading: empLoading,
+        apiCount: empRawCount,
+        note: '카드 사용자 선택 모달에 사용 (/api/emps)',
+      },
+      접근권한: {
+        loading: accLvLoading,
+        apiCount: accLvRawCount,
+        note: '접근권한 선택 모달에 사용 (/api/acclv)',
+      },
+      filters: listFilters,
+      searchQuery: searchQuery || '(없음)',
+    })
+  }, [
+    cardList,
+    cardLoading,
+    empList,
+    empLoading,
+    accLvList,
+    accLvLoading,
+    normalizedCards.length,
+    listFilters,
+    searchQuery,
+  ])
+
   const empNameMap = useMemo(() => {
-    if (!empList) return {} as Record<number, string>
+    if (!Array.isArray(empList)) return {} as Record<number, string>
     return empList.reduce<Record<number, string>>((acc, emp) => {
-      acc[emp.id] = emp.name
+      if (emp.id <= 0) return acc
+      const label = empDisplayName(emp)
+      if (label) acc[emp.id] = label
       return acc
     }, {})
   }, [empList])
 
   const accLvNameMap = useMemo(() => {
-    if (!accLvList) return {} as Record<number, string>
+    if (!Array.isArray(accLvList)) return {} as Record<number, string>
     return accLvList.reduce<Record<number, string>>((acc, a) => {
       acc[a.id] = a.name
       return acc
@@ -124,19 +182,32 @@ export const CardsPage = () => {
   const optionsActive = isCardFiltersActive(listFilters) || isLayoutCustomized
 
   const handleRowClick = (row: CardRow) => {
-    if (createMode) setCreateMode(false)
+    if (createMode) {
+      setCreateMode(false)
+      selectionBeforeCreateRef.current = null
+    }
     if (editMode) setEditMode(false)
     setSelectedId(row.id)
   }
 
   const handleAddClick = () => {
+    selectionBeforeCreateRef.current = selectedId
     setCreateMode(true)
     setEditMode(false)
     setSelectedId(null)
   }
 
-  const handleCardCreated = (id: number) => {
+  const handleCreateCancel = () => {
+    setCreateMode(false)
+    setSelectedId(selectionBeforeCreateRef.current)
+    selectionBeforeCreateRef.current = null
+  }
+
+  const handleCardCreated = async (id: number) => {
+    setCreateMode(false)
     setSelectedId(id)
+    selectionBeforeCreateRef.current = null
+    await qc.refetchQueries({ queryKey: queryKeys.card.all })
   }
 
   const openOptions = (tab: 'filter' | 'columns') => {
@@ -193,7 +264,7 @@ export const CardsPage = () => {
             empNameMap={empNameMap}
             accLvNameMap={accLvNameMap}
             accLvList={accLvList ?? undefined}
-            onCreateModeChange={setCreateMode}
+            onCreateCancel={handleCreateCancel}
             onCreated={handleCardCreated}
             onDeleted={() => setSelectedId(null)}
             onEditModeChange={setEditMode}

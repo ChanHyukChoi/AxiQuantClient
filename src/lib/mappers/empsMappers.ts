@@ -1,3 +1,4 @@
+import { asRecordArray, firstNumber, pickString } from '@/lib/wire/wireJson'
 import type { CreateEmpRequest, EmpInfo } from '@/types/api'
 
 /** 숫자 필드에 NaN이 들어가면 JSON에서 null이 되어 ASP.NET 등에서 역직렬화/DB 저장 시 500이 날 수 있음 */
@@ -50,8 +51,95 @@ export const buildEmpWirePayload = (emp: CreateEmpRequest, id: number): EmpWireP
   udef: '{}',
 })
 
+const normalizeEmpRow = (row: Record<string, unknown>): Record<string, unknown> => {
+  const nested = row.emp ?? row.employee
+  if (nested != null && typeof nested === 'object' && !Array.isArray(nested)) {
+    return nested as Record<string, unknown>
+  }
+  return row
+}
+
+const extractEmpRows = (data: unknown): Record<string, unknown>[] => {
+  if (data == null) return []
+  if (Array.isArray(data)) return asRecordArray(data).map(normalizeEmpRow)
+  if (typeof data !== 'object') return []
+  const o = data as Record<string, unknown>
+  const nested = o.items ?? o.data ?? o.emps ?? o.employees ?? o.list ?? o.values ?? o.results
+  if (nested != null) return asRecordArray(nested).map(normalizeEmpRow)
+  if (Array.isArray(o.emp)) return asRecordArray(o.emp).map(normalizeEmpRow)
+  return []
+}
+
+export const wireToEmpInfo = (row: Record<string, unknown>): EmpInfo => ({
+  id: firstNumber(row, ['id', 'empId', 'emp', 'eid']),
+  name: pickString(row, ['name', 'Name']) ?? '',
+  name2: pickString(row, ['name2', 'Name2']) ?? '',
+  lastName: pickString(row, ['lastName', 'LastName']) ?? '',
+  ssn: pickString(row, ['ssn', 'Ssn', 'SSN']) ?? '',
+  birth: pickString(row, ['birth', 'Birth']) ?? '',
+  company: firstNumber(row, ['company', 'Company']),
+  dept: firstNumber(row, ['dept', 'Dept']),
+  lv: firstNumber(row, ['lv', 'Lv']),
+  empType: firstNumber(row, ['empType', 'EmpType']),
+  tel: pickString(row, ['tel', 'Tel']) ?? '',
+  email: pickString(row, ['email', 'Email']) ?? '',
+  addr: pickString(row, ['addr', 'Addr']) ?? '',
+  udef: pickString(row, ['udef', 'Udef']) ?? '{}',
+})
+
+/** UI 표시용 — name 비어 있으면 lastName·name2 조합 */
+export const empDisplayName = (emp: Pick<EmpInfo, 'id' | 'name' | 'lastName' | 'name2'>): string => {
+  const primary = emp.name?.trim()
+  if (primary) return primary
+  const parts = [emp.lastName?.trim(), emp.name2?.trim()].filter(Boolean)
+  if (parts.length > 0) return parts.join(' ')
+  return emp.id > 0 ? `사용자 #${emp.id}` : ''
+}
+
 export const isDeletedEmp = (row: EmpInfo | Record<string, unknown>): boolean => {
   if (typeof row !== 'object' || row === null) return false
-  const d = (row as Record<string, unknown>).deleted
+  const r = row as Record<string, unknown>
+  const d = r.deleted ?? r.Deleted
   return d === true || d === 1 || d === '1'
 }
+
+export type EmpListParseStats = {
+  rawRowCount: number
+  mappedCount: number
+  deletedFiltered: number
+  invalidIdFiltered: number
+  emptyNameFiltered: number
+}
+
+export const parseEmpListWithStats = (
+  data: unknown,
+): { items: EmpInfo[]; stats: EmpListParseStats } => {
+  const rows = extractEmpRows(data)
+  const mapped = rows.map(wireToEmpInfo)
+  const deletedFiltered = mapped.filter((e) => isDeletedEmp(e)).length
+
+  const items = mapped.filter((e) => {
+    if (isDeletedEmp(e)) return false
+    if (e.id <= 0) return false
+    if (!empDisplayName(e)) return false
+    return true
+  })
+
+  const invalidIdFiltered = mapped.filter((e) => !isDeletedEmp(e) && e.id <= 0).length
+  const emptyNameFiltered = mapped.filter(
+    (e) => !isDeletedEmp(e) && e.id > 0 && !empDisplayName(e),
+  ).length
+
+  return {
+    items,
+    stats: {
+      rawRowCount: rows.length,
+      mappedCount: mapped.length,
+      deletedFiltered,
+      invalidIdFiltered,
+      emptyNameFiltered,
+    },
+  }
+}
+
+export const parseEmpList = (data: unknown): EmpInfo[] => parseEmpListWithStats(data).items

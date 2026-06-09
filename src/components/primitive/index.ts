@@ -1,5 +1,8 @@
 export { Button } from './Button'
+export { Checkbox } from './Checkbox'
 export { Input } from './Input'
+export { Select } from './Select'
+export type { SelectOption } from './Select'
 export { Badge } from './Badge'
 export { SearchField } from './SearchField'
 export { Tab } from './Tab'

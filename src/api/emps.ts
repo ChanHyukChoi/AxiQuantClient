@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { axiosInstance } from '@/lib/infra/axios'
-import { buildEmpWirePayload, isDeletedEmp } from '@/lib/mappers/empsMappers'
+import { buildEmpWirePayload, parseEmpListWithStats } from '@/lib/mappers/empsMappers'
 import type { CreateEmpRequest, EmpInfo, UpdateEmpRequest } from '@/types/api'
 
 export type EmpWriteResult = { ok: true } | { ok: false; message: string }
@@ -73,13 +73,72 @@ const logEmpAxiosError = (op: string, error: unknown) => {
   }
 }
 
+const describeEmpListRaw = (data: unknown): Record<string, unknown> => {
+  if (data == null) return { kind: 'null' }
+  if (Array.isArray(data)) {
+    return {
+      kind: 'array',
+      length: data.length,
+      sampleKeys:
+        data[0] != null && typeof data[0] === 'object'
+          ? Object.keys(data[0] as Record<string, unknown>).slice(0, 12)
+          : [],
+    }
+  }
+  if (typeof data === 'object') {
+    const o = data as Record<string, unknown>
+    return {
+      kind: 'object',
+      keys: Object.keys(o),
+      nestedLengths: {
+        items: Array.isArray(o.items) ? o.items.length : null,
+        data: Array.isArray(o.data) ? o.data.length : null,
+        emps: Array.isArray(o.emps) ? o.emps.length : null,
+        employees: Array.isArray(o.employees) ? o.employees.length : null,
+      },
+    }
+  }
+  return { kind: typeof data }
+}
+
+const logEmpListFetch = (
+  data: unknown,
+  parsed: EmpInfo[] | null,
+  stats?: ReturnType<typeof parseEmpListWithStats>['stats'],
+  error?: unknown,
+) => {
+  if (!import.meta.env.DEV) return
+  if (error != null) {
+    logEmpAxiosError('GET /api/emps', error)
+    return
+  }
+  console.info('[api/emps] GET /api/emps — 카드 사용자(직원) 목록', {
+    raw: describeEmpListRaw(data),
+    parseStats: stats,
+    parsedCount: parsed?.length ?? 0,
+    parsedSample: (parsed ?? []).slice(0, 3).map((e) => ({
+      id: e.id,
+      name: e.name,
+      lastName: e.lastName,
+      name2: e.name2,
+    })),
+  })
+  if (stats && stats.rawRowCount > 0 && (parsed?.length ?? 0) === 0) {
+    console.warn(
+      '[api/emps] 직원 raw는 있으나 파싱 결과 0건 — id/name 필드·deleted 필터를 확인하세요.',
+      { rawSample: describeEmpListRaw(data) },
+    )
+  }
+}
+
 export const getEmpList = async (): Promise<EmpInfo[] | null> => {
   try {
-    const { data } = await axiosInstance.get<EmpInfo[]>('/api/emps')
-    if (!Array.isArray(data)) return data
-    return data.filter((e) => !isDeletedEmp(e))
+    const { data } = await axiosInstance.get<unknown>('/api/emps')
+    const { items, stats } = parseEmpListWithStats(data)
+    logEmpListFetch(data, items, stats)
+    return items
   } catch (error) {
-    logEmpAxiosError('GET /api/emps', error)
+    logEmpListFetch(null, null, undefined, error)
     return null
   }
 }

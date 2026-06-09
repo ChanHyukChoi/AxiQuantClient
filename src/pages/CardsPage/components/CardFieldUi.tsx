@@ -1,5 +1,5 @@
-import { Check } from 'lucide-react'
 import { Badge } from '@/components/primitive/Badge'
+import { Checkbox } from '@/components/primitive/Checkbox'
 
 export const SectionTitle = ({
   children,
@@ -96,13 +96,6 @@ export const FieldValue = ({
   </span>
 )
 
-export const selectLikeStyle: React.CSSProperties = {
-  width: '100%',
-  background: 'var(--color-btn-hover)',
-  color: 'var(--color-text)',
-  borderColor: 'var(--color-btn-default-border)',
-}
-
 export const typeBadgeVariant = (
   type: string,
 ): NonNullable<React.ComponentProps<typeof Badge>['variant']> => {
@@ -112,13 +105,5 @@ export const typeBadgeVariant = (
 }
 
 export const CheckboxLook = ({ checked }: { checked: boolean }) => (
-  <div
-    className="w-[14px] h-[14px] rounded border flex items-center justify-center flex-shrink-0"
-    style={{
-      background: checked ? '#172d4a' : 'var(--color-btn-hover)',
-      borderColor: checked ? '#1e4570' : '#2e3139',
-    }}
-  >
-    {checked ? <Check size={10} style={{ color: 'var(--color-accent)' }} /> : null}
-  </div>
+  <Checkbox checked={checked} readOnly />
 )

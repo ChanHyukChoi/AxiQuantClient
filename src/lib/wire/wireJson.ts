@@ -17,5 +17,14 @@ export const optionalString = (row: Record<string, unknown>, key: string): strin
   return typeof v === 'string' ? v : undefined
 }
 
+/** camelCase·PascalCase 등 후보 키 순서대로 첫 비어 있지 않은 문자열 */
+export const pickString = (row: Record<string, unknown>, keys: string[]): string | undefined => {
+  for (const key of keys) {
+    const v = row[key]
+    if (typeof v === 'string' && v.trim() !== '') return v
+  }
+  return undefined
+}
+
 export const asRecordArray = (data: unknown): Record<string, unknown>[] =>
   Array.isArray(data) ? (data as Record<string, unknown>[]) : []

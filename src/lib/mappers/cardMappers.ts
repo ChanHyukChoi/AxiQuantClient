@@ -31,7 +31,7 @@ const boolsFromFlags = (flags: number): { exemptApb: boolean; exemptPin: boolean
 })
 
 const cardIdFromRow = (row: Record<string, unknown>): number =>
-  firstNumber(row, ['id', 'cid', 'cardId', 'cardNumber'])
+  firstNumber(row, ['id', 'cid', 'cardId', 'cardNumber', 'cardNum', 'num'])
 
 const stateToActive = (state: number): boolean => state > 0
 
@@ -112,15 +112,19 @@ export const wireToCardInfo = (row: Record<string, unknown>): CardInfo => {
   }
 }
 
-export const parseCardList = (data: unknown): CardInfo[] => {
+const extractCardRows = (data: unknown): Record<string, unknown>[] => {
   if (data == null) return []
-  const rows = Array.isArray(data)
-    ? asRecordArray(data)
-    : (() => {
-        if (typeof data !== 'object') return []
-        const o = data as Record<string, unknown>
-        return asRecordArray(o.items ?? o.data ?? o.cards)
-      })()
+  if (Array.isArray(data)) return asRecordArray(data)
+  if (typeof data !== 'object') return []
+  const o = data as Record<string, unknown>
+  const nested = o.items ?? o.data ?? o.cards ?? o.list ?? o.values ?? o.results
+  if (nested != null) return asRecordArray(nested)
+  if (Array.isArray(o.card)) return asRecordArray(o.card)
+  return []
+}
+
+export const parseCardList = (data: unknown): CardInfo[] => {
+  const rows = extractCardRows(data)
   return rows.map(wireToCardInfo).filter((c) => c.cid > 0 || c.cardNumber.trim() !== '')
 }
 
