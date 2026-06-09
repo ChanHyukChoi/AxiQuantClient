@@ -59,6 +59,7 @@ export type {
   AlarmLogItem,
   PagedLogResponse,
 } from './eventMonitor'
+export type { LicenseInfo } from './system'
 export type {
   AlarmInfo,
   CreateAlarmRequest,

@@ -39,6 +39,10 @@ function createWindow() {
   });
   ipcMain.on("window:close", () => win == null ? void 0 : win.close());
   ipcMain.handle("window:isMaximized", () => (win == null ? void 0 : win.isMaximized()) ?? false);
+  ipcMain.handle(
+    "system:getMemoryUsageMb",
+    () => Math.round(process.memoryUsage().rss / 1024 / 1024)
+  );
   const notifyMaximized = () => {
     win == null ? void 0 : win.webContents.send("window:maximized-changed", win.isMaximized());
   };

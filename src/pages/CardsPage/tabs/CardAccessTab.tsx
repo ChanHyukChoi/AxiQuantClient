@@ -1,4 +1,3 @@
-import { Shield } from 'lucide-react'
 import {
   AccLvGroupCards,
   type CardAccLvDisplayItem,
@@ -24,16 +23,17 @@ export const CardAccessTab = ({
     <div className="flex flex-col gap-4">
       <section>
         <SectionTitle fontSize={fontSize}>접근 권한</SectionTitle>
-        <div className="flex items-center gap-1.5 mb-2">
-          <Shield size={14} style={{ color: 'var(--color-text-subtle)' }} />
-          <span
-            className="text-[11px] font-medium"
-            style={{ color: 'var(--color-text-muted)' }}
-          >
-            권한 그룹 {accLvItems.length > 0 ? `(${accLvItems.length})` : ''}
-          </span>
-        </div>
         <AccLvGroupCards items={accLvItems} fontSize={fontSize} />
+        <div
+          className="flex items-center mt-2"
+          style={{
+            padding: '5px 0',
+            color: 'var(--color-text-cell)',
+            fontSize: 15,
+          }}
+        >
+          전체 {accLvItems.length}건
+        </div>
       </section>
 
       <section>

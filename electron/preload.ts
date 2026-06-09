@@ -1,6 +1,9 @@
 import { ipcRenderer, contextBridge } from 'electron'
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  system: {
+    getMemoryUsageMb: () => ipcRenderer.invoke('system:getMemoryUsageMb') as Promise<number>,
+  },
   window: {
     minimize: () => ipcRenderer.send('window:minimize'),
     maximize: () => ipcRenderer.send('window:maximize'),

@@ -1,6 +1,9 @@
 "use strict";
 const electron = require("electron");
 electron.contextBridge.exposeInMainWorld("electronAPI", {
+  system: {
+    getMemoryUsageMb: () => electron.ipcRenderer.invoke("system:getMemoryUsageMb")
+  },
   window: {
     minimize: () => electron.ipcRenderer.send("window:minimize"),
     maximize: () => electron.ipcRenderer.send("window:maximize"),

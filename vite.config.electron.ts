@@ -10,6 +10,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://192.168.250.201:5001',
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     tailwindcss(),
     react(),

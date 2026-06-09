@@ -12,10 +12,18 @@ export class SseClient {
   private abortController: AbortController | null = null
   private _isConnected = false
 
-  onConnectionChange?: (connected: boolean) => void
+  private connectionListeners = new Set<(connected: boolean) => void>()
 
   get isConnected(): boolean {
     return this._isConnected
+  }
+
+  subscribeConnection(listener: (connected: boolean) => void): () => void {
+    this.connectionListeners.add(listener)
+    listener(this._isConnected)
+    return () => {
+      this.connectionListeners.delete(listener)
+    }
   }
 
   on(eventName: SseEventName, callback: SseCallback): void {
@@ -46,7 +54,7 @@ export class SseClient {
   private setConnected(connected: boolean): void {
     if (this._isConnected === connected) return
     this._isConnected = connected
-    this.onConnectionChange?.(connected)
+    this.connectionListeners.forEach((listener) => listener(connected))
   }
 
   private dispatch(eventName: string, data: string): void {

@@ -47,6 +47,9 @@ function createWindow() {
   })
   ipcMain.on('window:close', () => win?.close())
   ipcMain.handle('window:isMaximized', () => win?.isMaximized() ?? false)
+  ipcMain.handle('system:getMemoryUsageMb', () =>
+    Math.round(process.memoryUsage().rss / 1024 / 1024),
+  )
 
   const notifyMaximized = () => {
     win?.webContents.send('window:maximized-changed', win.isMaximized())

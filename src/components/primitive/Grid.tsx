@@ -44,7 +44,8 @@ interface SortState {
 
 const DEFAULT_COL_WIDTH = 80
 const DEFAULT_MIN_COL_WIDTH = 48
-const COL_RESIZE_HANDLE_WIDTH = 5
+/** 컬럼 경계 중심 히트 영역 (인접 th에 가려지지 않도록 양쪽으로 걸침) */
+const COL_RESIZE_HIT_WIDTH = 18
 
 /** 기본 드래그 이미지 숨김 (커스텀 고스트 사용) */
 const TRANSPARENT_DRAG_IMAGE: HTMLImageElement | null =
@@ -112,8 +113,15 @@ export const Grid = <T extends { id: number }>({
   const dragOverKeyRef = useRef<string | null>(null)
   const dragCommittedRef = useRef(false)
   const suppressHeaderClickRef = useRef(false)
+  const blockColumnDragRef = useRef(false)
+  const [resizeHoverKey, setResizeHoverKey] = useState<string | null>(null)
+  const [resizeActiveKey, setResizeActiveKey] = useState<string | null>(null)
   const count = totalCount ?? data.length
   const isColumnDragging = draggingKey != null
+  const tableWidth = useMemo(
+    () => columns.reduce((sum, col) => sum + colWidth(col), 0),
+    [columns],
+  )
 
   const sortedData = useMemo(() => {
     if (!sort) return data
@@ -141,6 +149,12 @@ export const Grid = <T extends { id: number }>({
   const handleColumnResizeStart = (col: ColumnDef<T>, e: React.PointerEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
+    const handle = e.currentTarget
+    handle.setPointerCapture(e.pointerId)
+    blockColumnDragRef.current = true
+    suppressHeaderClickRef.current = true
+    setResizeActiveKey(col.key)
+
     const startX = e.clientX
     const startWidth = colWidth(col)
 
@@ -149,17 +163,24 @@ export const Grid = <T extends { id: number }>({
       onColumnWidthChange?.(col.key, next)
     }
 
-    const onUp = () => {
+    const onEnd = (ev: PointerEvent) => {
+      if (handle.hasPointerCapture(ev.pointerId)) {
+        handle.releasePointerCapture(ev.pointerId)
+      }
       document.removeEventListener('pointermove', onMove)
-      document.removeEventListener('pointerup', onUp)
+      document.removeEventListener('pointerup', onEnd)
+      document.removeEventListener('pointercancel', onEnd)
       document.body.style.cursor = ''
       document.body.style.userSelect = ''
+      blockColumnDragRef.current = false
+      setResizeActiveKey(null)
     }
 
     document.body.style.cursor = 'col-resize'
     document.body.style.userSelect = 'none'
     document.addEventListener('pointermove', onMove)
-    document.addEventListener('pointerup', onUp)
+    document.addEventListener('pointerup', onEnd)
+    document.addEventListener('pointercancel', onEnd)
   }
 
   const commitColumnReorder = useCallback(() => {
@@ -188,7 +209,14 @@ export const Grid = <T extends { id: number }>({
     setDragOverKey((prev) => (prev === key ? prev : key))
   }, [])
 
+  const isResizeDragTarget = (target: EventTarget | null) =>
+    target instanceof Element && target.closest('[data-col-resize]') != null
+
   const handleDragStart = (col: ColumnDef<T>, e: React.DragEvent<HTMLTableCellElement>) => {
+    if (blockColumnDragRef.current || isResizeDragTarget(e.target)) {
+      e.preventDefault()
+      return
+    }
     if (!reorderableColumns || !onColumnReorder) return
     suppressHeaderClickRef.current = true
     e.stopPropagation()
@@ -263,10 +291,14 @@ export const Grid = <T extends { id: number }>({
         {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
       </div>
 
-      <div className="flex-1 overflow-auto app-scrollbar">
+      <div className="flex-1 min-w-0 overflow-y-auto overflow-x-auto app-scrollbar">
         <table
           className={isColumnDragging ? 'app-grid app-grid--col-dragging' : 'app-grid'}
-          style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}
+          style={{
+            tableLayout: 'fixed',
+            width: `max(100%, ${tableWidth}px)`,
+            borderCollapse: 'collapse',
+          }}
         >
           <thead
             style={{
@@ -277,17 +309,24 @@ export const Grid = <T extends { id: number }>({
             }}
           >
             <tr>
-              {columns.map((col) => {
+              {columns.map((col, colIndex) => {
                 const isActive = sort?.key === col.key
                 const direction = isActive ? sort.direction : null
                 const width = colWidth(col)
+                const isLastColumn = colIndex === columns.length - 1
                 const canResize = isColResizable(col, resizableColumns)
                 const canReorder = isColReorderable(col, reorderableColumns)
                 const isDropTarget =
                   isColumnDragging && dragOverKey === col.key && draggingKey !== col.key
                 const isDragSource = draggingKey === col.key
 
-                const headerDraggable = canReorder && !!onColumnReorder
+                const isResizeRaised =
+                  resizeHoverKey === col.key || resizeActiveKey === col.key
+                const headerDraggable =
+                  canReorder &&
+                  !!onColumnReorder &&
+                  resizeActiveKey !== col.key &&
+                  resizeHoverKey !== col.key
 
                 return (
                   <th
@@ -304,17 +343,24 @@ export const Grid = <T extends { id: number }>({
                       minWidth: width,
                       maxWidth: width,
                       padding: '6px 10px',
-                      paddingRight: canResize ? 14 : 10,
+                      paddingRight: canResize ? COL_RESIZE_HIT_WIDTH / 2 + 6 : 10,
                       textAlign: col.align ?? 'left',
                       fontSize: 15,
                       fontWeight: 'bold',
                       color: 'var(--color-text-dim)',
                       borderBottom: '0.5px solid var(--color-border)',
                       whiteSpace: 'nowrap',
-                      cursor: headerDraggable ? 'grab' : col.sortable ? 'pointer' : 'default',
+                      cursor: isResizeRaised
+                        ? 'col-resize'
+                        : headerDraggable
+                          ? 'grab'
+                          : col.sortable
+                            ? 'pointer'
+                            : 'default',
                       userSelect: 'none',
                       position: 'relative',
-                      overflow: 'hidden',
+                      overflow: canResize ? 'visible' : 'hidden',
+                      zIndex: isResizeRaised ? 20 : undefined,
                     }}
                     aria-sort={
                       col.sortable && isActive
@@ -356,29 +402,31 @@ export const Grid = <T extends { id: number }>({
                     </span>
                     {canResize && onColumnWidthChange && (
                       <div
+                        data-col-resize
                         role="separator"
                         aria-orientation="vertical"
                         aria-label={`${col.header} 너비 조절`}
                         draggable={false}
                         onDragStart={(e) => e.preventDefault()}
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                        }}
                         onPointerDown={(e) => {
                           e.stopPropagation()
                           handleColumnResizeStart(col, e)
                         }}
-                        className="absolute top-0 touch-none"
+                        onPointerEnter={() => setResizeHoverKey(col.key)}
+                        onPointerLeave={() => {
+                          if (resizeActiveKey !== col.key) setResizeHoverKey(null)
+                        }}
+                        className="app-grid-col-resize absolute top-0 touch-none"
                         style={{
-                          right: 0,
-                          width: COL_RESIZE_HANDLE_WIDTH,
+                          right: isLastColumn ? 0 : -COL_RESIZE_HIT_WIDTH / 2,
+                          width: COL_RESIZE_HIT_WIDTH,
                           height: '100%',
                           cursor: 'col-resize',
-                        }}
-                        onMouseEnter={(e) => {
-                          ;(e.currentTarget as HTMLDivElement).style.background =
-                            'var(--color-btn-hover)'
-                        }}
-                        onMouseLeave={(e) => {
-                          ;(e.currentTarget as HTMLDivElement).style.background =
-                            'transparent'
+                          zIndex: 2,
                         }}
                       />
                     )}

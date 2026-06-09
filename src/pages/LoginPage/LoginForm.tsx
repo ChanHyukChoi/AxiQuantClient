@@ -15,7 +15,7 @@ import {
 } from '@/pages/LoginPage/LoginField'
 
 export const LoginForm = () => {
-  const { setToken } = useAuthStore()
+  const { setAuth } = useAuthStore()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
@@ -33,8 +33,18 @@ export const LoginForm = () => {
 
   const onSubmit = async (values: LoginFormValues) => {
     setErrorMessage(null)
-    const isElectron = navigator.userAgent.includes('Electron')
-    axiosInstance.defaults.baseURL = isElectron ? values.serverUrl : ''
+    const isElectron =
+      typeof window.electronAPI !== 'undefined' ||
+      navigator.userAgent.includes('Electron')
+    const serverUrl = values.serverUrl.trim()
+
+    if (isElectron && !serverUrl) {
+      setErrorMessage('서버 주소를 입력해주세요.')
+      return
+    }
+
+    // Electron: 입력한 서버로 직접 연결. Web: Vite /api 프록시(상대 경로).
+    axiosInstance.defaults.baseURL = isElectron ? serverUrl : ''
 
     const result = await login(values.username, values.password)
 
@@ -43,7 +53,7 @@ export const LoginForm = () => {
       return
     }
 
-    setToken(result.token)
+    setAuth(result.token, values.username)
     sseClient.connect()
     router.navigate({ to: '/emps' })
   }

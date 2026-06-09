@@ -76,12 +76,16 @@ export const useGridLayout = <T>(
 
   const setColumnWidth = useCallback(
     (key: string, width: number) => {
-      persist({
-        ...layout,
-        widths: { ...layout.widths, [key]: width },
+      setLayout((prev) => {
+        const next = {
+          ...prev,
+          widths: { ...prev.widths, [key]: width },
+        }
+        writeGridLayout(storageKey, next)
+        return next
       })
     },
-    [layout, persist],
+    [storageKey],
   )
 
   const moveColumn = useCallback(

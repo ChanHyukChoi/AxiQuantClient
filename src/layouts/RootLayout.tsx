@@ -3,6 +3,7 @@ import { TitleBar } from '@/layouts/TitleBar'
 import { Sidebar } from '@/layouts/Sidebar'
 import { useSidebarStore } from '@/stores/sidebarStore'
 import { ToastHost } from '@/components/primitive/Toast'
+import { StatusBar } from '@/layouts/StatusBar'
 import { useDeviceControlSse } from '@/hooks/sse/useDeviceControlSse'
 import { useSseInvalidate } from '@/hooks/sse/useSseInvalidate'
 
@@ -21,6 +22,7 @@ export const RootLayout = () => {
           <Outlet />
         </main>
       </div>
+      <StatusBar />
       <ToastHost />
     </div>
   )

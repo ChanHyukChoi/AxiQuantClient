@@ -98,6 +98,7 @@ interface MenuListProps {
 
 const navItemStyle = (active: boolean): React.CSSProperties => ({
   paddingLeft: NAV_PADDING_LEFT,
+  fontSize: 16,
   gap: 12,
   color: active ? 'var(--color-accent)' : 'var(--color-text)',
   backgroundColor: active ? 'var(--color-accent-subtle)' : 'transparent',
@@ -117,7 +118,7 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
               to={item.path}
               title={isCollapsed ? item.label : undefined}
               onClick={onLinkClick}
-              className={`flex items-center h-10 w-full text-sm leading-snug transition-colors duration-100 ${
+              className={`flex items-center h-10 w-full leading-snug transition-colors duration-100 ${
                 isActive ? 'font-medium' : 'font-normal'
               }`}
               style={navItemStyle(isActive)}

@@ -109,7 +109,6 @@ export const CardDrawer = ({
 
   useEffect(() => {
     if (createMode) return
-    setActiveTab('info')
     setEditMode(false)
   }, [selectedId, createMode])
 

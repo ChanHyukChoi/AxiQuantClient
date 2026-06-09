@@ -71,3 +71,22 @@ body.grid-col-drag-active {
 .app-grid--col-dragging th[data-col-drop-target='true'] {
   box-shadow: inset 2px 0 0 var(--color-accent);
 }
+
+/* Grid 컬럼 너비 조절 — 경계 중앙 2px 가이드 */
+.app-grid-col-resize::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: transparent;
+  pointer-events: none;
+  transition: background 0.12s ease;
+}
+
+.app-grid-col-resize:hover::after,
+.app-grid-col-resize:active::after {
+  background: var(--color-accent);
+}
