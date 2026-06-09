@@ -24,7 +24,7 @@ import {
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
 import { useCardAccLvList, useCreateCard, useDeleteCard, useUpdateCard } from '@/hooks/api/useCard'
-import type { AccLvInfo, CardAccLvInfo, EmpInfo } from '@/types/api'
+import type { AccLvInfo, AreaInfo, CardAccLvInfo, EmpInfo } from '@/types/api'
 
 const FORM_DEFAULTS: UpdateCardFormValues = {
   name: '',
@@ -41,6 +41,7 @@ interface CardDrawerProps {
   empNameMap: Record<number, string>
   accLvNameMap: Record<number, string>
   accLvList?: AccLvInfo[]
+  areaList?: AreaInfo[]
   onCreateCancel: () => void
   onCreated: (id: number) => void | Promise<void>
   onDeleted: () => void
@@ -56,6 +57,7 @@ export const CardDrawer = ({
   empNameMap,
   accLvNameMap,
   accLvList,
+  areaList,
   onCreateCancel,
   onCreated,
   onDeleted,
@@ -320,7 +322,12 @@ export const CardDrawer = ({
         <CardInfoTab card={card} empNameMap={empNameMap} />
       )}
       {activeTab === 'access' && (
-        <CardAccessTab card={card} accLvItems={accLvItems} fontSize={FONT_SIZE} />
+        <CardAccessTab
+          card={card}
+          accLvItems={accLvItems}
+          areaList={areaList}
+          fontSize={FONT_SIZE}
+        />
       )}
       {activeTab === 'hist' && <CardHistTab card={card} fontSize={FONT_SIZE} />}
     </>

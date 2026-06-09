@@ -1,5 +1,5 @@
 import { WindowRestoreIcon } from '@/components/primitive/icons/WindowRestoreIcon'
-import { Minus, Moon, PanelLeft, Square, Sun, X } from 'lucide-react'
+import { Minus, PanelLeft, Square, X } from 'lucide-react'
 import { useThemeStore } from '../stores/themeStore'
 import { useState, useEffect } from 'react'
 
@@ -10,7 +10,7 @@ interface TitleBarProps {
 }
 
 export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
-  const { theme, toggleTheme } = useThemeStore()
+  const { theme } = useThemeStore()
   const [isMaximized, setIsMaximized] = useState(false)
 
   useEffect(() => {
@@ -100,18 +100,6 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
         className="flex h-full"
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
       >
-        {/* ????? ????? */}
-        <button
-          onClick={toggleTheme}
-          className="flex items-center justify-center w-12 h-full transition-colors duration-100"
-          style={{ background: 'transparent', color: 'var(--color-icon)' }}
-          onMouseEnter={hoverIn}
-          onMouseLeave={hoverOut}
-          title={theme === 'dark' ? '????? ?????? ?????' : '???? ?????? ?????'}
-        >
-          {theme === 'dark' ? <Moon size={18} /> : <Sun size={18} />}
-        </button>
-
         {/* ???????? ?????: Electron ????? */}
         {isElectron && (
           <>

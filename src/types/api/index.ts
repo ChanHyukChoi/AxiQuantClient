@@ -11,6 +11,7 @@ export type {
   UpdateCardRequest,
   CardAccLvInfo,
   AddCardAccLvRequest,
+  MoveCardAreaRequest,
 } from './card'
 export type {
   AccLvInfo,

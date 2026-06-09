@@ -16,12 +16,31 @@ export const Avatar = ({ name, size }: { name: string; size: 26 | 46 }) => (
   </div>
 )
 
-export const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+export const FIELD_CONTROL_WIDTH = 180
+
+export const fieldControlStyle: React.CSSProperties = {
+  width: FIELD_CONTROL_WIDTH,
+  maxWidth: '100%',
+}
+
+export const SectionTitle = ({
+  children,
+  fontSize,
+}: {
+  children: React.ReactNode
+  fontSize?: number
+}) => (
   <p
-    className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
+    className={[
+      'font-medium tracking-wide pb-1.5 mb-2',
+      fontSize == null ? 'text-[12px]' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')}
     style={{
       color: 'var(--color-text-subtle)',
       borderBottom: '0.5px solid var(--color-border)',
+      ...(fontSize != null ? { fontSize } : {}),
     }}
   >
     {children}
@@ -32,20 +51,34 @@ export const FRow = ({
   icon,
   label,
   children,
+  fontSize,
 }: {
   icon: React.ReactNode
   label: string
   children: React.ReactNode
+  fontSize?: number
 }) => (
-  <div className="flex justify-between items-center py-1 gap-2">
+  <div className="flex items-center py-1 gap-3 min-w-0">
     <span
-      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
-      style={{ color: 'var(--color-text-subtle)' }}
+      className={[
+        'flex items-center gap-1.5 flex-shrink-0',
+        fontSize == null ? 'text-[12px]' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={{
+        color: 'var(--color-text-subtle)',
+        ...(fontSize != null ? { fontSize } : {}),
+      }}
     >
       {icon}
       {label}
     </span>
-    {children}
+    <div className="flex flex-1 justify-end items-center min-w-0">
+      <div className="min-w-0" style={fieldControlStyle}>
+        {children}
+      </div>
+    </div>
   </div>
 )
 
@@ -53,20 +86,26 @@ export const FieldValue = ({
   children,
   mono = false,
   small = false,
+  fontSize,
 }: {
   children: React.ReactNode
   mono?: boolean
   small?: boolean
+  fontSize?: number
 }) => (
   <span
     className={[
       'text-right',
       mono ? 'font-mono' : '',
-      small ? 'text-[12px]' : 'text-[13px]',
+      fontSize == null && !small ? 'text-[13px]' : '',
+      fontSize == null && small ? 'text-[12px]' : '',
     ]
       .filter(Boolean)
       .join(' ')}
-    style={{ color: 'var(--color-text)' }}
+    style={{
+      color: 'var(--color-text)',
+      ...(fontSize != null ? { fontSize } : {}),
+    }}
   >
     {children}
   </span>

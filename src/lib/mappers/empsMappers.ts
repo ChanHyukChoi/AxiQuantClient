@@ -13,6 +13,25 @@ const asInt = (n: unknown): number => {
 
 const str = (v: unknown) => (v == null ? '' : String(v))
 
+/** 서버 DB date 컬럼이 빈 문자열을 거부할 때 API 전송용 (proto는 빈 문자열 허용) */
+export const EMP_BIRTH_PLACEHOLDER = '1900-01-01'
+
+const BIRTH_WIRE_RE = /^\d{4}-\d{2}-\d{2}$/
+
+/** proto `yyyy-MM-dd` — 미입력 시 placeholder */
+export const normalizeEmpBirthForWire = (birth: unknown): string => {
+  const t = str(birth).trim()
+  if (BIRTH_WIRE_RE.test(t)) return t
+  return EMP_BIRTH_PLACEHOLDER
+}
+
+/** 폼 표시 — placeholder는 빈 칸으로 */
+export const formatEmpBirthForForm = (birth: string | undefined): string => {
+  const t = birth?.trim() ?? ''
+  if (!t || t === EMP_BIRTH_PLACEHOLDER) return ''
+  return t
+}
+
 /**
  * WPF `EmployeesView` → `EmpEditModel.ToInfo`: 신규·수정 모두 `udef`는 항상 `"{}"`.
  * `System.Text.Json` 기본으로 키 생략 없이 한 객체에 14개 프로퍼티를 맞춘다.
@@ -40,7 +59,7 @@ export const buildEmpWirePayload = (emp: CreateEmpRequest, id: number): EmpWireP
   name2: str(emp.name2),
   lastName: str(emp.lastName),
   ssn: str(emp.ssn),
-  birth: str(emp.birth),
+  birth: normalizeEmpBirthForWire(emp.birth),
   company: asInt(emp.company),
   dept: asInt(emp.dept),
   lv: asInt(emp.lv),

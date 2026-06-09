@@ -1,5 +1,6 @@
-import { Activity, FileCheck, HardDrive, Server, Shield, User } from 'lucide-react'
+import { Activity, FileCheck, HardDrive, Moon, Server, Shield, Sun, User } from 'lucide-react'
 import { useStatusBar } from '@/hooks/ui/useStatusBar'
+import { useThemeStore } from '@/stores/themeStore'
 
 const STATUS_BAR_HEIGHT = 24
 
@@ -41,6 +42,7 @@ const StatusItem = ({ icon, children, color = 'var(--color-text)' }: StatusItemP
 )
 
 export const StatusBar = () => {
+  const { theme, toggleTheme } = useThemeStore()
   const { apiConnected, sseConnected, memoryLabel, loginId, roleLabel, license, licenseReady } =
     useStatusBar()
 
@@ -99,6 +101,27 @@ export const StatusBar = () => {
           </span>
         </>
       ) : null}
+
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className="ml-auto inline-flex items-center justify-center shrink-0 rounded transition-colors duration-100"
+        style={{
+          width: 22,
+          height: 22,
+          color: 'var(--color-icon)',
+          background: 'transparent',
+        }}
+        title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = 'var(--color-btn-hover)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = 'transparent'
+        }}
+      >
+        {theme === 'dark' ? <Moon size={14} strokeWidth={2} /> : <Sun size={14} strokeWidth={2} />}
+      </button>
     </footer>
   )
 }

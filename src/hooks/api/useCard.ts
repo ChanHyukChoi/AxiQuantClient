@@ -6,10 +6,17 @@ import {
   deleteCardAccLv,
   getCardAccLvList,
   getCardList,
+  moveCardArea,
   updateCard,
 } from '@/api/card'
 import { queryKeys } from '@/lib/query/queryKeys'
-import type { AddCardAccLvRequest, CardAccLvInfo, CreateCardRequest, UpdateCardRequest } from '@/types/api'
+import type {
+  AddCardAccLvRequest,
+  CardAccLvInfo,
+  CreateCardRequest,
+  MoveCardAreaRequest,
+  UpdateCardRequest,
+} from '@/types/api'
 
 export const useCardList = () =>
   useQuery({ queryKey: queryKeys.card.all, queryFn: getCardList })
@@ -58,5 +65,17 @@ export const useDeleteCardAccLv = (cid: number) => {
   return useMutation({
     mutationFn: (alvid: number) => deleteCardAccLv(cid, alvid),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.card.acclv(cid) }),
+  })
+}
+
+export const useMoveCardArea = (cid: number) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: MoveCardAreaRequest) => moveCardArea(cid, data),
+    onSuccess: (ok) => {
+      if (!ok) return
+      void qc.invalidateQueries({ queryKey: queryKeys.card.all })
+      void qc.invalidateQueries({ queryKey: queryKeys.areas.all() })
+    },
   })
 }

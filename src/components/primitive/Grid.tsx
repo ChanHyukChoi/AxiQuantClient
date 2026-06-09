@@ -90,6 +90,38 @@ const isColReorderable = <T,>(
   return true
 }
 
+const CELL_PAD_Y = 6
+const CELL_PAD_X = 10
+
+const cellJustifyContent = (
+  align: ColumnDef<unknown>['align'],
+): React.CSSProperties['justifyContent'] => {
+  if (align === 'center') return 'center'
+  if (align === 'right') return 'flex-end'
+  return 'flex-start'
+}
+
+const GridCellAlign = ({
+  align,
+  children,
+  truncate,
+}: {
+  align?: ColumnDef<unknown>['align']
+  children: React.ReactNode
+  truncate?: boolean
+}) => (
+  <div
+    className="app-grid-cell"
+    style={{ justifyContent: cellJustifyContent(align) }}
+  >
+    {truncate ? (
+      <span className="min-w-0 truncate">{children}</span>
+    ) : (
+      children
+    )}
+  </div>
+)
+
 export const Grid = <T extends { id: number }>({
   columns,
   data,
@@ -342,9 +374,7 @@ export const Grid = <T extends { id: number }>({
                       width,
                       minWidth: width,
                       maxWidth: width,
-                      padding: '6px 10px',
-                      paddingRight: canResize ? COL_RESIZE_HIT_WIDTH / 2 + 6 : 10,
-                      textAlign: col.align ?? 'left',
+                      padding: `${CELL_PAD_Y}px ${CELL_PAD_X}px`,
                       fontSize: 15,
                       fontWeight: 'bold',
                       color: 'var(--color-text-dim)',
@@ -370,36 +400,38 @@ export const Grid = <T extends { id: number }>({
                         : undefined
                     }
                   >
-                    <span className="inline-flex items-center gap-1 max-w-full truncate">
-                      <span className="truncate">{col.header}</span>
-                      {col.sortable && (
-                        <span
-                          className="inline-flex flex-col flex-shrink-0"
+                    <GridCellAlign align={col.align} truncate>
+                      {col.header}
+                    </GridCellAlign>
+                    {col.sortable ? (
+                      <span
+                        className="inline-flex flex-col pointer-events-none"
+                        style={{
+                          position: 'absolute',
+                          right: CELL_PAD_X,
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          opacity: isActive ? 1 : 0.35,
+                          color: isActive ? 'var(--color-accent)' : 'var(--color-text-dim)',
+                        }}
+                      >
+                        <ChevronUp
+                          size={10}
+                          strokeWidth={2.5}
                           style={{
-                            opacity: isActive ? 1 : 0.35,
-                            color: isActive
-                              ? 'var(--color-accent)'
-                              : 'var(--color-text-dim)',
+                            marginBottom: -3,
+                            opacity: direction === 'asc' ? 1 : 0.35,
                           }}
-                        >
-                          <ChevronUp
-                            size={10}
-                            strokeWidth={2.5}
-                            style={{
-                              marginBottom: -3,
-                              opacity: direction === 'asc' ? 1 : 0.35,
-                            }}
-                          />
-                          <ChevronDown
-                            size={10}
-                            strokeWidth={2.5}
-                            style={{
-                              opacity: direction === 'desc' ? 1 : 0.35,
-                            }}
-                          />
-                        </span>
-                      )}
-                    </span>
+                        />
+                        <ChevronDown
+                          size={10}
+                          strokeWidth={2.5}
+                          style={{
+                            opacity: direction === 'desc' ? 1 : 0.35,
+                          }}
+                        />
+                      </span>
+                    ) : null}
                     {canResize && onColumnWidthChange && (
                       <div
                         data-col-resize
@@ -527,17 +559,14 @@ const GridRow = <T extends { id: number }>({
             width,
             minWidth: width,
             maxWidth: width,
-            padding: '6px 10px',
+            padding: `${CELL_PAD_Y}px ${CELL_PAD_X}px`,
             fontSize: 15,
             color: 'var(--color-cell)',
             borderBottom: '0.5px solid var(--color-border-subtle)',
-            whiteSpace: 'nowrap',
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            textAlign: col.align ?? 'left',
           }}
         >
-          {cell}
+          <GridCellAlign align={col.align}>{cell}</GridCellAlign>
         </td>
       )
     })}

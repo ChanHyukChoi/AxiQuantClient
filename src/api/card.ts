@@ -12,6 +12,7 @@ import type {
   CardAccLvInfo,
   CardInfo,
   CreateCardRequest,
+  MoveCardAreaRequest,
   UpdateCardRequest,
 } from '@/types/api'
 
@@ -150,4 +151,32 @@ export const deleteCardAccLv = async (cid: number, alvid: number): Promise<boole
   } catch {
     return false
   }
+}
+
+/**
+ * 카드를 지정 영역으로 이동.
+ * TODO: 서버 API 확정 후 실제 엔드포인트 연결
+ */
+export const moveCardArea = async (
+  cid: number,
+  request: MoveCardAreaRequest,
+): Promise<boolean> => {
+  const nid = Math.trunc(cid)
+  const areaId = Math.trunc(request.areaId)
+  if (!Number.isFinite(nid) || nid <= 0 || !Number.isFinite(areaId) || areaId <= 0) {
+    return false
+  }
+
+  if (import.meta.env.DEV) {
+    console.warn('[api/card] moveCardArea — 서버 API 미연결', { cid: nid, areaId })
+  }
+
+  // try {
+  //   await axiosInstance.post(`/api/card/${nid}/area`, { areaId })
+  //   return true
+  // } catch {
+  //   return false
+  // }
+
+  return false
 }

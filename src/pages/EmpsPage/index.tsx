@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { BadgeCheck } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton, ExportButton, FilterButton, PrintButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
+import { queryKeys } from '@/lib/query/queryKeys'
 import { sumColumnWidths } from '@/lib/layout/columnWidths'
-import { CreateEmpModal } from '@/pages/EmpsPage/CreateEmpModal'
 import { EmpDrawer } from '@/pages/EmpsPage/EmpDrawer'
 import {
   defaultEmpListFilters,
@@ -32,12 +33,14 @@ const applyEmpFilters = (
 }
 
 export const EmpsPage = () => {
+  const qc = useQueryClient()
+  const selectionBeforeCreateRef = useRef<number | null>(null)
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [listFilters, setListFilters] = useState(defaultEmpListFilters)
   const [filterModalOpen, setFilterModalOpen] = useState(false)
-  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [createMode, setCreateMode] = useState(false)
 
   const { data: empList, isLoading: empLoading } = useEmpList()
   const { data: cardList } = useCardList()
@@ -79,8 +82,32 @@ export const EmpsPage = () => {
   const minGridWidth = useMemo(() => sumColumnWidths(columns), [columns])
 
   const handleRowClick = (emp: EmpInfo) => {
+    if (createMode) {
+      setCreateMode(false)
+      selectionBeforeCreateRef.current = null
+    }
     if (editMode) setEditMode(false)
     setSelectedId(emp.id)
+  }
+
+  const handleAddClick = () => {
+    selectionBeforeCreateRef.current = selectedId
+    setCreateMode(true)
+    setEditMode(false)
+    setSelectedId(null)
+  }
+
+  const handleCreateCancel = () => {
+    setCreateMode(false)
+    setSelectedId(selectionBeforeCreateRef.current)
+    selectionBeforeCreateRef.current = null
+  }
+
+  const handleEmpCreated = async (id: number | null) => {
+    setCreateMode(false)
+    if (id != null) setSelectedId(id)
+    selectionBeforeCreateRef.current = null
+    await qc.refetchQueries({ queryKey: queryKeys.emps.all })
   }
 
   return (
@@ -92,7 +119,7 @@ export const EmpsPage = () => {
           <>
             <ExportButton />
             <PrintButton />
-            <AddButton onClick={() => setCreateModalOpen(true)} />
+            <AddButton onClick={handleAddClick} />
           </>
         }
       />
@@ -123,7 +150,10 @@ export const EmpsPage = () => {
         drawer={
           <EmpDrawer
             emp={selectedEmp}
+            createMode={createMode}
             selectedCards={selectedCards}
+            onCreateCancel={handleCreateCancel}
+            onCreated={handleEmpCreated}
             onDeleted={() => setSelectedId(null)}
             onEditModeChange={setEditMode}
           />
@@ -136,8 +166,6 @@ export const EmpsPage = () => {
         onApply={setListFilters}
         onClose={() => setFilterModalOpen(false)}
       />
-
-      <CreateEmpModal open={createModalOpen} onClose={() => setCreateModalOpen(false)} />
     </div>
   )
 }

@@ -55,6 +55,20 @@ body.grid-col-drag-active {
   cursor: grabbing;
 }
 
+/* Grid 셀 정렬 — th/td 공통 flex 래퍼 (table 셀 안에서 width:100% 보장) */
+.app-grid th,
+.app-grid td {
+  vertical-align: middle;
+}
+
+.app-grid-cell {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .app-grid--col-dragging th,
 .app-grid--col-dragging td {
   transition:

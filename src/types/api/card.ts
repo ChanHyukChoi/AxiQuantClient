@@ -33,3 +33,8 @@ export interface CardAccLvInfo {
 export interface AddCardAccLvRequest {
   accLvId: number
 }
+
+/** 카드 영역 이동 요청 (서버 API 스펙 확정 후 필드 조정) */
+export interface MoveCardAreaRequest {
+  areaId: number
+}

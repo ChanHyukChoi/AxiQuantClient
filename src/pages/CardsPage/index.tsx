@@ -31,6 +31,7 @@ import { empDisplayName } from '@/lib/mappers/empsMappers'
 import { useCardList } from '@/hooks/api/useCard'
 import { useEmpList } from '@/hooks/api/useEmps'
 import { useAccLvList } from '@/hooks/api/useAccLv'
+import { useAreaList } from '@/hooks/api/useArea'
 
 const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards'
 const CARDS_GRID_LEGACY_WIDTHS_KEY = 'axiquant.grid.columns.cards'
@@ -58,6 +59,7 @@ export const CardsPage = () => {
   const { data: cardList, isLoading: cardLoading } = useCardList()
   const { data: empList, isLoading: empLoading } = useEmpList()
   const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
+  const { data: areaList } = useAreaList()
 
   const normalizedCards = useMemo<CardRow[]>(
     () =>
@@ -264,6 +266,7 @@ export const CardsPage = () => {
             empNameMap={empNameMap}
             accLvNameMap={accLvNameMap}
             accLvList={accLvList ?? undefined}
+            areaList={areaList ?? undefined}
             onCreateCancel={handleCreateCancel}
             onCreated={handleCardCreated}
             onDeleted={() => setSelectedId(null)}
