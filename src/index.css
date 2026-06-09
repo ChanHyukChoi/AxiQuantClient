@@ -3,6 +3,7 @@
 
 /* 색상: src/styles/theme.css 만 수정 */
 @import './styles/theme.css';
+@import './styles/ui-primitives.css';
 
 @layer base {
   * {

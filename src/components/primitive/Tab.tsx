@@ -23,7 +23,7 @@ export const Tab = ({ items, activeKey, onChange, fontSize = 15 }: TabProps) => 
             onClick={() => onChange(item.key)}
             className="flex-1 flex items-center justify-center gap-1 py-1.5 text-[11px] cursor-pointer border-b-2 transition-colors"
             style={{
-              color: isActive ? 'var(--color-accent)' : 'var(--color-text-subtle)',
+              color: isActive ? 'var(--color-accent)' : 'var(--color-text-muted)',
               borderColor: isActive ? 'var(--color-accent)' : 'transparent',
               background: 'transparent',
               fontSize,

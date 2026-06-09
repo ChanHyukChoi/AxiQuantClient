@@ -12,12 +12,12 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const variantBase: Record<NonNullable<ButtonProps['variant']>, React.CSSProperties> = {
   default: {
     background: 'transparent',
-    color: 'var(--color-text-muted)',
+    color: 'var(--color-text)',
     borderColor: 'var(--color-btn-default-border)',
   },
   accent: {
     background: 'var(--color-btn-accent-bg)',
-    color: 'var(--color-accent)',
+    color: 'var(--color-btn-accent-text)',
     borderColor: 'var(--color-btn-accent-border)',
   },
   danger: {
@@ -35,7 +35,7 @@ const variantHover: Record<NonNullable<ButtonProps['variant']>, React.CSSPropert
   },
   accent: {
     background: 'var(--color-btn-accent-hover)',
-    color: 'var(--color-accent)',
+    color: 'var(--color-btn-accent-text)',
     borderColor: 'var(--color-btn-accent-border)',
   },
   danger: {

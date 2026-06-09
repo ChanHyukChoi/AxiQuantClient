@@ -61,7 +61,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
         </p>
       </div>
 
-      <div className="px-3 flex-1 overflow-auto">
+      <div className="px-3 flex-1 overflow-auto app-scrollbar">
         <DetailRow label="종류" value={typeLabel} />
         <DetailRow label="카드번호" value={event.card} />
         <DetailRow label="카드 사용자" value={event.user} />

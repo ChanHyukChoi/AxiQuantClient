@@ -1,130 +1,169 @@
 /**
  * 앱 색상 토큰 — 여기만 수정하면 테마 전체에 반영됩니다.
  * 다크: :root  |  라이트: [data-theme='light']
+ *
+ * 기준: VS Code Dark+/Light+ (관제·IDE형 정보 UI)
+ * - foreground에서 텍스트 계층 파생 (opacity/color-mix)
+ * - surface 2단 (bg / sidebar)
+ * - accent는 선택·활성·Primary CTA에만
  */
 
 /* ─── 다크 (기본) ─────────────────────────────────────────────────────────── */
 
 :root {
-  /* 레이아웃·표면 */
-  --color-bg: #1a1d21;
-  --color-sidebar: #14171a;
+  /* Surface — VS Code editor / sidebar */
+  --color-bg: #1e1e1e;
+  --color-sidebar: #252526;
 
-  /* 브랜드·강조 */
-  --color-accent: #4f9cf9;
-  --color-accent-subtle: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  /* Accent — VS Code focus / primary */
+  --color-accent: #3794ff;
+  --color-accent-subtle: color-mix(in srgb, var(--color-accent) 14%, transparent);
   --color-success: #4caf7d;
 
-  /* 본문 텍스트 */
-  --color-text: rgba(255, 255, 255, 0.87);
-  --color-text-muted: rgba(255, 255, 255, 0.45);
-  --color-icon: #ffffff;
+  /*
+   * Text hierarchy (VS Code foreground 계열)
+   * text       → foreground (#CCCCCC)
+   * text-muted → descriptionForeground (~70%)
+   * text-subtle→ 드로어 보조 (~80%)
+   * text-dim   → deemphasized / 컬럼 헤더 (~55%)
+   * cell       → 그리드 본문 (~92%)
+   */
+  --color-text: #cccccc;
+  --color-text-muted: color-mix(in srgb, var(--color-text) 70%, transparent);
+  --color-text-subtle: color-mix(in srgb, var(--color-text) 80%, transparent);
+  --color-text-dim: color-mix(in srgb, var(--color-text) 55%, transparent);
+  --color-cell: color-mix(in srgb, var(--color-text) 92%, transparent);
+  --color-text-cell: var(--color-cell);
+  --color-icon: #c5c5c5;
 
-  /* 텍스트 계층 (헤더·보조·셀) */
-  --color-text-dim: #4a5060;
-  --color-text-subtle: #6b7280;
-  --color-cell: #9ca3af;
+  /* 관제 상태색 (이벤트·장치·경보) */
+  --color-status-normal: #4caf7d;
+  --color-status-warning: #cca700;
+  --color-status-alarm: #f88070;
+  --color-status-info: #3794ff;
 
-  /* 테두리 */
-  --color-border: #2a2d32;
-  --color-border-subtle: #21252b;
+  /* Border */
+  --color-border: #3c3c3c;
+  --color-border-subtle: #2a2a2a;
 
-  /* 인터랙션 (호버·선택) */
-  --color-btn-hover: rgba(255, 255, 255, 0.1);
-  --color-row-selected: #172135;
+  /* Interaction */
+  --color-btn-hover: rgba(255, 255, 255, 0.06);
+  --color-row-selected: #04395e;
 
-  /* 버튼 */
-  --color-btn-default-border: #2e3139;
-  --color-btn-accent-bg: #172d4a;
-  --color-btn-accent-border: #1e4570;
-  --color-btn-accent-hover: #1a3a5c;
-  --color-btn-danger-text: #e06060;
-  --color-btn-danger-border: #3a2020;
+  /* Button — VS Code primary / secondary */
+  --color-btn-default-border: #3c3c3c;
+  --color-btn-accent-bg: #0e639c;
+  --color-btn-accent-text: #ffffff;
+  --color-btn-accent-border: #0e639c;
+  --color-btn-accent-hover: #1177bb;
+  --color-btn-danger-text: #f88070;
+  --color-btn-danger-border: #5a1d1d;
   --color-btn-success-text: #4caf7d;
-  --color-btn-success-border: #1a3a5c;
+  --color-btn-success-border: #1a3a2e;
 
-  /* 검색 필드 */
-  --color-search-bg: #252a32;
-  --color-search-border: #454b57;
-  --color-search-icon: #9ca3af;
-  --color-search-placeholder: #7a8494;
+  /* Search */
+  --color-search-bg: #3c3c3c;
+  --color-search-border: #3c3c3c;
+  --color-search-icon: var(--color-text-muted);
+  --color-search-placeholder: var(--color-text-dim);
 
-  /* 입력(폼 Input — 검색과 분리) */
-  --color-input-bg: var(--color-btn-hover);
-  --color-input-border: var(--color-btn-default-border);
+  /* Input */
+  --color-input-bg: #3c3c3c;
+  --color-input-border: var(--color-border);
 
   /* Badge */
   --badge-on-bg: #0d2b1a;
-  --badge-on-text: #4caf7d;
-  --badge-off-bg: #222428;
-  --badge-off-text: #555a63;
-  --badge-lost-bg: #2b1616;
-  --badge-lost-text: #e06060;
+  --badge-on-text: var(--color-status-normal);
+  --badge-off-bg: #2d2d2d;
+  --badge-off-text: var(--color-text-dim);
+  --badge-lost-bg: #3a1f1f;
+  --badge-lost-text: var(--color-status-alarm);
   --badge-visit-bg: #1e1a2e;
-  --badge-visit-text: #7f77dd;
-  --badge-issue-bg: #172135;
-  --badge-issue-text: #4f9cf9;
+  --badge-visit-text: #b4a7ff;
+  --badge-issue-bg: #172d4a;
+  --badge-issue-text: var(--color-accent);
   --badge-card-bg: #1e1a2e;
-  --badge-card-text: #7f77dd;
+  --badge-card-text: #b4a7ff;
 
-  /* 피드백 */
-  --color-error-text: #e06060;
-  --color-error-text-alt: #c75c5c;
+  /* Feedback */
+  --color-error-text: var(--color-status-alarm);
+  --color-error-text-alt: #e06060;
+
+  /* Scrollbar — VS Code scrollbarSlider */
+  --scrollbar-size: 10px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(121, 121, 121, 0.4);
+  --scrollbar-thumb-hover: rgba(100, 100, 100, 0.7);
+  --scrollbar-thumb-active: rgba(191, 191, 191, 0.4);
 }
 
 /* ─── 라이트 ──────────────────────────────────────────────────────────────── */
 
 [data-theme='light'] {
   --color-bg: #ffffff;
-  --color-sidebar: #f9f9f8;
+  --color-sidebar: #f3f3f3;
 
-  --color-accent: #ff6c37;
-  --color-success: #4caf7d;
+  --color-accent: #0078d4;
+  --color-accent-subtle: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  --color-success: #107c10;
 
-  --color-text: #1a1a1a;
-  --color-text-muted: #5c5c5c;
-  --color-icon: #1a1a1a;
+  /* VS Code light foreground 계열 (명시 hex — 밝은 배경) */
+  --color-text: #333333;
+  --color-text-muted: #717171;
+  --color-text-subtle: #5c5c5c;
+  --color-text-dim: #6e6e6e;
+  --color-cell: #333333;
+  --color-text-cell: var(--color-cell);
+  --color-icon: #424242;
 
-  --color-text-dim: #9ca3af;
-  --color-text-subtle: #9ca3af;
-  --color-cell: #374151;
+  --color-status-normal: #107c10;
+  --color-status-warning: #855f00;
+  --color-status-alarm: #b01011;
+  --color-status-info: #0078d4;
 
-  --color-border: #e8e8e6;
-  --color-border-subtle: #f3f4f6;
+  --color-border: #e5e5e5;
+  --color-border-subtle: #f0f0f0;
 
-  --color-btn-hover: rgba(0, 0, 0, 0.05);
-  --color-row-selected: #eff6ff;
+  --color-btn-hover: rgba(0, 0, 0, 0.04);
+  --color-row-selected: #e4e6f1;
 
-  --color-btn-default-border: #d1d5db;
-  --color-btn-accent-bg: #eff6ff;
-  --color-btn-accent-border: #bfdbfe;
-  --color-btn-accent-hover: #dbeafe;
-  --color-btn-danger-text: #dc2626;
-  --color-btn-danger-border: #fecaca;
-  --color-btn-success-text: #4caf7d;
-  --color-btn-success-border: #1a3a5c;
+  --color-btn-default-border: #cecece;
+  --color-btn-accent-bg: #0078d4;
+  --color-btn-accent-text: #ffffff;
+  --color-btn-accent-border: #0078d4;
+  --color-btn-accent-hover: #006cbd;
+  --color-btn-danger-text: #b01011;
+  --color-btn-danger-border: #e8b4b4;
+  --color-btn-success-text: #107c10;
+  --color-btn-success-border: #a7d4a7;
 
   --color-search-bg: rgba(0, 0, 0, 0.04);
-  --color-search-border: #d1d5db;
-  --color-search-icon: #6b7280;
-  --color-search-placeholder: #9ca3af;
+  --color-search-border: #cecece;
+  --color-search-icon: var(--color-text-muted);
+  --color-search-placeholder: var(--color-text-dim);
 
-  --color-input-bg: var(--color-btn-hover);
-  --color-input-border: var(--color-btn-default-border);
+  --color-input-bg: #ffffff;
+  --color-input-border: var(--color-border);
 
-  --badge-on-bg: #dcfce7;
-  --badge-on-text: #16a34a;
-  --badge-off-bg: #f3f4f6;
-  --badge-off-text: #6b7280;
-  --badge-lost-bg: #fee2e2;
-  --badge-lost-text: #dc2626;
+  --badge-on-bg: #dff6dd;
+  --badge-on-text: var(--color-status-normal);
+  --badge-off-bg: #f3f3f3;
+  --badge-off-text: var(--color-text-muted);
+  --badge-lost-bg: #fde7e9;
+  --badge-lost-text: var(--color-status-alarm);
   --badge-visit-bg: #ede9fe;
-  --badge-visit-text: #7c3aed;
-  --badge-issue-bg: #dbeafe;
-  --badge-issue-text: #2563eb;
+  --badge-visit-text: #5b21b6;
+  --badge-issue-bg: #deecf9;
+  --badge-issue-text: var(--color-accent);
   --badge-card-bg: #ede9fe;
-  --badge-card-text: #7c3aed;
+  --badge-card-text: #5b21b6;
 
-  --color-error-text: #dc2626;
-  --color-error-text-alt: #dc2626;
+  --color-error-text: var(--color-status-alarm);
+  --color-error-text-alt: #b01011;
+
+  --scrollbar-size: 10px;
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(100, 100, 100, 0.4);
+  --scrollbar-thumb-hover: rgba(100, 100, 100, 0.7);
+  --scrollbar-thumb-active: rgba(0, 0, 0, 0.6);
 }

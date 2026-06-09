@@ -12,7 +12,6 @@ import {
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
 import { CardDrawer } from '@/pages/CardsPage/CardDrawer'
-import { CreateCardModal } from '@/pages/CardsPage/CreateCardModal'
 import {
   CardListOptionsModal,
   defaultCardListFilters,
@@ -49,7 +48,7 @@ export const CardsPage = () => {
   const [listFilters, setListFilters] = useState(defaultCardListFilters)
   const [optionsModalOpen, setOptionsModalOpen] = useState(false)
   const [optionsModalTab, setOptionsModalTab] = useState<'filter' | 'columns'>('filter')
-  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [createMode, setCreateMode] = useState(false)
 
   const { data: cardList, isLoading: cardLoading } = useCardList()
   const { data: empList } = useEmpList()
@@ -125,8 +124,19 @@ export const CardsPage = () => {
   const optionsActive = isCardFiltersActive(listFilters) || isLayoutCustomized
 
   const handleRowClick = (row: CardRow) => {
+    if (createMode) setCreateMode(false)
     if (editMode) setEditMode(false)
     setSelectedId(row.id)
+  }
+
+  const handleAddClick = () => {
+    setCreateMode(true)
+    setEditMode(false)
+    setSelectedId(null)
+  }
+
+  const handleCardCreated = (id: number) => {
+    setSelectedId(id)
   }
 
   const openOptions = (tab: 'filter' | 'columns') => {
@@ -144,7 +154,7 @@ export const CardsPage = () => {
             <ImportButton />
             <ExportButton />
             <PrintButton />
-            <AddButton onClick={() => setCreateModalOpen(true)} />
+            <AddButton onClick={handleAddClick} />
           </>
         }
       />
@@ -178,10 +188,13 @@ export const CardsPage = () => {
         drawer={
           <CardDrawer
             card={selectedCard}
+            createMode={createMode}
             empList={empList ?? undefined}
             empNameMap={empNameMap}
             accLvNameMap={accLvNameMap}
             accLvList={accLvList ?? undefined}
+            onCreateModeChange={setCreateMode}
+            onCreated={handleCardCreated}
             onDeleted={() => setSelectedId(null)}
             onEditModeChange={setEditMode}
           />
@@ -200,11 +213,6 @@ export const CardsPage = () => {
         onClose={() => setOptionsModalOpen(false)}
       />
 
-      <CreateCardModal
-        open={createModalOpen}
-        empList={empList ?? undefined}
-        onClose={() => setCreateModalOpen(false)}
-      />
     </div>
   )
 }

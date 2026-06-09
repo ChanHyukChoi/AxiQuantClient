@@ -39,7 +39,8 @@ src/
     └── api/          # 도메인별 타입 (index.ts 배럴)
 ```
 
-상세 설명은 [DOCS.md](./DOCS.md) 참고.
+- 폴더·파일 역할: [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)
+- 상세 아키텍처: [DOCS.md](./DOCS.md)
 
 ## API 계약 (요약)
 

@@ -95,7 +95,7 @@ export const CreateEmpModal = ({ open, onClose }: CreateEmpModalProps) => {
         </p>
         <form
           onSubmit={createForm.handleSubmit(onCreateSubmit)}
-          className="flex flex-col max-h-[min(520px,85vh)] overflow-y-auto pr-0.5"
+          className="flex flex-col max-h-[min(520px,85vh)] overflow-y-auto app-scrollbar pr-0.5"
         >
           <div className="mb-3">
             <label className="text-[11px] mb-1 block" style={{ color: '#555a63' }}>

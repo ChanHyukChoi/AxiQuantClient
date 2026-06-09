@@ -67,7 +67,7 @@ export const CardInfoTab = ({
       <SectionTitle fontSize={FONT_SIZE}>카드 정보</SectionTitle>
       <FRow icon={<CreditCard size={15} />} label="카드 번호" fontSize={FONT_SIZE}>
         {editMode ? (
-          <Input {...register('cardNum')} style={{ width: 148, ...fieldFontStyle }} />
+          <Input {...register('cardNum')} style={fieldFontStyle} />
         ) : (
           <FieldValue mono fontSize={FONT_SIZE}>
             {card.cardNumber}
@@ -76,7 +76,7 @@ export const CardInfoTab = ({
       </FRow>
       <FRow icon={<Tag size={15} />} label="명칭" fontSize={FONT_SIZE}>
         {editMode ? (
-          <Input {...register('name')} style={{ width: 148 }} />
+          <Input {...register('name')} style={fieldFontStyle} />
         ) : (
           <FieldValue fontSize={FONT_SIZE}>
             {card.name?.trim() ? card.name : '—'}
@@ -88,7 +88,7 @@ export const CardInfoTab = ({
           <select
             {...register('type')}
             className="w-full px-2 py-1 rounded border outline-none"
-            style={{ ...selectLikeStyle, width: 148, ...fieldFontStyle }}
+            style={{ ...selectLikeStyle, ...fieldFontStyle }}
           >
             <option value="직원">직원</option>
             <option value="방문">방문</option>
@@ -103,7 +103,7 @@ export const CardInfoTab = ({
           <select
             {...register('status')}
             className="w-full px-2 py-1 rounded border outline-none"
-            style={{ ...selectLikeStyle, width: 148, ...fieldFontStyle }}
+            style={{ ...selectLikeStyle, ...fieldFontStyle }}
           >
             <option value="활성">활성</option>
             <option value="비활성">비활성</option>
@@ -123,7 +123,7 @@ export const CardInfoTab = ({
             render={({ field }) => (
               <select
                 className="w-full px-2 py-1 rounded border outline-none"
-                style={{ ...selectLikeStyle, width: 148, ...fieldFontStyle }}
+                style={{ ...selectLikeStyle, ...fieldFontStyle }}
                 value={field.value === undefined ? '' : String(field.value)}
                 onChange={(e) => {
                   const v = e.target.value

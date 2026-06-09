@@ -25,6 +25,14 @@ export const SectionTitle = ({
   </p>
 )
 
+/** 드로어 폼 — 라벨(좌) / 값·입력(우) 정렬용 고정 너비 */
+export const FIELD_CONTROL_WIDTH = 180
+
+export const fieldControlStyle: React.CSSProperties = {
+  width: FIELD_CONTROL_WIDTH,
+  maxWidth: '100%',
+}
+
 export const FRow = ({
   icon,
   label,
@@ -36,7 +44,7 @@ export const FRow = ({
   children: React.ReactNode
   fontSize?: number
 }) => (
-  <div className="flex justify-between items-center py-1 gap-2">
+  <div className="flex items-center py-1 gap-3 min-w-0">
     <span
       className={[
         'flex items-center gap-1.5 flex-shrink-0',
@@ -52,7 +60,11 @@ export const FRow = ({
       {icon}
       {label}
     </span>
-    {children}
+    <div className="flex flex-1 justify-end items-center min-w-0">
+      <div className="min-w-0" style={fieldControlStyle}>
+        {children}
+      </div>
+    </div>
   </div>
 )
 
