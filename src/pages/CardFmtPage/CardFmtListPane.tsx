@@ -1,4 +1,5 @@
 import { SearchField } from '@/components/primitive/SearchField'
+import { fallbackCardFmtName } from '@/lib/entityDisplayLabels'
 import type { CardfmtInfo } from '@/types/api'
 
 interface CardFmtListPaneProps {
@@ -22,22 +23,23 @@ export const CardFmtListPane = ({
 }: CardFmtListPaneProps) => (
   <div
     className="flex flex-col flex-shrink-0 overflow-hidden"
-    style={{ width: 220, borderRight: '0.5px solid var(--color-border)' }}
+    style={{ width: 240, borderRight: '0.5px solid var(--color-border)' }}
   >
     <div
-      className="flex items-center flex-shrink-0"
+      className="flex items-center flex-shrink-0 min-w-0 w-full"
       style={{
         padding: '7px 12px',
         background: 'var(--color-sidebar)',
         borderBottom: '0.5px solid var(--color-border)',
       }}
     >
-      <SearchField
-        value={searchQuery}
-        placeholder="형식명 검색..."
-        onChange={onSearch}
-        className="w-full"
-      />
+      <div className="w-full min-w-0">
+        <SearchField
+          value={searchQuery}
+          placeholder="형식명 검색..."
+          onChange={onSearch}
+        />
+      </div>
     </div>
 
     <div className="flex-1 overflow-y-auto app-scrollbar">
@@ -94,16 +96,10 @@ export const CardFmtListPane = ({
               }}
             >
               <span
-                className="text-[11px] font-mono block mb-0.5"
-                style={{ color: 'var(--color-text-dim)' }}
-              >
-                {item.id}
-              </span>
-              <span
                 className="text-[12px] font-medium block truncate"
                 style={{ color: 'var(--color-text)' }}
               >
-                {item.name?.trim() || `형식 #${item.id}`}
+                {fallbackCardFmtName(item.name)}
               </span>
               <span
                 className="text-[11px] mt-0.5 block"

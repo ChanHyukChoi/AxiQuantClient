@@ -112,7 +112,7 @@ export const empDisplayName = (emp: Pick<EmpInfo, 'id' | 'name' | 'lastName' | '
   if (primary) return primary
   const parts = [emp.lastName?.trim(), emp.name2?.trim()].filter(Boolean)
   if (parts.length > 0) return parts.join(' ')
-  return emp.id > 0 ? `사용자 #${emp.id}` : ''
+  return ''
 }
 
 export const isDeletedEmp = (row: EmpInfo | Record<string, unknown>): boolean => {

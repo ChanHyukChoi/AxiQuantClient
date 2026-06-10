@@ -1,0 +1,96 @@
+import { useState } from 'react'
+import type { AccLvReaderRow } from '@/pages/AccessPage/utils/accLvHelpers'
+
+interface AccLvReaderTableProps {
+  rows: AccLvReaderRow[]
+  loading?: boolean
+}
+
+export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProps) => {
+  const [hovered, setHovered] = useState<number | null>(null)
+
+  if (loading) {
+    return (
+      <p className="text-[12px] py-4" style={{ color: 'var(--color-text-subtle)' }}>
+        불러오는 중...
+      </p>
+    )
+  }
+
+  return (
+    <table className="w-full border-collapse">
+      <thead>
+        <tr>
+          {(['주 제어기', '리더', '시간표'] as const).map((header) => (
+            <th
+              key={header}
+              className="text-[11px] font-medium py-2 px-2.5 text-left"
+              style={{
+                color: 'var(--color-text-subtle)',
+                borderBottom: '0.5px solid var(--color-border)',
+                background: 'var(--color-btn-hover)',
+              }}
+            >
+              {header}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.length === 0 ? (
+          <tr>
+            <td
+              colSpan={3}
+              className="text-[12px] py-6 px-2.5 text-center"
+              style={{ color: 'var(--color-text-subtle)' }}
+            >
+              연결된 리더가 없습니다.
+            </td>
+          </tr>
+        ) : (
+          rows.map((row, idx) => {
+            const isLast = idx === rows.length - 1
+            return (
+              <tr
+                key={`${row.scpId}-${row.readerId}-${idx}`}
+                onMouseEnter={() => setHovered(idx)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  background: hovered === idx ? 'var(--color-btn-hover)' : 'transparent',
+                }}
+              >
+                <td
+                  className="text-[12px] py-2 px-2.5"
+                  style={{
+                    color: 'var(--color-text)',
+                    borderBottom: isLast ? 'none' : '0.5px solid var(--color-border-subtle)',
+                  }}
+                >
+                  {row.scpName}
+                </td>
+                <td
+                  className="text-[12px] py-2 px-2.5"
+                  style={{
+                    color: 'var(--color-text)',
+                    borderBottom: isLast ? 'none' : '0.5px solid var(--color-border-subtle)',
+                  }}
+                >
+                  {row.readerName}
+                </td>
+                <td
+                  className="text-[12px] py-2 px-2.5"
+                  style={{
+                    color: 'var(--color-text-muted)',
+                    borderBottom: isLast ? 'none' : '0.5px solid var(--color-border-subtle)',
+                  }}
+                >
+                  {row.timezoneName}
+                </td>
+              </tr>
+            )
+          })
+        )}
+      </tbody>
+    </table>
+  )
+}

@@ -36,7 +36,7 @@ export const AlarmSelectModal = ({
   const filtered = alarms.filter((a) => {
     if (!query.trim()) return true
     const q = query.trim().toLowerCase()
-    return a.name.toLowerCase().includes(q) || String(a.id).includes(q)
+    return a.name.toLowerCase().includes(q)
   })
 
   const toggle = (id: number) => {
@@ -139,7 +139,7 @@ export const AlarmSelectModal = ({
                   className="text-[12px] flex-1 truncate"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {alarm.name || `경보 #${alarm.id}`}
+                  {alarm.name || '경보'}
                 </span>
               </div>
             ))

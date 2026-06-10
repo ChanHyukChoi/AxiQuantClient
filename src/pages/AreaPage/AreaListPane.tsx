@@ -1,5 +1,6 @@
 import { SearchField } from '@/components/primitive/SearchField'
 import { Badge } from '@/components/primitive/Badge'
+import { fallbackAreaName } from '@/lib/entityDisplayLabels'
 import {
   isAreaActive,
   occupancyPercent,
@@ -31,19 +32,20 @@ export const AreaListPane = ({
     style={{ width: 240, borderRight: '0.5px solid var(--color-border)' }}
   >
     <div
-      className="flex items-center flex-shrink-0"
+      className="flex items-center flex-shrink-0 min-w-0 w-full"
       style={{
         padding: '7px 12px',
         background: 'var(--color-sidebar)',
         borderBottom: '0.5px solid var(--color-border)',
       }}
     >
-      <SearchField
-        value={searchQuery}
-        placeholder="영역명 검색..."
-        onChange={onSearch}
-        className="w-full"
-      />
+      <div className="w-full min-w-0">
+        <SearchField
+          value={searchQuery}
+          placeholder="영역명 검색..."
+          onChange={onSearch}
+        />
+      </div>
     </div>
 
     <div className="flex-1 overflow-y-auto app-scrollbar">
@@ -107,7 +109,7 @@ export const AreaListPane = ({
                   className="text-[12px] font-medium truncate flex-1 min-w-0"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {area.name?.trim() || `영역 #${area.id}`}
+                  {fallbackAreaName(area.name)}
                 </span>
                 <Badge variant={isAreaActive(area.active) ? 'on' : 'off'}>
                   {isAreaActive(area.active) ? '활성' : '비활성'}

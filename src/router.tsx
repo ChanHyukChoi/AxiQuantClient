@@ -10,9 +10,12 @@ import { LoginPage } from '@/pages/LoginPage'
 import { EmpsPage } from '@/pages/EmpsPage'
 import { CardsPage } from '@/pages/CardsPage'
 import { AccessPage } from '@/pages/AccessPage'
+import { AccessPageB } from '@/pages/AccessPageB'
 import { DevicesPage } from '@/pages/DeviceControlPage'
 import { AreaPage } from '@/pages/AreaPage'
+import { AreaPageB } from '@/pages/AreaPageB'
 import { CardFmtPage } from '@/pages/CardFmtPage'
+import { CardFmtPageB } from '@/pages/CardFmtPageB'
 import { EventMonitorPage } from '@/pages/EventMonitorPage'
 import { UsersPage } from '@/pages/UsersPage'
 import { AuditLogPage } from '@/pages/AuditLogPage'
@@ -66,6 +69,12 @@ const accessRoute = createRoute({
   component: AccessPage,
 })
 
+const accessBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/access-b',
+  component: AccessPageB,
+})
+
 const devicesRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/devices',
@@ -78,10 +87,22 @@ const areaRoute = createRoute({
   component: AreaPage,
 })
 
+const areaBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/area-b',
+  component: AreaPageB,
+})
+
 const cardfmtRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/cardfmt',
   component: CardFmtPage,
+})
+
+const cardfmtBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/cardfmt-b',
+  component: CardFmtPageB,
 })
 
 const monitorRoute = createRoute({
@@ -115,9 +136,12 @@ const routeTree = rootRoute.addChildren([
     empsRoute,
     cardsRoute,
     accessRoute,
+    accessBRoute,
     devicesRoute,
     areaRoute,
+    areaBRoute,
     cardfmtRoute,
+    cardfmtBRoute,
     monitorRoute,
     usersRoute,
     auditRoute,

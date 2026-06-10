@@ -140,7 +140,7 @@ export const AlarmMailDrawer = ({
           className="text-[15px] font-medium truncate"
           style={{ color: 'var(--color-text)' }}
         >
-          {item.name?.trim() || `\uc774\uba54\uc77c \uacbd\ubcf4 #${item.id}`}
+          {item.name?.trim() || '이메일 경보'}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
           {'\uacbd\ubcf4 '}
@@ -259,7 +259,7 @@ export const AlarmMailDrawer = ({
                         border: '0.5px solid var(--color-border)',
                       }}
                     >
-                      {alarmNameMap[id] ?? `\uacbd\ubcf4 #${id}`}
+                      {alarmNameMap[id] ?? '경보'}
                       <button
                         type="button"
                         className="cursor-pointer"
@@ -317,7 +317,7 @@ export const AlarmMailDrawer = ({
               {(item.alarmIds ?? []).length === 0
                 ? '\u2014'
                 : (item.alarmIds ?? [])
-                    .map((id) => alarmNameMap[id] ?? `#${id}`)
+                    .map((id) => alarmNameMap[id] ?? '경보')
                     .join(', ')}
             </p>
             <p>

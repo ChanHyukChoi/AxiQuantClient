@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import { MapPin } from 'lucide-react'
+import { PageHeader } from '@/layouts/PageHeader'
+import { AddButton } from '@/components/page-actions'
 import { AreaDrawer } from '@/pages/AreaPage/AreaDrawer'
 import { AreaListPane } from '@/pages/AreaPage/AreaListPane'
 import { useAreas } from '@/hooks/api/useArea'
@@ -29,21 +31,11 @@ export const AreaPage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div
-        className="flex items-center flex-shrink-0 px-3"
-        style={{
-          height: 42,
-          background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid var(--color-border)',
-        }}
-      >
-        <div className="flex items-center gap-1.5">
-          <MapPin style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
-            영역
-          </span>
-        </div>
-      </div>
+      <PageHeader
+        title="영역 (1안)"
+        icon={<MapPin size={15} />}
+        actions={<AddButton onClick={() => undefined} title="추가 — 준비 중" />}
+      />
 
       <div className="flex flex-1 overflow-hidden">
         <AreaListPane

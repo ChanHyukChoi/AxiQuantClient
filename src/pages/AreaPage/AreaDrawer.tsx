@@ -10,6 +10,7 @@ import { areaEditSchema, type AreaEditFormValues } from '@/pages/AreaPage/formTy
 import { AreaInfoTab } from '@/pages/AreaPage/tabs/AreaInfoTab'
 import { AreaOccupantsTab } from '@/pages/AreaPage/tabs/AreaOccupantsTab'
 import { AreaReadersTab } from '@/pages/AreaPage/tabs/AreaReadersTab'
+import { fallbackAreaName } from '@/lib/entityDisplayLabels'
 import { areaToUpdatePayload, isAreaActive } from '@/pages/AreaPage/utils/areaHelpers'
 import { useDeleteArea, useUpdateArea } from '@/hooks/api/useArea'
 import type { AreaInfo } from '@/types/api'
@@ -155,21 +156,11 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
           className="text-[15px] font-medium leading-tight truncate"
           style={{ color: 'var(--color-text)' }}
         >
-          {area.name?.trim() || `영역 #${area.id}`}
+          {fallbackAreaName(area.name)}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
           {isAreaActive(area.active) ? '활성' : '비활성'} · 점유 {area.occup}/
           {area.occmax}
-        </span>
-        <span
-          className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full font-mono w-fit"
-          style={{
-            background: 'var(--color-btn-hover)',
-            color: 'var(--color-text-subtle)',
-            border: '0.5px solid var(--color-border)',
-          }}
-        >
-          #{area.id}
         </span>
       </div>
     </div>

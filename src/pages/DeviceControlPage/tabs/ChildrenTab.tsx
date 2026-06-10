@@ -52,7 +52,7 @@ const DeviceListSection = ({
             style={{ border: '0.5px solid var(--color-border-subtle)' }}
           >
             <span className="text-[12px] truncate" style={{ color: 'var(--color-text)' }}>
-              {item.name?.trim() || `#${item.id}`}
+              {item.name?.trim() || '—'}
             </span>
             <Badge variant={isDeviceActive(item.active) ? 'on' : 'off'}>
               {isDeviceActive(item.active) ? '활성' : '비활성'}

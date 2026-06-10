@@ -43,6 +43,12 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <Lock size={28} strokeWidth={2} />,
   },
   {
+    id: 'access-b',
+    label: '접근권한B',
+    path: '/access-b',
+    icon: <Lock size={28} strokeWidth={2} />,
+  },
+  {
     id: 'devices',
     label: '장치',
     path: '/devices',
@@ -55,9 +61,21 @@ const MENU_ITEMS: MenuItem[] = [
     icon: <MapPin size={28} strokeWidth={2} />,
   },
   {
+    id: 'area-b',
+    label: '영역B',
+    path: '/area-b',
+    icon: <MapPin size={28} strokeWidth={2} />,
+  },
+  {
     id: 'cardfmt',
     label: '카드 형식',
     path: '/cardfmt',
+    icon: <Binary size={28} strokeWidth={2} />,
+  },
+  {
+    id: 'cardfmt-b',
+    label: '카드형식B',
+    path: '/cardfmt-b',
     icon: <Binary size={28} strokeWidth={2} />,
   },
   {

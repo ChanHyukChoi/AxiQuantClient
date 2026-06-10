@@ -22,8 +22,7 @@ export const UsersPage = () => {
     return list.filter(
       (u) =>
         u.name.toLowerCase().includes(q) ||
-        u.loginId.toLowerCase().includes(q) ||
-        String(u.id).includes(q),
+        u.loginId.toLowerCase().includes(q),
     )
   }, [userList, searchQuery])
 

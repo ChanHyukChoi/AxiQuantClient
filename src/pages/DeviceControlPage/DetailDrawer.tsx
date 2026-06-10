@@ -375,7 +375,7 @@ export const DetailDrawer = ({
             : parsed.kind === 'reader' && parsed.standalone
               ? '단독 리더'
               : parsed.scpId > 0
-                ? (scpNameMap[parsed.scpId] ?? `SCP #${parsed.scpId}`)
+                ? (scpNameMap[parsed.scpId] ?? '주 제어기')
                 : '—'}
         </span>
         {parsed.kind !== 'module' ? (
@@ -387,7 +387,7 @@ export const DetailDrawer = ({
               border: '0.5px solid var(--color-border)',
             }}
           >
-            {isDeviceActive(selectedActive) ? '활성' : '비활성'} · #{parsed.entityId}
+            {isDeviceActive(selectedActive) ? '활성' : '비활성'}
           </span>
         ) : null}
       </div>

@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Binary } from 'lucide-react'
+import { PageHeader } from '@/layouts/PageHeader'
+import { AddButton } from '@/components/page-actions'
 import { CardFmtDrawer } from '@/pages/CardFmtPage/CardFmtDrawer'
 import { CardFmtListPane } from '@/pages/CardFmtPage/CardFmtListPane'
 import { useCardFmts } from '@/hooks/api/useCardfmt'
@@ -29,21 +31,11 @@ export const CardFmtPage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div
-        className="flex items-center flex-shrink-0 px-3"
-        style={{
-          height: 42,
-          background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid var(--color-border)',
-        }}
-      >
-        <div className="flex items-center gap-1.5">
-          <Binary style={{ width: 15, height: 15, color: '#7f77dd' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
-            카드 형식
-          </span>
-        </div>
-      </div>
+      <PageHeader
+        title="카드 형식 (1안)"
+        icon={<Binary size={15} style={{ color: '#7f77dd' }} />}
+        actions={<AddButton onClick={() => undefined} title="추가 — 준비 중" />}
+      />
 
       <div className="flex flex-1 overflow-hidden">
         <CardFmtListPane

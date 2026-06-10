@@ -1,15 +1,22 @@
-import { useMemo, useState } from 'react'
-import { DoorOpen, Plus } from 'lucide-react'
-import { ListPanel } from '@/components/primitive/ListPanel'
-import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
-import { Button } from '@/components/primitive/Button'
-import { AccessDrawer } from '@/pages/AccessPage/AccessDrawer'
+import { useCallback, useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { DoorOpen } from 'lucide-react'
+import { PageHeader } from '@/layouts/PageHeader'
+import { AddButton } from '@/components/page-actions'
+import { AccessDetailPanel } from '@/pages/AccessPage/AccessDetailPanel'
+import { AccessListPane } from '@/pages/AccessPage/components/AccessListPane'
+import { CreateAccLvModal } from '@/pages/AccessPage/components/CreateAccLvModal'
+import { getAccLvList } from '@/api/acclv'
 import { useAccLvList } from '@/hooks/api/useAccLv'
+import { queryKeys } from '@/lib/query/queryKeys'
+import type { AccLvInfo } from '@/types/api'
 
 export const AccessPage = () => {
+  const qc = useQueryClient()
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [createOpen, setCreateOpen] = useState(false)
 
   const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
 
@@ -25,57 +32,52 @@ export const AccessPage = () => {
     return accLvList.filter((a) => a.name.toLowerCase().includes(q))
   }, [accLvList, searchQuery])
 
+  const handleSelect = (item: AccLvInfo) => {
+    if (editMode) setEditMode(false)
+    setSelectedId(item.id)
+  }
+
+  const handleCreated = useCallback(
+    async (name: string) => {
+      setCreateOpen(false)
+      const list = await qc.fetchQuery({
+        queryKey: queryKeys.acclv.all,
+        queryFn: getAccLvList,
+      })
+      const created = list?.find((a) => a.name === name)
+      if (created) setSelectedId(created.id)
+    },
+    [qc],
+  )
+
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div
-        className="flex items-center justify-between flex-shrink-0 px-3"
-        style={{
-          height: 42,
-          background: 'var(--color-sidebar)',
-          borderBottom: '0.5px solid #2a2d32',
-        }}
-      >
-        <div className="flex items-center gap-1.5">
-          <DoorOpen style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span
-            className="text-[13px] font-medium"
-            style={{ color: 'var(--color-text)' }}
-          >
-            접근 권한
-          </span>
-        </div>
-        <Button variant="accent" leftIcon={<Plus size={12} />}>
-          추가
-        </Button>
+      <PageHeader
+        title="접근 권한 (1안)"
+        icon={<DoorOpen size={15} />}
+        actions={<AddButton onClick={() => setCreateOpen(true)} />}
+      />
+
+      <div className="flex flex-1 overflow-hidden">
+        <AccessListPane
+          items={filteredList}
+          selectedId={selectedId}
+          searchQuery={searchQuery}
+          loading={accLvLoading}
+          onSearch={setSearchQuery}
+          onSelect={handleSelect}
+        />
+        <AccessDetailPanel
+          accLv={selectedAccLv}
+          onDeleted={() => setSelectedId(null)}
+          onEditModeChange={setEditMode}
+        />
       </div>
 
-      <SplitDrawerLayout
-        minMainWidth={240}
-        minDrawerWidth={360}
-        defaultDrawerWidth={480}
-        storageKey="axiquant.drawer.access"
-        main={
-          <ListPanel
-            items={filteredList.map((a) => ({ id: a.id, label: a.name }))}
-            selectedId={selectedId ?? undefined}
-            onItemClick={(item) => {
-              if (editMode) setEditMode(false)
-              setSelectedId(item.id)
-            }}
-            onSearch={setSearchQuery}
-            searchPlaceholder="권한 검색..."
-            totalCount={filteredList.length}
-            width={240}
-            loading={accLvLoading}
-          />
-        }
-        drawer={
-          <AccessDrawer
-            selectedAccLv={selectedAccLv}
-            onDeleted={() => setSelectedId(null)}
-            onEditModeChange={setEditMode}
-          />
-        }
+      <CreateAccLvModal
+        open={createOpen}
+        onCancel={() => setCreateOpen(false)}
+        onCreated={handleCreated}
       />
     </div>
   )

@@ -108,15 +108,9 @@ const ListPanelRow = ({ item, isSelected, onItemClick }: ListPanelRowProps) => (
       borderRight: isSelected ? '2px solid var(--color-accent)' : '2px solid transparent',
       cursor: onItemClick ? 'pointer' : 'default',
     }}
-    className="flex items-center gap-2.5 px-3.5 py-2.5"
+    className="flex items-center px-3.5 py-2.5"
   >
-    <span
-      className="text-[11px] font-mono w-6 text-right flex-shrink-0"
-      style={{ color: 'var(--color-text-dim)' }}
-    >
-      {item.id}
-    </span>
-    <div className="flex flex-col min-w-0">
+    <div className="flex flex-col min-w-0 flex-1">
       <span
         className="text-[12px] font-medium truncate"
         style={{ color: 'var(--color-text)' }}

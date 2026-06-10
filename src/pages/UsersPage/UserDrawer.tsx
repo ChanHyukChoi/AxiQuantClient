@@ -123,7 +123,7 @@ export const UserDrawer = ({
   const headerTitle = isCreating
     ? '사용자 추가'
     : user
-      ? user.name?.trim() || `사용자 #${user.id}`
+      ? (user.name?.trim() || '(이름 없음)')
       : null
 
   const showActions = (user || isCreating) && (editMode || isCreating)

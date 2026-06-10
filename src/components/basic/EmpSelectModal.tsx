@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
+import { fallbackEmpName } from '@/lib/entityDisplayLabels'
 
 const FONT_SIZE = 15
 
@@ -76,8 +77,7 @@ export const EmpSelectModal = ({
     return (
       emp.name.toLowerCase().includes(q) ||
       formatEmpNo(emp.udef).toLowerCase().includes(q) ||
-      String(emp.dept ?? '').includes(q) ||
-      String(emp.id).includes(q)
+      String(emp.dept ?? '').includes(q)
     )
   })
 
@@ -184,7 +184,7 @@ export const EmpSelectModal = ({
                 >
                   <RadioMark checked={isPicked} />
                   <span className="app-select-modal-cell">
-                    {emp.name || `사용자 #${emp.id}`}
+                    {fallbackEmpName(emp.name)}
                   </span>
                   <span className="app-select-modal-cell">
                     {formatEmpNo(emp.udef)}

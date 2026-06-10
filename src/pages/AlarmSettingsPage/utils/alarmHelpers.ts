@@ -1,3 +1,4 @@
+import { fallbackDeviceKindLabel, fallbackScpName } from '@/lib/entityDisplayLabels'
 import type { AlarmInfo, AlarmMailInfo, AlarmPriorityInfo } from '@/types/api'
 
 export const isAlarmActive = (active: number): boolean => active !== 0
@@ -37,9 +38,9 @@ export const deviceDisplayLabel = (
 ): string => {
   if (!deviceType || deviceId <= 0) return '미연결'
   if (deviceType === 'scp' && scpNameMap?.[deviceId]) {
-    return scpNameMap[deviceId]
+    return fallbackScpName(scpNameMap[deviceId])
   }
-  return `${deviceType} #${deviceId}`
+  return fallbackDeviceKindLabel(deviceType)
 }
 
 export const sortByPriority = (items: AlarmPriorityInfo[]): AlarmPriorityInfo[] =>

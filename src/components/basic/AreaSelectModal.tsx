@@ -3,6 +3,7 @@ import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Badge } from '@/components/primitive/Badge'
 import { SearchField } from '@/components/primitive/SearchField'
+import { fallbackAreaName } from '@/lib/entityDisplayLabels'
 
 export interface AreaSelectItem {
   id: number
@@ -42,7 +43,7 @@ export const AreaSelectModal = ({
   const filtered = areas.filter((area) => {
     if (!query.trim()) return true
     const q = query.trim().toLowerCase()
-    return area.name.toLowerCase().includes(q) || String(area.id).includes(q)
+    return area.name.toLowerCase().includes(q)
   })
 
   return (
@@ -124,7 +125,7 @@ export const AreaSelectModal = ({
                     className="text-[12px] flex-1 truncate"
                     style={{ color: 'var(--color-text)' }}
                   >
-                    {area.name || `영역 #${area.id}`}
+                    {fallbackAreaName(area.name)}
                   </span>
                   {area.active != null ? (
                     <Badge variant={area.active ? 'on' : 'off'}>

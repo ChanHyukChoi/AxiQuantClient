@@ -6,6 +6,7 @@ import {
   ScanLine,
   type LucideIcon,
 } from 'lucide-react'
+import { fallbackDeviceKindLabel } from '@/lib/entityDisplayLabels'
 import type { InputInfo, ModuleInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 
 export type DeviceEntityKind = 'scp' | 'sio' | 'reader' | 'input' | 'output' | 'module'
@@ -43,8 +44,8 @@ export const entityLabel = (
   item: ScpInfo | SioInfo | ReaderInfo | InputInfo | OutputInfo,
 ): string => {
   const name = item.name?.trim()
-  if (name) return `${name} (#${item.id})`
-  return `${kind.toUpperCase()} #${item.id}`
+  if (name) return name
+  return fallbackDeviceKindLabel(kind)
 }
 
 export const moduleLabel = (module: ModuleInfo): string => {

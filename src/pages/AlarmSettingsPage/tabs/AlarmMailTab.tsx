@@ -19,7 +19,7 @@ export const AlarmMailTab = () => {
   const alarmNameMap = useMemo(() => {
     const map: Record<number, string> = {}
     alarmList.forEach((a) => {
-      map[a.id] = a.name?.trim() || `경보 #${a.id}`
+      map[a.id] = a.name?.trim() || '경보'
     })
     return map
   }, [alarmList])

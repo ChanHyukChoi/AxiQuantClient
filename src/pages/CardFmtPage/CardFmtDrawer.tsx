@@ -15,6 +15,7 @@ import {
   cardfmtToForm,
   formToCardfmtPayload,
 } from '@/pages/CardFmtPage/utils/cardFmtHelpers'
+import { fallbackCardFmtName } from '@/lib/entityDisplayLabels'
 import { useDeleteCardFmt, useUpdateCardFmt } from '@/hooks/api/useCardfmt'
 import type { CardfmtInfo } from '@/types/api'
 
@@ -241,7 +242,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
             className="text-[15px] font-medium leading-tight truncate"
             style={{ color: 'var(--color-text)' }}
           >
-            {cardfmt.name?.trim() || `형식 #${cardfmt.id}`}
+            {fallbackCardFmtName(cardfmt.name)}
           </span>
           <span
             className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full"
@@ -250,16 +251,6 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
             WIEGAND
           </span>
         </div>
-        <span
-          className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full font-mono w-fit"
-          style={{
-            background: 'var(--color-btn-hover)',
-            color: 'var(--color-text-subtle)',
-            border: '0.5px solid var(--color-border)',
-          }}
-        >
-          #{cardfmt.id}
-        </span>
       </div>
     </div>
   ) : (

@@ -136,7 +136,7 @@ export const AlarmRuleDrawer = ({
           className="text-[15px] font-medium leading-tight truncate"
           style={{ color: 'var(--color-text)' }}
         >
-          {alarm.name?.trim() || `경보 #${alarm.id}`}
+          {alarm.name?.trim() || '경보'}
         </span>
         <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
           {isAlarmActive(alarm.active) ? '활성' : '비활성'} ·{' '}

@@ -100,7 +100,7 @@ export const AlarmRulesListPane = ({
                   className="text-[12px] font-medium truncate flex-1 min-w-0"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {alarm.name?.trim() || `경보 #${alarm.id}`}
+                  {alarm.name?.trim() || '경보'}
                 </span>
                 <Badge variant={isAlarmActive(alarm.active) ? 'on' : 'off'}>
                   {isAlarmActive(alarm.active) ? '활성' : '비활성'}

@@ -73,12 +73,6 @@ export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) 
               >
                 {item.name}
               </p>
-              <p
-                className="text-[10px] font-mono mt-0.5"
-                style={{ color: 'var(--color-text-dim)' }}
-              >
-                ID {item.id}
-              </p>
             </div>
           </div>
           {item.description ? (

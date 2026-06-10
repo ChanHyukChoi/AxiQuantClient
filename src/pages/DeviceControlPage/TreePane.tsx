@@ -59,7 +59,7 @@ export const TreePane = ({
       >
         <SearchField
           value={searchQuery}
-          placeholder="장치명, ID 검색..."
+          placeholder="장치명 검색..."
           onChange={onSearch}
         />
         <div className="flex flex-wrap gap-2">

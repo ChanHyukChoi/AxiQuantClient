@@ -67,7 +67,7 @@ export const AlarmMailListPane = ({
                 className="text-[12px] font-medium truncate block"
                 style={{ color: 'var(--color-text)' }}
               >
-                {item.name?.trim() || `이메일 경보 #${item.id}`}
+                {item.name?.trim() || '이메일 경보'}
               </span>
               <p className="text-[11px] mt-1" style={{ color: 'var(--color-text-subtle)' }}>
                 경보 {item.alarmIds?.length ?? 0} · 수신자 {item.emails?.length ?? 0}

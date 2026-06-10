@@ -6,8 +6,9 @@ interface SearchFieldProps {
   onChange: (value: string) => void
 }
 
-export const SearchField = ({ value, onChange }: SearchFieldProps) => (
+export const SearchField = ({ placeholder = '검색...', value, onChange }: SearchFieldProps) => (
   <div
+    className="w-full min-w-0"
     style={{
       display: 'flex',
       alignItems: 'center',
@@ -29,7 +30,7 @@ export const SearchField = ({ value, onChange }: SearchFieldProps) => (
         minWidth: 0,
         flex: 1,
       }}
-      placeholder="검색..."
+      placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
     />

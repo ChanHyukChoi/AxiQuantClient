@@ -1,39 +1,48 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, Clock, Cpu, Pencil, ScanLine, Shield, Trash2, X } from 'lucide-react'
+import { Check, Pencil, Shield, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
-import { IdNameTable } from '@/pages/AccessPage/components/IdNameTable'
-import { SectionBlock } from '@/pages/AccessPage/components/SectionBlock'
+import { AccLvReaderEditModal } from '@/pages/AccessPage/components/AccLvReaderEditModal'
+import { AccLvReaderTable } from '@/pages/AccessPage/components/AccLvReaderTable'
 import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
-import { useAccLvReaderList, useDeleteAccLv, useUpdateAccLv } from '@/hooks/api/useAccLv'
+import { toAccLvReaderRows } from '@/pages/AccessPage/utils/accLvHelpers'
+import {
+  fallbackAccLvName,
+  fallbackScpName,
+  fallbackTimezoneName,
+} from '@/lib/entityDisplayLabels'
+import {
+  useAccLvReaderList,
+  useDeleteAccLv,
+  useUpdateAccLv,
+} from '@/hooks/api/useAccLv'
 import { useScps } from '@/hooks/api/useDevices'
 import { useTimezoneList } from '@/hooks/api/useTimezone'
-import type { AccLvInfo, AccLvRdrInfo, UpdateAccLvRequest } from '@/types/api'
+import type { AccLvInfo, UpdateAccLvRequest } from '@/types/api'
 
-interface AccessDrawerProps {
-  selectedAccLv: AccLvInfo | null
+interface AccessDetailPanelProps {
+  accLv: AccLvInfo | null
   onDeleted: () => void
   onEditModeChange?: (editing: boolean) => void
 }
 
-export const AccessDrawer = ({
-  selectedAccLv,
+export const AccessDetailPanel = ({
+  accLv,
   onDeleted,
   onEditModeChange,
-}: AccessDrawerProps) => {
-  const selectedId = selectedAccLv?.id ?? null
+}: AccessDetailPanelProps) => {
+  const selectedId = accLv?.id ?? 0
   const [editMode, setEditMode] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [readerEditOpen, setReaderEditOpen] = useState(false)
 
-  const { data: readerList, isLoading: readerLoading } = useAccLvReaderList(
-    selectedId ?? 0,
-  )
+  const { data: readerList, isLoading: readerLoading } = useAccLvReaderList(selectedId)
   const { data: scpList } = useScps()
-  const { data: timezoneList, isLoading: timezoneLoading } = useTimezoneList()
+  const { data: timezoneList } = useTimezoneList()
 
   const { mutate: updateAccLv, isPending: isUpdating } = useUpdateAccLv()
   const { mutate: deleteAccLv, isPending: isDeleting } = useDeleteAccLv()
@@ -41,6 +50,12 @@ export const AccessDrawer = ({
   const updateForm = useForm<AccLvFormValues>({
     resolver: zodResolver(accLvSchema),
   })
+
+  useEffect(() => {
+    setEditMode(false)
+    setReaderEditOpen(false)
+    onEditModeChange?.(false)
+  }, [accLv?.id, onEditModeChange])
 
   const setEditing = (editing: boolean) => {
     setEditMode(editing)
@@ -50,40 +65,27 @@ export const AccessDrawer = ({
   const scpNameMap = useMemo(() => {
     if (!scpList) return {} as Record<number, string>
     return scpList.reduce<Record<number, string>>((acc, s) => {
-      acc[s.id] = s.name
+      acc[s.id] = fallbackScpName(s.name)
       return acc
     }, {})
   }, [scpList])
 
-  const uniqueScpRows = useMemo(() => {
-    if (!readerList?.length) return [] as { id: number; name: string }[]
-    const seen = new Set<number>()
-    const out: { id: number; name: string }[] = []
-    for (const r of readerList) {
-      if (seen.has(r.scp)) continue
-      seen.add(r.scp)
-      const name = scpNameMap[r.scp] ?? r.scpName ?? `SCP ${r.scp}`
-      out.push({ id: r.scp, name })
-    }
-    return out
-  }, [readerList, scpNameMap])
-
-  const readerRows = useMemo(() => {
-    if (!readerList?.length) return []
-    return readerList.map((r: AccLvRdrInfo) => ({
-      id: r.rdr,
-      name: r.readerName ?? `?? ${r.rdr}`,
-    }))
-  }, [readerList])
-
-  const timezoneRows = useMemo(() => {
-    if (!timezoneList) return []
-    return timezoneList.map((t) => ({ id: t.id, name: t.name }))
+  const timezoneNameMap = useMemo(() => {
+    if (!timezoneList) return {} as Record<number, string>
+    return timezoneList.reduce<Record<number, string>>((acc, t) => {
+      acc[t.id] = fallbackTimezoneName(t.name)
+      return acc
+    }, {})
   }, [timezoneList])
 
+  const readerRows = useMemo(
+    () => toAccLvReaderRows(readerList ?? [], scpNameMap, timezoneNameMap),
+    [readerList, scpNameMap, timezoneNameMap],
+  )
+
   const onEditClick = () => {
-    if (!selectedAccLv) return
-    updateForm.reset({ name: selectedAccLv.name })
+    if (!accLv) return
+    updateForm.reset({ name: accLv.name })
     setEditing(true)
   }
 
@@ -93,10 +95,10 @@ export const AccessDrawer = ({
   }
 
   const onUpdateSubmit = (values: AccLvFormValues) => {
-    if (!selectedId || !selectedAccLv) return
+    if (!selectedId || !accLv) return
     const data: UpdateAccLvRequest = {
       name: values.name.trim(),
-      description: selectedAccLv.description,
+      description: accLv.description,
     }
     updateAccLv(
       { id: selectedId, data },
@@ -112,7 +114,7 @@ export const AccessDrawer = ({
   const handleSave = updateForm.handleSubmit(onUpdateSubmit)
 
   const handleDeleteConfirm = () => {
-    if (selectedId == null) return
+    if (selectedId <= 0) return
     deleteAccLv(selectedId, {
       onSuccess: (ok) => {
         if (!ok) return
@@ -122,7 +124,7 @@ export const AccessDrawer = ({
     })
   }
 
-  const drawerHeader = selectedAccLv ? (
+  const drawerHeader = accLv ? (
     <div
       className="flex items-start gap-3 pb-3"
       style={{ borderBottom: '0.5px solid var(--color-border)' }}
@@ -144,27 +146,16 @@ export const AccessDrawer = ({
             className="text-[14px] font-medium leading-tight"
             style={{ color: 'var(--color-text)' }}
           >
-            {selectedAccLv.name}
+            {fallbackAccLvName(accLv.name)}
           </span>
         )}
-        <span
-          className="inline-flex items-center gap-1 text-[12px] px-2 py-0.5 rounded-full font-mono"
-          style={{
-            background: 'var(--color-btn-hover)',
-            color: 'var(--color-text-subtle)',
-            border: '0.5px solid var(--color-border)',
-            width: 'fit-content',
-          }}
-        >
-          #{selectedAccLv.id}
-        </span>
       </div>
     </div>
   ) : (
     <div />
   )
 
-  const drawerActions = selectedAccLv ? (
+  const drawerActions = accLv ? (
     editMode ? (
       <>
         <Button
@@ -173,7 +164,7 @@ export const AccessDrawer = ({
           leftIcon={<X size={12} />}
           onClick={handleCancelEdit}
         >
-          ??
+          취소
         </Button>
         <Button
           variant="accent"
@@ -182,7 +173,7 @@ export const AccessDrawer = ({
           loading={isUpdating}
           onClick={handleSave}
         >
-          ??
+          저장
         </Button>
       </>
     ) : (
@@ -193,7 +184,7 @@ export const AccessDrawer = ({
           leftIcon={<Trash2 size={12} />}
           onClick={() => setDeleteModalOpen(true)}
         >
-          ??
+          삭제
         </Button>
         <Button
           variant="accent"
@@ -201,48 +192,45 @@ export const AccessDrawer = ({
           leftIcon={<Pencil size={12} />}
           onClick={onEditClick}
         >
-          ??
+          수정
         </Button>
       </>
     )
   ) : null
 
-  const drawerBody = !selectedAccLv ? (
+  const drawerBody = !accLv ? (
     <div className="flex items-center justify-center min-h-[160px]">
       <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-        ???? ??? ?????
+        목록에서 접근 권한을 선택하세요
       </span>
     </div>
   ) : (
-    <div>
-      <SectionBlock icon={<Cpu size={12} />} title="? ???">
-        {readerLoading ? (
-          <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-            ???? ?...
-          </span>
-        ) : (
-          <IdNameTable rows={uniqueScpRows} />
-        )}
-      </SectionBlock>
-      <SectionBlock icon={<ScanLine size={12} />} title="??">
-        {readerLoading ? (
-          <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-            ???? ?...
-          </span>
-        ) : (
-          <IdNameTable rows={readerRows} />
-        )}
-      </SectionBlock>
-      <SectionBlock icon={<Clock size={12} />} title="???">
-        {timezoneLoading ? (
-          <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-            ???? ?...
-          </span>
-        ) : (
-          <IdNameTable rows={timezoneRows} />
-        )}
-      </SectionBlock>
-    </div>
+    <section>
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-[12px] font-medium" style={{ color: 'var(--color-text)' }}>
+          연결된 리더
+        </h2>
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => setReaderEditOpen(true)}
+          disabled={readerLoading}
+        >
+          변경
+        </Button>
+      </div>
+
+      <div
+        className="rounded overflow-hidden"
+        style={{ border: '0.5px solid var(--color-border)' }}
+      >
+        <AccLvReaderTable rows={readerRows} loading={readerLoading} />
+      </div>
+
+      <p className="text-[11px] mt-2" style={{ color: 'var(--color-text-dim)' }}>
+        전체 {readerRows.length}건
+      </p>
+    </section>
   )
 
   return (
@@ -258,14 +246,25 @@ export const AccessDrawer = ({
 
       <Modal
         open={deleteModalOpen}
-        title="?? ?? ??"
-        description={`"${selectedAccLv?.name ?? ''}" ??? ????????? ? ??? ??? ? ????.`}
-        confirmLabel="??"
+        title="접근 권한 삭제"
+        description={`"${accLv?.name ?? ''}" 권한을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`}
+        confirmLabel="삭제"
         variant="danger"
         loading={isDeleting}
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteModalOpen(false)}
       />
+
+      {accLv ? (
+        <AccLvReaderEditModal
+          open={readerEditOpen}
+          alvId={accLv.id}
+          readers={readerList ?? []}
+          scpNameMap={scpNameMap}
+          onCancel={() => setReaderEditOpen(false)}
+          onSaved={() => setReaderEditOpen(false)}
+        />
+      ) : null}
     </>
   )
 }

@@ -44,12 +44,10 @@ const GROUP_CONTROLLERS = 'group:controllers'
 const GROUP_STANDALONE = 'group:standalone'
 const GROUP_MODULES = 'group:modules'
 
-export const matchesSearch = (label: string, query: string, entityId?: number): boolean => {
+export const matchesSearch = (label: string, query: string): boolean => {
   if (!query.trim()) return true
   const q = query.trim().toLowerCase()
-  if (label.toLowerCase().includes(q)) return true
-  if (entityId != null && String(entityId).includes(q)) return true
-  return false
+  return label.toLowerCase().includes(q)
 }
 
 const kindMatchesFilter = (kind: DeviceTreeNodeKind, filter: DeviceTypeFilter): boolean => {
@@ -69,7 +67,7 @@ const filterTree = (nodes: DeviceTreeNode[], query: string, typeFilter: DeviceTy
     if (!kindMatchesFilter(node.kind, typeFilter)) continue
     const kids = node.children ? filterTree(node.children, query, typeFilter) : []
     if (
-      matchesSearch(node.label, query, node.entityId) ||
+      matchesSearch(node.label, query) ||
       kids.length > 0
     ) {
       out.push({ ...node, children: kids.length > 0 ? kids : undefined })

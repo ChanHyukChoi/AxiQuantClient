@@ -30,7 +30,6 @@ export const AlarmRulesTab = () => {
     return list.filter(
       (a) =>
         a.name.toLowerCase().includes(q) ||
-        String(a.id).includes(q) ||
         a.deviceType.toLowerCase().includes(q),
     )
   }, [alarmList, searchQuery])

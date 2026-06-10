@@ -107,7 +107,7 @@ export const CardUpsertForm = ({
   )
 
   const selectedAccLvLabels = selectedAccLvIds.map(
-    (id) => accLvNameMap[id] ?? accLvList?.find((a) => a.id === id)?.name ?? `권한 #${id}`,
+    (id) => accLvNameMap[id] ?? accLvList?.find((a) => a.id === id)?.name ?? '접근 권한',
   )
 
   return (

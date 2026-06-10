@@ -1,44 +1,43 @@
 import { SearchField } from '@/components/primitive/SearchField'
-import { fallbackUserName } from '@/lib/entityDisplayLabels'
-import { Badge } from '@/components/primitive/Badge'
-import type { UserInfo } from '@/types/api/user'
+import { fallbackAccLvName } from '@/lib/entityDisplayLabels'
+import type { AccLvInfo } from '@/types/api'
 
-interface UserListPaneProps {
-  users: UserInfo[]
+interface AccessListPaneProps {
+  items: AccLvInfo[]
   selectedId: number | null
   searchQuery: string
   loading: boolean
-  error: boolean
   onSearch: (query: string) => void
-  onSelect: (user: UserInfo) => void
+  onSelect: (item: AccLvInfo) => void
 }
 
-export const UserListPane = ({
-  users,
+export const AccessListPane = ({
+  items,
   selectedId,
   searchQuery,
   loading,
-  error,
   onSearch,
   onSelect,
-}: UserListPaneProps) => (
+}: AccessListPaneProps) => (
   <div
     className="flex flex-col flex-shrink-0 overflow-hidden"
-    style={{ width: 220, borderRight: '0.5px solid var(--color-border)' }}
+    style={{ width: 240, borderRight: '0.5px solid var(--color-border)' }}
   >
     <div
-      className="flex items-center flex-shrink-0"
+      className="flex items-center flex-shrink-0 min-w-0 w-full"
       style={{
         padding: '7px 12px',
         background: 'var(--color-sidebar)',
         borderBottom: '0.5px solid var(--color-border)',
       }}
     >
-      <SearchField
-        value={searchQuery}
-        placeholder="명칭, 로그인 ID 검색..."
-        onChange={onSearch}
-      />
+      <div className="w-full min-w-0">
+        <SearchField
+          value={searchQuery}
+          placeholder="권한명 검색..."
+          onChange={onSearch}
+        />
+      </div>
     </div>
 
     <div className="flex-1 overflow-y-auto app-scrollbar">
@@ -49,33 +48,29 @@ export const UserListPane = ({
         >
           불러오는 중...
         </p>
-      ) : error ? (
-        <p className="text-[12px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
-          사용자 목록을 불러오지 못했습니다.
-        </p>
-      ) : users.length === 0 ? (
+      ) : items.length === 0 ? (
         <p
           className="text-[12px] text-center py-8"
           style={{ color: 'var(--color-text-subtle)' }}
         >
-          {searchQuery.trim() ? '검색 결과가 없습니다.' : '등록된 사용자가 없습니다.'}
+          {searchQuery.trim() ? '검색 결과가 없습니다.' : '등록된 접근 권한이 없습니다.'}
         </p>
       ) : (
-        users.map((user) => {
-          const isSelected = user.id === selectedId
+        items.map((item) => {
+          const isSelected = item.id === selectedId
           return (
             <div
-              key={user.id}
+              key={item.id}
               role="button"
               tabIndex={0}
-              onClick={() => onSelect(user)}
+              onClick={() => onSelect(item)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
-                  onSelect(user)
+                  onSelect(item)
                 }
               }}
-              className="px-3 py-2.5 cursor-pointer"
+              className="px-3.5 py-2.5 cursor-pointer"
               style={{
                 background: isSelected ? 'var(--color-row-selected)' : 'transparent',
                 borderBottom: '0.5px solid var(--color-border-subtle)',
@@ -94,23 +89,12 @@ export const UserListPane = ({
                   : 'transparent'
               }}
             >
-              <div className="flex items-center justify-between gap-2">
-                <span
-                  className="text-[12px] font-medium truncate flex-1 min-w-0"
-                  style={{ color: 'var(--color-text)' }}
-                >
-                  {fallbackUserName(user.name)}
-                </span>
-                <Badge variant={user.active ? 'on' : 'off'}>
-                  {user.active ? '활성' : '비활성'}
-                </Badge>
-              </div>
-              <p
-                className="text-[11px] mt-0.5 font-mono truncate"
-                style={{ color: 'var(--color-text-subtle)' }}
+              <span
+                className="text-[12px] font-medium block truncate"
+                style={{ color: 'var(--color-text)' }}
               >
-                {user.loginId}
-              </p>
+                {fallbackAccLvName(item.name)}
+              </span>
             </div>
           )
         })
@@ -126,7 +110,7 @@ export const UserListPane = ({
         color: 'var(--color-text-dim)',
       }}
     >
-      전체 {users.length}건
+      전체 {items.length}건
     </div>
   </div>
 )

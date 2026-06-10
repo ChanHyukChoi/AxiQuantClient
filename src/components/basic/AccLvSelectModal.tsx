@@ -5,6 +5,7 @@ import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { SearchField } from '@/components/primitive/SearchField'
+import { fallbackAccLvName } from '@/lib/entityDisplayLabels'
 
 const FONT_SIZE = 15
 
@@ -175,7 +176,7 @@ export const AccLvSelectModal = ({
                 >
                   <Checkbox checked={checked.has(item.id)} readOnly />
                   <span className="app-select-modal-cell">
-                    {item.name || `권한 #${item.id}`}
+                    {fallbackAccLvName(item.name)}
                   </span>
                   <span
                     className="app-select-modal-cell app-select-modal-cell--muted"

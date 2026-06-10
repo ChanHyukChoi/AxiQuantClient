@@ -40,7 +40,7 @@ export const CardAccessTab = ({
         .filter((a) => a.id > 0)
         .map((a) => ({
           id: a.id,
-          name: a.name?.trim() || `영역 #${a.id}`,
+          name: a.name?.trim() || '영역',
           active: isAreaActive(a.active),
         })),
     [areaList],

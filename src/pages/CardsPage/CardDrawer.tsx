@@ -131,7 +131,7 @@ export const CardDrawer = ({
       const acttm = row.acttm?.trim()
       return {
         id: row.alvid,
-        name: accLvNameMap[row.alvid] ?? meta?.name ?? `권한 #${row.alvid}`,
+        name: accLvNameMap[row.alvid] ?? meta?.name ?? '접근 권한',
         isActive: (row.state ?? 1) > 0,
         description: meta?.description?.trim() || undefined,
         acttm: acttm || undefined,
