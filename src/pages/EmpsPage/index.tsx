@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { BadgeCheck } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
@@ -41,6 +41,8 @@ export const EmpsPage = () => {
   const [listFilters, setListFilters] = useState(defaultEmpListFilters)
   const [filterModalOpen, setFilterModalOpen] = useState(false)
   const [createMode, setCreateMode] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   const { data: empList, isLoading: empLoading } = useEmpList()
   const { data: cardList } = useCardList()
@@ -72,6 +74,15 @@ export const EmpsPage = () => {
         String(emp.dept).includes(q),
     )
   }, [empList, listFilters, empCardCountMap, searchQuery])
+
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery, listFilters])
+
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size)
+    setPage(1)
+  }, [])
 
   const selectedCards = useMemo(
     () => cardList?.filter((c) => c.empId === selectedId) ?? [],
@@ -126,8 +137,8 @@ export const EmpsPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={300}
-        defaultDrawerWidth={380}
+        minDrawerWidth={320}
+        defaultDrawerWidth={400}
         storageKey="axiquant.drawer.emps"
         main={
           <Grid
@@ -139,6 +150,12 @@ export const EmpsPage = () => {
             onSearch={setSearchQuery}
             totalCount={filteredEmps.length}
             loading={empLoading}
+            pagination={{
+              page,
+              pageSize,
+              onPageChange: setPage,
+              onPageSizeChange: handlePageSizeChange,
+            }}
             actions={
               <FilterButton
                 active={isEmpFiltersActive(listFilters)}

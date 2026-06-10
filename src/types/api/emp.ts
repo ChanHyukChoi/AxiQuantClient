@@ -13,6 +13,8 @@ export interface EmpInfo {
   email: string
   addr: string
   udef: string
+  /** 추후 사용자 사진 URL (wire 연동 전 placeholder) */
+  photoUrl?: string
 }
 
 export type CreateEmpRequest = Omit<EmpInfo, 'id'>

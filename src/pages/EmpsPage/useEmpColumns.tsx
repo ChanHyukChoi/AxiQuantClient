@@ -1,52 +1,45 @@
 import { useMemo } from 'react'
 import { Badge } from '@/components/primitive/Badge'
-import { Avatar } from '@/pages/EmpsPage/components/EmpFieldUi'
+import { EmpPhotoSlot } from '@/pages/EmpsPage/components/EmpPhotoSlot'
+import { empNoDisplay } from '@/pages/EmpsPage/utils/empHelpers'
 import type { ColumnDef } from '@/components/primitive/Grid'
 import type { EmpInfo } from '@/types/api'
+
+const FONT_SIZE = 15
 
 export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
   useMemo<ColumnDef<EmpInfo>[]>(
     () => [
       {
-        key: 'id',
-        header: 'ID',
-        width: 50,
-        sortable: true,
-        render: (value) => (
-          <span
-            style={{
-              fontSize: 11,
-              color: 'var(--color-text-dim)',
-              fontFamily: 'monospace',
-            }}
-          >
-            {String(value)}
-          </span>
-        ),
+        key: 'photo',
+        header: '',
+        width: 44,
+        sortable: false,
+        hideable: false,
+        render: (_, row) => <EmpPhotoSlot variant="grid" photoUrl={row.photoUrl} />,
       },
       {
         key: 'name',
         header: '이름',
         width: 120,
         sortable: true,
-        render: (_, row) => (
-          <div className="flex items-center gap-2">
-            <Avatar name={row.name} size={26} />
-            <span>{row.name}</span>
-          </div>
+        hideable: false,
+        render: (value) => (
+          <span className="truncate block" style={{ fontSize: FONT_SIZE }}>
+            {String(value ?? '')}
+          </span>
         ),
       },
       {
         key: 'udef',
         header: '사번',
-        width: 70,
+        width: 80,
         sortable: true,
-        render: (value) =>
-          value ? (
-            <span style={{ fontFamily: 'monospace', fontSize: 11 }}>{String(value)}</span>
-          ) : (
-            '—'
-          ),
+        render: (value) => (
+          <span className="font-mono truncate block" style={{ fontSize: FONT_SIZE }}>
+            {empNoDisplay(String(value ?? ''))}
+          </span>
+        ),
       },
       {
         key: 'dept',
@@ -55,7 +48,11 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         sortable: true,
         render: (value) => {
           const n = typeof value === 'number' ? value : Number(value)
-          return Number.isFinite(n) && n !== 0 ? String(n) : '—'
+          return (
+            <span className="truncate block" style={{ fontSize: FONT_SIZE }}>
+              {Number.isFinite(n) && n !== 0 ? String(n) : '—'}
+            </span>
+          )
         },
       },
       {
@@ -64,7 +61,11 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         width: 60,
         render: (value) => {
           const n = typeof value === 'number' ? value : Number(value)
-          return Number.isFinite(n) && n !== 0 ? String(n) : '—'
+          return (
+            <span className="truncate block" style={{ fontSize: FONT_SIZE }}>
+              {Number.isFinite(n) && n !== 0 ? String(n) : '—'}
+            </span>
+          )
         },
       },
       {
@@ -73,7 +74,9 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
         width: 140,
         render: (value) =>
           value && String(value).trim() !== '' ? (
-            <span style={{ fontSize: 11 }}>{String(value)}</span>
+            <span className="truncate block" style={{ fontSize: FONT_SIZE }}>
+              {String(value)}
+            </span>
           ) : (
             '—'
           ),

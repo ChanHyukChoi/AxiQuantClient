@@ -16,6 +16,8 @@ interface DrawerProps {
   footer?: React.ReactNode
   children: React.ReactNode
   fontSize?: number
+  /** true면 콘텐츠 영역이 남은 높이를 채우고, 스크롤은 자식이 처리 */
+  contentFill?: boolean
 }
 
 export const Drawer = ({
@@ -31,6 +33,7 @@ export const Drawer = ({
   footer,
   children,
   fontSize = 15,
+  contentFill = false,
 }: DrawerProps) => {
   return (
     <div
@@ -72,7 +75,12 @@ export const Drawer = ({
 
       {/* content */}
       <div
-        className="flex-1 overflow-y-auto app-scrollbar"
+        className={[
+          'flex-1 min-h-0',
+          contentFill ? 'flex flex-col overflow-hidden' : 'overflow-y-auto app-scrollbar',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         style={{ padding: '11px 13px' }}
       >
         {children}

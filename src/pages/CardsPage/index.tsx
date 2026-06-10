@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/queryKeys'
 import { CreditCard } from 'lucide-react'
@@ -33,8 +33,8 @@ import { useEmpList } from '@/hooks/api/useEmps'
 import { useAccLvList } from '@/hooks/api/useAccLv'
 import { useAreaList } from '@/hooks/api/useArea'
 
-/** v2: 컬럼 너비·status 키·현재 영역 컬럼 반영 — 이전 localStorage와 분리 */
-const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards.v2'
+/** v3: 사용자 사진 컬럼·empId 너비 조정 — 이전 localStorage와 분리 */
+const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards.v3'
 const CARDS_GRID_LEGACY_WIDTHS_KEY = 'axiquant.grid.columns.cards'
 
 const applyCardFilters = (cards: CardRow[], filters: CardListFilters): CardRow[] =>
@@ -56,6 +56,8 @@ export const CardsPage = () => {
   const [optionsModalOpen, setOptionsModalOpen] = useState(false)
   const [optionsModalTab, setOptionsModalTab] = useState<'filter' | 'columns'>('filter')
   const [createMode, setCreateMode] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   const { data: cardList, isLoading: cardLoading } = useCardList()
   const { data: empList, isLoading: empLoading } = useEmpList()
@@ -134,6 +136,14 @@ export const CardsPage = () => {
     }, {})
   }, [empList])
 
+  const empPhotoById = useMemo(() => {
+    if (!Array.isArray(empList)) return {} as Record<number, string | undefined>
+    return empList.reduce<Record<number, string | undefined>>((acc, emp) => {
+      if (emp.id > 0) acc[emp.id] = emp.photoUrl
+      return acc
+    }, {})
+  }, [empList])
+
   const accLvNameMap = useMemo(() => {
     if (!Array.isArray(accLvList)) return {} as Record<number, string>
     return accLvList.reduce<Record<number, string>>((acc, a) => {
@@ -162,12 +172,21 @@ export const CardsPage = () => {
     })
   }, [normalizedCards, listFilters, searchQuery, empNameMap])
 
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery, listFilters])
+
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size)
+    setPage(1)
+  }, [])
+
   const selectedCard = useMemo(
     () => normalizedCards.find((c) => c.id === selectedId) ?? null,
     [normalizedCards, selectedId],
   )
 
-  const baseColumns = useCardColumns(empNameMap)
+  const baseColumns = useCardColumns(empNameMap, empPhotoById)
   const {
     columns,
     columnOptions,
@@ -247,6 +266,12 @@ export const CardsPage = () => {
             onSearch={setSearchQuery}
             totalCount={filteredCards.length}
             loading={cardLoading}
+            pagination={{
+              page,
+              pageSize,
+              onPageChange: setPage,
+              onPageSizeChange: handlePageSizeChange,
+            }}
             resizableColumns
             onColumnWidthChange={setColumnWidth}
             reorderableColumns

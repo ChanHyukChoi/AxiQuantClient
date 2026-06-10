@@ -43,12 +43,12 @@ export const EmpUpsertForm = ({ mode, register, control, errors }: EmpUpsertForm
         <Input {...register('lastName')} style={fieldFontStyle} />
       </FRow>
       {mode === 'create' ? (
-        <FRow icon={<Hash size={15} />} label="사번" fontSize={FONT_SIZE}>
+        <FRow icon={<Hash size={15} />} label="사번" fontSize={FONT_SIZE} align="top">
           <div className="flex flex-col gap-0.5 w-full min-w-0">
             <Input {...register('empNo')} style={fieldFontStyle} />
             <p
-              className="text-[10px] leading-snug text-right"
-              style={{ color: 'var(--color-text-subtle)' }}
+              className="leading-snug"
+              style={{ fontSize: 11, color: 'var(--color-text-subtle)' }}
             >
               WPF AdminClient와 동일: 이 값은 API 본문에 넣지 않습니다.
             </p>

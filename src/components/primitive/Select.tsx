@@ -8,6 +8,8 @@ export interface SelectOption {
   disabled?: boolean
 }
 
+type SelectMenuPlacement = 'auto' | 'top' | 'bottom'
+
 interface SelectProps {
   value?: string
   onChange?: (value: string) => void
@@ -17,6 +19,49 @@ interface SelectProps {
   placeholder?: string
   fontSize?: number
   className?: string
+  /** auto: 뷰포트 여유에 따라 위·아래 자동 전환 (기본) */
+  menuPlacement?: SelectMenuPlacement
+}
+
+const MENU_MAX_HEIGHT = 200
+const MENU_OPTION_HEIGHT = 22
+const MENU_VIEWPORT_GAP = 4
+
+const estimateMenuHeight = (optionCount: number): number =>
+  Math.min(MENU_MAX_HEIGHT, optionCount * MENU_OPTION_HEIGHT + 4)
+
+const resolveMenuPlacement = (
+  rect: DOMRect,
+  optionCount: number,
+  placement: SelectMenuPlacement,
+): { opensUpward: boolean; maxHeight: number } => {
+  if (placement === 'top') {
+    return {
+      opensUpward: true,
+      maxHeight: Math.min(MENU_MAX_HEIGHT, rect.top - MENU_VIEWPORT_GAP),
+    }
+  }
+  if (placement === 'bottom') {
+    return {
+      opensUpward: false,
+      maxHeight: Math.min(MENU_MAX_HEIGHT, window.innerHeight - rect.bottom - MENU_VIEWPORT_GAP),
+    }
+  }
+
+  const estimated = estimateMenuHeight(optionCount)
+  const spaceBelow = window.innerHeight - rect.bottom - MENU_VIEWPORT_GAP
+  const spaceAbove = rect.top - MENU_VIEWPORT_GAP
+
+  if (spaceBelow >= estimated) {
+    return { opensUpward: false, maxHeight: MENU_MAX_HEIGHT }
+  }
+  if (spaceAbove >= estimated) {
+    return { opensUpward: true, maxHeight: MENU_MAX_HEIGHT }
+  }
+  if (spaceAbove > spaceBelow) {
+    return { opensUpward: true, maxHeight: Math.max(80, spaceAbove) }
+  }
+  return { opensUpward: false, maxHeight: Math.max(80, spaceBelow) }
 }
 
 export const Select = ({
@@ -28,6 +73,7 @@ export const Select = ({
   placeholder = '선택',
   fontSize = 12,
   className = '',
+  menuPlacement = 'auto',
 }: SelectProps) => {
   const listboxId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -35,6 +81,8 @@ export const Select = ({
   const [open, setOpen] = useState(false)
   const [focused, setFocused] = useState(false)
   const [menuRect, setMenuRect] = useState<DOMRect | null>(null)
+  const [opensUpward, setOpensUpward] = useState(false)
+  const [menuMaxHeight, setMenuMaxHeight] = useState(MENU_MAX_HEIGHT)
 
   const selected = options.find((o) => o.value === value)
 
@@ -45,8 +93,12 @@ export const Select = ({
 
   const updateMenuRect = useCallback(() => {
     if (!triggerRef.current) return
-    setMenuRect(triggerRef.current.getBoundingClientRect())
-  }, [])
+    const rect = triggerRef.current.getBoundingClientRect()
+    const resolved = resolveMenuPlacement(rect, options.length, menuPlacement)
+    setMenuRect(rect)
+    setOpensUpward(resolved.opensUpward)
+    setMenuMaxHeight(resolved.maxHeight)
+  }, [menuPlacement, options.length])
 
   useEffect(() => {
     if (!open) return
@@ -99,10 +151,13 @@ export const Select = ({
             className="app-select-menu app-scrollbar"
             style={{
               position: 'fixed',
-              top: menuRect.bottom + 1,
               left: menuRect.left,
               width: menuRect.width,
               zIndex: 9999,
+              maxHeight: menuMaxHeight,
+              ...(opensUpward
+                ? { bottom: window.innerHeight - menuRect.top + 1 }
+                : { top: menuRect.bottom + 1 }),
             }}
           >
             {options.map((opt) => {

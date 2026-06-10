@@ -18,6 +18,13 @@ export const empDeptLabel = (dept: number): string =>
 
 export const empLvLabel = (lv: number): string => (lv !== 0 ? String(lv) : '선택안함')
 
+/** Grid·드로어 사번 표시 (udef JSON placeholder 제외) */
+export const empNoDisplay = (udef: string | undefined): string => {
+  const t = udef?.trim()
+  if (!t || t === '{}') return '—'
+  return t
+}
+
 export const empToUpdatePayload = (emp: EmpInfo): UpdateEmpRequest => {
   const { id, ...rest } = emp
   void id

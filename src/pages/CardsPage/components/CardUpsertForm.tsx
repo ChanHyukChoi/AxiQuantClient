@@ -181,7 +181,7 @@ export const CardUpsertForm = ({
                 const name = empDisplayName(picked)
                 if (name) return name
               }
-              return `사용자 #${field.value}`
+              return '알 수 없는 사용자'
             })()
             const empError = fieldState.error?.message
             return (

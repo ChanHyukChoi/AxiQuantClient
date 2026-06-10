@@ -1,21 +1,4 @@
-import { Badge } from '@/components/primitive/Badge'
-import type { CardInfo } from '@/types/api'
-
-export const Avatar = ({ name, size }: { name: string; size: 26 | 46 }) => (
-  <div
-    className="rounded-full flex-shrink-0 flex items-center justify-center font-medium"
-    style={{
-      width: size,
-      height: size,
-      background: 'var(--color-btn-accent-bg)',
-      color: 'var(--color-accent)',
-      fontSize: size === 26 ? 12 : 18,
-    }}
-  >
-    {name.charAt(0)}
-  </div>
-)
-
+/** 드로어 폼 — 라벨(좌) / 값·입력(우) 정렬용 고정 너비 */
 export const FIELD_CONTROL_WIDTH = 180
 
 export const fieldControlStyle: React.CSSProperties = {
@@ -52,13 +35,20 @@ export const FRow = ({
   label,
   children,
   fontSize,
+  align = 'center',
 }: {
   icon: React.ReactNode
   label: string
   children: React.ReactNode
   fontSize?: number
+  align?: 'center' | 'top'
 }) => (
-  <div className="flex items-center py-1 gap-3 min-w-0">
+  <div
+    className={[
+      'flex py-1 gap-3 min-w-0',
+      align === 'top' ? 'items-start' : 'items-center',
+    ].join(' ')}
+  >
     <span
       className={[
         'flex items-center gap-1.5 flex-shrink-0',
@@ -74,7 +64,12 @@ export const FRow = ({
       {icon}
       {label}
     </span>
-    <div className="flex flex-1 justify-end items-center min-w-0">
+    <div
+      className={[
+        'flex flex-1 justify-end min-w-0',
+        align === 'top' ? 'items-start' : 'items-center',
+      ].join(' ')}
+    >
       <div className="min-w-0 text-left" style={fieldControlStyle}>
         {children}
       </div>
@@ -109,32 +104,4 @@ export const FieldValue = ({
   >
     {children}
   </span>
-)
-
-export const CardItem = ({ card }: { card: CardInfo }) => (
-  <div
-    className="rounded p-2.5 mb-2"
-    style={{ border: '0.5px solid var(--color-border)' }}
-  >
-    <div className="flex items-center justify-between">
-      <Badge variant="card">카드</Badge>
-      <Badge variant={card.isActive ? 'on' : 'off'}>
-        {card.isActive ? '활성' : '반납'}
-      </Badge>
-    </div>
-    <p className="text-[13px] font-mono mt-1.5" style={{ color: 'var(--color-cell)' }}>
-      {card.cardNumber}
-    </p>
-    <div
-      className="flex gap-2 mt-1"
-      style={{ fontSize: 12, color: 'var(--color-text-subtle)' }}
-    >
-      {card.issuedAt ? <span>발급: {card.issuedAt}</span> : null}
-      {card.expiredAt ? (
-        <span>
-          {card.isActive ? '만료:' : '반납:'} {card.expiredAt}
-        </span>
-      ) : null}
-    </div>
-  </div>
 )

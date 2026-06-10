@@ -1,6 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
+import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
+import { Select } from '@/components/primitive/Select'
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -20,6 +22,14 @@ export interface ColumnDef<T> {
   render?: (value: unknown, row: T) => React.ReactNode
 }
 
+export interface GridPagination {
+  page: number
+  pageSize: number
+  pageSizeOptions?: number[]
+  onPageChange: (page: number) => void
+  onPageSizeChange: (pageSize: number) => void
+}
+
 interface GridProps<T extends { id: number }> {
   columns: ColumnDef<T>[]
   data: T[]
@@ -35,6 +45,7 @@ interface GridProps<T extends { id: number }> {
   minColumnWidth?: number
   reorderableColumns?: boolean
   onColumnReorder?: (fromKey: string, toKey: string) => void
+  pagination?: GridPagination
 }
 
 interface SortState {
@@ -44,6 +55,7 @@ interface SortState {
 
 const DEFAULT_COL_WIDTH = 80
 const DEFAULT_MIN_COL_WIDTH = 48
+const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 50, 100]
 /** 컬럼 경계 중심 히트 영역 (인접 th에 가려지지 않도록 양쪽으로 걸침) */
 const COL_RESIZE_HIT_WIDTH = 18
 
@@ -136,6 +148,7 @@ export const Grid = <T extends { id: number }>({
   minColumnWidth = DEFAULT_MIN_COL_WIDTH,
   reorderableColumns = false,
   onColumnReorder,
+  pagination,
 }: GridProps<T>) => {
   const [sort, setSort] = useState<SortState | null>(null)
   const [draggingKey, setDraggingKey] = useState<string | null>(null)
@@ -149,6 +162,14 @@ export const Grid = <T extends { id: number }>({
   const [resizeHoverKey, setResizeHoverKey] = useState<string | null>(null)
   const [resizeActiveKey, setResizeActiveKey] = useState<string | null>(null)
   const count = totalCount ?? data.length
+  const totalPages = pagination
+    ? Math.max(1, Math.ceil(count / pagination.pageSize))
+    : 1
+  const pageSizeOptions = pagination?.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS
+  const pageSizeSelectOptions = useMemo(
+    () => pageSizeOptions.map((n) => ({ value: String(n), label: `${n}` })),
+    [pageSizeOptions],
+  )
   const isColumnDragging = draggingKey != null
   const tableWidth = useMemo(
     () => columns.reduce((sum, col) => sum + colWidth(col), 0),
@@ -164,6 +185,19 @@ export const Grid = <T extends { id: number }>({
       return compareCellValues(av, bv, direction)
     })
   }, [data, sort])
+
+  const displayData = useMemo(() => {
+    if (!pagination) return sortedData
+    const start = (pagination.page - 1) * pagination.pageSize
+    return sortedData.slice(start, start + pagination.pageSize)
+  }, [sortedData, pagination])
+
+  useEffect(() => {
+    if (!pagination) return
+    if (pagination.page > totalPages) {
+      pagination.onPageChange(totalPages)
+    }
+  }, [pagination?.page, pagination?.pageSize, pagination?.onPageChange, totalPages])
 
   const handleHeaderClick = (col: ColumnDef<T>) => {
     if (suppressHeaderClickRef.current) {
@@ -489,7 +523,7 @@ export const Grid = <T extends { id: number }>({
                 </td>
               </tr>
             ) : (
-              sortedData.map((row) => (
+              displayData.map((row) => (
                 <GridRow
                   key={row.id}
                   row={row}
@@ -504,7 +538,9 @@ export const Grid = <T extends { id: number }>({
       </div>
 
       <div
-        className="flex-shrink-0 flex items-center"
+        className={`flex-shrink-0 flex items-center gap-2 flex-wrap ${
+          pagination ? 'justify-between' : ''
+        }`}
         style={{
           padding: '5px 12px',
           background: 'var(--color-sidebar)',
@@ -513,7 +549,37 @@ export const Grid = <T extends { id: number }>({
           fontSize: 15,
         }}
       >
-        전체 {count}건
+        <span>전체 {count}건</span>
+        {pagination ? (
+          <div className="flex items-center gap-2">
+            <div className="shrink-0" style={{ width: 80 }}>
+              <Select
+                value={String(pagination.pageSize)}
+                onChange={(v) => pagination.onPageSizeChange(Number(v))}
+                options={pageSizeSelectOptions}
+                fontSize={13}
+                menuPlacement="top"
+              />
+            </div>
+            <Button
+              size="sm"
+              variant="default"
+              disabled={pagination.page <= 1}
+              onClick={() => pagination.onPageChange(pagination.page - 1)}
+              leftIcon={<ChevronLeft size={14} />}
+            />
+            <span style={{ fontSize: 13, color: 'var(--color-text-dim)' }}>
+              {pagination.page} / {totalPages}
+            </span>
+            <Button
+              size="sm"
+              variant="default"
+              disabled={pagination.page >= totalPages}
+              onClick={() => pagination.onPageChange(pagination.page + 1)}
+              leftIcon={<ChevronRight size={14} />}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   )

@@ -1,26 +1,34 @@
-import { BadgeCheck, Plus } from 'lucide-react'
 import { Badge } from '@/components/primitive/Badge'
-import { empDeptLabel, empLvLabel } from '@/pages/EmpsPage/utils/empHelpers'
+import { EmpPhotoSlot } from '@/pages/EmpsPage/components/EmpPhotoSlot'
+import { empDeptLabel, empNoDisplay } from '@/pages/EmpsPage/utils/empHelpers'
 
-/** 추가·수정·조회 모드 공통 — Badge 행 포함 고정 높이 */
-export const EMP_SUMMARY_HEIGHT = 108
+/** 학생증형 — 사진 + 이름·사번·부서 뱃지 */
+export const EMP_SUMMARY_HEIGHT = 126
 
 const FONT_SIZE = 15
 
 interface EmpSummaryHeaderProps {
   mode: 'empty' | 'create' | 'view' | 'edit'
   name?: string
+  empNo?: string
   dept?: number
-  lv?: number
-  empId?: number
+  photoUrl?: string
+  photoEditable?: boolean
+  photoLoading?: boolean
+  onPhotoFileSelect?: (file: File) => void
+  onPhotoClear?: () => void
 }
 
 export const EmpSummaryHeader = ({
   mode,
   name,
+  empNo,
   dept = 0,
-  lv = 0,
-  empId,
+  photoUrl,
+  photoEditable = false,
+  photoLoading = false,
+  onPhotoFileSelect,
+  onPhotoClear,
 }: EmpSummaryHeaderProps) => {
   if (mode === 'empty') {
     return (
@@ -49,18 +57,17 @@ export const EmpSummaryHeader = ({
       ? name.trim()
       : '사용자 추가'
     : (name?.trim() || '—')
-  const deptLabel = empDeptLabel(dept)
-  const lvLabel = empLvLabel(lv)
-  const subtitle = isCreate
-    ? name?.trim()
-      ? `${deptLabel} · ${lvLabel}`
+  const noLabel = isCreate
+    ? empNo?.trim()
+      ? empNoDisplay(empNo)
       : '새 사용자 정보를 입력하세요'
-    : `${deptLabel} · ${lvLabel}`
+    : empNoDisplay(empNo)
+  const deptLabel = empDeptLabel(dept)
 
   return (
     <div className="pb-3 w-full min-w-0">
       <div
-        className="w-full min-w-0 flex flex-col"
+        className="w-full min-w-0"
         style={{
           minHeight: EMP_SUMMARY_HEIGHT,
           border: '0.5px solid var(--color-border)',
@@ -69,45 +76,44 @@ export const EmpSummaryHeader = ({
           padding: '12px 14px',
         }}
       >
-        <div className="flex items-center gap-1.5 min-w-0">
-          {isCreate ? (
-            <Plus
-              size={16}
-              className="flex-shrink-0"
-              style={{ color: 'var(--color-accent)' }}
-            />
-          ) : (
-            <BadgeCheck
-              size={16}
-              className="flex-shrink-0"
-              style={{ color: 'var(--color-accent)' }}
-            />
-          )}
-          <span
-            className="font-medium leading-tight truncate min-w-0"
-            style={{ color: 'var(--color-text)', fontSize: 20 }}
-          >
-            {displayName}
-          </span>
-        </div>
-        <span
-          className="block leading-tight mt-1 truncate"
-          style={{
-            color: 'var(--color-text-muted)',
-            paddingLeft: 22,
-            fontSize: FONT_SIZE,
-          }}
-        >
-          {subtitle}
-        </span>
-        <div
-          className="flex justify-end items-center mt-2 gap-1.5 flex-shrink-0"
-          style={{ minHeight: 24 }}
-        >
-          {dept !== 0 ? <Badge variant="card">부서 {deptLabel}</Badge> : null}
-          {!isCreate && empId != null ? (
-            <Badge variant="off">#{empId}</Badge>
-          ) : null}
+        <div className="flex gap-3 items-stretch min-w-0">
+          <EmpPhotoSlot
+            variant="drawer"
+            photoUrl={photoUrl}
+            editable={photoEditable}
+            loading={photoLoading}
+            onFileSelect={onPhotoFileSelect}
+            onClear={onPhotoClear}
+          />
+          <div className="flex flex-col flex-1 min-w-0 justify-between">
+            <div className="min-w-0">
+              <span
+                className="font-medium leading-tight truncate block min-w-0"
+                style={{ color: 'var(--color-text)', fontSize: 20 }}
+              >
+                {displayName}
+              </span>
+              <span
+                className={[
+                  'block leading-tight mt-1.5 truncate',
+                  !isCreate || empNo?.trim() ? 'font-mono' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                style={{
+                  color: 'var(--color-text-muted)',
+                  fontSize: FONT_SIZE,
+                }}
+              >
+                {noLabel}
+              </span>
+            </div>
+            {dept !== 0 ? (
+              <div className="flex justify-end items-center mt-2 flex-shrink-0">
+                <Badge variant="card">부서 {deptLabel}</Badge>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
