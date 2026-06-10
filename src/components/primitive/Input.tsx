@@ -8,12 +8,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ error, className = '', style, ...props }, ref) => {
     const [focused, setFocused] = useState(false)
 
-    const borderColor = error
-      ? 'var(--color-btn-danger-text)'
-      : focused
-        ? 'var(--color-accent)'
-        : 'var(--color-input-border)'
-
     return (
       <div className="w-full">
         <input
@@ -28,23 +22,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             props.onBlur?.(e)
           }}
           style={{
-            background: 'var(--color-input-bg)',
-            color: 'var(--color-text)',
-            borderColor,
+            ...(error ? { borderColor: 'var(--color-btn-danger-text)' } : {}),
             ...style,
           }}
           className={[
-            'w-full text-[12px] px-2 py-1 rounded border outline-none transition-colors',
+            'app-field-control',
+            focused && !error ? 'app-field-control--focused' : '',
             className,
           ]
             .filter(Boolean)
             .join(' ')}
         />
-        {error && (
-          <p className="mt-0.5 text-[11px]" style={{ color: 'var(--color-btn-danger-text)' }}>
-            {error}
-          </p>
-        )}
+        {error ? <p className="app-field-error">{error}</p> : null}
       </div>
     )
   },

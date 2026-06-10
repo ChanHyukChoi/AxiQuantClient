@@ -17,6 +17,7 @@ import type { CardAccLvDisplayItem } from '@/pages/CardsPage/components/AccLvGro
 import {
   cardIdFromNumber,
   cardStatusLabel,
+  cardDatetimeToInput,
   cardTypeLabel,
   syncCardAccLv,
   toCreateRequest,
@@ -32,6 +33,11 @@ const FORM_DEFAULTS: UpdateCardFormValues = {
   empId: undefined,
   type: '직원',
   status: '활성',
+  changePin: false,
+  pin: '',
+  pinConfirm: '',
+  issuedAt: '',
+  expiredAt: '',
 }
 
 interface CardDrawerProps {
@@ -71,6 +77,7 @@ export const CardDrawer = ({
   const [exemptPin, setExemptPin] = useState(false)
   const [selectedAccLvIds, setSelectedAccLvIds] = useState<number[]>([])
   const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const formActive = createMode || editMode
   const qc = useQueryClient()
@@ -83,6 +90,8 @@ export const CardDrawer = ({
   const form = useForm<UpdateCardFormValues>({
     resolver: zodResolver(updateCardSchema) as Resolver<UpdateCardFormValues>,
     defaultValues: FORM_DEFAULTS,
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
   })
 
   const watchedName = useWatch({ control: form.control, name: 'name' })
@@ -95,6 +104,7 @@ export const CardDrawer = ({
     setExemptApb(false)
     setExemptPin(false)
     setSelectedAccLvIds([])
+    setSaveError(null)
   }
 
   const setEditing = (editing: boolean) => {
@@ -136,14 +146,28 @@ export const CardDrawer = ({
     )
   }, [editMode, createMode, cardAccLvList, accLvItems])
 
+  const scrollToFirstFieldError = () => {
+    requestAnimationFrame(() => {
+      document
+        .querySelector('.app-drawer-form .app-field-error')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    })
+  }
+
   const onEditClick = () => {
     if (!card) return
+    setSaveError(null)
     form.reset({
       name: card.name ?? '',
       cardNum: card.cardNumber,
       empId: card.empId,
       type: cardTypeLabel(card),
       status: cardStatusLabel(card),
+      changePin: false,
+      pin: '',
+      pinConfirm: '',
+      issuedAt: cardDatetimeToInput(card.issuedAt),
+      expiredAt: cardDatetimeToInput(card.expiredAt),
     })
     setExemptApb(!!card.exemptApb)
     setExemptPin(!!card.exemptPin)
@@ -166,18 +190,30 @@ export const CardDrawer = ({
 
   const onFormSubmit = async (values: UpdateCardFormValues) => {
     setIsSaving(true)
+    setSaveError(null)
     try {
       if (createMode) {
         const data = toCreateRequest(values, exemptApb, exemptPin)
         const ok = await createCardAsync(data)
-        if (!ok) return
+        if (!ok) {
+          setSaveError(
+            '서버에 저장하지 못했습니다. 카드 번호·필수 값을 확인하거나 F12 네트워크 응답을 확인하세요.',
+          )
+          return
+        }
 
         const newId = cardIdFromNumber(data.cardNumber)
-        if (newId == null) return
+        if (newId == null) {
+          setSaveError('카드 번호 형식이 올바르지 않습니다.')
+          return
+        }
 
         if (selectedAccLvIds.length > 0) {
           const synced = await syncCardAccLv(newId, [], selectedAccLvIds)
-          if (!synced) return
+          if (!synced) {
+            setSaveError('카드는 저장됐지만 접근 권한 연결에 실패했습니다.')
+            return
+          }
           invalidateAccLv(newId)
         }
 
@@ -190,10 +226,16 @@ export const CardDrawer = ({
       const beforeIds = (cardAccLvList ?? []).map((row) => row.alvid)
       const data = toUpdateRequest(values, card, exemptApb, exemptPin)
       const ok = await updateCardAsync({ id: selectedId, data })
-      if (!ok) return
+      if (!ok) {
+        setSaveError('서버에 저장하지 못했습니다. F12 네트워크 응답을 확인하세요.')
+        return
+      }
 
       const synced = await syncCardAccLv(selectedId, beforeIds, selectedAccLvIds)
-      if (!synced) return
+      if (!synced) {
+        setSaveError('카드는 저장됐지만 접근 권한 연결에 실패했습니다.')
+        return
+      }
       invalidateAccLv(selectedId)
       setEditing(false)
     } finally {
@@ -201,7 +243,9 @@ export const CardDrawer = ({
     }
   }
 
-  const handleSave = form.handleSubmit(onFormSubmit)
+  const handleSave = form.handleSubmit(onFormSubmit, () => {
+    scrollToFirstFieldError()
+  })
 
   const handleDeleteConfirm = () => {
     if (selectedId == null) return
@@ -257,25 +301,28 @@ export const CardDrawer = ({
   )
 
   const drawerActions = formActive ? (
-    <>
-      <Button
-        variant="default"
-        size="sm"
-        leftIcon={<X size={15} />}
-        onClick={handleCancelForm}
-      >
-        취소
-      </Button>
-      <Button
-        variant="accent"
-        size="sm"
-        leftIcon={<Check size={15} />}
-        loading={isSaving}
-        onClick={handleSave}
-      >
-        저장
-      </Button>
-    </>
+    <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
+      {saveError ? <p className="app-field-error">{saveError}</p> : null}
+      <div className="flex justify-end gap-1.5">
+        <Button
+          variant="default"
+          size="sm"
+          leftIcon={<X size={15} />}
+          onClick={handleCancelForm}
+        >
+          취소
+        </Button>
+        <Button
+          variant="accent"
+          size="sm"
+          leftIcon={<Check size={15} />}
+          loading={isSaving}
+          onClick={handleSave}
+        >
+          저장
+        </Button>
+      </div>
+    </div>
   ) : card ? (
     <>
       <Button
@@ -303,6 +350,8 @@ export const CardDrawer = ({
       baseCard={createMode ? undefined : card ?? undefined}
       register={form.register}
       control={form.control}
+      setValue={form.setValue}
+      clearErrors={form.clearErrors}
       empList={empList}
       empNameMap={empNameMap}
       accLvList={accLvList}

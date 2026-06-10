@@ -1,6 +1,7 @@
 import { addCardAccLv, deleteCardAccLv } from '@/api/card'
 import type { CardInfo, CreateCardRequest, UpdateCardRequest } from '@/types/api'
 import type { UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
+import { CARD_STATUS_VALUES, type CardStatusValue } from '@/pages/CardsPage/formTypes'
 
 export type CardRow = CardInfo & { id: number }
 
@@ -16,12 +17,50 @@ export const cardPrimaryKey = (c: CardInfo): number | undefined => {
 }
 
 export const cardTypeLabel = (c: CardInfo) => c.type ?? '직원'
-export const cardStatusLabel = (c: CardInfo) => c.status ?? (c.isActive ? '활성' : '비활성')
+
+const normalizeCardStatus = (status: string | undefined, isActive: boolean): CardStatusValue => {
+  const s = status?.trim()
+  if (s && (CARD_STATUS_VALUES as readonly string[]).includes(s)) return s as CardStatusValue
+  if (s === '비활성') return '반납'
+  return isActive ? '활성' : '반납'
+}
+
+export const cardStatusLabel = (c: CardInfo): CardStatusValue =>
+  normalizeCardStatus(c.status, c.isActive)
+
+export const cardStatusBadgeVariant = (
+  status: string,
+): 'on' | 'off' | 'lost' | 'issue' => {
+  if (status === '활성') return 'on'
+  if (status === '분실') return 'lost'
+  if (status === '발급') return 'issue'
+  return 'off'
+}
 
 export const cardIdFromNumber = (cardNumber: string): number | undefined => {
   const n = Math.trunc(Number(cardNumber.trim()))
   if (!Number.isFinite(n) || n <= 0) return undefined
   return n
+}
+
+/** wire `acttm` / `dacttm` → `datetime-local` input value */
+export const cardDatetimeToInput = (raw?: string): string => {
+  const t = raw?.trim()
+  if (!t) return ''
+  const isoLike = t.includes('T') ? t : t.replace(' ', 'T')
+  const slice16 = isoLike.slice(0, 16)
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(slice16)) return slice16
+  const dateOnly = t.slice(0, 10)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) return `${dateOnly}T00:00`
+  return ''
+}
+
+/** `datetime-local` → wire datetime (`yyyy-MM-dd HH:mm:ss`) */
+export const cardInputToDatetime = (value: string): string | undefined => {
+  const t = value.trim()
+  if (!t) return undefined
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(t)) return `${t.replace('T', ' ')}:00`
+  return t
 }
 
 export const toCreateRequest = (
@@ -37,6 +76,9 @@ export const toCreateRequest = (
   status: values.status,
   exemptApb,
   exemptPin,
+  issuedAt: cardInputToDatetime(values.issuedAt),
+  expiredAt: cardInputToDatetime(values.expiredAt),
+  ...(values.changePin ? { pin: values.pin } : {}),
 })
 
 /** 카드-접근권한 연결 diff 동기화 (생성·수정 저장 후 호출) */
@@ -70,12 +112,13 @@ export const toUpdateRequest = (
   isActive: values.status === '활성',
   type: values.type,
   status: values.status,
-  issuedAt: base.issuedAt,
-  expiredAt: base.expiredAt,
+  issuedAt: cardInputToDatetime(values.issuedAt),
+  expiredAt: cardInputToDatetime(values.expiredAt),
   area: base.area,
   lastCtrl: base.lastCtrl,
   lastReader: base.lastReader,
   lastAccess: base.lastAccess,
   exemptApb,
   exemptPin,
+  ...(values.changePin ? { pin: values.pin } : {}),
 })

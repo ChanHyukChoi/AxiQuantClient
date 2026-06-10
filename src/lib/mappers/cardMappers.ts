@@ -144,7 +144,7 @@ export const cardToWire = (
     state,
     flags,
     emp: card.empId ?? 0,
-    pin: '',
+    pin: card.pin?.trim() ?? '',
   }
 
   if (issued) {

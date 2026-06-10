@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { MultiSelectToggleAllButton } from '@/components/basic/MultiSelectToggleAllButton'
+import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { SearchField } from '@/components/primitive/SearchField'
+
+const FONT_SIZE = 15
 
 export interface AccLvSelectItem {
   id: number
   name: string
   description?: string
+  active?: boolean
 }
 
 interface AccLvSelectModalProps {
@@ -18,6 +22,11 @@ interface AccLvSelectModalProps {
   selectedIds: number[]
   onCancel: () => void
   onConfirm: (ids: number[]) => void
+}
+
+const formatDescription = (description?: string): string => {
+  const t = description?.trim() ?? ''
+  return t !== '' ? t : '—'
 }
 
 export const AccLvSelectModal = ({
@@ -45,8 +54,7 @@ export const AccLvSelectModal = ({
     const q = query.trim().toLowerCase()
     return (
       item.name.toLowerCase().includes(q) ||
-      (item.description?.toLowerCase().includes(q) ?? false) ||
-      String(item.id).includes(q)
+      (item.description?.toLowerCase().includes(q) ?? false)
     )
   })
 
@@ -67,6 +75,8 @@ export const AccLvSelectModal = ({
     setChecked(new Set())
   }
 
+  const showColumnHeader = filtered.length > 0
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -80,7 +90,7 @@ export const AccLvSelectModal = ({
         aria-label={title}
         className="flex flex-col rounded-md overflow-hidden"
         style={{
-          width: 380,
+          width: 480,
           maxHeight: '70vh',
           background: 'var(--color-sidebar)',
           border: '0.5px solid var(--color-border)',
@@ -90,7 +100,10 @@ export const AccLvSelectModal = ({
           className="flex items-center justify-between px-3 py-2.5 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span
+            className="font-medium"
+            style={{ color: 'var(--color-text)', fontSize: FONT_SIZE }}
+          >
             {title}
           </span>
           <button
@@ -118,52 +131,66 @@ export const AccLvSelectModal = ({
           />
         </div>
 
+        {showColumnHeader ? (
+          <div className="app-select-modal-header-row app-select-modal-acclv-grid">
+            <span aria-hidden />
+            <span className="app-select-modal-col-header">권한명</span>
+            <span className="app-select-modal-col-header">설명</span>
+            <span className="app-select-modal-col-header app-select-modal-col-header--center">
+              상태
+            </span>
+          </div>
+        ) : null}
+
         <div className="flex-1 overflow-y-auto app-scrollbar min-h-[200px] max-h-[40vh]">
           {filtered.length === 0 ? (
             <p
-              className="text-[12px] text-center py-8"
-              style={{ color: 'var(--color-text-subtle)' }}
+              className="text-center py-8"
+              style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}
             >
               {query.trim() ? '검색 결과가 없습니다.' : '등록된 접근 권한이 없습니다.'}
             </p>
           ) : (
-            filtered.map((item) => (
-              <div
-                key={item.id}
-                role="button"
-                tabIndex={0}
-                className="flex items-center gap-2.5 px-3.5 cursor-pointer border-b"
-                style={{
-                  borderColor: 'var(--color-border-subtle)',
-                  minHeight: 28,
-                }}
-                onClick={() => toggle(item.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    toggle(item.id)
-                  }
-                }}
-              >
-                <Checkbox checked={checked.has(item.id)} readOnly />
-                <span className="flex flex-col flex-1 min-w-0">
-                  <span
-                    className="text-[12px] truncate"
-                    style={{ color: 'var(--color-text)' }}
-                  >
+            filtered.map((item) => {
+              const isActive = item.active !== false
+              return (
+                <div
+                  key={item.id}
+                  role="button"
+                  tabIndex={0}
+                  className="app-select-modal-acclv-grid cursor-pointer border-b"
+                  style={{
+                    borderColor: 'var(--color-border-subtle)',
+                    background: checked.has(item.id)
+                      ? 'var(--color-accent-subtle)'
+                      : 'transparent',
+                  }}
+                  onClick={() => toggle(item.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      toggle(item.id)
+                    }
+                  }}
+                >
+                  <Checkbox checked={checked.has(item.id)} readOnly />
+                  <span className="app-select-modal-cell">
                     {item.name || `권한 #${item.id}`}
                   </span>
-                  {item.description ? (
-                    <span
-                      className="text-[11px] truncate"
-                      style={{ color: 'var(--color-text-muted)' }}
-                    >
-                      {item.description}
-                    </span>
-                  ) : null}
-                </span>
-              </div>
-            ))
+                  <span
+                    className="app-select-modal-cell app-select-modal-cell--muted"
+                    title={formatDescription(item.description)}
+                  >
+                    {formatDescription(item.description)}
+                  </span>
+                  <span className="app-select-modal-cell app-select-modal-cell--center">
+                    <Badge variant={isActive ? 'on' : 'off'}>
+                      {isActive ? '활성' : '비활성'}
+                    </Badge>
+                  </span>
+                </div>
+              )
+            })
           )}
         </div>
 
@@ -177,7 +204,7 @@ export const AccLvSelectModal = ({
           <Button
             variant="accent"
             size="md"
-            leftIcon={<Check size={12} />}
+            leftIcon={<Check size={15} />}
             onClick={() => onConfirm(Array.from(checked))}
           >
             확인 ({checked.size})

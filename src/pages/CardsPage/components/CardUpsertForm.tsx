@@ -1,5 +1,12 @@
 import { useMemo, useState } from 'react'
-import { Controller, type Control, type UseFormRegister } from 'react-hook-form'
+import {
+  Controller,
+  useFormState,
+  type Control,
+  type UseFormClearErrors,
+  type UseFormRegister,
+  type UseFormSetValue,
+} from 'react-hook-form'
 import {
   CalendarCheck,
   CalendarX,
@@ -17,7 +24,9 @@ import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
 import { Select } from '@/components/primitive/Select'
 import { FRow, FieldValue, SectionTitle } from '@/pages/CardsPage/components/CardFieldUi'
+import { CardPinChangeSection } from '@/pages/CardsPage/components/CardPinChangeSection'
 import type { UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
+import { CARD_STATUS_OPTIONS } from '@/pages/CardsPage/formTypes'
 import type { CardRow } from '@/pages/CardsPage/utils/cardPageHelpers'
 import { empDisplayName } from '@/lib/mappers/empsMappers'
 import type { AccLvInfo, EmpInfo } from '@/types/api'
@@ -31,16 +40,13 @@ const CARD_TYPE_OPTIONS = [
   { value: '발급', label: '발급' },
 ] as const
 
-const CARD_STATUS_OPTIONS = [
-  { value: '활성', label: '활성' },
-  { value: '비활성', label: '비활성' },
-] as const
-
 interface CardUpsertFormProps {
   mode: 'create' | 'edit'
   baseCard?: CardRow
   register: UseFormRegister<UpdateCardFormValues>
   control: Control<UpdateCardFormValues>
+  setValue: UseFormSetValue<UpdateCardFormValues>
+  clearErrors: UseFormClearErrors<UpdateCardFormValues>
   empList: EmpInfo[] | undefined
   empNameMap: Record<number, string>
   accLvList: AccLvInfo[] | undefined
@@ -58,6 +64,8 @@ export const CardUpsertForm = ({
   baseCard,
   register,
   control,
+  setValue,
+  clearErrors,
   empList,
   empNameMap,
   accLvList,
@@ -71,15 +79,19 @@ export const CardUpsertForm = ({
 }: CardUpsertFormProps) => {
   const [empModalOpen, setEmpModalOpen] = useState(false)
   const [accLvModalOpen, setAccLvModalOpen] = useState(false)
-
-  const activeAt = baseCard?.issuedAt?.trim() ? baseCard.issuedAt : '—'
-  const inactiveAt = baseCard?.expiredAt?.trim() ? baseCard.expiredAt : '—'
+  const { errors } = useFormState({ control })
 
   const empItems = useMemo(
     () =>
       (Array.isArray(empList) ? empList : [])
         .filter((e) => e.id > 0 && empDisplayName(e))
-        .map((e) => ({ id: e.id, name: empDisplayName(e) })),
+        .map((e) => ({
+          id: e.id,
+          name: empDisplayName(e),
+          udef: e.udef,
+          dept: e.dept,
+          lv: e.lv,
+        })),
     [empList],
   )
 
@@ -89,6 +101,7 @@ export const CardUpsertForm = ({
         id: a.id,
         name: a.name,
         description: a.description?.trim() || undefined,
+        active: a.active,
       })),
     [accLvList],
   )
@@ -98,18 +111,27 @@ export const CardUpsertForm = ({
   )
 
   return (
-    <div>
+    <div className="app-drawer-form">
       <SectionTitle fontSize={FONT_SIZE}>카드 정보</SectionTitle>
       <FRow icon={<CreditCard size={15} />} label="카드 번호" fontSize={FONT_SIZE}>
-        <Input
-          {...register('cardNum')}
-          readOnly={mode === 'edit'}
-          disabled={mode === 'edit'}
-          style={fieldFontStyle}
-        />
+        {mode === 'edit' ? (
+          <FieldValue mono fontSize={FONT_SIZE}>
+            {baseCard?.cardNumber?.trim() ? baseCard.cardNumber : '—'}
+          </FieldValue>
+        ) : (
+          <Input
+            {...register('cardNum')}
+            error={errors.cardNum?.message}
+            style={fieldFontStyle}
+          />
+        )}
       </FRow>
       <FRow icon={<Tag size={15} />} label="명칭" fontSize={FONT_SIZE}>
-        <Input {...register('name')} style={fieldFontStyle} />
+        <Input
+          {...register('name')}
+          error={errors.name?.message}
+          style={fieldFontStyle}
+        />
       </FRow>
       <FRow icon={<Layers size={15} />} label="유형" fontSize={FONT_SIZE}>
         <Controller
@@ -148,7 +170,7 @@ export const CardUpsertForm = ({
         <Controller
           name="empId"
           control={control}
-          render={({ field }) => {
+          render={({ field, fieldState }) => {
             const picked =
               field.value != null ? empList?.find((e) => e.id === field.value) : undefined
             const label = (() => {
@@ -161,16 +183,21 @@ export const CardUpsertForm = ({
               }
               return `사용자 #${field.value}`
             })()
+            const empError = fieldState.error?.message
             return (
-              <>
+              <div className="flex flex-col gap-1 w-full">
                 <button
                   type="button"
                   className="app-picker-field"
-                  style={fieldFontStyle}
+                  style={{
+                    ...fieldFontStyle,
+                    ...(empError ? { borderColor: '#c75c5c' } : undefined),
+                  }}
                   onClick={() => setEmpModalOpen(true)}
                 >
                   {label}
                 </button>
+                {empError ? <p className="app-field-error">{empError}</p> : null}
                 <EmpSelectModal
                   open={empModalOpen}
                   emps={empItems}
@@ -181,13 +208,20 @@ export const CardUpsertForm = ({
                     setEmpModalOpen(false)
                   }}
                 />
-              </>
+              </div>
             )
           }}
         />
       </FRow>
 
-      <FRow icon={<Shield size={15} />} label="접근 권한" fontSize={FONT_SIZE}>
+      <div className="mt-4" />
+      <SectionTitle fontSize={FONT_SIZE}>권한</SectionTitle>
+      <FRow
+        icon={<Shield size={15} />}
+        label="접근 권한"
+        fontSize={FONT_SIZE}
+        align="top"
+      >
         <div className="flex flex-col items-end gap-1.5 w-full min-w-0">
           <button
             type="button"
@@ -224,10 +258,36 @@ export const CardUpsertForm = ({
       <div className="mt-4" />
       <SectionTitle fontSize={FONT_SIZE}>기간</SectionTitle>
       <FRow icon={<CalendarCheck size={15} />} label="활성 일시" fontSize={FONT_SIZE}>
-        <FieldValue fontSize={FONT_SIZE}>{activeAt}</FieldValue>
+        <Controller
+          name="issuedAt"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              type="datetime-local"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.error?.message}
+              style={fieldFontStyle}
+            />
+          )}
+        />
       </FRow>
       <FRow icon={<CalendarX size={15} />} label="비활성 일시" fontSize={FONT_SIZE}>
-        <FieldValue fontSize={FONT_SIZE}>{inactiveAt}</FieldValue>
+        <Controller
+          name="expiredAt"
+          control={control}
+          render={({ field, fieldState }) => (
+            <Input
+              type="datetime-local"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              error={fieldState.error?.message}
+              style={fieldFontStyle}
+            />
+          )}
+        />
       </FRow>
 
       <div className="mt-4" />
@@ -242,6 +302,7 @@ export const CardUpsertForm = ({
           <Checkbox checked={exemptPin} onChange={onExemptPinChange} />
         </span>
       </FRow>
+      <CardPinChangeSection control={control} setValue={setValue} clearErrors={clearErrors} />
     </div>
   )
 }

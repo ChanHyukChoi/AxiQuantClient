@@ -16,6 +16,7 @@ import {
   typeBadgeVariant,
 } from '@/pages/CardsPage/components/CardFieldUi'
 import {
+  cardStatusBadgeVariant,
   cardStatusLabel,
   cardTypeLabel,
   type CardRow,
@@ -51,7 +52,7 @@ export const CardInfoTab = ({ card, empNameMap }: CardInfoTabProps) => {
         <Badge variant={typeBadgeVariant(t)}>{t}</Badge>
       </FRow>
       <FRow icon={<CircleCheck size={15} />} label="상태" fontSize={FONT_SIZE}>
-        <Badge variant={s === '활성' ? 'on' : 'off'}>{s}</Badge>
+        <Badge variant={cardStatusBadgeVariant(s)}>{s}</Badge>
       </FRow>
 
       <div className="mt-4" />

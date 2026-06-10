@@ -11,6 +11,7 @@ import {
   User,
   UserCog,
 } from 'lucide-react'
+import { SidebarHeader } from '@/layouts/SidebarHeader'
 import { useSidebarStore } from '@/stores/sidebarStore'
 
 // ─── Menu Items ────────────────────────────────────────────────────────────────
@@ -171,6 +172,7 @@ export const Sidebar = () => {
       }}
       className="flex flex-col h-full select-none"
     >
+      <SidebarHeader isCollapsed={collapsed} />
       <MenuList isCollapsed={collapsed} currentPath={currentPath} />
     </aside>
   )

@@ -33,7 +33,8 @@ import { useEmpList } from '@/hooks/api/useEmps'
 import { useAccLvList } from '@/hooks/api/useAccLv'
 import { useAreaList } from '@/hooks/api/useArea'
 
-const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards'
+/** v2: 컬럼 너비·status 키·현재 영역 컬럼 반영 — 이전 localStorage와 분리 */
+const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards.v2'
 const CARDS_GRID_LEGACY_WIDTHS_KEY = 'axiquant.grid.columns.cards'
 
 const applyCardFilters = (cards: CardRow[], filters: CardListFilters): CardRow[] =>

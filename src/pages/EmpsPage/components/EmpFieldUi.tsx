@@ -75,7 +75,7 @@ export const FRow = ({
       {label}
     </span>
     <div className="flex flex-1 justify-end items-center min-w-0">
-      <div className="min-w-0" style={fieldControlStyle}>
+      <div className="min-w-0 text-left" style={fieldControlStyle}>
         {children}
       </div>
     </div>

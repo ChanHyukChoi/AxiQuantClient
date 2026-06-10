@@ -3,9 +3,27 @@ import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Select } from '@/components/primitive/Select'
 import type { GridColumnOption } from '@/hooks/ui/useGridLayout'
+import { CARD_STATUS_VALUES, type CardStatusValue } from '@/pages/CardsPage/formTypes'
+
+const FONT_SIZE = 15
+const MODAL_WIDTH = 360
+const CONTENT_HEIGHT = 300
+
+const FilterField = ({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) => (
+  <div className="flex flex-col gap-1">
+    <span style={{ color: 'var(--color-text-muted)', fontSize: FONT_SIZE }}>{label}</span>
+    {children}
+  </div>
+)
 
 export type CardListFilters = {
-  status: 'all' | '활성' | '비활성'
+  status: 'all' | CardStatusValue
   type: 'all' | string
   assignment: 'all' | 'assigned' | 'unassigned'
 }
@@ -68,23 +86,21 @@ export const CardListOptionsModal = ({
   if (!open) return null
 
   const tabBtnClass = (active: boolean) =>
-    [
-      'flex-1 text-[12px] py-1.5 rounded border',
-      active ? 'font-medium' : '',
-    ].join(' ')
+    ['flex-1 py-1.5 rounded border', active ? 'font-medium' : ''].join(' ')
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
-        className="rounded-md p-5 min-w-[300px] max-w-[380px] w-full"
+        className="rounded-md p-5 shrink-0"
         style={{
+          width: MODAL_WIDTH,
           background: 'var(--color-sidebar)',
           border: '0.5px solid var(--color-border)',
         }}
       >
         <p
-          className="text-[13px] font-medium mb-3"
-          style={{ color: 'var(--color-text)' }}
+          className="font-medium mb-3"
+          style={{ color: 'var(--color-text)', fontSize: FONT_SIZE }}
         >
           목록 옵션
         </p>
@@ -98,6 +114,7 @@ export const CardListOptionsModal = ({
               borderColor: 'var(--color-border)',
               color:
                 tab === 'filter' ? 'var(--color-text)' : 'var(--color-text-muted)',
+              fontSize: FONT_SIZE,
             }}
             onClick={() => setTab('filter')}
           >
@@ -111,6 +128,7 @@ export const CardListOptionsModal = ({
               borderColor: 'var(--color-border)',
               color:
                 tab === 'columns' ? 'var(--color-text)' : 'var(--color-text-muted)',
+              fontSize: FONT_SIZE,
             }}
             onClick={() => setTab('columns')}
           >
@@ -118,100 +136,98 @@ export const CardListOptionsModal = ({
           </button>
         </div>
 
-        {tab === 'filter' ? (
-          <div className="flex flex-col gap-3">
-            <label className="flex flex-col gap-1">
-              <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
-                상태
-              </span>
-              <Select
-                value={draftFilters.status}
-                onChange={(v) =>
-                  setDraftFilters((d) => ({
-                    ...d,
-                    status: v as CardListFilters['status'],
-                  }))
-                }
-                options={[
-                  { value: 'all', label: '전체' },
-                  { value: '활성', label: '활성' },
-                  { value: '비활성', label: '비활성' },
-                ]}
-              />
-            </label>
+        <div className="flex flex-col" style={{ height: CONTENT_HEIGHT }}>
+          {tab === 'filter' ? (
+            <div className="flex flex-col gap-3">
+              <FilterField label="상태">
+                <Select
+                  value={draftFilters.status}
+                  fontSize={FONT_SIZE}
+                  onChange={(v) =>
+                    setDraftFilters((d) => ({
+                      ...d,
+                      status: v as CardListFilters['status'],
+                    }))
+                  }
+                  options={[
+                    { value: 'all', label: '전체' },
+                    ...CARD_STATUS_VALUES.map((value) => ({ value, label: value })),
+                  ]}
+                />
+              </FilterField>
 
-            <label className="flex flex-col gap-1">
-              <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
-                유형
-              </span>
-              <Select
-                value={draftFilters.type}
-                onChange={(v) => setDraftFilters((d) => ({ ...d, type: v }))}
-                options={[
-                  { value: 'all', label: '전체' },
-                  ...typeOptions.map((t) => ({ value: t, label: t })),
-                ]}
-              />
-            </label>
+              <FilterField label="유형">
+                <Select
+                  value={draftFilters.type}
+                  fontSize={FONT_SIZE}
+                  onChange={(v) => setDraftFilters((d) => ({ ...d, type: v }))}
+                  options={[
+                    { value: 'all', label: '전체' },
+                    ...typeOptions.map((t) => ({ value: t, label: t })),
+                  ]}
+                />
+              </FilterField>
 
-            <label className="flex flex-col gap-1">
-              <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
-                카드 사용자
-              </span>
-              <Select
-                value={draftFilters.assignment}
-                onChange={(v) =>
-                  setDraftFilters((d) => ({
-                    ...d,
-                    assignment: v as CardListFilters['assignment'],
-                  }))
-                }
-                options={[
-                  { value: 'all', label: '전체' },
-                  { value: 'assigned', label: '할당됨' },
-                  { value: 'unassigned', label: '미할당' },
-                ]}
-              />
-            </label>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            <p className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
-              표시할 컬럼을 선택하세요. 헤더를 끌어 다른 컬럼 위에 놓으면 순서가 바뀌고,
-              헤더를 클릭하면 정렬됩니다. 오른쪽 경계를 드래그하면 너비를 조절할 수
-              있습니다.
-            </p>
-            <ul
-              className="flex flex-col gap-1 max-h-[240px] overflow-y-auto app-scrollbar"
-              style={{ border: '0.5px solid var(--color-border)', borderRadius: 4 }}
-            >
-              {columnOptions.map((col) => (
-                <li
-                  key={col.key}
-                  className="flex items-center gap-2 px-2 py-1.5"
-                  style={{ borderBottom: '0.5px solid var(--color-border-subtle)' }}
-                >
-                  <Checkbox
-                    checked={col.visible}
-                    disabled={!col.hideable}
-                    onChange={(v) => onColumnVisibleChange(col.key, v)}
-                  />
-                  <span className="text-[12px]" style={{ color: 'var(--color-text)' }}>
-                    {col.header}
-                    {!col.hideable && (
-                      <span
-                        className="ml-1 text-[10px]"
-                        style={{ color: 'var(--color-text-muted)' }}
-                      >
-                        (필수)
-                      </span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+              <FilterField label="카드 사용자">
+                <Select
+                  value={draftFilters.assignment}
+                  fontSize={FONT_SIZE}
+                  onChange={(v) =>
+                    setDraftFilters((d) => ({
+                      ...d,
+                      assignment: v as CardListFilters['assignment'],
+                    }))
+                  }
+                  options={[
+                    { value: 'all', label: '전체' },
+                    { value: 'assigned', label: '할당됨' },
+                    { value: 'unassigned', label: '미할당' },
+                  ]}
+                />
+              </FilterField>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2 h-full min-h-0">
+              <p
+                className="leading-snug shrink-0"
+                style={{ color: 'var(--color-text-muted)', fontSize: FONT_SIZE }}
+              >
+                표시할 컬럼을 선택하세요. 헤더를 끌어 다른 컬럼 위에 놓으면 순서가 바뀌고,
+                헤더를 클릭하면 정렬됩니다. 오른쪽 경계를 드래그하면 너비를 조절할 수
+                있습니다.
+              </p>
+              <ul
+                className="flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto app-scrollbar"
+                style={{ border: '0.5px solid var(--color-border)', borderRadius: 4 }}
+              >
+                {columnOptions.map((col) => (
+                  <li
+                    key={col.key}
+                    className="flex items-center gap-2 px-2 py-1.5"
+                    style={{ borderBottom: '0.5px solid var(--color-border-subtle)' }}
+                  >
+                    <Checkbox
+                      checked={col.visible}
+                      disabled={!col.hideable}
+                      onChange={(v) => onColumnVisibleChange(col.key, v)}
+                    />
+                    <span style={{ color: 'var(--color-text)', fontSize: FONT_SIZE }}>
+                      {col.header}
+                      {!col.hideable && (
+                        <span
+                          className="ml-1"
+                          style={{ color: 'var(--color-text-muted)', fontSize: FONT_SIZE }}
+                        >
+                          (필수)
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
         <div className="flex justify-end gap-2 mt-5 flex-wrap">
           {tab === 'filter' ? (

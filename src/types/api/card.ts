@@ -15,6 +15,8 @@ export interface CardInfo {
   lastAccess?: string
   exemptApb?: boolean
   exemptPin?: boolean
+  /** PIN 변경 시에만 전송 */
+  pin?: string
 }
 
 export type CreateCardRequest = Omit<CardInfo, 'cid' | 'empName'>

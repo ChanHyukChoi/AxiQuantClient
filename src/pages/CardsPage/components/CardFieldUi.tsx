@@ -38,13 +38,20 @@ export const FRow = ({
   label,
   children,
   fontSize,
+  align = 'center',
 }: {
   icon: React.ReactNode
   label: string
   children: React.ReactNode
   fontSize?: number
+  align?: 'center' | 'top'
 }) => (
-  <div className="flex items-center py-1 gap-3 min-w-0">
+  <div
+    className={[
+      'flex py-1 gap-3 min-w-0',
+      align === 'top' ? 'items-start' : 'items-center',
+    ].join(' ')}
+  >
     <span
       className={[
         'flex items-center gap-1.5 flex-shrink-0',
@@ -60,8 +67,13 @@ export const FRow = ({
       {icon}
       {label}
     </span>
-    <div className="flex flex-1 justify-end items-center min-w-0">
-      <div className="min-w-0" style={fieldControlStyle}>
+    <div
+      className={[
+        'flex flex-1 justify-end min-w-0',
+        align === 'top' ? 'items-start' : 'items-center',
+      ].join(' ')}
+    >
+      <div className="min-w-0 text-left" style={fieldControlStyle}>
         {children}
       </div>
     </div>

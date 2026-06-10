@@ -37,8 +37,11 @@
   background: transparent;
 }
 
-/* Input / Select / Picker 공통 트리거 */
+/* Input / Select / Picker 공통 트리거 — 라벨 15px 기준 컴팩트 높이 */
 .app-field-control {
+  height: 26px;
+  min-height: 26px;
+  box-sizing: border-box;
   padding: 0 8px;
   border-radius: 4px;
   border: 1px solid var(--color-input-border);
@@ -46,11 +49,23 @@
   background: var(--color-input-bg);
   color: var(--color-text);
   text-align: left;
-  cursor: pointer;
-  line-height: 1.25;
+  line-height: 1.2;
+  font-size: 15px;
   transition:
     border-color 0.15s ease,
     background 0.15s ease;
+}
+
+input.app-field-control {
+  cursor: text;
+  display: block;
+  width: 100%;
+}
+
+button.app-field-control {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .app-field-control:hover:not(:disabled):not(.app-field-control--disabled) {
@@ -72,6 +87,15 @@
 
 .app-field-control-chevron--open {
   transform: rotate(180deg);
+}
+
+/* 폼 필드 Zod/검증 에러 — 입력 아래 좌측 정렬 */
+.app-field-error {
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 1.375;
+  text-align: left;
+  color: var(--color-btn-danger-text);
 }
 
 /* 커스텀 Select 드롭다운 패널 */
@@ -121,9 +145,13 @@
 
 /* 모달 선택 트리거 — Select와 동일 톤 */
 .app-picker-field {
+  height: 26px;
+  min-height: 26px;
+  box-sizing: border-box;
   width: 100%;
   padding: 0 8px;
-  line-height: 1.25;
+  line-height: 1.2;
+  font-size: 15px;
   border-radius: 4px;
   border: 1px solid var(--color-input-border);
   outline: none;
@@ -185,15 +213,104 @@
   border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-input-border));
 }
 
-/* 다중 선택 칩 미리보기 — 고정 높이, 초과 시 스크롤 */
+/* 다중 선택 칩 미리보기 — 1행 1개(100% 너비), 2행 높이 초과 시 스크롤 */
 .app-selected-chips {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 4px;
   width: 100%;
-  max-height: 72px;
+  max-height: 56px;
   overflow-y: auto;
+}
+
+.app-selected-chips > * {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* 선택 모달 — 컬럼 헤더·데이터 행 그리드 */
+.app-select-modal-emp-grid {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 96px) 60px 40px 40px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 14px;
+}
+
+.app-select-modal-acclv-grid {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr) 52px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 14px;
+}
+
+.app-select-modal-col-header {
+  font-weight: 500;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-select-modal-col-header--center {
+  text-align: center;
+}
+
+.app-select-modal-cell {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  color: var(--color-text);
+}
+
+.app-select-modal-cell--muted {
+  color: var(--color-text-muted);
+}
+
+.app-select-modal-cell--mono {
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.app-select-modal-cell--center {
+  display: flex;
+  justify-content: center;
+}
+
+.app-select-modal-header-row {
+  flex-shrink: 0;
+  border-bottom: 0.5px solid var(--color-border);
+  background: var(--color-sidebar);
+}
+
+/* 카드 PIN 입력 — 필드 내부 우측 n/4 (1행 높이 유지) */
+.app-pin-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.app-pin-input-wrap .app-field-control {
+  padding-right: 36px;
+  letter-spacing: 0.15em;
+}
+
+.app-pin-input-wrap__counter {
+  position: absolute;
+  right: 8px;
+  top: 0;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  font-size: 11px;
+  color: var(--color-text-subtle);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: normal;
 }
 
 /* 다중 선택 모달 — 전체 선택/해제 토글 */

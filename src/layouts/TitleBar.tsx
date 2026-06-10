@@ -1,15 +1,11 @@
 import { WindowRestoreIcon } from '@/components/primitive/icons/WindowRestoreIcon'
-import { Minus, PanelLeft, Square, X } from 'lucide-react'
+import { Minus, Square, X } from 'lucide-react'
 import { useThemeStore } from '../stores/themeStore'
 import { useState, useEffect } from 'react'
 
 const isElectron = navigator.userAgent.includes('Electron')
 
-interface TitleBarProps {
-  onMenuClick?: () => void
-}
-
-export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
+export const TitleBar = () => {
   const { theme } = useThemeStore()
   const [isMaximized, setIsMaximized] = useState(false)
 
@@ -65,64 +61,37 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
         } as React.CSSProperties
       }
     >
-      {/* ???: ?????? ????? ????? */}
-      <div
-        className="flex items-center h-full"
-        style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+      <span
+        className="text-sm font-bold pl-3"
+        style={{ color: 'var(--color-accent)' }}
       >
-        {onMenuClick && (
-          <button
-            onClick={onMenuClick}
-            title="????????? ?????"
-            className="flex items-center justify-center h-full transition-colors duration-100"
-            style={{
-              background: 'transparent',
-              color: 'var(--color-text)',
-              width: '40px',
-            }}
-            onMouseEnter={hoverIn}
-            onMouseLeave={hoverOut}
-          >
-            <PanelLeft size={12} />
-          </button>
-        )}
-      </div>
+        AxiQuant
+      </span>
 
-      {/* ?????: ??????????? */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col">
-        <span className="text-sm font-bold" style={{ color: 'var(--color-accent)' }}>
-          AxiQuant
-        </span>
-      </div>
-
-      {/* ????: ????? ?????? */}
       <div
         className="flex h-full"
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
       >
-        {/* ???????? ?????: Electron ????? */}
         {isElectron && (
           <>
-            {/* ???????? */}
             <button
               onClick={handleMinimize}
               className="flex items-center justify-center w-12 h-full transition-colors duration-100"
               style={{ background: 'transparent', color: 'var(--color-icon)' }}
               onMouseEnter={hoverIn}
               onMouseLeave={hoverOut}
-              title="????????"
+              title="최소화"
             >
               <Minus size={12} strokeWidth={1.5} />
             </button>
 
-            {/* ???????? / ??? ???? ???? */}
             <button
               onClick={handleMaximize}
               className="flex items-center justify-center w-12 h-full transition-colors duration-100"
               style={{ background: 'transparent', color: 'var(--color-icon)' }}
               onMouseEnter={hoverIn}
               onMouseLeave={hoverOut}
-              title={isMaximized ? '??? ???? ????' : '????????'}
+              title={isMaximized ? '이전 크기로' : '최대화'}
             >
               {isMaximized ? (
                 <WindowRestoreIcon size={12} />
@@ -131,14 +100,13 @@ export const TitleBar = ({ onMenuClick }: TitleBarProps = {}) => {
               )}
             </button>
 
-            {/* ???? */}
             <button
               onClick={handleClose}
               className="flex items-center justify-center w-12 h-full transition-colors duration-100"
               style={{ background: 'transparent', color: 'var(--color-icon)' }}
               onMouseEnter={closeHoverIn}
               onMouseLeave={closeHoverOut}
-              title="????"
+              title="닫기"
             >
               <X size={12} strokeWidth={1.5} />
             </button>

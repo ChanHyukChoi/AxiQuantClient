@@ -1,6 +1,7 @@
 import { CreditCard, Plus } from 'lucide-react'
 import { Badge } from '@/components/primitive/Badge'
 import { typeBadgeVariant } from '@/pages/CardsPage/components/CardFieldUi'
+import { cardStatusBadgeVariant } from '@/pages/CardsPage/utils/cardPageHelpers'
 
 /** 추가·수정·조회 모드 공통 — Badge 행 포함 고정 높이 */
 export const CARD_SUMMARY_HEIGHT = 108
@@ -107,7 +108,7 @@ export const CardSummaryHeader = ({
           style={{ minHeight: 24 }}
         >
           <Badge variant={typeBadgeVariant(type)}>{type}</Badge>
-          <Badge variant={status === '활성' ? 'on' : 'off'}>{status}</Badge>
+          <Badge variant={cardStatusBadgeVariant(status)}>{status}</Badge>
         </div>
       </div>
     </div>
