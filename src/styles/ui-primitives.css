@@ -381,3 +381,82 @@ button.app-field-control {
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* SearchField — theme.css --color-search-* */
+.app-search-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: var(--color-search-bg);
+  border: 0.5px solid var(--color-search-border);
+}
+
+.app-search-field input {
+  background: transparent;
+  color: var(--color-text);
+  font-size: 15px;
+  line-height: 1.2;
+  outline: none;
+  min-width: 0;
+  flex: 1;
+  border: none;
+  padding: 0;
+}
+
+.app-search-field input::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.app-search-field svg {
+  flex-shrink: 0;
+  color: var(--color-search-icon);
+}
+
+/* 툴바 등 — Input·Select와 동일 26px */
+.app-search-field--compact {
+  height: 26px;
+  min-height: 26px;
+  padding: 0 8px;
+}
+
+.app-search-field--compact input {
+  font-size: 15px;
+}
+
+.app-search-field--compact svg {
+  width: 14px;
+  height: 14px;
+}
+
+select.app-field-control {
+  cursor: pointer;
+  appearance: none;
+  padding-right: 24px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+    linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 12px) calc(50% - 2px),
+    calc(100% - 8px) calc(50% - 2px);
+  background-size:
+    4px 4px,
+    4px 4px;
+  background-repeat: no-repeat;
+}
+
+input[type='date'].app-field-control {
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+input[type='date'].app-field-control--date-toolbar {
+  width: auto;
+  min-width: 0;
+  max-width: 118px;
+  padding: 0 6px;
+  font-size: var(--font-size-md);
+}

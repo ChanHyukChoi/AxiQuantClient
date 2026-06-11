@@ -1,11 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
-import { Activity } from 'lucide-react'
-import { PageHeader } from '@/layouts/PageHeader'
 import { EventDetailPanel } from '@/pages/EventMonitorPage/EventDetailPanel'
 import { EventGrid } from '@/pages/EventMonitorPage/EventGrid'
-import { MonitorToolbar, type MonitorMode } from '@/pages/EventMonitorPage/MonitorToolbar'
+import { HistoryToolbarB } from '@/pages/EventMonitorPage/components/HistoryToolbarB'
 import { useHistoryEvents } from '@/pages/EventMonitorPage/hooks/useHistoryEvents'
-import { useLiveEvents } from '@/pages/EventMonitorPage/hooks/useLiveEvents'
 import {
   formatDateInput,
   parseDateInput,
@@ -23,8 +20,7 @@ import type { AccessLogParams, AlarmLogParams, EventRecord } from '@/types/api/e
 
 const PAGE_SIZE = 50
 
-export const EventMonitorPage = () => {
-  const [mode, setMode] = useState<MonitorMode>('live')
+export const HistoryTabB = () => {
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [page, setPage] = useState(1)
@@ -32,8 +28,6 @@ export const EventMonitorPage = () => {
   const [dateFrom, setDateFrom] = useState(formatDateInput(new Date()))
   const [dateTo, setDateTo] = useState(formatDateInput(new Date()))
   const [ackedOverrides, setAckedOverrides] = useState<Record<number, boolean>>({})
-
-  const live = useLiveEvents()
 
   const historyRange = useMemo(() => {
     if (datePreset !== 'custom') return presetRange(datePreset)
@@ -61,7 +55,7 @@ export const EventMonitorPage = () => {
     accessParams,
     alarmParams,
     searchQuery: '',
-    enabled: mode === 'history',
+    enabled: true,
   })
 
   const applyAckOverrides = useCallback(
@@ -70,30 +64,19 @@ export const EventMonitorPage = () => {
     [ackedOverrides],
   )
 
-  const liveFiltered = useMemo(
-    () => applyAckOverrides(filterByType(live.events, typeFilter)),
-    [live.events, typeFilter, applyAckOverrides],
-  )
-
-  const historyFiltered = useMemo(
+  const displayEvents = useMemo(
     () => applyAckOverrides(filterByType(history.events, typeFilter)),
     [history.events, typeFilter, applyAckOverrides],
   )
-
-  const displayEvents = mode === 'live' ? liveFiltered : historyFiltered
 
   const selectedEvent = useMemo(
     () => displayEvents.find((e) => e.id === selectedId) ?? null,
     [displayEvents, selectedId],
   )
 
-  const handleAck = useCallback(
-    (id: number) => {
-      setAckedOverrides((prev) => ({ ...prev, [id]: true }))
-      if (mode === 'live') live.ack(id)
-    },
-    [mode, live],
-  )
+  const handleAck = useCallback((id: number) => {
+    setAckedOverrides((prev) => ({ ...prev, [id]: true }))
+  }, [])
 
   const handleExport = useCallback(() => {
     exportEventsCsv(displayEvents)
@@ -103,42 +86,26 @@ export const EventMonitorPage = () => {
     window.print()
   }, [])
 
-  const handleModeChange = (next: MonitorMode) => {
-    setMode(next)
-    setSelectedId(null)
+  const handleDatePresetChange = useCallback((p: DatePreset) => {
+    setDatePreset(p)
     setPage(1)
-  }
-
-  const handleSearch = useCallback(() => {
-    if (mode === 'history') void history.refetch()
-  }, [mode, history])
+    setSelectedId(null)
+  }, [])
 
   return (
-    <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader
-        title="이벤트 모니터"
-        icon={<Activity size={15} />}
-        variantPaths={{ a: '/monitor', b: '/monitor-b' }}
-      />
-
-      <MonitorToolbar
-        mode={mode}
-        onModeChange={handleModeChange}
+    <div className="flex flex-col flex-1 overflow-hidden min-h-0">
+      <HistoryToolbarB
         typeFilter={typeFilter}
         onTypeFilterChange={setTypeFilter}
-        paused={live.paused}
-        onTogglePause={() => live.setPaused((p) => !p)}
-        onClear={live.clear}
-        isConnected={live.isConnected}
         datePreset={datePreset}
-        onDatePresetChange={setDatePreset}
+        onDatePresetChange={handleDatePresetChange}
         dateFrom={dateFrom}
         dateTo={dateTo}
         onDateFromChange={setDateFrom}
         onDateToChange={setDateTo}
         onExport={handleExport}
         onPrint={handlePrint}
-        onSearch={handleSearch}
+        onSearch={() => void history.refetch()}
       />
 
       <div className="flex flex-1 overflow-hidden">
@@ -146,12 +113,12 @@ export const EventMonitorPage = () => {
           events={displayEvents}
           selectedId={selectedId}
           onSelect={(row) => setSelectedId(row.id)}
-          loading={mode === 'history' && history.isLoading}
-          error={mode === 'history' && history.isError}
-          mode={mode}
+          loading={history.isLoading}
+          error={history.isError}
+          mode="history"
           page={page}
           pageSize={PAGE_SIZE}
-          total={mode === 'history' ? history.total : displayEvents.length}
+          total={history.total}
           onPageChange={setPage}
         />
         <EventDetailPanel event={selectedEvent} onAck={handleAck} />

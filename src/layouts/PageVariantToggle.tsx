@@ -29,7 +29,7 @@ export const PageVariantToggle = ({ paths }: PageVariantToggleProps) => {
       <button
         type="button"
         title="레이아웃 A"
-        onClick={() => navigate({ to: paths.a })}
+        onClick={() => navigate({ href: paths.a })}
         className="px-2.5 py-1 app-text-sm font-medium transition-colors"
         style={segmentStyle(!isB)}
       >
@@ -38,7 +38,7 @@ export const PageVariantToggle = ({ paths }: PageVariantToggleProps) => {
       <button
         type="button"
         title="레이아웃 B"
-        onClick={() => navigate({ to: paths.b })}
+        onClick={() => navigate({ href: paths.b })}
         className="px-2.5 py-1 app-text-sm font-medium transition-colors"
         style={{
           ...segmentStyle(isB),

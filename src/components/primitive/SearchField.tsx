@@ -4,32 +4,30 @@ interface SearchFieldProps {
   placeholder?: string
   value?: string
   onChange: (value: string) => void
+  className?: string
+  /** Input·Select(app-field-control)와 동일 26px — 툴바 정렬용 */
+  compact?: boolean
 }
 
-export const SearchField = ({ placeholder = '검색...', value, onChange }: SearchFieldProps) => (
+export const SearchField = ({
+  placeholder = '검색...',
+  value,
+  onChange,
+  className = '',
+  compact = false,
+}: SearchFieldProps) => (
   <div
-    className="w-full min-w-0"
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      gap: 6,
-      padding: '4px 8px',
-      borderRadius: 4,
-      background: 'var(--color-search-bg)',
-      border: '0.5px solid var(--color-search-border)',
-    }}
+    className={[
+      'app-search-field',
+      compact ? 'app-search-field--compact' : '',
+      className,
+    ]
+      .filter(Boolean)
+      .join(' ')}
   >
-    <Search aria-hidden size={15} color="var(--color-search-icon)" />
+    <Search aria-hidden size={compact ? 14 : 15} />
     <input
       type="text"
-      style={{
-        background: 'transparent',
-        color: 'var(--color-text)',
-        fontSize: 15,
-        outline: 'none',
-        minWidth: 0,
-        flex: 1,
-      }}
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}

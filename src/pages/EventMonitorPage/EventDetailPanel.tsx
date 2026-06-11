@@ -1,4 +1,5 @@
 import { Button } from '@/components/primitive/Button'
+import { EVENT_MONITOR_FONT_SIZE } from '@/pages/EventMonitorPage/eventMonitorUi'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
 interface EventDetailPanelProps {
@@ -8,10 +9,10 @@ interface EventDetailPanelProps {
 
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <div className="flex flex-col gap-0.5 py-1.5">
-    <span className="text-[12px]" style={{ color: 'var(--color-text-dim)' }}>
+    <span className="app-text-sm" style={{ color: 'var(--color-text-dim)' }}>
       {label}
     </span>
-    <span className="text-[14px] break-words" style={{ color: 'var(--color-text)' }}>
+    <span className="app-text-md break-words" style={{ color: 'var(--color-text)' }}>
       {value || '—'}
     </span>
   </div>
@@ -28,7 +29,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
           background: 'var(--color-sidebar)',
         }}
       >
-        <p className="text-[14px] text-center" style={{ color: 'var(--color-text-dim)' }}>
+        <p className="app-text-md text-center" style={{ color: 'var(--color-text-dim)' }}>
           이벤트를 선택하세요
         </p>
       </aside>
@@ -47,16 +48,10 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
       }}
     >
       <div className="px-3 pt-3 pb-2 flex-shrink-0">
-        <p
-          className="text-[15px] font-medium mb-0.5"
-          style={{ color: 'var(--color-text)' }}
-        >
+        <p className="app-text-md font-medium mb-0.5" style={{ color: 'var(--color-text)' }}>
           {event.event}
         </p>
-        <p
-          className="text-[13px] font-mono"
-          style={{ color: 'var(--color-text-subtle)' }}
-        >
+        <p className="app-text-md font-mono" style={{ color: 'var(--color-text-subtle)' }}>
           {event.ts}
         </p>
       </div>
@@ -77,7 +72,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
         >
           {event.acked ? (
             <div
-              className="text-center text-[14px] font-medium py-2 rounded"
+              className="text-center app-text-md font-medium py-2 rounded"
               style={{ background: '#0d2b1a', color: '#4caf7d' }}
             >
               확인 완료
@@ -86,6 +81,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
             <Button
               variant="danger"
               className="w-full"
+              fontSize={EVENT_MONITOR_FONT_SIZE}
               onClick={() => onAck(event.id)}
               style={{ background: '#2b1616', color: '#e06060', borderColor: '#3a2020' }}
             >

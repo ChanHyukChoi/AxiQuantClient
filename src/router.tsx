@@ -24,6 +24,7 @@ import { AreaPageB } from '@/pages/AreaPageB'
 import { CardFmtPage } from '@/pages/CardFmtPage'
 import { CardFmtPageB } from '@/pages/CardFmtPageB'
 import { EventMonitorPage } from '@/pages/EventMonitorPage'
+import { EventMonitorPageB } from '@/pages/EventMonitorPageB'
 import { UsersPage } from '@/pages/UsersPage'
 import { UsersPageB } from '@/pages/UsersPageB'
 import { AuditLogPage } from '@/pages/AuditLogPage'
@@ -31,6 +32,8 @@ import { AlarmSettingsPage } from '@/pages/AlarmSettingsPage'
 import { AlarmSettingsPageB } from '@/pages/AlarmSettingsPageB'
 import { TimezoneHolidayPage } from '@/pages/TimezoneHolidayPage'
 import { TimezoneHolidayPageB } from '@/pages/TimezoneHolidayPageB'
+import { LinkagePage } from '@/pages/LinkagePage'
+import { LinkagePageB } from '@/pages/LinkagePageB'
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -158,6 +161,12 @@ const cardfmtBRoute = createRoute({
   component: CardFmtPageB,
 })
 
+const monitorBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/monitor-b',
+  component: EventMonitorPageB,
+})
+
 const monitorRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/monitor',
@@ -206,6 +215,18 @@ const timezoneHolidayBRoute = createRoute({
   component: TimezoneHolidayPageB,
 })
 
+const linkageRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/linkage',
+  component: LinkagePage,
+})
+
+const linkageBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/linkage-b',
+  component: LinkagePageB,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
@@ -226,6 +247,7 @@ const routeTree = rootRoute.addChildren([
     areaBRoute,
     cardfmtRoute,
     cardfmtBRoute,
+    monitorBRoute,
     monitorRoute,
     usersRoute,
     usersBRoute,
@@ -234,6 +256,8 @@ const routeTree = rootRoute.addChildren([
     alarmSettingsBRoute,
     timezoneHolidayRoute,
     timezoneHolidayBRoute,
+    linkageRoute,
+    linkageBRoute,
   ]),
 ])
 

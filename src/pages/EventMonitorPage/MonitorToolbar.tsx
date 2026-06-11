@@ -1,12 +1,20 @@
-import { Activity, Pause, Play, Trash2 } from 'lucide-react'
+import { Pause, Play, Trash2 } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
-import { ExportButton, PrintButton } from '@/components/page-actions'
-import { Input } from '@/components/primitive/Input'
-import type { ScpInfo } from '@/types/api'
+import { ExportButton, PrintButton, SearchButton } from '@/components/page-actions'
+import { MonitorDateRange } from '@/pages/EventMonitorPage/components/MonitorDateRange'
+import { EventFilterButton } from '@/pages/EventMonitorPage/components/EventFilterButton'
+import { MonitorTypePills } from '@/pages/EventMonitorPage/components/MonitorTypePills'
+import {
+  toolbarActionRowClass,
+  toolbarDateRowClass,
+  toolbarFilterRowClass,
+  toolbarShellStyle,
+} from '@/pages/EventMonitorPage/components/toolbarStyles'
 import type { DatePreset } from '@/pages/EventMonitorPage/utils/dateRange'
+import type { TypeFilter } from '@/pages/EventMonitorPage/utils/eventFilters'
 
 export type MonitorMode = 'live' | 'history'
-export type TypeFilter = 'all' | 'access' | 'alarm'
+export type { TypeFilter } from '@/pages/EventMonitorPage/utils/eventFilters'
 
 interface MonitorToolbarProps {
   mode: MonitorMode
@@ -17,11 +25,6 @@ interface MonitorToolbarProps {
   onTogglePause: () => void
   onClear: () => void
   isConnected: boolean
-  searchQuery: string
-  onSearchChange: (q: string) => void
-  scpId: number | ''
-  onScpChange: (id: number | '') => void
-  scps: ScpInfo[]
   datePreset: DatePreset
   onDatePresetChange: (p: DatePreset) => void
   dateFrom: string
@@ -30,6 +33,7 @@ interface MonitorToolbarProps {
   onDateToChange: (v: string) => void
   onExport: () => void
   onPrint: () => void
+  onSearch: () => void
 }
 
 const modeBtnStyle = (active: boolean): React.CSSProperties => ({
@@ -38,35 +42,6 @@ const modeBtnStyle = (active: boolean): React.CSSProperties => ({
   borderColor: active
     ? 'var(--color-btn-accent-border)'
     : 'var(--color-btn-default-border)',
-})
-
-const pillStyle = (active: boolean, variant: TypeFilter): React.CSSProperties => {
-  if (!active) {
-    return {
-      background: 'transparent',
-      color: 'var(--color-text-muted)',
-      border: '0.5px solid var(--color-btn-default-border)',
-    }
-  }
-  if (variant === 'access')
-    return { background: '#0d2b1a', color: '#4caf7d', border: '0.5px solid #1a3d28' }
-  if (variant === 'alarm')
-    return { background: '#2b1616', color: '#e06060', border: '0.5px solid #3a2020' }
-  return {
-    background: 'var(--color-btn-accent-bg)',
-    color: 'var(--color-accent)',
-    border: '0.5px solid var(--color-btn-accent-border)',
-  }
-}
-
-const presetBtnStyle = (active: boolean): React.CSSProperties => ({
-  background: active ? 'var(--color-btn-hover)' : 'transparent',
-  color: active ? 'var(--color-text)' : 'var(--color-text-muted)',
-  border: '0.5px solid var(--color-btn-default-border)',
-  fontSize: 13,
-  padding: '3px 8px',
-  borderRadius: 4,
-  cursor: 'pointer',
 })
 
 export const MonitorToolbar = ({
@@ -78,11 +53,6 @@ export const MonitorToolbar = ({
   onTogglePause,
   onClear,
   isConnected,
-  searchQuery,
-  onSearchChange,
-  scpId,
-  onScpChange,
-  scps,
   datePreset,
   onDatePresetChange,
   dateFrom,
@@ -91,29 +61,14 @@ export const MonitorToolbar = ({
   onDateToChange,
   onExport,
   onPrint,
+  onSearch,
 }: MonitorToolbarProps) => {
   const receiving = mode === 'live' && isConnected && !paused
 
   return (
-    <div
-      className="flex flex-col flex-shrink-0"
-      style={{
-        background: 'var(--color-sidebar)',
-        borderBottom: '0.5px solid var(--color-border)',
-      }}
-    >
-      <div className="flex items-center gap-3 px-3" style={{ height: 42, minHeight: 42 }}>
-        <div className="flex items-center gap-1.5 flex-shrink-0">
-          <Activity style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span
-            className="text-[15px] font-medium"
-            style={{ color: 'var(--color-text)' }}
-          >
-            이벤트 모니터
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1">
+    <div className="flex flex-col flex-shrink-0" style={toolbarShellStyle}>
+      <div className={toolbarActionRowClass}>
+        <div className="flex items-center gap-1 shrink-0">
           <Button
             size="sm"
             style={modeBtnStyle(mode === 'live')}
@@ -132,7 +87,7 @@ export const MonitorToolbar = ({
 
         {mode === 'live' && (
           <div
-            className="flex items-center gap-1.5 text-[13px]"
+            className="flex items-center gap-1.5 app-text-md shrink-0"
             style={{ color: 'var(--color-text-muted)' }}
           >
             <span
@@ -148,7 +103,7 @@ export const MonitorToolbar = ({
           </div>
         )}
 
-        <div className="flex items-center gap-1 ml-auto">
+        <div className="flex items-center gap-1 ml-auto shrink-0">
           {mode === 'live' ? (
             <>
               <Button
@@ -175,104 +130,27 @@ export const MonitorToolbar = ({
         </div>
       </div>
 
-      <div
-        className="flex items-center gap-2 px-3 flex-wrap"
-        style={{ minHeight: 38, paddingBottom: 8, paddingTop: 4 }}
-      >
-        {(['all', 'access', 'alarm'] as const).map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => onTypeFilterChange(f)}
-            className="text-[13px] font-medium px-2.5 py-1 rounded-full"
-            style={pillStyle(typeFilter === f, f)}
-          >
-            {f === 'all' ? '전체' : f === 'access' ? '출입' : '경보'}
-          </button>
-        ))}
+      <div className={toolbarFilterRowClass}>
+        <MonitorTypePills typeFilter={typeFilter} onTypeFilterChange={onTypeFilterChange} />
 
-        {mode === 'history' && (
-          <>
-            {(
-              [
-                ['today', '오늘'],
-                ['7d', '최근 7일'],
-                ['30d', '최근 30일'],
-                ['180d', '최근 180일'],
-              ] as const
-            ).map(([p, label]) => (
-              <button
-                key={p}
-                type="button"
-                style={presetBtnStyle(datePreset === p)}
-                onClick={() => onDatePresetChange(p)}
-              >
-                {label}
-              </button>
-            ))}
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => {
-                onDatePresetChange('custom')
-                onDateFromChange(e.target.value)
-              }}
-              className="text-[13px] px-1.5 py-1 rounded"
-              style={{
-                background: 'var(--color-btn-hover)',
-                border: '0.5px solid var(--color-btn-default-border)',
-                color: 'var(--color-text)',
-              }}
-            />
-            <span className="text-[13px]" style={{ color: 'var(--color-text-dim)' }}>
-              ~
-            </span>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => {
-                onDatePresetChange('custom')
-                onDateToChange(e.target.value)
-              }}
-              className="text-[13px] px-1.5 py-1 rounded"
-              style={{
-                background: 'var(--color-btn-hover)',
-                border: '0.5px solid var(--color-btn-default-border)',
-                color: 'var(--color-text)',
-              }}
-            />
-          </>
-        )}
-
-        <div className="flex items-center gap-2 ml-auto flex-wrap">
-          <Input
-            placeholder="이벤트, 카드번호, 장치 검색"
-            value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="max-w-[220px] text-[14px]"
-          />
-          <select
-            value={scpId === '' ? '' : String(scpId)}
-            onChange={(e) => {
-              const v = e.target.value
-              onScpChange(v === '' ? '' : Number(v))
-            }}
-            className="text-[14px] px-2 py-1.5 rounded min-w-[120px]"
-            style={{
-              background: 'var(--color-btn-hover)',
-              border: '0.5px solid var(--color-btn-default-border)',
-              color: 'var(--color-text)',
-            }}
-          >
-            <option value="">제어기 전체</option>
-            {scps.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
+        <div className="ml-auto shrink-0">
+          <EventFilterButton scope={mode} />
         </div>
       </div>
+
+      {mode === 'history' && (
+        <div className={toolbarDateRowClass}>
+          <MonitorDateRange
+            datePreset={datePreset}
+            onDatePresetChange={onDatePresetChange}
+            dateFrom={dateFrom}
+            dateTo={dateTo}
+            onDateFromChange={onDateFromChange}
+            onDateToChange={onDateToChange}
+            trailing={<SearchButton size="sm" onClick={onSearch} />}
+          />
+        </div>
+      )}
 
       <style>{`@keyframes evt-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }`}</style>
     </div>
