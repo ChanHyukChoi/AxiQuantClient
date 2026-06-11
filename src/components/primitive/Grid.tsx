@@ -557,7 +557,7 @@ export const Grid = <T extends { id: number }>({
                 value={String(pagination.pageSize)}
                 onChange={(v) => pagination.onPageSizeChange(Number(v))}
                 options={pageSizeSelectOptions}
-                fontSize={13}
+                fontSize={14}
                 menuPlacement="top"
               />
             </div>
@@ -568,7 +568,7 @@ export const Grid = <T extends { id: number }>({
               onClick={() => pagination.onPageChange(pagination.page - 1)}
               leftIcon={<ChevronLeft size={14} />}
             />
-            <span style={{ fontSize: 13, color: 'var(--color-text-dim)' }}>
+            <span style={{ fontSize: 14, color: 'var(--color-text-dim)' }}>
               {pagination.page} / {totalPages}
             </span>
             <Button

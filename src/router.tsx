@@ -11,15 +11,26 @@ import { EmpsPage } from '@/pages/EmpsPage'
 import { CardsPage } from '@/pages/CardsPage'
 import { AccessPage } from '@/pages/AccessPage'
 import { AccessPageB } from '@/pages/AccessPageB'
-import { DevicesPage } from '@/pages/DeviceControlPage'
+import { ControllersPage } from '@/pages/ControllersPage'
+import { ControllersPageB } from '@/pages/ControllersPageB'
+import { InputsPage } from '@/pages/InputsPage'
+import { InputsPageB } from '@/pages/InputsPageB'
+import { OutputsPage } from '@/pages/OutputsPage'
+import { OutputsPageB } from '@/pages/OutputsPageB'
+import { ReadersPage } from '@/pages/ReadersPage'
+import { ReadersPageB } from '@/pages/ReadersPageB'
 import { AreaPage } from '@/pages/AreaPage'
 import { AreaPageB } from '@/pages/AreaPageB'
 import { CardFmtPage } from '@/pages/CardFmtPage'
 import { CardFmtPageB } from '@/pages/CardFmtPageB'
 import { EventMonitorPage } from '@/pages/EventMonitorPage'
 import { UsersPage } from '@/pages/UsersPage'
+import { UsersPageB } from '@/pages/UsersPageB'
 import { AuditLogPage } from '@/pages/AuditLogPage'
 import { AlarmSettingsPage } from '@/pages/AlarmSettingsPage'
+import { AlarmSettingsPageB } from '@/pages/AlarmSettingsPageB'
+import { TimezoneHolidayPage } from '@/pages/TimezoneHolidayPage'
+import { TimezoneHolidayPageB } from '@/pages/TimezoneHolidayPageB'
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -75,10 +86,52 @@ const accessBRoute = createRoute({
   component: AccessPageB,
 })
 
-const devicesRoute = createRoute({
+const controllersRoute = createRoute({
   getParentRoute: () => appRoute,
-  path: '/devices',
-  component: DevicesPage,
+  path: '/controllers',
+  component: ControllersPage,
+})
+
+const controllersBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/controllers-b',
+  component: ControllersPageB,
+})
+
+const readersRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/readers',
+  component: ReadersPage,
+})
+
+const readersBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/readers-b',
+  component: ReadersPageB,
+})
+
+const inputsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/inputs',
+  component: InputsPage,
+})
+
+const inputsBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/inputs-b',
+  component: InputsPageB,
+})
+
+const outputsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/outputs',
+  component: OutputsPage,
+})
+
+const outputsBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/outputs-b',
+  component: OutputsPageB,
 })
 
 const areaRoute = createRoute({
@@ -117,6 +170,12 @@ const usersRoute = createRoute({
   component: UsersPage,
 })
 
+const usersBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/users-b',
+  component: UsersPageB,
+})
+
 const auditRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/audit',
@@ -129,6 +188,24 @@ const alarmSettingsRoute = createRoute({
   component: AlarmSettingsPage,
 })
 
+const alarmSettingsBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/alarm-settings-b',
+  component: AlarmSettingsPageB,
+})
+
+const timezoneHolidayRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/timezone-holiday',
+  component: TimezoneHolidayPage,
+})
+
+const timezoneHolidayBRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/timezone-holiday-b',
+  component: TimezoneHolidayPageB,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
@@ -137,15 +214,26 @@ const routeTree = rootRoute.addChildren([
     cardsRoute,
     accessRoute,
     accessBRoute,
-    devicesRoute,
+    controllersRoute,
+    controllersBRoute,
+    readersRoute,
+    readersBRoute,
+    inputsRoute,
+    inputsBRoute,
+    outputsRoute,
+    outputsBRoute,
     areaRoute,
     areaBRoute,
     cardfmtRoute,
     cardfmtBRoute,
     monitorRoute,
     usersRoute,
+    usersBRoute,
     auditRoute,
     alarmSettingsRoute,
+    alarmSettingsBRoute,
+    timezoneHolidayRoute,
+    timezoneHolidayBRoute,
   ]),
 ])
 

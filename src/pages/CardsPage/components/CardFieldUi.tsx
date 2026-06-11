@@ -11,7 +11,7 @@ export const SectionTitle = ({
   <p
     className={[
       'font-medium tracking-wide pb-1.5 mb-2',
-      fontSize == null ? 'text-[12px]' : '',
+      fontSize == null ? 'app-text-sm' : '',
     ]
       .filter(Boolean)
       .join(' ')}
@@ -55,7 +55,7 @@ export const FRow = ({
     <span
       className={[
         'flex items-center gap-1.5 flex-shrink-0',
-        fontSize == null ? 'text-[12px]' : '',
+        fontSize == null ? 'app-text-sm' : '',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -95,7 +95,7 @@ export const FieldValue = ({
     className={[
       'text-right',
       mono ? 'font-mono' : '',
-      fontSize == null ? (small ? 'text-[12px]' : 'text-[13px]') : '',
+      fontSize == null ? (small ? 'text-[14px]' : 'text-[15px]') : '',
     ]
       .filter(Boolean)
       .join(' ')}

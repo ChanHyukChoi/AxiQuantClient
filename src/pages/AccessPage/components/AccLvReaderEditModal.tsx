@@ -248,7 +248,7 @@ export const AccLvReaderEditModal = ({
         >
           <p
             id="acclv-reader-edit-title"
-            className="text-[13px] font-medium"
+            className="text-[15px] font-medium"
             style={{ color: 'var(--color-text)' }}
           >
             리더 연결 변경
@@ -267,7 +267,7 @@ export const AccLvReaderEditModal = ({
         <div className="flex-1 min-h-0 overflow-y-auto app-scrollbar px-4 py-3">
           {drafts.length === 0 ? (
             <p
-              className="text-[12px] py-6 text-center"
+              className="text-[14px] py-6 text-center"
               style={{ color: 'var(--color-text-subtle)' }}
             >
               연결된 리더가 없습니다. 아래에서 행을 추가하세요.
@@ -326,7 +326,7 @@ export const AccLvReaderEditModal = ({
           </Button>
 
           {saveError ? (
-            <p className="text-[12px] mt-3" style={{ color: 'var(--color-danger)' }}>
+            <p className="text-[14px] mt-3" style={{ color: 'var(--color-danger)' }}>
               {saveError}
             </p>
           ) : null}

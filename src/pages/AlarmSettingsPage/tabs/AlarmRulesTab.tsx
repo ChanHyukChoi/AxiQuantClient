@@ -1,57 +1,32 @@
-import { useMemo, useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { AlarmRuleDrawer } from '@/pages/AlarmSettingsPage/components/AlarmRuleDrawer'
 import { AlarmRulesListPane } from '@/pages/AlarmSettingsPage/components/AlarmRulesListPane'
-import { useAlarms, useCreateAlarm } from '@/hooks/api/useAlarmSettings'
-import { useScps } from '@/hooks/api/useDeviceControl'
-import type { AlarmInfo } from '@/types/api'
+import { useAlarmRulesData } from '@/pages/AlarmSettingsPage/useAlarmRulesData'
+import { useAlarmRuleEditor } from '@/pages/AlarmSettingsPage/useAlarmRuleEditor'
+import type { AlarmRuleDisplay } from '@/pages/AlarmSettingsPage/alarmRuleTypes'
 
 export const AlarmRulesTab = () => {
-  const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const data = useAlarmRulesData()
 
-  const { data: alarmList, isLoading, isError } = useAlarms()
-  const { data: scps } = useScps()
-  const createMut = useCreateAlarm()
+  const editor = useAlarmRuleEditor({
+    rule: data.selectedRule,
+    useMock: data.useMock,
+    scpNameMap: data.scpNameMap,
+    patchMockRule: data.patchMockRule,
+    addMockRule: data.addMockRule,
+    removeMockRule: data.removeMockRule,
+    onDeleted: data.onRuleDeleted,
+  })
 
-  const scpNameMap = useMemo(() => {
-    const map: Record<number, string> = {}
-    ;(scps ?? []).forEach((s) => {
-      map[s.id] = s.name
-    })
-    return map
-  }, [scps])
-
-  const filtered = useMemo(() => {
-    const list = alarmList ?? []
-    if (!searchQuery.trim()) return list
-    const q = searchQuery.trim().toLowerCase()
-    return list.filter(
-      (a) =>
-        a.name.toLowerCase().includes(q) ||
-        a.deviceType.toLowerCase().includes(q),
-    )
-  }, [alarmList, searchQuery])
-
-  const selected = useMemo(
-    () => (alarmList ?? []).find((a) => a.id === selectedId) ?? null,
-    [alarmList, selectedId],
-  )
-
-  const handleAdd = async () => {
-    const ok = await createMut.mutateAsync({
-      name: '새 경보',
-      active: 1,
-      deviceId: 0,
-      deviceType: '',
-      eventCondition: '',
-    })
-    if (ok && alarmList) {
-      const newest = [...(alarmList ?? [])].sort((a, b) => b.id - a.id)[0]
-      if (newest) setSelectedId(newest.id)
-    }
-  }
+  const listAlarms = data.filteredRules.map((r) => ({
+    id: r.id,
+    name: r.name,
+    active: r.active,
+    deviceId: r.deviceId,
+    deviceType: r.deviceType,
+    eventCondition: r.eventCondition,
+  }))
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -63,27 +38,32 @@ export const AlarmRulesTab = () => {
           variant="accent"
           size="sm"
           leftIcon={<Plus size={12} />}
-          loading={createMut.isPending}
-          onClick={() => void handleAdd()}
+          loading={editor.isAdding}
+          onClick={() => void editor.handleAdd()}
         >
           추가
         </Button>
       </div>
       <div className="flex flex-1 overflow-hidden">
         <AlarmRulesListPane
-          alarms={filtered}
-          selectedId={selectedId}
-          searchQuery={searchQuery}
-          loading={isLoading}
-          error={isError || alarmList === null}
-          scpNameMap={scpNameMap}
-          onSearch={setSearchQuery}
-          onSelect={(a: AlarmInfo) => setSelectedId(a.id)}
+          alarms={listAlarms}
+          selectedId={data.selectedId}
+          searchQuery={data.searchQuery}
+          loading={data.isLoading}
+          error={data.isError}
+          scpNameMap={data.scpNameMap}
+          onSearch={data.setSearchQuery}
+          onSelect={(a) => {
+            const rule = data.filteredRules.find((r) => r.id === a.id)
+            if (rule) data.selectRule(rule as AlarmRuleDisplay)
+          }}
         />
         <AlarmRuleDrawer
-          alarm={selected}
-          scpNameMap={scpNameMap}
-          onDeleted={() => setSelectedId(null)}
+          rule={data.selectedRule}
+          useMock={data.useMock}
+          scps={data.scpList}
+          scpNameMap={data.scpNameMap}
+          editor={editor}
         />
       </div>
     </div>

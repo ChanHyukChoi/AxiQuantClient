@@ -11,6 +11,17 @@
 /* ─── 다크 (기본) ─────────────────────────────────────────────────────────── */
 
 :root {
+  /*
+   * Typography — 카드 페이지 기준(본문 15px)
+   * xs: 캡션·푸터  |  sm: 보조·라벨  |  md: 본문  |  lg: 소제목  |  xl: 페이지 타이틀
+   */
+  --font-size-xs: 13px;
+  --font-size-sm: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --line-height-ui: 1.45;
+
   /* Surface — VS Code editor / sidebar */
   --color-bg: #1e1e1e;
   --color-sidebar: #252526;
@@ -100,6 +111,13 @@
 /* ─── 라이트 ──────────────────────────────────────────────────────────────── */
 
 [data-theme='light'] {
+  --font-size-xs: 13px;
+  --font-size-sm: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 16px;
+  --font-size-xl: 18px;
+  --line-height-ui: 1.45;
+
   --color-bg: #ffffff;
   --color-sidebar: #f3f3f3;
 

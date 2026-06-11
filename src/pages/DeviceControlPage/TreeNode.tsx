@@ -76,7 +76,7 @@ export const TreeNode = ({
         )}
 
         <span
-          className="flex-1 text-[12px] truncate min-w-0"
+          className="flex-1 text-[14px] truncate min-w-0"
           style={{
             color: isSelected ? 'var(--color-text)' : 'var(--color-text-muted)',
             fontWeight: isGroup ? 500 : 400,

@@ -23,6 +23,8 @@ body,
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-ui);
   font-family:
     'Pretendard',
     -apple-system,
@@ -41,7 +43,7 @@ body {
   z-index: 9999;
   padding: 6px 12px;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: var(--font-size-md);
   font-weight: 600;
   pointer-events: none;
   background: var(--color-sidebar);

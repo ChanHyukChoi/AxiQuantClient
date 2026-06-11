@@ -369,7 +369,7 @@ export const DetailDrawer = ({
         >
           {selectedLabel}
         </span>
-        <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+        <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
           {parsed.kind === 'module'
             ? '진단 모니터'
             : parsed.kind === 'reader' && parsed.standalone
@@ -380,7 +380,7 @@ export const DetailDrawer = ({
         </span>
         {parsed.kind !== 'module' ? (
           <span
-            className="inline-flex items-center text-[11px] px-2 py-0.5 rounded-full font-mono w-fit"
+            className="inline-flex items-center text-[13px] px-2 py-0.5 rounded-full font-mono w-fit"
             style={{
               background: 'var(--color-btn-hover)',
               color: 'var(--color-text-subtle)',
@@ -400,7 +400,7 @@ export const DetailDrawer = ({
         <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
           {saveError ? (
             <p
-              className="text-[11px] leading-snug text-right"
+              className="text-[13px] leading-snug text-right"
               style={{ color: '#c75c5c' }}
             >
               {saveError}
@@ -453,7 +453,7 @@ export const DetailDrawer = ({
 
   const drawerChildren = !parsed ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         트리에서 장치를 선택하세요
       </span>
     </div>

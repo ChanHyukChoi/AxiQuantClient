@@ -2,7 +2,7 @@ import { Activity, FileCheck, HardDrive, Moon, Server, Shield, Sun, User } from 
 import { useStatusBar } from '@/hooks/ui/useStatusBar'
 import { useThemeStore } from '@/stores/themeStore'
 
-const STATUS_BAR_HEIGHT = 24
+const STATUS_BAR_HEIGHT = 28
 
 interface ConnectionBadgeProps {
   connected: boolean
@@ -14,7 +14,7 @@ const ConnectionBadge = ({ connected, label, icon }: ConnectionBadgeProps) => {
   const statusColor = connected ? 'var(--color-status-normal)' : 'var(--color-status-alarm)'
 
   return (
-    <span className="inline-flex items-center gap-1 shrink-0 text-[12px] leading-none">
+    <span className="inline-flex items-center gap-1 shrink-0 text-[14px] leading-none">
       <span style={{ color: statusColor }}>{icon}</span>
       <span style={{ color: 'var(--color-text-muted)' }}>{label}</span>
       <span
@@ -35,7 +35,7 @@ interface StatusItemProps {
 }
 
 const StatusItem = ({ icon, children, color = 'var(--color-text)' }: StatusItemProps) => (
-  <span className="inline-flex items-center gap-1.5 shrink-0 text-[12px] leading-none" style={{ color }}>
+  <span className="inline-flex items-center gap-1.5 shrink-0 text-[14px] leading-none" style={{ color }}>
     {icon}
     <span>{children}</span>
   </span>
@@ -87,16 +87,16 @@ export const StatusBar = () => {
 
       {license ? (
         <>
-          <span className="text-[12px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
             Key ID : {license.keyId}
           </span>
-          <span className="text-[12px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
             Max Reader : {license.maxReader}
           </span>
-          <span className="text-[12px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
             Max Client : {license.maxClient}
           </span>
-          <span className="text-[12px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
             Max Map : {license.maxMap}
           </span>
         </>

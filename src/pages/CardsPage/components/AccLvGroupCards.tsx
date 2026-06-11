@@ -77,7 +77,7 @@ export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) 
           </div>
           {item.description ? (
             <p
-              className="text-[11px] line-clamp-2 leading-snug"
+              className="text-[13px] line-clamp-2 leading-snug"
               style={{ color: 'var(--color-text-muted)' }}
               title={item.description}
             >
@@ -90,7 +90,7 @@ export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) 
             </Badge>
             {item.acttm ? (
               <span
-                className="text-[10px] truncate"
+                className="text-[12px] truncate"
                 style={{ color: 'var(--color-text-subtle)' }}
                 title={item.acttm}
               >

@@ -23,7 +23,7 @@ interface AreaInfoTabProps {
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
-    className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
+    className="text-[14px] font-medium tracking-wide pb-1.5 mb-2"
     style={{
       color: 'var(--color-text-subtle)',
       borderBottom: '0.5px solid var(--color-border)',
@@ -44,7 +44,7 @@ const FRow = ({
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
     <span
-      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      className="text-[14px] flex items-center gap-1.5 flex-shrink-0"
       style={{ color: 'var(--color-text-subtle)' }}
     >
       {icon}
@@ -73,7 +73,7 @@ export const AreaInfoTab = ({
         {editMode ? (
           <Input {...register('name')} style={{ width: 148 }} />
         ) : (
-          <span className="text-[13px] text-right" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[15px] text-right" style={{ color: 'var(--color-text)' }}>
             {area.name || '—'}
           </span>
         )}
@@ -93,7 +93,7 @@ export const AreaInfoTab = ({
                   className="accent-[var(--color-accent)]"
                 />
                 <span
-                  className="text-[12px]"
+                  className="text-[14px]"
                   style={{ color: 'var(--color-text-muted)' }}
                 >
                   활성
@@ -117,7 +117,7 @@ export const AreaInfoTab = ({
           />
         ) : (
           <span
-            className="text-[13px] font-mono text-right"
+            className="text-[15px] font-mono text-right"
             style={{ color: 'var(--color-text)' }}
           >
             {area.occmax}
@@ -142,7 +142,7 @@ export const AreaInfoTab = ({
             )}
           />
         ) : (
-          <span className="text-[13px] text-right" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[15px] text-right" style={{ color: 'var(--color-text)' }}>
             {area.multiocc !== 0 ? '허용' : '비허용'}
           </span>
         )}
@@ -161,7 +161,7 @@ export const AreaInfoTab = ({
         <div className="flex items-end justify-between gap-2 mb-2">
           <div>
             <p
-              className="text-[11px] mb-0.5"
+              className="text-[13px] mb-0.5"
               style={{ color: 'var(--color-text-subtle)' }}
             >
               현재 점유
@@ -174,10 +174,10 @@ export const AreaInfoTab = ({
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[11px]" style={{ color: 'var(--color-text-dim)' }}>
+            <p className="text-[13px]" style={{ color: 'var(--color-text-dim)' }}>
               / {area.occmax} · {pct}%
             </p>
-            <p className="text-[10px] mt-0.5" style={{ color: 'var(--color-text-dim)' }}>
+            <p className="text-[12px] mt-0.5" style={{ color: 'var(--color-text-dim)' }}>
               퇴장 {area.occdown} · 설정 {area.occset}
             </p>
           </div>

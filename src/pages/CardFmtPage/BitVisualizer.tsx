@@ -68,7 +68,7 @@ export const BitVisualizer = ({ fmt }: BitVisualizerProps) => {
 
   if (total === 0) {
     return (
-      <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         총 비트 수가 0이면 시각화할 수 없습니다.
       </p>
     )
@@ -113,7 +113,7 @@ export const BitVisualizer = ({ fmt }: BitVisualizerProps) => {
           const style = SEGMENT_STYLE[kind]
           const label = kind === 'even' ? '패리티' : style.label
           return (
-            <span key={kind} className="inline-flex items-center gap-1 text-[11px]" style={{ color: style.text }}>
+            <span key={kind} className="inline-flex items-center gap-1 text-[13px]" style={{ color: style.text }}>
               <span
                 className="rounded-full flex-shrink-0"
                 style={{ width: 8, height: 8, background: style.bg, border: `1px solid ${style.text}` }}
@@ -122,7 +122,7 @@ export const BitVisualizer = ({ fmt }: BitVisualizerProps) => {
             </span>
           )
         })}
-        <span className="inline-flex items-center gap-1 text-[11px]" style={{ color: SEGMENT_STYLE.other.text }}>
+        <span className="inline-flex items-center gap-1 text-[13px]" style={{ color: SEGMENT_STYLE.other.text }}>
           <span
             className="rounded-full flex-shrink-0"
             style={{
@@ -136,7 +136,7 @@ export const BitVisualizer = ({ fmt }: BitVisualizerProps) => {
         </span>
       </div>
 
-      <p className="text-[10px] mt-2 font-mono" style={{ color: 'var(--color-text-dim)' }}>
+      <p className="text-[12px] mt-2 font-mono" style={{ color: 'var(--color-text-dim)' }}>
         0 — {total - 1} ({total} bits)
       </p>
     </div>

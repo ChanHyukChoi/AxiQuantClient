@@ -13,7 +13,7 @@ export const isEmpFiltersActive = (filters: EmpListFilters): boolean =>
   filters.cardAssignment !== 'all'
 
 const selectClass =
-  'w-full text-[12px] px-2 py-1 rounded border outline-none'
+  'w-full text-[14px] px-2 py-1 rounded border outline-none'
 
 interface EmpFilterModalProps {
   open: boolean
@@ -55,14 +55,14 @@ export const EmpFilterModal = ({
         }}
       >
         <p
-          className="text-[13px] font-medium mb-3"
+          className="text-[15px] font-medium mb-3"
           style={{ color: 'var(--color-text)' }}
         >
           카드 사용자 필터
         </p>
 
         <label className="flex flex-col gap-1">
-          <span className="text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
+          <span className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
             보유 카드
           </span>
           <select

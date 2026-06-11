@@ -201,7 +201,7 @@ export const DevicesPage = () => {
       >
         <div className="flex items-center gap-1.5">
           <Cpu style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
             장치
           </span>
         </div>

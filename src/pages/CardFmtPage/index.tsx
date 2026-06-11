@@ -32,9 +32,10 @@ export const CardFmtPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="카드 형식 (1안)"
+        title="카드 형식"
         icon={<Binary size={15} style={{ color: '#7f77dd' }} />}
-        actions={<AddButton onClick={() => undefined} title="추가 — 준비 중" />}
+        variantPaths={{ a: '/cardfmt', b: '/cardfmt-b' }}
+        actions={<AddButton onClick={() => undefined} />}
       />
 
       <div className="flex flex-1 overflow-hidden">

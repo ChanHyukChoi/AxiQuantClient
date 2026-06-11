@@ -79,7 +79,7 @@ export const AlarmSelectModal = ({
           className="flex items-center justify-between px-3 py-2.5 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
             경보 선택
           </span>
           <button
@@ -110,7 +110,7 @@ export const AlarmSelectModal = ({
         <div className="flex-1 overflow-y-auto app-scrollbar min-h-[200px] max-h-[40vh]">
           {filtered.length === 0 ? (
             <p
-              className="text-[12px] text-center py-8"
+              className="text-[14px] text-center py-8"
               style={{ color: 'var(--color-text-subtle)' }}
             >
               {query.trim() ? '검색 결과가 없습니다.' : '등록된 경보가 없습니다.'}
@@ -136,7 +136,7 @@ export const AlarmSelectModal = ({
               >
                 <Checkbox checked={checked.has(alarm.id)} readOnly />
                 <span
-                  className="text-[12px] flex-1 truncate"
+                  className="text-[14px] flex-1 truncate"
                   style={{ color: 'var(--color-text)' }}
                 >
                   {alarm.name || '경보'}

@@ -46,8 +46,8 @@ const variantHover: Record<NonNullable<ButtonProps['variant']>, React.CSSPropert
 }
 
 const sizeClass: Record<NonNullable<ButtonProps['size']>, string> = {
-  sm: 'text-[11px] px-2.5 py-1',
-  md: 'text-[12px] px-3 py-1.5',
+  sm: 'px-2.5 py-1',
+  md: 'px-3 py-1.5',
 }
 
 export const Button = ({

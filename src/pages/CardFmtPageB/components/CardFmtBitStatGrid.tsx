@@ -20,7 +20,7 @@ export const CardFmtBitStatGrid = ({ cardfmt }: { cardfmt: CardfmtInfo }) => (
           background: 'var(--color-btn-hover)',
         }}
       >
-        <p className="text-[10px] mb-1" style={{ color: 'var(--color-text-dim)' }}>
+        <p className="text-[12px] mb-1" style={{ color: 'var(--color-text-dim)' }}>
           {label}
         </p>
         <p

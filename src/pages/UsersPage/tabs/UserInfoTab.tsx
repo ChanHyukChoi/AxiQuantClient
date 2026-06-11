@@ -22,7 +22,7 @@ const FRow = ({
 }) => (
   <div className="flex justify-between items-center py-1.5 gap-2">
     <span
-      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      className="text-[14px] flex items-center gap-1.5 flex-shrink-0"
       style={{ color: 'var(--color-text-subtle)' }}
     >
       {icon}
@@ -54,7 +54,7 @@ export const UserInfoTab = ({
       {editMode ? (
         <Input {...register('name')} className="max-w-[180px]" />
       ) : (
-        <span className="text-[13px]" style={{ color: 'var(--color-text)' }}>
+        <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
           {values.name || '—'}
         </span>
       )}
@@ -64,7 +64,7 @@ export const UserInfoTab = ({
       {editMode ? (
         <Input {...register('loginId')} className="max-w-[180px] font-mono" />
       ) : (
-        <span className="text-[13px] font-mono" style={{ color: 'var(--color-text)' }}>
+        <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
           {values.loginId || '—'}
         </span>
       )}
@@ -75,7 +75,7 @@ export const UserInfoTab = ({
         <ToggleBtn on={values.active} onClick={onToggleActive} />
       ) : (
         <span
-          className="text-[12px]"
+          className="text-[14px]"
           style={{ color: values.active ? '#4caf7d' : 'var(--color-text-dim)' }}
         >
           {values.active ? '활성' : '비활성'}
@@ -87,7 +87,7 @@ export const UserInfoTab = ({
       {editMode ? (
         <ToggleBtn on={values.useExternalApi} onClick={onToggleExternalApi} />
       ) : (
-        <span className="text-[12px]" style={{ color: 'var(--color-text)' }}>
+        <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
           {values.useExternalApi ? '사용' : '미사용'}
         </span>
       )}

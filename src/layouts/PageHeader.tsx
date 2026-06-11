@@ -1,14 +1,22 @@
 import type { ReactNode } from 'react'
+import { PageVariantToggle, type PageVariantPaths } from '@/layouts/PageVariantToggle'
 
 interface PageHeaderProps {
   title: string
   icon?: ReactNode
   actions?: ReactNode
-  /** default 50px � CardsPage baseline */
+  variantPaths?: PageVariantPaths
+  /** default 50px — CardsPage baseline */
   height?: number
 }
 
-export const PageHeader = ({ title, icon, actions, height = 50 }: PageHeaderProps) => (
+export const PageHeader = ({
+  title,
+  icon,
+  actions,
+  variantPaths,
+  height = 50,
+}: PageHeaderProps) => (
   <header
     className="flex items-center justify-between shrink-0 px-3 select-none"
     style={{
@@ -26,9 +34,10 @@ export const PageHeader = ({ title, icon, actions, height = 50 }: PageHeaderProp
           {icon}
         </span>
       )}
-      <h1 className="text-[16px] truncate" style={{ color: 'var(--color-text)' }}>
+      <h1 className="app-text-lg truncate" style={{ color: 'var(--color-text)' }}>
         {title}
       </h1>
+      {variantPaths != null && <PageVariantToggle paths={variantPaths} />}
     </div>
 
     {actions != null && (

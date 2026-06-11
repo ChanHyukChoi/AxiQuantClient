@@ -23,7 +23,7 @@ const GRID_COLUMNS: ColumnDef<CardfmtInfo>[] = [
     width: 180,
     sortable: true,
     render: (value) => (
-      <span className="text-[12px] truncate block" style={{ color: 'var(--color-text)' }}>
+      <span className="text-[14px] truncate block" style={{ color: 'var(--color-text)' }}>
         {fallbackCardFmtName(typeof value === 'string' ? value : '')}
       </span>
     ),
@@ -35,7 +35,7 @@ const GRID_COLUMNS: ColumnDef<CardfmtInfo>[] = [
     align: 'center',
     sortable: true,
     render: (value) => (
-      <span className="text-[12px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
+      <span className="text-[14px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
         {String(value ?? 0)}bit
       </span>
     ),
@@ -47,7 +47,7 @@ const GRID_COLUMNS: ColumnDef<CardfmtInfo>[] = [
     align: 'center',
     sortable: true,
     render: (_, row) => (
-      <span className="text-[12px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
+      <span className="text-[14px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
         {row.minDigits}~{row.maxDigits}
       </span>
     ),
@@ -56,7 +56,7 @@ const GRID_COLUMNS: ColumnDef<CardfmtInfo>[] = [
 
 const InfoField = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div>
-    <span className="text-[11px] block mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
+    <span className="text-[13px] block mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
       {label}
     </span>
     {children}
@@ -88,9 +88,10 @@ export const CardFmtPageB = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="카드 형식 B"
+        title="카드 형식"
         icon={<Binary size={15} style={{ color: '#7f77dd' }} />}
-        actions={<AddButton onClick={() => undefined} title="목업 — 미연결" />}
+        variantPaths={{ a: '/cardfmt', b: '/cardfmt-b' }}
+        actions={<AddButton onClick={() => undefined} />}
       />
 
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -112,7 +113,7 @@ export const CardFmtPageB = () => {
             loading={isLoading}
           />
           {isError ? (
-            <p className="text-[11px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
+            <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
               카드 형식 목록을 불러오지 못했습니다.
             </p>
           ) : null}
@@ -128,7 +129,7 @@ export const CardFmtPageB = () => {
             }}
           >
             <div
-              className="flex-shrink-0 px-3 py-2 text-[12px] font-medium"
+              className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
               style={{
                 background: 'var(--color-accent-subtle)',
                 color: 'var(--color-accent)',
@@ -141,36 +142,36 @@ export const CardFmtPageB = () => {
               {selectedCardfmt ? (
                 <div className="flex flex-col gap-3">
                   <InfoField label="명칭">
-                    <span className="text-[13px]" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
                       {fallbackCardFmtName(selectedCardfmt.name)}
                     </span>
                   </InfoField>
                   <InfoField label="유형">
                     <span
-                      className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full w-fit"
+                      className="inline-flex items-center text-[12px] font-medium px-1.5 py-0.5 rounded-full w-fit"
                       style={WIEGAND_BADGE_STYLE}
                     >
                       WIEGAND
                     </span>
                   </InfoField>
                   <InfoField label="시설 코드">
-                    <span className="text-[13px] font-mono" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
                       {selectedCardfmt.facility}
                     </span>
                   </InfoField>
                   <InfoField label="카드 오프셋">
-                    <span className="text-[13px] font-mono" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
                       {selectedCardfmt.idOffset}
                     </span>
                   </InfoField>
                   <InfoField label="자릿수">
-                    <span className="text-[13px] font-mono" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
                       {selectedCardfmt.minDigits} ~ {selectedCardfmt.maxDigits}
                     </span>
                   </InfoField>
                 </div>
               ) : (
-                <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
                   상단 목록에서 형식을 선택하세요.
                 </p>
               )}
@@ -179,7 +180,7 @@ export const CardFmtPageB = () => {
 
           <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
             <div
-              className="flex-shrink-0 px-3 py-2 text-[12px] font-medium"
+              className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
               style={{
                 borderBottom: '0.5px solid var(--color-border)',
                 color: 'var(--color-text)',
@@ -193,7 +194,7 @@ export const CardFmtPageB = () => {
                 <>
                   <CardFmtBitStatGrid cardfmt={selectedCardfmt} />
                   <p
-                    className="text-[12px] font-medium mb-2"
+                    className="text-[14px] font-medium mb-2"
                     style={{ color: 'var(--color-text-subtle)' }}
                   >
                     비트 구조 시각화
@@ -202,7 +203,7 @@ export const CardFmtPageB = () => {
                 </>
               ) : (
                 <p
-                  className="text-[12px] text-center py-8"
+                  className="text-[14px] text-center py-8"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   비트 구조를 보려면 형식을 선택하세요.
@@ -220,14 +221,13 @@ export const CardFmtPageB = () => {
             background: 'var(--color-sidebar)',
           }}
         >
-          <Button variant="accent" size="sm" title="목업 — 미연결" onClick={() => undefined}>
+          <Button variant="accent" size="sm" onClick={() => undefined}>
             추가
           </Button>
           <Button
             variant="default"
             size="sm"
             disabled={!selectedCardfmt}
-            title="목업 — 미연결"
             onClick={() => undefined}
           >
             수정
@@ -236,7 +236,6 @@ export const CardFmtPageB = () => {
             variant="danger"
             size="sm"
             disabled={!selectedCardfmt}
-            title="목업 — 미연결"
             onClick={() => undefined}
           >
             삭제
@@ -245,7 +244,7 @@ export const CardFmtPageB = () => {
       </div>
 
       <p
-        className="flex-shrink-0 text-center text-[10px] py-1"
+        className="flex-shrink-0 text-center text-[12px] py-1"
         style={{
           color: 'var(--color-text-dim)',
           borderTop: '0.5px solid var(--color-border-subtle)',

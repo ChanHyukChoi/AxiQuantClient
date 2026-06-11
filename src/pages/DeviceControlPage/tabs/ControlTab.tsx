@@ -83,7 +83,7 @@ export const ControlTab = ({ parsed, reader, input }: ControlTabProps) => {
 
   if (!parsed) {
     return (
-      <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         제어할 장치를 선택하세요.
       </p>
     )
@@ -124,7 +124,7 @@ export const ControlTab = ({ parsed, reader, input }: ControlTabProps) => {
   if (parsed.kind === 'input') {
     return (
       <div className="flex flex-col gap-4 max-w-md">
-        <p className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
+        <p className="text-[15px]" style={{ color: 'var(--color-text-muted)' }}>
           입력 장치는 직접 제어를 지원하지 않습니다.
         </p>
         {input ? (
@@ -135,10 +135,10 @@ export const ControlTab = ({ parsed, reader, input }: ControlTabProps) => {
               background: 'var(--color-btn-hover)',
             }}
           >
-            <p className="text-[12px] mb-1" style={{ color: 'var(--color-text-subtle)' }}>
+            <p className="text-[14px] mb-1" style={{ color: 'var(--color-text-subtle)' }}>
               현재 상태
             </p>
-            <p className="text-[13px]" style={{ color: 'var(--color-text)' }}>
+            <p className="text-[15px]" style={{ color: 'var(--color-text)' }}>
               {isDeviceActive(input.active) ? '활성' : '비활성'} · 모드 {input.mode}
             </p>
           </div>
@@ -180,7 +180,7 @@ export const ControlTab = ({ parsed, reader, input }: ControlTabProps) => {
   }
 
   return (
-    <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+    <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
       이 장치 유형은 수동 제어를 지원하지 않습니다.
     </p>
   )

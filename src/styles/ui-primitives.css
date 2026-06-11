@@ -2,6 +2,27 @@
  * 공통 UI 프리미티브 — theme.css 토큰만 사용
  */
 
+/* Typography — Tailwind text-[Npx] 대신 클래스 사용 권장 */
+.app-text-xs {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-ui);
+}
+
+.app-text-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-ui);
+}
+
+.app-text-md {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-ui);
+}
+
+.app-text-lg {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-ui);
+}
+
 /* VS Code식 얇은 스크롤바 (.app-scrollbar 붙인 overflow 영역) */
 .app-scrollbar {
   scrollbar-width: thin;
@@ -92,7 +113,7 @@ button.app-field-control {
 /* 폼 필드 Zod/검증 에러 — 입력 아래 좌측 정렬 */
 .app-field-error {
   margin-top: 2px;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
   line-height: 1.375;
   text-align: left;
   color: var(--color-btn-danger-text);
@@ -117,7 +138,7 @@ button.app-field-control {
   gap: 8px;
   width: 100%;
   padding: 0 8px;
-  min-height: 22px;
+  min-height: 26px;
   border: none;
   background: transparent;
   color: var(--color-text);
@@ -274,7 +295,7 @@ button.app-field-control {
 
 .app-select-modal-cell--mono {
   font-family: monospace;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
 }
 
 .app-select-modal-cell--center {
@@ -307,7 +328,7 @@ button.app-field-control {
   display: flex;
   align-items: center;
   pointer-events: none;
-  font-size: 11px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-subtle);
   font-variant-numeric: tabular-nums;
   letter-spacing: normal;

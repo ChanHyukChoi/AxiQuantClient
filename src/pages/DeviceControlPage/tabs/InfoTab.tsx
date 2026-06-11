@@ -32,7 +32,7 @@ interface InfoTabProps {
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
-    className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
+    className="text-[14px] font-medium tracking-wide pb-1.5 mb-2"
     style={{
       color: 'var(--color-text-subtle)',
       borderBottom: '0.5px solid var(--color-border)',
@@ -53,7 +53,7 @@ const FRow = ({
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
     <span
-      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      className="text-[14px] flex items-center gap-1.5 flex-shrink-0"
       style={{ color: 'var(--color-text-subtle)' }}
     >
       {icon}
@@ -71,7 +71,7 @@ const FieldValue = ({
   mono?: boolean
 }) => (
   <span
-    className={['text-right text-[13px]', mono ? 'font-mono' : '']
+    className={['text-right text-[15px]', mono ? 'font-mono' : '']
       .filter(Boolean)
       .join(' ')}
     style={{ color: 'var(--color-text)' }}
@@ -149,7 +149,7 @@ const ActiveField = ({
     {editMode ? (
       <select
         {...register('active', { valueAsNumber: true })}
-        className="text-[12px] px-2 py-1 rounded border outline-none"
+        className="text-[14px] px-2 py-1 rounded border outline-none"
         style={{
           width: 100,
           background: 'var(--color-btn-hover)',
@@ -180,7 +180,7 @@ export const InfoTab = ({
 }: InfoTabProps) => {
   if (!parsed) {
     return (
-      <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         트리에서 장치를 선택하세요.
       </p>
     )
@@ -442,7 +442,7 @@ export const InfoTab = ({
   }
 
   return (
-    <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+    <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
       장치 데이터를 찾을 수 없습니다. 트리를 펼쳐 다시 시도하세요.
     </p>
   )

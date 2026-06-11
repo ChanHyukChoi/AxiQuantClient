@@ -200,14 +200,14 @@ export const AccessDetailPanel = ({
 
   const drawerBody = !accLv ? (
     <div className="flex items-center justify-center min-h-[160px]">
-      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         목록에서 접근 권한을 선택하세요
       </span>
     </div>
   ) : (
     <section>
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-[12px] font-medium" style={{ color: 'var(--color-text)' }}>
+        <h2 className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
           연결된 리더
         </h2>
         <Button
@@ -227,7 +227,7 @@ export const AccessDetailPanel = ({
         <AccLvReaderTable rows={readerRows} loading={readerLoading} />
       </div>
 
-      <p className="text-[11px] mt-2" style={{ color: 'var(--color-text-dim)' }}>
+      <p className="text-[13px] mt-2" style={{ color: 'var(--color-text-dim)' }}>
         전체 {readerRows.length}건
       </p>
     </section>

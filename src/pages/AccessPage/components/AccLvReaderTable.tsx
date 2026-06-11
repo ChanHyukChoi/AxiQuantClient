@@ -11,7 +11,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
 
   if (loading) {
     return (
-      <p className="text-[12px] py-4" style={{ color: 'var(--color-text-subtle)' }}>
+      <p className="text-[14px] py-4" style={{ color: 'var(--color-text-subtle)' }}>
         불러오는 중...
       </p>
     )
@@ -24,7 +24,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
           {(['주 제어기', '리더', '시간표'] as const).map((header) => (
             <th
               key={header}
-              className="text-[11px] font-medium py-2 px-2.5 text-left"
+              className="text-[13px] font-medium py-2 px-2.5 text-left"
               style={{
                 color: 'var(--color-text-subtle)',
                 borderBottom: '0.5px solid var(--color-border)',
@@ -41,7 +41,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
           <tr>
             <td
               colSpan={3}
-              className="text-[12px] py-6 px-2.5 text-center"
+              className="text-[14px] py-6 px-2.5 text-center"
               style={{ color: 'var(--color-text-subtle)' }}
             >
               연결된 리더가 없습니다.
@@ -60,7 +60,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
                 }}
               >
                 <td
-                  className="text-[12px] py-2 px-2.5"
+                  className="text-[14px] py-2 px-2.5"
                   style={{
                     color: 'var(--color-text)',
                     borderBottom: isLast ? 'none' : '0.5px solid var(--color-border-subtle)',
@@ -69,7 +69,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
                   {row.scpName}
                 </td>
                 <td
-                  className="text-[12px] py-2 px-2.5"
+                  className="text-[14px] py-2 px-2.5"
                   style={{
                     color: 'var(--color-text)',
                     borderBottom: isLast ? 'none' : '0.5px solid var(--color-border-subtle)',
@@ -78,7 +78,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
                   {row.readerName}
                 </td>
                 <td
-                  className="text-[12px] py-2 px-2.5"
+                  className="text-[14px] py-2 px-2.5"
                   style={{
                     color: 'var(--color-text-muted)',
                     borderBottom: isLast ? 'none' : '0.5px solid var(--color-border-subtle)',

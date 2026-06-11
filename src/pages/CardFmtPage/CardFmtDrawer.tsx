@@ -54,7 +54,7 @@ const EMPTY_CARD_FMT: CardfmtInfo = {
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
-    className="text-[12px] font-medium tracking-wide pb-1.5 mb-2 mt-4 first:mt-0"
+    className="text-[14px] font-medium tracking-wide pb-1.5 mb-2 mt-4 first:mt-0"
     style={{
       color: 'var(--color-text-subtle)',
       borderBottom: '0.5px solid var(--color-border)',
@@ -75,7 +75,7 @@ const FRow = ({
 }) => (
   <div className="flex justify-between items-center py-1 gap-2">
     <span
-      className="text-[12px] flex items-center gap-1.5 flex-shrink-0"
+      className="text-[14px] flex items-center gap-1.5 flex-shrink-0"
       style={{ color: 'var(--color-text-subtle)' }}
     >
       {icon}
@@ -93,7 +93,7 @@ const BitStatCard = ({ label, value }: { label: string; value: number }) => (
       background: 'var(--color-btn-hover)',
     }}
   >
-    <p className="text-[10px] mb-1" style={{ color: 'var(--color-text-dim)' }}>
+    <p className="text-[12px] mb-1" style={{ color: 'var(--color-text-dim)' }}>
       {label}
     </p>
     <p
@@ -115,7 +115,7 @@ const EditNumCell = ({
   register: UseFormRegister<CardFmtEditFormValues>
 }) => (
   <div>
-    <label className="text-[10px] mb-1 block" style={{ color: 'var(--color-text-dim)' }}>
+    <label className="text-[12px] mb-1 block" style={{ color: 'var(--color-text-dim)' }}>
       {label}
     </label>
     <Input
@@ -148,7 +148,7 @@ const NumField = ({
       />
     ) : (
       <span
-        className="text-[13px] font-mono text-right"
+        className="text-[15px] font-mono text-right"
         style={{ color: 'var(--color-text)' }}
       >
         {value}
@@ -245,7 +245,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
             {fallbackCardFmtName(cardfmt.name)}
           </span>
           <span
-            className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+            className="inline-flex items-center text-[12px] font-medium px-1.5 py-0.5 rounded-full"
             style={WIEGAND_BADGE_STYLE}
           >
             WIEGAND
@@ -261,7 +261,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
     editMode ? (
       <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
         {saveError ? (
-          <p className="text-[11px] leading-snug text-right" style={{ color: '#c75c5c' }}>
+          <p className="text-[13px] leading-snug text-right" style={{ color: '#c75c5c' }}>
             {saveError}
           </p>
         ) : null}
@@ -309,7 +309,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
 
   const drawerChildren = !cardfmt ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         목록에서 카드 형식을 선택하세요
       </span>
     </div>
@@ -321,7 +321,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
         {editMode ? (
           <Input {...register('name')} style={{ width: 148 }} />
         ) : (
-          <span className="text-[13px] text-right" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[15px] text-right" style={{ color: 'var(--color-text)' }}>
             {display.name || '—'}
           </span>
         )}
@@ -329,7 +329,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
 
       <FRow icon={<Settings size={12} />} label="유형">
         <span
-          className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+          className="inline-flex items-center text-[12px] font-medium px-1.5 py-0.5 rounded-full"
           style={WIEGAND_BADGE_STYLE}
         >
           WIEGAND
@@ -384,7 +384,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
           <EditNumCell label="flags" name="flags" register={register} />
           <div className="col-span-2">
             <label
-              className="text-[10px] mb-1 block"
+              className="text-[12px] mb-1 block"
               style={{ color: 'var(--color-text-dim)' }}
             >
               ext

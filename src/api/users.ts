@@ -6,7 +6,7 @@ import type { CreateUserRequest, UpdateUserRequest, UserInfo } from '@/types/api
 export type UserWriteResult = { ok: true } | { ok: false; message: string }
 export type UserListResult = { users: UserInfo[]; apiNotReady?: boolean }
 
-const NOT_READY_MSG = '사용자 관리 API가 아직 서버에 구현되지 않았습니다.'
+const NOT_READY_MSG = '요청을 처리하지 못했습니다.'
 
 export const getUserList = async (): Promise<UserListResult> => {
   try {

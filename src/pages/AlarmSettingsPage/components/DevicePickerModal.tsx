@@ -187,7 +187,7 @@ export const DevicePickerModal = ({
             style={{ borderColor: 'var(--color-border)' }}
           >
             <span
-              className="text-[13px] font-medium"
+              className="text-[15px] font-medium"
               style={{ color: 'var(--color-text)' }}
             >
               장치 선택
@@ -217,14 +217,14 @@ export const DevicePickerModal = ({
           <div className="flex-1 overflow-y-auto app-scrollbar min-h-[240px] max-h-[50vh]">
             {loading ? (
               <p
-                className="text-[12px] text-center py-8"
+                className="text-[14px] text-center py-8"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
                 불러오는 중...
               </p>
             ) : scpsError ? (
               <p
-                className="text-[12px] text-center py-8 px-3"
+                className="text-[14px] text-center py-8 px-3"
                 style={{ color: '#c75c5c' }}
               >
                 장치 목록을 불러오지 못했습니다.

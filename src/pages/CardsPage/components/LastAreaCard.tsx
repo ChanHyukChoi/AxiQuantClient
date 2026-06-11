@@ -30,7 +30,7 @@ export const LastAreaCard = ({ area, fontSize = 15 }: LastAreaCardProps) => {
       </span>
       <div className="min-w-0 flex-1">
         <p
-          className="text-[11px] mb-0.5"
+          className="text-[13px] mb-0.5"
           style={{ color: 'var(--color-text-subtle)', fontSize: 15 }}
         >
           마지막 영역

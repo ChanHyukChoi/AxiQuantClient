@@ -52,7 +52,6 @@ export const AuditLogPage = () => {
 
   const items = data?.items ?? []
   const total = data?.total ?? 0
-  const apiNotReady = data?.apiNotReady
 
   const handleExport = useCallback(() => {
     const header = ['시간', '사용자', '클라이언트', '동작', '데이터유형', '컨트롤러', '데이터']
@@ -85,24 +84,11 @@ export const AuditLogPage = () => {
       >
         <div className="flex items-center gap-1.5">
           <ClipboardList style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
-          <span className="text-[13px] font-medium" style={{ color: 'var(--color-text)' }}>
+          <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
             운영 기록
           </span>
         </div>
       </div>
-
-      {apiNotReady ? (
-        <div
-          className="mx-3 mt-2 px-3 py-2 rounded text-[12px]"
-          style={{
-            background: 'var(--color-btn-hover)',
-            color: 'var(--color-text-muted)',
-            border: '0.5px solid var(--color-border)',
-          }}
-        >
-          운영 기록 API가 서버에 아직 구현되지 않았습니다.
-        </div>
-      ) : null}
 
       <AuditToolbar
         datePreset={datePreset}

@@ -1,13 +1,17 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 import {
   Activity,
+  ArrowLeftFromLine,
+  ArrowRightToLine,
   Bell,
   Binary,
+  CalendarClock,
   ClipboardList,
   Cpu,
   CreditCard,
   Lock,
   MapPin,
+  ScanLine,
   User,
   UserCog,
 } from 'lucide-react'
@@ -20,6 +24,8 @@ interface MenuItem {
   id: string
   label: string
   path: string
+  /** B안 등 동일 메뉴로 묶을 추가 경로 */
+  activePaths?: string[]
   icon: React.ReactNode
 }
 
@@ -40,42 +46,49 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'access',
     label: '접근권한',
     path: '/access',
+    activePaths: ['/access', '/access-b'],
     icon: <Lock size={28} strokeWidth={2} />,
   },
   {
-    id: 'access-b',
-    label: '접근권한B',
-    path: '/access-b',
-    icon: <Lock size={28} strokeWidth={2} />,
-  },
-  {
-    id: 'devices',
-    label: '장치',
-    path: '/devices',
+    id: 'controllers',
+    label: '제어기',
+    path: '/controllers',
+    activePaths: ['/controllers', '/controllers-b'],
     icon: <Cpu size={28} strokeWidth={2} />,
+  },
+  {
+    id: 'readers',
+    label: '리더',
+    path: '/readers',
+    activePaths: ['/readers', '/readers-b'],
+    icon: <ScanLine size={28} strokeWidth={2} />,
+  },
+  {
+    id: 'inputs',
+    label: '입력',
+    path: '/inputs',
+    activePaths: ['/inputs', '/inputs-b'],
+    icon: <ArrowRightToLine size={28} strokeWidth={2} />,
+  },
+  {
+    id: 'outputs',
+    label: '출력',
+    path: '/outputs',
+    activePaths: ['/outputs', '/outputs-b'],
+    icon: <ArrowLeftFromLine size={28} strokeWidth={2} />,
   },
   {
     id: 'area',
     label: '영역',
     path: '/area',
-    icon: <MapPin size={28} strokeWidth={2} />,
-  },
-  {
-    id: 'area-b',
-    label: '영역B',
-    path: '/area-b',
+    activePaths: ['/area', '/area-b'],
     icon: <MapPin size={28} strokeWidth={2} />,
   },
   {
     id: 'cardfmt',
     label: '카드 형식',
     path: '/cardfmt',
-    icon: <Binary size={28} strokeWidth={2} />,
-  },
-  {
-    id: 'cardfmt-b',
-    label: '카드형식B',
-    path: '/cardfmt-b',
+    activePaths: ['/cardfmt', '/cardfmt-b'],
     icon: <Binary size={28} strokeWidth={2} />,
   },
   {
@@ -88,12 +101,21 @@ const MENU_ITEMS: MenuItem[] = [
     id: 'alarm-settings',
     label: '경보 설정',
     path: '/alarm-settings',
+    activePaths: ['/alarm-settings', '/alarm-settings-b'],
     icon: <Bell size={28} strokeWidth={2} />,
+  },
+  {
+    id: 'timezone-holiday',
+    label: '타임존-휴일',
+    path: '/timezone-holiday',
+    activePaths: ['/timezone-holiday', '/timezone-holiday-b'],
+    icon: <CalendarClock size={28} strokeWidth={2} />,
   },
   {
     id: 'users',
     label: '사용자',
     path: '/users',
+    activePaths: ['/users', '/users-b'],
     icon: <UserCog size={28} strokeWidth={2} />,
   },
   {
@@ -128,8 +150,10 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
   <nav className="flex-1">
     <ul className="flex flex-col">
       {MENU_ITEMS.map((item) => {
-        const isActive =
-          currentPath === item.path || currentPath.startsWith(item.path + '/')
+        const matchPaths = item.activePaths ?? [item.path]
+        const isActive = matchPaths.some(
+          (p) => currentPath === p || currentPath.startsWith(`${p}/`),
+        )
 
         return (
           <li key={item.id}>

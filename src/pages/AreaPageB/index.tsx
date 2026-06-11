@@ -24,7 +24,7 @@ const GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
     width: 180,
     sortable: true,
     render: (value) => (
-      <span className="text-[12px] truncate block" style={{ color: 'var(--color-text)' }}>
+      <span className="text-[14px] truncate block" style={{ color: 'var(--color-text)' }}>
         {fallbackAreaName(typeof value === 'string' ? value : '')}
       </span>
     ),
@@ -49,7 +49,7 @@ const GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
     align: 'center',
     sortable: true,
     render: (_, row) => (
-      <span className="text-[12px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
+      <span className="text-[14px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
         {row.occup}/{row.occmax}
       </span>
     ),
@@ -58,7 +58,7 @@ const GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
 
 const InfoField = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div>
-    <span className="text-[11px] block mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
+    <span className="text-[13px] block mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
       {label}
     </span>
     {children}
@@ -101,9 +101,10 @@ export const AreaPageB = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="영역 B"
+        title="영역"
         icon={<MapPin size={15} />}
-        actions={<AddButton onClick={() => undefined} title="목업 — 미연결" />}
+        variantPaths={{ a: '/area', b: '/area-b' }}
+        actions={<AddButton onClick={() => undefined} />}
       />
 
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -125,7 +126,7 @@ export const AreaPageB = () => {
             loading={isLoading}
           />
           {isError ? (
-            <p className="text-[11px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
+            <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
               영역 목록을 불러오지 못했습니다.
             </p>
           ) : null}
@@ -141,7 +142,7 @@ export const AreaPageB = () => {
             }}
           >
             <div
-              className="flex-shrink-0 px-3 py-2 text-[12px] font-medium"
+              className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
               style={{
                 background: 'var(--color-accent-subtle)',
                 color: 'var(--color-accent)',
@@ -154,7 +155,7 @@ export const AreaPageB = () => {
               {selectedArea ? (
                 <div className="flex flex-col gap-3">
                   <InfoField label="명칭">
-                    <span className="text-[13px]" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
                       {fallbackAreaName(selectedArea.name)}
                     </span>
                   </InfoField>
@@ -164,19 +165,19 @@ export const AreaPageB = () => {
                     </Badge>
                   </InfoField>
                   <InfoField label="점유">
-                    <span className="text-[13px] font-mono" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
                       {selectedArea.occup} / {selectedArea.occmax} (
                       {occupancyPercent(selectedArea.occup, selectedArea.occmax)}%)
                     </span>
                   </InfoField>
                   <InfoField label="최대 점유">
-                    <span className="text-[13px] font-mono" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
                       {selectedArea.occmax}
                     </span>
                   </InfoField>
                 </div>
               ) : (
-                <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
                   상단 목록에서 영역을 선택하세요.
                 </p>
               )}
@@ -198,7 +199,7 @@ export const AreaPageB = () => {
                   key={tab.key}
                   type="button"
                   onClick={() => setDetailTab(tab.key)}
-                  className="text-[12px] px-2.5 py-1 rounded"
+                  className="text-[14px] px-2.5 py-1 rounded"
                   style={{
                     color:
                       detailTab === tab.key
@@ -218,7 +219,7 @@ export const AreaPageB = () => {
             <div className="flex-1 min-h-0 overflow-y-auto app-scrollbar p-3">
               {!selectedArea ? (
                 <p
-                  className="text-[12px] text-center py-8"
+                  className="text-[14px] text-center py-8"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   상세를 보려면 영역을 선택하세요.
@@ -230,7 +231,7 @@ export const AreaPageB = () => {
                       {['주 제어기', '리더'].map((h) => (
                         <th
                           key={h}
-                          className="text-[11px] font-medium py-2 px-2.5 text-left"
+                          className="text-[13px] font-medium py-2 px-2.5 text-left"
                           style={{
                             color: 'var(--color-text-subtle)',
                             borderBottom: '0.5px solid var(--color-border)',
@@ -247,7 +248,7 @@ export const AreaPageB = () => {
                       <tr>
                         <td
                           colSpan={2}
-                          className="text-[12px] py-6 text-center"
+                          className="text-[14px] py-6 text-center"
                           style={{ color: 'var(--color-text-subtle)' }}
                         >
                           연결된 리더가 없습니다.
@@ -257,7 +258,7 @@ export const AreaPageB = () => {
                       readerRows.map((row, idx) => (
                         <tr key={`${row.scpName}-${row.readerName}-${idx}`}>
                           <td
-                            className="text-[12px] py-2 px-2.5"
+                            className="text-[14px] py-2 px-2.5"
                             style={{
                               color: 'var(--color-text)',
                               borderBottom: '0.5px solid var(--color-border-subtle)',
@@ -266,7 +267,7 @@ export const AreaPageB = () => {
                             {row.scpName}
                           </td>
                           <td
-                            className="text-[12px] py-2 px-2.5"
+                            className="text-[14px] py-2 px-2.5"
                             style={{
                               color: 'var(--color-text)',
                               borderBottom: '0.5px solid var(--color-border-subtle)',
@@ -286,7 +287,7 @@ export const AreaPageB = () => {
                       {['사용자', '카드번호'].map((h) => (
                         <th
                           key={h}
-                          className="text-[11px] font-medium py-2 px-2.5 text-left"
+                          className="text-[13px] font-medium py-2 px-2.5 text-left"
                           style={{
                             color: 'var(--color-text-subtle)',
                             borderBottom: '0.5px solid var(--color-border)',
@@ -303,7 +304,7 @@ export const AreaPageB = () => {
                       <tr>
                         <td
                           colSpan={2}
-                          className="text-[12px] py-6 text-center"
+                          className="text-[14px] py-6 text-center"
                           style={{ color: 'var(--color-text-subtle)' }}
                         >
                           점유 인원이 없습니다.
@@ -313,7 +314,7 @@ export const AreaPageB = () => {
                       occupantRows.map((row) => (
                         <tr key={row.empId}>
                           <td
-                            className="text-[12px] py-2 px-2.5"
+                            className="text-[14px] py-2 px-2.5"
                             style={{
                               color: 'var(--color-text)',
                               borderBottom: '0.5px solid var(--color-border-subtle)',
@@ -322,7 +323,7 @@ export const AreaPageB = () => {
                             {row.name}
                           </td>
                           <td
-                            className="text-[12px] py-2 px-2.5 font-mono"
+                            className="text-[14px] py-2 px-2.5 font-mono"
                             style={{
                               color: 'var(--color-text-muted)',
                               borderBottom: '0.5px solid var(--color-border-subtle)',
@@ -348,14 +349,13 @@ export const AreaPageB = () => {
             background: 'var(--color-sidebar)',
           }}
         >
-          <Button variant="accent" size="sm" title="목업 — 미연결" onClick={() => undefined}>
+          <Button variant="accent" size="sm" onClick={() => undefined}>
             추가
           </Button>
           <Button
             variant="default"
             size="sm"
             disabled={!selectedArea}
-            title="목업 — 미연결"
             onClick={() => undefined}
           >
             수정
@@ -364,7 +364,6 @@ export const AreaPageB = () => {
             variant="danger"
             size="sm"
             disabled={!selectedArea}
-            title="목업 — 미연결"
             onClick={() => undefined}
           >
             삭제
@@ -373,7 +372,7 @@ export const AreaPageB = () => {
       </div>
 
       <p
-        className="flex-shrink-0 text-center text-[10px] py-1"
+        className="flex-shrink-0 text-center text-[12px] py-1"
         style={{
           color: 'var(--color-text-dim)',
           borderTop: '0.5px solid var(--color-border-subtle)',

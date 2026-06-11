@@ -158,7 +158,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
         >
           {fallbackAreaName(area.name)}
         </span>
-        <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+        <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
           {isAreaActive(area.active) ? '활성' : '비활성'} · 점유 {area.occup}/
           {area.occmax}
         </span>
@@ -172,7 +172,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
     editMode ? (
       <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
         {saveError ? (
-          <p className="text-[11px] leading-snug text-right" style={{ color: '#c75c5c' }}>
+          <p className="text-[13px] leading-snug text-right" style={{ color: '#c75c5c' }}>
             {saveError}
           </p>
         ) : null}
@@ -220,7 +220,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
 
   const drawerChildren = !area ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         목록에서 영역을 선택하세요
       </span>
     </div>
@@ -300,12 +300,12 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
             }}
           >
             <p
-              className="text-[13px] font-medium mb-1"
+              className="text-[15px] font-medium mb-1"
               style={{ color: 'var(--color-text)' }}
             >
               점유 설정 (occset)
             </p>
-            <p className="text-[11px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
+            <p className="text-[13px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
               영역 점유 설정값을 입력하세요.
             </p>
             <Input
@@ -315,7 +315,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
               min={0}
             />
             {actionError ? (
-              <p className="text-[11px] mt-2" style={{ color: '#c75c5c' }}>
+              <p className="text-[13px] mt-2" style={{ color: '#c75c5c' }}>
                 {actionError}
               </p>
             ) : null}

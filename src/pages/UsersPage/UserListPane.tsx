@@ -44,18 +44,18 @@ export const UserListPane = ({
     <div className="flex-1 overflow-y-auto app-scrollbar">
       {loading ? (
         <p
-          className="text-[12px] text-center py-8"
+          className="text-[14px] text-center py-8"
           style={{ color: 'var(--color-text-subtle)' }}
         >
           불러오는 중...
         </p>
       ) : error ? (
-        <p className="text-[12px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
+        <p className="text-[14px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
           사용자 목록을 불러오지 못했습니다.
         </p>
       ) : users.length === 0 ? (
         <p
-          className="text-[12px] text-center py-8"
+          className="text-[14px] text-center py-8"
           style={{ color: 'var(--color-text-subtle)' }}
         >
           {searchQuery.trim() ? '검색 결과가 없습니다.' : '등록된 사용자가 없습니다.'}
@@ -96,7 +96,7 @@ export const UserListPane = ({
             >
               <div className="flex items-center justify-between gap-2">
                 <span
-                  className="text-[12px] font-medium truncate flex-1 min-w-0"
+                  className="text-[14px] font-medium truncate flex-1 min-w-0"
                   style={{ color: 'var(--color-text)' }}
                 >
                   {fallbackUserName(user.name)}
@@ -106,7 +106,7 @@ export const UserListPane = ({
                 </Badge>
               </div>
               <p
-                className="text-[11px] mt-0.5 font-mono truncate"
+                className="text-[13px] mt-0.5 font-mono truncate"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
                 {user.loginId}
@@ -118,7 +118,7 @@ export const UserListPane = ({
     </div>
 
     <div
-      className="flex-shrink-0 flex items-center text-[11px]"
+      className="flex-shrink-0 flex items-center text-[13px]"
       style={{
         padding: '5px 12px',
         background: 'var(--color-sidebar)',

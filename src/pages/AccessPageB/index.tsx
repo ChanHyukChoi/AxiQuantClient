@@ -17,7 +17,7 @@ const GRID_COLUMNS: ColumnDef<AccLvInfo>[] = [
     width: 200,
     sortable: true,
     render: (value) => (
-      <span className="text-[12px] truncate block" style={{ color: 'var(--color-text)' }}>
+      <span className="text-[14px] truncate block" style={{ color: 'var(--color-text)' }}>
         {fallbackAccLvName(typeof value === 'string' ? value : '')}
       </span>
     ),
@@ -54,9 +54,10 @@ export const AccessPageB = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="접근 권한 B"
+        title="접근 권한"
         icon={<Lock size={15} />}
-        actions={<AddButton onClick={() => undefined} title="목업 — 미연결" />}
+        variantPaths={{ a: '/access', b: '/access-b' }}
+        actions={<AddButton onClick={() => undefined} />}
       />
 
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
@@ -91,7 +92,7 @@ export const AccessPageB = () => {
             }}
           >
             <div
-              className="flex-shrink-0 px-3 py-2 text-[12px] font-medium"
+              className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
               style={{
                 background: 'var(--color-accent-subtle)',
                 color: 'var(--color-accent)',
@@ -105,18 +106,18 @@ export const AccessPageB = () => {
                 <div className="flex flex-col gap-2">
                   <div>
                     <span
-                      className="text-[11px] block mb-0.5"
+                      className="text-[13px] block mb-0.5"
                       style={{ color: 'var(--color-text-subtle)' }}
                     >
                       명칭
                     </span>
-                    <span className="text-[13px]" style={{ color: 'var(--color-text)' }}>
+                    <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
                       {fallbackAccLvName(selectedAccLv.name)}
                     </span>
                   </div>
                 </div>
               ) : (
-                <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
                   상단 목록에서 권한을 선택하세요.
                 </p>
               )}
@@ -132,7 +133,6 @@ export const AccessPageB = () => {
                 variant="default"
                 size="sm"
                 disabled={!selectedAccLv}
-                title="목업 — 미연결"
                 onClick={() => undefined}
               >
                 변경
@@ -144,7 +144,7 @@ export const AccessPageB = () => {
                 <AccLvReaderTable rows={readerRows} />
               ) : (
                 <p
-                  className="text-[12px] text-center py-8"
+                  className="text-[14px] text-center py-8"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   연결 리더를 보려면 권한을 선택하세요.
@@ -163,14 +163,13 @@ export const AccessPageB = () => {
             background: 'var(--color-sidebar)',
           }}
         >
-          <Button variant="accent" size="sm" title="목업 — 미연결" onClick={() => undefined}>
+          <Button variant="accent" size="sm" onClick={() => undefined}>
             추가
           </Button>
           <Button
             variant="default"
             size="sm"
             disabled={!selectedAccLv}
-            title="목업 — 미연결"
             onClick={() => undefined}
           >
             수정
@@ -179,7 +178,6 @@ export const AccessPageB = () => {
             variant="danger"
             size="sm"
             disabled={!selectedAccLv}
-            title="목업 — 미연결"
             onClick={() => undefined}
           >
             삭제
@@ -188,7 +186,7 @@ export const AccessPageB = () => {
       </div>
 
       <p
-        className="flex-shrink-0 text-center text-[10px] py-1"
+        className="flex-shrink-0 text-center text-[12px] py-1"
         style={{
           color: 'var(--color-text-dim)',
           borderTop: '0.5px solid var(--color-border-subtle)',

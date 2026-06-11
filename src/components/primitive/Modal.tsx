@@ -45,7 +45,7 @@ export const Modal = ({
         }}
       >
         <p
-          className="text-[13px] font-medium"
+          className="text-[15px] font-medium"
           style={{ color: 'var(--color-text)' }}
         >
           {title}
@@ -53,7 +53,7 @@ export const Modal = ({
 
         {description && (
           <p
-            className="text-[12px] mt-2"
+            className="text-[14px] mt-2"
             style={{ color: 'var(--color-text-muted)' }}
           >
             {description}

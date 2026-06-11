@@ -14,7 +14,7 @@ export const ToastHost = () => {
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          className="pointer-events-auto flex items-start gap-2 rounded-md px-3 py-2.5 shadow-lg text-[12px]"
+          className="pointer-events-auto flex items-start gap-2 rounded-md px-3 py-2.5 shadow-lg text-[14px]"
           style={{
             background: 'var(--color-sidebar)',
             border: '0.5px solid var(--color-border)',

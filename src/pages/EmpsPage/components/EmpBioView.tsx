@@ -55,7 +55,7 @@ export const EmpBioView = ({
       </div>
 
       {!hasCards ? (
-        <p className="app-field-error" style={{ fontSize: 13 }}>
+        <p className="app-field-error" style={{ fontSize: 15 }}>
           {BIO_NO_REP_CARD_MESSAGE}
         </p>
       ) : null}

@@ -4,7 +4,7 @@ import { createInput, deleteInput, getInputList, updateInput } from '@/api/input
 import { getModuleList } from '@/api/modules'
 import { createOutput, deleteOutput, getOutputList, updateOutput } from '@/api/output'
 import { createReader, deleteReader, getReaderList, updateReader } from '@/api/reader'
-import { createScp, deleteScp, getScpList, updateScp } from '@/api/scp'
+import { createScp, deleteScp, getScpList, resetScp, updateScp } from '@/api/scp'
 import { createSio, deleteSio, getSioList, updateSio } from '@/api/sio'
 import { queryKeys } from '@/lib/query/queryKeys'
 import type {
@@ -82,6 +82,14 @@ export const useDeleteScp = () => {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: number) => deleteScp(id),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.deviceControl.scps() }),
+  })
+}
+
+export const useResetScp = () => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => resetScp(id),
     onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.deviceControl.scps() }),
   })
 }

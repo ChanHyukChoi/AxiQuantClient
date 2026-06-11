@@ -1,93 +1,21 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Pencil, Star, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
-import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
-import {
-  alarmPrioritySchema,
-  type AlarmPriorityFormValues,
-} from '@/pages/AlarmSettingsPage/formTypes'
-import {
-  normalizeHexColor,
-  priorityToUpdatePayload,
-} from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
-import { useDeleteAlarmPriority, useUpdateAlarmPriority } from '@/hooks/api/useAlarmSettings'
-import type { AlarmPriorityInfo } from '@/types/api'
+import { AlarmPriorityFormFields } from '@/pages/AlarmSettingsPage/components/AlarmPriorityFormFields'
+import type { AlarmPriorityDisplay } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
+import type { useAlarmPriorityEditor } from '@/pages/AlarmSettingsPage/useAlarmPriorityEditor'
+import { normalizeHexColor } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
+
+type AlarmPriorityEditor = ReturnType<typeof useAlarmPriorityEditor>
 
 interface AlarmPriorityDrawerProps {
-  item: AlarmPriorityInfo | null
-  onDeleted: () => void
+  item: AlarmPriorityDisplay | null
+  editor: AlarmPriorityEditor
 }
 
-const toForm = (item: AlarmPriorityInfo): AlarmPriorityFormValues => ({
-  priority: item.priority,
-  color: normalizeHexColor(item.color),
-})
-
-export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProps) => {
-  const [editMode, setEditMode] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [saveError, setSaveError] = useState<string | null>(null)
-
-  const updateMut = useUpdateAlarmPriority()
-  const deleteMut = useDeleteAlarmPriority()
-
-  const { register, handleSubmit, reset, setValue, watch } =
-    useForm<AlarmPriorityFormValues>({
-      resolver: zodResolver(alarmPrioritySchema),
-      defaultValues: { priority: 0, color: '#4f9cf9' },
-    })
-
-  const color = watch('color')
-
-  useEffect(() => {
-    setEditMode(false)
-    setSaveError(null)
-    if (item) reset(toForm(item))
-  }, [item?.id, item, reset])
-
-  const handleEdit = () => {
-    if (!item) return
-    setSaveError(null)
-    reset(toForm(item))
-    setEditMode(true)
-  }
-
-  const handleCancel = () => {
-    if (!item) return
-    setEditMode(false)
-    setSaveError(null)
-    reset(toForm(item))
-  }
-
-  const handleSave = handleSubmit(async (values) => {
-    if (!item) return
-    setSaveError(null)
-    const ok = await updateMut.mutateAsync({
-      id: item.id,
-      data: {
-        ...priorityToUpdatePayload(item),
-        ...values,
-        color: normalizeHexColor(values.color),
-      },
-    })
-    if (ok) setEditMode(false)
-    else setSaveError('?�?�하지 못했?�니??')
-  })
-
-  const handleDeleteConfirm = async () => {
-    if (!item) return
-    const ok = await deleteMut.mutateAsync(item.id)
-    if (ok) {
-      setDeleteOpen(false)
-      onDeleted()
-    }
-  }
-
-  const hex = normalizeHexColor(color ?? item?.color ?? '#4f9cf9')
+export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) => {
+  const hex = normalizeHexColor(item?.alarmFg ?? '#4f9cf9')
 
   const drawerHeader = item ? (
     <div
@@ -107,12 +35,12 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
       </div>
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
-          ?�선?�위 {item.priority}
+          우선순위 {item.priority}
         </span>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full" style={{ background: hex }} />
           <span
-            className="text-[12px] font-mono"
+            className="text-[14px] font-mono"
             style={{ color: 'var(--color-text-subtle)' }}
           >
             {hex}
@@ -121,17 +49,17 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-      좌측 목록?�서 ?�선?�위�??�택?�세??
+    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
+      좌측 목록에서 우선순위를 선택하세요.
     </div>
   )
 
   const drawerActions = item ? (
-    editMode ? (
+    editor.editMode ? (
       <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
-        {saveError ? (
-          <p className="text-[11px] text-right" style={{ color: '#c75c5c' }}>
-            {saveError}
+        {editor.actionError ? (
+          <p className="text-[13px] text-right" style={{ color: '#c75c5c' }}>
+            {editor.actionError}
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
@@ -139,7 +67,7 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
             variant="default"
             size="sm"
             leftIcon={<X size={12} />}
-            onClick={handleCancel}
+            onClick={editor.handleCancel}
           >
             취소
           </Button>
@@ -147,10 +75,10 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
             variant="accent"
             size="sm"
             leftIcon={<Check size={12} />}
-            loading={updateMut.isPending}
-            onClick={handleSave}
+            loading={editor.isSaving}
+            onClick={editor.handleSave}
           >
-            ?�??
+            저장
           </Button>
         </div>
       </div>
@@ -160,17 +88,17 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
           variant="danger"
           size="sm"
           leftIcon={<Trash2 size={12} />}
-          onClick={() => setDeleteOpen(true)}
+          onClick={() => editor.setDeleteOpen(true)}
         >
-          ??��
+          삭제
         </Button>
         <Button
           variant="accent"
           size="sm"
           leftIcon={<Pencil size={12} />}
-          onClick={handleEdit}
+          onClick={editor.handleEdit}
         >
-          ?�정
+          수정
         </Button>
       </>
     )
@@ -179,72 +107,23 @@ export const AlarmPriorityDrawer = ({ item, onDeleted }: AlarmPriorityDrawerProp
   return (
     <>
       <Drawer fill header={drawerHeader} actions={drawerActions}>
-        {item && editMode ? (
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <span
-                className="text-[11px] font-medium"
-                style={{ color: 'var(--color-text-subtle)' }}
-              >
-                ?�선?�위
-              </span>
-              <Input type="number" {...register('priority', { valueAsNumber: true })} />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span
-                className="text-[11px] font-medium"
-                style={{ color: 'var(--color-text-subtle)' }}
-              >
-                ?�상
-              </span>
-              <div className="flex items-center gap-2">
-                <input
-                  type="color"
-                  value={hex}
-                  onChange={(e) =>
-                    setValue('color', e.target.value, { shouldDirty: true })
-                  }
-                  className="w-10 h-8 cursor-pointer border-0 p-0 bg-transparent"
-                />
-                <Input
-                  value={color}
-                  onChange={(e) =>
-                    setValue('color', e.target.value, { shouldDirty: true })
-                  }
-                  placeholder="#RRGGBB"
-                />
-              </div>
-            </div>
-          </div>
-        ) : item ? (
-          <div
-            className="flex flex-col gap-3 text-[12px]"
-            style={{ color: 'var(--color-text-muted)' }}
-          >
-            <p>
-              <span style={{ color: 'var(--color-text-subtle)' }}>?�선?�위: </span>
-              {item.priority}
-            </p>
-            <div className="flex items-center gap-2">
-              <span style={{ color: 'var(--color-text-subtle)' }}>?�상: </span>
-              <span
-                className="w-4 h-4 rounded-full"
-                style={{ background: normalizeHexColor(item.color) }}
-              />
-              <span className="font-mono">{normalizeHexColor(item.color)}</span>
-            </div>
-          </div>
+        {item ? (
+          <AlarmPriorityFormFields
+            form={editor.form}
+            editMode={editor.editMode}
+            layout="stack"
+          />
         ) : null}
       </Drawer>
 
       <Modal
-        open={deleteOpen}
-        title="?�선?�위 ??��"
-        description={`?�선?�위 ${item?.priority ?? ''} ??��????��?�시겠습?�까?`}
-        confirmLabel="??��"
-        loading={deleteMut.isPending}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setDeleteOpen(false)}
+        open={editor.deleteOpen}
+        title="우선순위 삭제"
+        description={`우선순위 ${item?.priority ?? ''} 항목을 삭제하시겠습니까?`}
+        confirmLabel="삭제"
+        loading={editor.isDeleting}
+        onConfirm={editor.handleDeleteConfirm}
+        onCancel={() => editor.setDeleteOpen(false)}
       />
     </>
   )

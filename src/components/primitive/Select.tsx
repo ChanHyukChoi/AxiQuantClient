@@ -24,7 +24,7 @@ interface SelectProps {
 }
 
 const MENU_MAX_HEIGHT = 200
-const MENU_OPTION_HEIGHT = 22
+const MENU_OPTION_HEIGHT = 26
 const MENU_VIEWPORT_GAP = 4
 
 const estimateMenuHeight = (optionCount: number): number =>
@@ -71,7 +71,7 @@ export const Select = ({
   options,
   disabled = false,
   placeholder = '선택',
-  fontSize = 12,
+  fontSize = 15,
   className = '',
   menuPlacement = 'auto',
 }: SelectProps) => {

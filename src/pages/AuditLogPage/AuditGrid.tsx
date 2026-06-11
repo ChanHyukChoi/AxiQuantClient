@@ -17,7 +17,7 @@ interface AuditGridProps {
 
 const cellStyle: CSSProperties = {
   padding: '6px 10px',
-  fontSize: 12,
+  fontSize: 14,
   color: 'var(--color-cell)',
   borderBottom: '0.5px solid var(--color-border-subtle)',
   whiteSpace: 'nowrap',
@@ -66,7 +66,7 @@ export const AuditGrid = ({
                   style={{
                     padding: '6px 10px',
                     textAlign: 'left',
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: 500,
                     color: 'var(--color-text-dim)',
                     borderBottom: '0.5px solid var(--color-border)',
@@ -82,7 +82,7 @@ export const AuditGrid = ({
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-8 text-[12px]"
+                  className="text-center py-8 text-[14px]"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   불러오는 중...
@@ -92,7 +92,7 @@ export const AuditGrid = ({
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-8 text-[12px]"
+                  className="text-center py-8 text-[14px]"
                   style={{ color: '#e06060' }}
                 >
                   운영 기록을 불러오지 못했습니다.
@@ -102,7 +102,7 @@ export const AuditGrid = ({
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-8 text-[12px]"
+                  className="text-center py-8 text-[14px]"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   표시할 기록이 없습니다.
@@ -116,7 +116,7 @@ export const AuditGrid = ({
                   <td style={cellStyle}>{row.clientType || '—'}</td>
                   <td style={cellStyle}>
                     <span
-                      className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+                      className="inline-flex text-[12px] font-medium px-1.5 py-0.5 rounded-full"
                       style={actionBadgeStyle(String(row.actionType))}
                     >
                       {row.actionType}
@@ -135,7 +135,7 @@ export const AuditGrid = ({
       </div>
 
       <div
-        className="flex-shrink-0 flex items-center justify-between gap-2 flex-wrap text-[11px]"
+        className="flex-shrink-0 flex items-center justify-between gap-2 flex-wrap text-[13px]"
         style={{
           padding: '5px 12px',
           background: 'var(--color-sidebar)',
@@ -148,7 +148,7 @@ export const AuditGrid = ({
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="text-[11px] px-1.5 py-0.5 rounded"
+            className="text-[13px] px-1.5 py-0.5 rounded"
             style={{
               background: 'var(--color-btn-hover)',
               border: '0.5px solid var(--color-btn-default-border)',

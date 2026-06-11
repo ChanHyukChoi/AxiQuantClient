@@ -142,7 +142,7 @@ export const AlarmMailDrawer = ({
         >
           {item.name?.trim() || '이메일 경보'}
         </span>
-        <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+        <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
           {'\uacbd\ubcf4 '}
           {item.alarmIds?.length ?? 0}
           {' \u00b7 \uc218\uc2e0\uc790 '}
@@ -151,7 +151,7 @@ export const AlarmMailDrawer = ({
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
       {
         '\uc88c\uce21 \ubaa9\ub85d\uc5d0\uc11c \uc774\uba54\uc77c \uacbd\ubcf4\ub97c \uc120\ud0dd\ud558\uc138\uc694.'
       }
@@ -162,7 +162,7 @@ export const AlarmMailDrawer = ({
     editMode ? (
       <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
         {saveError ? (
-          <p className="text-[11px] text-right" style={{ color: '#c75c5c' }}>
+          <p className="text-[13px] text-right" style={{ color: '#c75c5c' }}>
             {saveError}
           </p>
         ) : null}
@@ -215,7 +215,7 @@ export const AlarmMailDrawer = ({
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
               <span
-                className="text-[11px] font-medium"
+                className="text-[13px] font-medium"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
                 {'\uba85\uce6d'}
@@ -226,7 +226,7 @@ export const AlarmMailDrawer = ({
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span
-                  className="text-[11px] font-medium"
+                  className="text-[13px] font-medium"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   {'\uc5f0\uacb0 \uacbd\ubcf4'}
@@ -243,7 +243,7 @@ export const AlarmMailDrawer = ({
               <div className="flex flex-wrap gap-1.5">
                 {alarmIds.length === 0 ? (
                   <span
-                    className="text-[11px]"
+                    className="text-[13px]"
                     style={{ color: 'var(--color-text-dim)' }}
                   >
                     {'\uc120\ud0dd\ub41c \uacbd\ubcf4 \uc5c6\uc74c'}
@@ -252,7 +252,7 @@ export const AlarmMailDrawer = ({
                   alarmIds.map((id) => (
                     <span
                       key={id}
-                      className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full"
+                      className="inline-flex items-center gap-1 text-[13px] px-2 py-0.5 rounded-full"
                       style={{
                         background: 'var(--color-btn-hover)',
                         color: 'var(--color-text)',
@@ -277,7 +277,7 @@ export const AlarmMailDrawer = ({
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <span
-                  className="text-[11px] font-medium"
+                  className="text-[13px] font-medium"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   {'\uc218\uc2e0 \uc774\uba54\uc77c'}
@@ -307,7 +307,7 @@ export const AlarmMailDrawer = ({
           </div>
         ) : item ? (
           <div
-            className="flex flex-col gap-3 text-[12px]"
+            className="flex flex-col gap-3 text-[14px]"
             style={{ color: 'var(--color-text-muted)' }}
           >
             <p>

@@ -42,14 +42,14 @@ export const UserPermissionsTab = ({
             className="flex items-center justify-between py-2 px-2 rounded"
             style={{ border: '0.5px solid var(--color-border)', background: 'var(--color-btn-hover)' }}
           >
-            <span className="text-[12px] font-medium" style={{ color: 'var(--color-text)' }}>
+            <span className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
               전체 허용
             </span>
             {editMode ? (
               <button
                 type="button"
                 onClick={() => onPermissionsChange(setAllPermissions(!fullAllow))}
-                className="text-[11px] px-2 py-0.5 rounded"
+                className="text-[13px] px-2 py-0.5 rounded"
                 style={{
                   background: fullAllow ? 'var(--color-btn-accent-bg)' : 'transparent',
                   color: fullAllow ? 'var(--color-accent)' : 'var(--color-text-muted)',
@@ -59,7 +59,7 @@ export const UserPermissionsTab = ({
                 {fullAllow ? 'ON' : 'OFF'}
               </button>
             ) : (
-              <span className="text-[11px]" style={{ color: fullAllow ? '#4caf7d' : 'var(--color-text-dim)' }}>
+              <span className="text-[13px]" style={{ color: fullAllow ? '#4caf7d' : 'var(--color-text-dim)' }}>
                 {fullAllow ? '허용됨' : '개별 설정'}
               </span>
             )}
@@ -68,7 +68,7 @@ export const UserPermissionsTab = ({
           {PERMISSION_CATEGORIES.map((cat) => (
             <section key={cat.category}>
               <p
-                className="text-[11px] font-medium mb-2 pb-1"
+                className="text-[13px] font-medium mb-2 pb-1"
                 style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
               >
                 {cat.category}
@@ -82,11 +82,11 @@ export const UserPermissionsTab = ({
                       className="flex items-center gap-2 py-1.5 px-1"
                       style={{ borderBottom: '0.5px solid var(--color-border-subtle)' }}
                     >
-                      <span className="text-[12px] flex-1 min-w-0" style={{ color: 'var(--color-text)' }}>
+                      <span className="text-[14px] flex-1 min-w-0" style={{ color: 'var(--color-text)' }}>
                         {item.label}
                       </span>
                       <div className="flex items-center gap-3 flex-shrink-0">
-                        <label className="flex items-center gap-1 text-[11px]" style={{ color: 'var(--color-text-muted)' }}>
+                        <label className="flex items-center gap-1 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
                           {editMode ? (
                             <input
                               type="checkbox"
@@ -105,7 +105,7 @@ export const UserPermissionsTab = ({
                         </label>
                         {!item.readOnly && (
                           <label
-                            className="flex items-center gap-1 text-[11px]"
+                            className="flex items-center gap-1 text-[13px]"
                             style={{ color: 'var(--color-text-muted)' }}
                           >
                             {editMode ? (

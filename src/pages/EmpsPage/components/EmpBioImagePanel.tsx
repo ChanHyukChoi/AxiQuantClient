@@ -107,7 +107,7 @@ export const EmpBioImagePanel = ({
       style={{
         ...frameStyle,
         color: 'var(--color-text-subtle)',
-        fontSize: 12,
+        fontSize: 14,
         padding: 8,
       }}
     >

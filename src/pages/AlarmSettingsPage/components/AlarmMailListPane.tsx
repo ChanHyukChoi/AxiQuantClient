@@ -21,15 +21,15 @@ export const AlarmMailListPane = ({
   >
     <div className="flex-1 overflow-y-auto app-scrollbar">
       {loading ? (
-        <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+        <p className="text-[14px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
           불러오는 중...
         </p>
       ) : error ? (
-        <p className="text-[12px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
+        <p className="text-[14px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
           이메일 경보 목록을 불러오지 못했습니다.
         </p>
       ) : items.length === 0 ? (
-        <p className="text-[12px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
+        <p className="text-[14px] text-center py-8" style={{ color: 'var(--color-text-subtle)' }}>
           등록된 이메일 경보가 없습니다.
         </p>
       ) : (
@@ -64,12 +64,12 @@ export const AlarmMailListPane = ({
               }}
             >
               <span
-                className="text-[12px] font-medium truncate block"
+                className="text-[14px] font-medium truncate block"
                 style={{ color: 'var(--color-text)' }}
               >
                 {item.name?.trim() || '이메일 경보'}
               </span>
-              <p className="text-[11px] mt-1" style={{ color: 'var(--color-text-subtle)' }}>
+              <p className="text-[13px] mt-1" style={{ color: 'var(--color-text-subtle)' }}>
                 경보 {item.alarmIds?.length ?? 0} · 수신자 {item.emails?.length ?? 0}
               </p>
             </div>
@@ -79,7 +79,7 @@ export const AlarmMailListPane = ({
     </div>
 
     <div
-      className="flex-shrink-0 flex items-center text-[11px]"
+      className="flex-shrink-0 flex items-center text-[13px]"
       style={{
         padding: '5px 12px',
         background: 'var(--color-sidebar)',

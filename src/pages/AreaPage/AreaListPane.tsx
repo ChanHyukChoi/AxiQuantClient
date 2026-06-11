@@ -51,18 +51,18 @@ export const AreaListPane = ({
     <div className="flex-1 overflow-y-auto app-scrollbar">
       {loading ? (
         <p
-          className="text-[12px] text-center py-8"
+          className="text-[14px] text-center py-8"
           style={{ color: 'var(--color-text-subtle)' }}
         >
           불러오는 중...
         </p>
       ) : error ? (
-        <p className="text-[12px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
+        <p className="text-[14px] text-center py-8 px-3" style={{ color: '#c75c5c' }}>
           영역 목록을 불러오지 못했습니다.
         </p>
       ) : areas.length === 0 ? (
         <p
-          className="text-[12px] text-center py-8"
+          className="text-[14px] text-center py-8"
           style={{ color: 'var(--color-text-subtle)' }}
         >
           {searchQuery.trim() ? '검색 결과가 없습니다.' : '등록된 영역이 없습니다.'}
@@ -106,7 +106,7 @@ export const AreaListPane = ({
             >
               <div className="flex items-center justify-between gap-2">
                 <span
-                  className="text-[12px] font-medium truncate flex-1 min-w-0"
+                  className="text-[14px] font-medium truncate flex-1 min-w-0"
                   style={{ color: 'var(--color-text)' }}
                 >
                   {fallbackAreaName(area.name)}
@@ -117,7 +117,7 @@ export const AreaListPane = ({
               </div>
 
               <p
-                className="text-[11px] mt-1"
+                className="text-[13px] mt-1"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
                 {area.occup} / {area.occmax} ({pct}%)
@@ -143,7 +143,7 @@ export const AreaListPane = ({
     </div>
 
     <div
-      className="flex-shrink-0 flex items-center text-[11px]"
+      className="flex-shrink-0 flex items-center text-[13px]"
       style={{
         padding: '5px 12px',
         background: 'var(--color-sidebar)',

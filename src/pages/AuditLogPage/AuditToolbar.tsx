@@ -25,7 +25,7 @@ const presetBtnStyle = (active: boolean): React.CSSProperties => ({
   background: active ? 'var(--color-btn-hover)' : 'transparent',
   color: active ? 'var(--color-text)' : 'var(--color-text-muted)',
   border: '0.5px solid var(--color-btn-default-border)',
-  fontSize: 11,
+  fontSize: 13,
   padding: '3px 8px',
   borderRadius: 4,
   cursor: 'pointer',
@@ -35,7 +35,7 @@ const selectStyle: React.CSSProperties = {
   background: 'var(--color-btn-hover)',
   border: '0.5px solid var(--color-btn-default-border)',
   color: 'var(--color-text)',
-  fontSize: 12,
+  fontSize: 14,
   padding: '4px 8px',
   borderRadius: 4,
 }
@@ -85,10 +85,10 @@ export const AuditToolbar = ({
           onDatePresetChange('custom')
           onDateFromChange(e.target.value)
         }}
-        className="text-[11px] px-1.5 py-1 rounded"
+        className="text-[13px] px-1.5 py-1 rounded"
         style={selectStyle}
       />
-      <span className="text-[11px]" style={{ color: 'var(--color-text-dim)' }}>
+      <span className="text-[13px]" style={{ color: 'var(--color-text-dim)' }}>
         ~
       </span>
       <input
@@ -98,7 +98,7 @@ export const AuditToolbar = ({
           onDatePresetChange('custom')
           onDateToChange(e.target.value)
         }}
-        className="text-[11px] px-1.5 py-1 rounded"
+        className="text-[13px] px-1.5 py-1 rounded"
         style={selectStyle}
       />
 

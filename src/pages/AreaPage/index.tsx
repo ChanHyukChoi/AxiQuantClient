@@ -32,9 +32,10 @@ export const AreaPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="영역 (1안)"
+        title="영역"
         icon={<MapPin size={15} />}
-        actions={<AddButton onClick={() => undefined} title="추가 — 준비 중" />}
+        variantPaths={{ a: '/area', b: '/area-b' }}
+        actions={<AddButton onClick={() => undefined} />}
       />
 
       <div className="flex flex-1 overflow-hidden">

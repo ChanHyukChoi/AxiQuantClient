@@ -20,7 +20,7 @@ const TypeBadge = ({ type }: { type: EventRecord['type'] }) => {
   if (type === 'access') {
     return (
       <span
-        className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+        className="inline-flex text-[12px] font-medium px-1.5 py-0.5 rounded-full"
         style={{ background: '#0d2b1a', color: '#4caf7d' }}
       >
         출입
@@ -29,7 +29,7 @@ const TypeBadge = ({ type }: { type: EventRecord['type'] }) => {
   }
   return (
     <span
-      className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+      className="inline-flex text-[12px] font-medium px-1.5 py-0.5 rounded-full"
       style={{ background: '#2b1616', color: '#e06060' }}
     >
       경보
@@ -42,14 +42,14 @@ const AckCell = ({ row }: { row: EventRecord }) => {
     return <span style={{ color: 'var(--color-text-dim)' }}>—</span>
   return row.acked ? (
     <span
-      className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+      className="inline-flex text-[12px] font-medium px-1.5 py-0.5 rounded-full"
       style={{ background: '#0d2b1a', color: '#4caf7d' }}
     >
       확인
     </span>
   ) : (
     <span
-      className="inline-flex text-[10px] font-medium px-1.5 py-0.5 rounded-full"
+      className="inline-flex text-[12px] font-medium px-1.5 py-0.5 rounded-full"
       style={{ background: '#2b1616', color: '#e06060' }}
     >
       미확인
@@ -116,7 +116,7 @@ export const EventGrid = ({
                   style={{
                     padding: '6px 10px',
                     textAlign: 'left',
-                    fontSize: 11,
+                    fontSize: 13,
                     fontWeight: 500,
                     color: 'var(--color-text-dim)',
                     borderBottom: '0.5px solid var(--color-border)',
@@ -133,7 +133,7 @@ export const EventGrid = ({
               <tr>
                 <td
                   colSpan={8}
-                  className="text-center py-8 text-[12px]"
+                  className="text-center py-8 text-[14px]"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   불러오는 중...
@@ -143,7 +143,7 @@ export const EventGrid = ({
               <tr>
                 <td
                   colSpan={8}
-                  className="text-center py-8 text-[12px]"
+                  className="text-center py-8 text-[14px]"
                   style={{ color: '#e06060' }}
                 >
                   이력을 불러오지 못했습니다.
@@ -153,7 +153,7 @@ export const EventGrid = ({
               <tr>
                 <td
                   colSpan={8}
-                  className="text-center py-8 text-[12px]"
+                  className="text-center py-8 text-[14px]"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
                   표시할 이벤트가 없습니다.
@@ -202,7 +202,7 @@ export const EventGrid = ({
       </div>
 
       <div
-        className="flex-shrink-0 flex items-center justify-between text-[11px]"
+        className="flex-shrink-0 flex items-center justify-between text-[13px]"
         style={{
           padding: '5px 12px',
           background: 'var(--color-sidebar)',
@@ -242,7 +242,7 @@ export const EventGrid = ({
 
 const cellStyle: CSSProperties = {
   padding: '6px 10px',
-  fontSize: 12,
+  fontSize: 14,
   color: 'var(--color-cell)',
   borderBottom: '0.5px solid var(--color-border-subtle)',
   whiteSpace: 'nowrap',

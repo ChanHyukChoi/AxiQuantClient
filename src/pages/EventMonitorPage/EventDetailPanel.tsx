@@ -8,10 +8,10 @@ interface EventDetailPanelProps {
 
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <div className="flex flex-col gap-0.5 py-1.5">
-    <span className="text-[10px]" style={{ color: 'var(--color-text-dim)' }}>
+    <span className="text-[12px]" style={{ color: 'var(--color-text-dim)' }}>
       {label}
     </span>
-    <span className="text-[12px] break-words" style={{ color: 'var(--color-text)' }}>
+    <span className="text-[14px] break-words" style={{ color: 'var(--color-text)' }}>
       {value || '—'}
     </span>
   </div>
@@ -28,7 +28,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
           background: 'var(--color-sidebar)',
         }}
       >
-        <p className="text-[12px] text-center" style={{ color: 'var(--color-text-dim)' }}>
+        <p className="text-[14px] text-center" style={{ color: 'var(--color-text-dim)' }}>
           이벤트를 선택하세요
         </p>
       </aside>
@@ -48,13 +48,13 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
     >
       <div className="px-3 pt-3 pb-2 flex-shrink-0">
         <p
-          className="text-[13px] font-medium mb-0.5"
+          className="text-[15px] font-medium mb-0.5"
           style={{ color: 'var(--color-text)' }}
         >
           {event.event}
         </p>
         <p
-          className="text-[11px] font-mono"
+          className="text-[13px] font-mono"
           style={{ color: 'var(--color-text-subtle)' }}
         >
           {event.ts}
@@ -77,7 +77,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
         >
           {event.acked ? (
             <div
-              className="text-center text-[12px] font-medium py-2 rounded"
+              className="text-center text-[14px] font-medium py-2 rounded"
               style={{ background: '#0d2b1a', color: '#4caf7d' }}
             >
               확인 완료

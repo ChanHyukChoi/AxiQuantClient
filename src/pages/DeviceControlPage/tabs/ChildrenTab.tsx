@@ -13,7 +13,7 @@ interface ChildrenTabProps {
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <p
-    className="text-[12px] font-medium tracking-wide pb-1.5 mb-2"
+    className="text-[14px] font-medium tracking-wide pb-1.5 mb-2"
     style={{
       color: 'var(--color-text-subtle)',
       borderBottom: '0.5px solid var(--color-border)',
@@ -40,7 +40,7 @@ const DeviceListSection = ({
       </span>
     </SectionTitle>
     {items.length === 0 ? (
-      <p className="text-[12px] mb-3" style={{ color: 'var(--color-text-dim)' }}>
+      <p className="text-[14px] mb-3" style={{ color: 'var(--color-text-dim)' }}>
         없음
       </p>
     ) : (
@@ -51,7 +51,7 @@ const DeviceListSection = ({
             className="flex items-center justify-between gap-2 rounded px-2 py-1.5"
             style={{ border: '0.5px solid var(--color-border-subtle)' }}
           >
-            <span className="text-[12px] truncate" style={{ color: 'var(--color-text)' }}>
+            <span className="text-[14px] truncate" style={{ color: 'var(--color-text)' }}>
               {item.name?.trim() || '—'}
             </span>
             <Badge variant={isDeviceActive(item.active) ? 'on' : 'off'}>
@@ -66,7 +66,7 @@ const DeviceListSection = ({
 
 const EmptyChildren = () => (
   <p
-    className="text-[12px] py-6 text-center"
+    className="text-[14px] py-6 text-center"
     style={{ color: 'var(--color-text-subtle)' }}
   >
     하위 장치 없음
@@ -76,7 +76,7 @@ const EmptyChildren = () => (
 export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) => {
   if (loading) {
     return (
-      <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         하위 장치를 불러오는 중...
       </p>
     )
@@ -84,7 +84,7 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
 
   if (!scp) {
     return (
-      <p className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+      <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         SCP를 선택하세요.
       </p>
     )
@@ -102,7 +102,7 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
 
     return (
       <div>
-        <p className="text-[12px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
+        <p className="text-[14px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
           SIO «{sio.name}» 하위
         </p>
         <DeviceListSection icon={<ScanLine size={12} />} title="리더" items={readers} />
@@ -127,7 +127,7 @@ export const ChildrenTab = ({ scp, sio, childData, loading }: ChildrenTabProps) 
 
   return (
     <div>
-      <p className="text-[12px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
+      <p className="text-[14px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
         SCP «{scp.name}» 전체 하위
       </p>
       <DeviceListSection icon={<Cpu size={12} />} title="SIO" items={data.sios} />

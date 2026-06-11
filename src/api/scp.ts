@@ -36,3 +36,12 @@ export const deleteScp = async (id: number): Promise<boolean> => {
     return false
   }
 }
+
+export const resetScp = async (id: number): Promise<boolean> => {
+  try {
+    await axiosInstance.post(`/api/scp/${id}/reset`)
+    return true
+  } catch {
+    return false
+  }
+}

@@ -63,7 +63,7 @@ const presetBtnStyle = (active: boolean): React.CSSProperties => ({
   background: active ? 'var(--color-btn-hover)' : 'transparent',
   color: active ? 'var(--color-text)' : 'var(--color-text-muted)',
   border: '0.5px solid var(--color-btn-default-border)',
-  fontSize: 11,
+  fontSize: 13,
   padding: '3px 8px',
   borderRadius: 4,
   cursor: 'pointer',
@@ -106,7 +106,7 @@ export const MonitorToolbar = ({
         <div className="flex items-center gap-1.5 flex-shrink-0">
           <Activity style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
           <span
-            className="text-[13px] font-medium"
+            className="text-[15px] font-medium"
             style={{ color: 'var(--color-text)' }}
           >
             이벤트 모니터
@@ -132,7 +132,7 @@ export const MonitorToolbar = ({
 
         {mode === 'live' && (
           <div
-            className="flex items-center gap-1.5 text-[11px]"
+            className="flex items-center gap-1.5 text-[13px]"
             style={{ color: 'var(--color-text-muted)' }}
           >
             <span
@@ -184,7 +184,7 @@ export const MonitorToolbar = ({
             key={f}
             type="button"
             onClick={() => onTypeFilterChange(f)}
-            className="text-[11px] font-medium px-2.5 py-1 rounded-full"
+            className="text-[13px] font-medium px-2.5 py-1 rounded-full"
             style={pillStyle(typeFilter === f, f)}
           >
             {f === 'all' ? '전체' : f === 'access' ? '출입' : '경보'}
@@ -217,14 +217,14 @@ export const MonitorToolbar = ({
                 onDatePresetChange('custom')
                 onDateFromChange(e.target.value)
               }}
-              className="text-[11px] px-1.5 py-1 rounded"
+              className="text-[13px] px-1.5 py-1 rounded"
               style={{
                 background: 'var(--color-btn-hover)',
                 border: '0.5px solid var(--color-btn-default-border)',
                 color: 'var(--color-text)',
               }}
             />
-            <span className="text-[11px]" style={{ color: 'var(--color-text-dim)' }}>
+            <span className="text-[13px]" style={{ color: 'var(--color-text-dim)' }}>
               ~
             </span>
             <input
@@ -234,7 +234,7 @@ export const MonitorToolbar = ({
                 onDatePresetChange('custom')
                 onDateToChange(e.target.value)
               }}
-              className="text-[11px] px-1.5 py-1 rounded"
+              className="text-[13px] px-1.5 py-1 rounded"
               style={{
                 background: 'var(--color-btn-hover)',
                 border: '0.5px solid var(--color-btn-default-border)',
@@ -249,7 +249,7 @@ export const MonitorToolbar = ({
             placeholder="이벤트, 카드번호, 장치 검색"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="max-w-[220px] text-[12px]"
+            className="max-w-[220px] text-[14px]"
           />
           <select
             value={scpId === '' ? '' : String(scpId)}
@@ -257,7 +257,7 @@ export const MonitorToolbar = ({
               const v = e.target.value
               onScpChange(v === '' ? '' : Number(v))
             }}
-            className="text-[12px] px-2 py-1.5 rounded min-w-[120px]"
+            className="text-[14px] px-2 py-1.5 rounded min-w-[120px]"
             style={{
               background: 'var(--color-btn-hover)',
               border: '0.5px solid var(--color-btn-default-border)',

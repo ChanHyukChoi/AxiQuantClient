@@ -48,7 +48,7 @@ export const EmpUpsertForm = ({ mode, register, control, errors }: EmpUpsertForm
             <Input {...register('empNo')} style={fieldFontStyle} />
             <p
               className="leading-snug"
-              style={{ fontSize: 11, color: 'var(--color-text-subtle)' }}
+              style={{ fontSize: 13, color: 'var(--color-text-subtle)' }}
             >
               WPF AdminClient와 동일: 이 값은 API 본문에 넣지 않습니다.
             </p>

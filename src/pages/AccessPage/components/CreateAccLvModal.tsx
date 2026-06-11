@@ -55,7 +55,7 @@ export const CreateAccLvModal = ({ open, onCancel, onCreated }: CreateAccLvModal
         <div className="flex items-center justify-between mb-4">
           <p
             id="create-acclv-title"
-            className="text-[13px] font-medium"
+            className="text-[15px] font-medium"
             style={{ color: 'var(--color-text)' }}
           >
             접근 권한 추가

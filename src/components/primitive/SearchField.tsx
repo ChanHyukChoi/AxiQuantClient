@@ -19,7 +19,7 @@ export const SearchField = ({ placeholder = '검색...', value, onChange }: Sear
       border: '0.5px solid var(--color-search-border)',
     }}
   >
-    <Search aria-hidden size={13} color="var(--color-search-icon)" />
+    <Search aria-hidden size={15} color="var(--color-search-icon)" />
     <input
       type="text"
       style={{

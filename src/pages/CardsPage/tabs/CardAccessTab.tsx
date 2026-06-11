@@ -50,7 +50,7 @@ export const CardAccessTab = ({
     setMoveError(null)
     const ok = await moveCardAreaAsync({ areaId })
     if (!ok) {
-      setMoveError('영역 이동 API가 아직 연결되지 않았습니다.')
+      setMoveError('영역을 이동하지 못했습니다.')
       return
     }
     setAreaModalOpen(false)
@@ -91,7 +91,7 @@ export const CardAccessTab = ({
             영역 이동
           </Button>
           {moveError ? (
-            <p className="text-[12px]" style={{ color: 'var(--color-danger)' }}>
+            <p className="text-[14px]" style={{ color: 'var(--color-danger)' }}>
               {moveError}
             </p>
           ) : null}

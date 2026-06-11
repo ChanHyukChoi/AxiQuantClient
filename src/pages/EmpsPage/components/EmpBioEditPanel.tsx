@@ -54,13 +54,13 @@ export const EmpBioEditPanel = ({
 
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           <span
-            style={{ fontSize: 13, color: 'var(--color-text-muted)' }}
+            style={{ fontSize: 15, color: 'var(--color-text-muted)' }}
           >
             바이오 리더
           </span>
           <Select
             value=""
-            options={[{ value: '', label: '준비 중' }]}
+            options={[{ value: '', label: '선택' }]}
             disabled
             fontSize={FONT_SIZE}
           />

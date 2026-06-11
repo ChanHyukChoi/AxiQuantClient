@@ -1,121 +1,50 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Bell, Check, Cpu, Pencil, Trash2, X } from 'lucide-react'
+import { useState } from 'react'
+import { Bell, Check, Pencil, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
-import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
+import { Tab, type TabItem } from '@/components/primitive/Tab'
+import { AlarmRuleFormFields } from '@/pages/AlarmSettingsPage/components/AlarmRuleFormFields'
+import { AlarmUserPermissionList } from '@/pages/AlarmSettingsPage/components/AlarmUserPermissionList'
 import { DevicePickerModal } from '@/pages/AlarmSettingsPage/components/DevicePickerModal'
+import type { AlarmRuleDisplay } from '@/pages/AlarmSettingsPage/alarmRuleTypes'
+import type { useAlarmRuleEditor } from '@/pages/AlarmSettingsPage/useAlarmRuleEditor'
+import { isAlarmActive } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
 import {
-  alarmRuleSchema,
-  type AlarmRuleFormValues,
-} from '@/pages/AlarmSettingsPage/formTypes'
-import {
-  alarmToUpdatePayload,
-  deviceDisplayLabel,
-  isAlarmActive,
-} from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
-import { useDeleteAlarm, useUpdateAlarm } from '@/hooks/api/useAlarmSettings'
-import type { AlarmInfo } from '@/types/api'
+  deviceNameForRule,
+  eventCodeLabel,
+  scpNameForRule,
+} from '@/pages/AlarmSettingsPage/utils/alarmRuleDisplay'
+import type { ScpInfo } from '@/types/api'
+
+type AlarmRuleEditor = ReturnType<typeof useAlarmRuleEditor>
 
 interface AlarmRuleDrawerProps {
-  alarm: AlarmInfo | null
+  rule: AlarmRuleDisplay | null
+  useMock: boolean
+  scps: ScpInfo[]
   scpNameMap: Record<number, string>
-  onDeleted: () => void
+  editor: AlarmRuleEditor
 }
 
-const alarmToForm = (alarm: AlarmInfo): AlarmRuleFormValues => ({
-  name: alarm.name,
-  active: alarm.active,
-  deviceId: alarm.deviceId,
-  deviceType: alarm.deviceType,
-  eventCondition: alarm.eventCondition ?? '',
-})
+type DrawerSection = 'general' | 'users'
+
+const DRAWER_TABS: TabItem[] = [
+  { key: 'general', label: '일반' },
+  { key: 'users', label: '사용자' },
+]
 
 export const AlarmRuleDrawer = ({
-  alarm,
+  rule,
+  useMock,
+  scps,
   scpNameMap,
-  onDeleted,
+  editor,
 }: AlarmRuleDrawerProps) => {
-  const [editMode, setEditMode] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [devicePickerOpen, setDevicePickerOpen] = useState(false)
-  const [deviceLabel, setDeviceLabel] = useState('')
-  const [saveError, setSaveError] = useState<string | null>(null)
+  const [section, setSection] = useState<DrawerSection>('general')
+  const userIds = editor.form.watch('userIds')
 
-  const updateMut = useUpdateAlarm()
-  const deleteMut = useDeleteAlarm()
-
-  const { register, handleSubmit, reset, setValue, watch } = useForm<AlarmRuleFormValues>(
-    {
-      resolver: zodResolver(alarmRuleSchema),
-      defaultValues: {
-        name: '',
-        active: 1,
-        deviceId: 0,
-        deviceType: '',
-        eventCondition: '',
-      },
-    },
-  )
-
-  const active = watch('active')
-
-  useEffect(() => {
-    setEditMode(false)
-    setSaveError(null)
-    if (alarm) {
-      reset(alarmToForm(alarm))
-      setDeviceLabel(deviceDisplayLabel(alarm.deviceType, alarm.deviceId, scpNameMap))
-    } else {
-      setDeviceLabel('')
-    }
-  }, [alarm?.id, alarm, reset, scpNameMap])
-
-  const handleEdit = () => {
-    if (!alarm) return
-    setSaveError(null)
-    reset(alarmToForm(alarm))
-    setEditMode(true)
-  }
-
-  const handleCancel = () => {
-    if (!alarm) return
-    setEditMode(false)
-    setSaveError(null)
-    reset(alarmToForm(alarm))
-    setDeviceLabel(deviceDisplayLabel(alarm.deviceType, alarm.deviceId, scpNameMap))
-  }
-
-  const handleSave = handleSubmit(async (values) => {
-    if (!alarm) return
-    setSaveError(null)
-    const ok = await updateMut.mutateAsync({
-      id: alarm.id,
-      data: { ...alarmToUpdatePayload(alarm), ...values },
-    })
-    if (ok) setEditMode(false)
-    else setSaveError('저장하지 못했습니다.')
-  })
-
-  const handleDeleteConfirm = async () => {
-    if (!alarm) return
-    const ok = await deleteMut.mutateAsync(alarm.id)
-    if (ok) {
-      setDeleteOpen(false)
-      onDeleted()
-    }
-  }
-
-  const handleDevicePick = (deviceType: string, deviceId: number, label: string) => {
-    setValue('deviceType', deviceType, { shouldDirty: true })
-    setValue('deviceId', deviceId, { shouldDirty: true })
-    setDeviceLabel(label)
-    setDevicePickerOpen(false)
-  }
-
-  const drawerHeader = alarm ? (
+  const drawerHeader = rule ? (
     <div
       className="flex items-start gap-3 pb-3"
       style={{ borderBottom: '0.5px solid var(--color-border)' }}
@@ -136,26 +65,26 @@ export const AlarmRuleDrawer = ({
           className="text-[15px] font-medium leading-tight truncate"
           style={{ color: 'var(--color-text)' }}
         >
-          {alarm.name?.trim() || '경보'}
+          {rule.name?.trim() || '경보'}
         </span>
-        <span className="text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
-          {isAlarmActive(alarm.active) ? '활성' : '비활성'} ·{' '}
-          {deviceDisplayLabel(alarm.deviceType, alarm.deviceId, scpNameMap)}
+        <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
+          {isAlarmActive(rule.active) ? '활성' : '비활성'} · 우선순위 {rule.priority} ·{' '}
+          {scpNameForRule(rule, scpNameMap)}
         </span>
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[12px]" style={{ color: 'var(--color-text-subtle)' }}>
+    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
       좌측 목록에서 경보를 선택하세요.
     </div>
   )
 
-  const drawerActions = alarm ? (
-    editMode ? (
+  const drawerActions = rule ? (
+    editor.editMode ? (
       <div className="flex flex-col items-stretch gap-2 w-full max-w-[260px] ml-auto">
-        {saveError ? (
-          <p className="text-[11px] text-right" style={{ color: '#c75c5c' }}>
-            {saveError}
+        {editor.actionError ? (
+          <p className="text-[13px] text-right" style={{ color: '#c75c5c' }}>
+            {editor.actionError}
           </p>
         ) : null}
         <div className="flex justify-end gap-1.5">
@@ -163,7 +92,7 @@ export const AlarmRuleDrawer = ({
             variant="default"
             size="sm"
             leftIcon={<X size={12} />}
-            onClick={handleCancel}
+            onClick={editor.handleCancel}
           >
             취소
           </Button>
@@ -171,8 +100,8 @@ export const AlarmRuleDrawer = ({
             variant="accent"
             size="sm"
             leftIcon={<Check size={12} />}
-            loading={updateMut.isPending}
-            onClick={handleSave}
+            loading={editor.isSaving}
+            onClick={editor.handleSave}
           >
             저장
           </Button>
@@ -184,7 +113,7 @@ export const AlarmRuleDrawer = ({
           variant="danger"
           size="sm"
           leftIcon={<Trash2 size={12} />}
-          onClick={() => setDeleteOpen(true)}
+          onClick={() => editor.setDeleteOpen(true)}
         >
           삭제
         </Button>
@@ -192,7 +121,7 @@ export const AlarmRuleDrawer = ({
           variant="accent"
           size="sm"
           leftIcon={<Pencil size={12} />}
-          onClick={handleEdit}
+          onClick={editor.handleEdit}
         >
           수정
         </Button>
@@ -203,116 +132,106 @@ export const AlarmRuleDrawer = ({
   return (
     <>
       <Drawer fill header={drawerHeader} actions={drawerActions}>
-        {alarm && editMode ? (
-          <div className="flex flex-col gap-4">
-            <Field label="명칭">
-              <Input {...register('name')} />
-            </Field>
-
-            <Field label="활성">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isAlarmActive(active)}
-                  onChange={(e) => setValue('active', e.target.checked ? 1 : 0)}
+        {rule ? (
+          <div className="flex flex-col gap-3 min-h-0 flex-1">
+            <Tab
+              items={DRAWER_TABS}
+              activeKey={section}
+              onChange={(k) => setSection(k as DrawerSection)}
+              fontSize={14}
+            />
+            {section === 'general' ? (
+              editor.editMode ? (
+                <AlarmRuleFormFields
+                  form={editor.form}
+                  editMode
+                  scps={scps}
+                  scpNameMap={scpNameMap}
+                  deviceLabel={editor.deviceLabel}
+                  onOpenDevicePicker={() => editor.setDevicePickerOpen(true)}
                 />
-                <span className="text-[12px]" style={{ color: 'var(--color-text)' }}>
-                  {isAlarmActive(active) ? '활성' : '비활성'}
-                </span>
-              </label>
-            </Field>
-
-            <Field label="연결 장치">
-              <div className="flex flex-col gap-2">
-                <p
-                  className="text-[12px] truncate"
-                  style={{ color: 'var(--color-text-subtle)' }}
-                >
-                  {deviceLabel || '미선택'}
-                </p>
-                <Button
-                  variant="default"
-                  size="sm"
-                  leftIcon={<Cpu size={12} />}
-                  onClick={() => setDevicePickerOpen(true)}
-                >
-                  장치 선택
-                </Button>
-              </div>
-            </Field>
-
-            <Field label="이벤트 조건">
-              <textarea
-                {...register('eventCondition')}
-                rows={5}
-                className="w-full text-[12px] px-2 py-1 rounded border outline-none resize-y"
-                style={{
-                  background: 'var(--color-input-bg)',
-                  color: 'var(--color-text)',
-                  borderColor: 'var(--color-input-border)',
-                }}
-                placeholder="이벤트 조건을 입력하세요"
+              ) : (
+                <AlarmReadOnly rule={rule} scpNameMap={scpNameMap} />
+              )
+            ) : (
+              <AlarmUserPermissionList
+                selectedUserIds={userIds}
+                editMode={editor.editMode}
+                useMock={useMock}
+                onToggle={editor.toggleUserId}
+                onSelectAll={(ids) =>
+                  editor.form.setValue('userIds', ids, { shouldDirty: true })
+                }
+                onDeselectAll={() =>
+                  editor.form.setValue('userIds', [], { shouldDirty: true })
+                }
               />
-            </Field>
+            )}
           </div>
-        ) : alarm ? (
-          <AlarmReadOnly alarm={alarm} scpNameMap={scpNameMap} />
         ) : null}
       </Drawer>
 
       <DevicePickerModal
-        open={devicePickerOpen}
-        onCancel={() => setDevicePickerOpen(false)}
-        onConfirm={handleDevicePick}
+        open={editor.devicePickerOpen}
+        onCancel={() => editor.setDevicePickerOpen(false)}
+        onConfirm={editor.handleDevicePick}
       />
 
       <Modal
-        open={deleteOpen}
+        open={editor.deleteOpen}
         title="경보 삭제"
-        description={`「${alarm?.name ?? ''}」 경보를 삭제하시겠습니까?`}
+        description={`「${rule?.name ?? ''}」 경보를 삭제하시겠습니까?`}
         confirmLabel="삭제"
-        loading={deleteMut.isPending}
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setDeleteOpen(false)}
+        loading={editor.isDeleting}
+        onConfirm={editor.handleDeleteConfirm}
+        onCancel={() => editor.setDeleteOpen(false)}
       />
     </>
   )
 }
 
-const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div className="flex flex-col gap-1.5">
-    <span
-      className="text-[11px] font-medium"
-      style={{ color: 'var(--color-text-subtle)' }}
-    >
-      {label}
-    </span>
-    {children}
-  </div>
-)
-
 const AlarmReadOnly = ({
-  alarm,
+  rule,
   scpNameMap,
 }: {
-  alarm: AlarmInfo
+  rule: AlarmRuleDisplay
   scpNameMap: Record<number, string>
 }) => (
   <div
-    className="flex flex-col gap-3 text-[12px]"
+    className="flex flex-col gap-3 text-[14px]"
     style={{ color: 'var(--color-text-muted)' }}
   >
     <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>활성: </span>
-      {isAlarmActive(alarm.active) ? '예' : '아니오'}
+      <span style={{ color: 'var(--color-text-subtle)' }}>명칭: </span>
+      {rule.name || '—'}
+    </p>
+    <p>
+      <span style={{ color: 'var(--color-text-subtle)' }}>경보 코드: </span>
+      {eventCodeLabel(rule.eventCode)}
+    </p>
+    <p>
+      <span style={{ color: 'var(--color-text-subtle)' }}>컨트롤러: </span>
+      {scpNameForRule(rule, scpNameMap)}
     </p>
     <p>
       <span style={{ color: 'var(--color-text-subtle)' }}>장치: </span>
-      {deviceDisplayLabel(alarm.deviceType, alarm.deviceId, scpNameMap)}
+      {deviceNameForRule(rule, scpNameMap)}
     </p>
     <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>이벤트 조건: </span>
-      {alarm.eventCondition?.trim() || '—'}
+      <span style={{ color: 'var(--color-text-subtle)' }}>우선순위: </span>
+      {rule.priority}
+    </p>
+    <p>
+      <span style={{ color: 'var(--color-text-subtle)' }}>모니터링: </span>
+      {rule.monitoring ? '예' : '아니오'}
+    </p>
+    <p>
+      <span style={{ color: 'var(--color-text-subtle)' }}>인지 필요: </span>
+      {rule.ackRequired ? '예' : '아니오'}
+    </p>
+    <p>
+      <span style={{ color: 'var(--color-text-subtle)' }}>사용자: </span>
+      {rule.userIds.length > 0 ? `${rule.userIds.length}명` : '—'}
     </p>
   </div>
 )

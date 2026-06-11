@@ -53,8 +53,9 @@ export const AccessPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="접근 권한 (1안)"
+        title="접근 권한"
         icon={<DoorOpen size={15} />}
+        variantPaths={{ a: '/access', b: '/access-b' }}
         actions={<AddButton onClick={() => setCreateOpen(true)} />}
       />
 
