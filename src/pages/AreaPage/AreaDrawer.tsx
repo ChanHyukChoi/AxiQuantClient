@@ -153,12 +153,12 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
       </div>
       <div className="flex flex-col gap-1 min-w-0">
         <span
-          className="text-[15px] font-medium leading-tight truncate"
+          className="app-text-lg font-medium leading-tight truncate"
           style={{ color: 'var(--color-text)' }}
         >
           {fallbackAreaName(area.name)}
         </span>
-        <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
+        <span className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
           {isAreaActive(area.active) ? '활성' : '비활성'} · 점유 {area.occup}/
           {area.occmax}
         </span>

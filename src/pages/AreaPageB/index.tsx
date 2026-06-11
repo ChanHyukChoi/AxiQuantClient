@@ -4,6 +4,7 @@ import { Grid, type ColumnDef } from '@/components/primitive/Grid'
 import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
 import { PageHeader } from '@/layouts/PageHeader'
+import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import { AddButton } from '@/components/page-actions'
 import {
   mockOccupantsForArea,
@@ -55,15 +56,6 @@ const GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
     ),
   },
 ]
-
-const InfoField = ({ label, children }: { label: string; children: React.ReactNode }) => (
-  <div>
-    <span className="text-[13px] block mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
-      {label}
-    </span>
-    {children}
-  </div>
-)
 
 /**
  * 영역 2안 — WPF 유사 상·하 분할 (Grid 마스터 + 하단 정보/상세)
@@ -141,7 +133,7 @@ export const AreaPageB = () => {
             }}
           >
             <div
-              className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
+              className="flex-shrink-0 px-3 py-2 app-text-md font-medium"
               style={{
                 background: 'var(--color-accent-subtle)',
                 color: 'var(--color-accent)',
@@ -153,30 +145,26 @@ export const AreaPageB = () => {
             <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
               {selectedArea ? (
                 <div className="flex flex-col gap-3">
-                  <InfoField label="명칭">
-                    <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
-                      {fallbackAreaName(selectedArea.name)}
-                    </span>
-                  </InfoField>
-                  <InfoField label="상태">
+                  <DetailInfoField label="명칭">
+                    {fallbackAreaName(selectedArea.name)}
+                  </DetailInfoField>
+                  <DetailInfoField label="상태">
                     <Badge variant={isAreaActive(selectedArea.active) ? 'on' : 'off'}>
                       {isAreaActive(selectedArea.active) ? '활성' : '비활성'}
                     </Badge>
-                  </InfoField>
-                  <InfoField label="점유">
-                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
+                  </DetailInfoField>
+                  <DetailInfoField label="점유">
+                    <span className="font-mono">
                       {selectedArea.occup} / {selectedArea.occmax} (
                       {occupancyPercent(selectedArea.occup, selectedArea.occmax)}%)
                     </span>
-                  </InfoField>
-                  <InfoField label="최대 점유">
-                    <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
-                      {selectedArea.occmax}
-                    </span>
-                  </InfoField>
+                  </DetailInfoField>
+                  <DetailInfoField label="최대 점유">
+                    <span className="font-mono">{selectedArea.occmax}</span>
+                  </DetailInfoField>
                 </div>
               ) : (
-                <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
+                <p className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
                   상단 목록에서 영역을 선택하세요.
                 </p>
               )}
