@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@/components/primitive/Button'
+import { Select } from '@/components/primitive/Select'
+import {
+  LIST_OPTIONS_FONT_SIZE,
+  ListOptionsFilterField,
+  ListOptionsModalShell,
+} from '@/components/basic/ListOptionsModalShell'
 
 export type EmpListFilters = {
   cardAssignment: 'all' | 'has' | 'none'
@@ -12,8 +18,7 @@ export const defaultEmpListFilters: EmpListFilters = {
 export const isEmpFiltersActive = (filters: EmpListFilters): boolean =>
   filters.cardAssignment !== 'all'
 
-const selectClass =
-  'w-full text-[14px] px-2 py-1 rounded border outline-none'
+const FILTER_TAB = { id: 'filter', label: '데이터 필터' } as const
 
 interface EmpFilterModalProps {
   open: boolean
@@ -34,58 +39,15 @@ export const EmpFilterModal = ({
     if (open) setDraft(filters)
   }, [open, filters])
 
-  useEffect(() => {
-    if (!open) return
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [open, onClose])
-
-  if (!open) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div
-        className="rounded-md p-5 min-w-[280px] max-w-[320px] w-full"
-        style={{
-          background: 'var(--color-sidebar)',
-          border: '0.5px solid var(--color-border)',
-        }}
-      >
-        <p
-          className="text-[15px] font-medium mb-3"
-          style={{ color: 'var(--color-text)' }}
-        >
-          카드 사용자 필터
-        </p>
-
-        <label className="flex flex-col gap-1">
-          <span className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
-            보유 카드
-          </span>
-          <select
-            value={draft.cardAssignment}
-            onChange={(e) =>
-              setDraft({
-                cardAssignment: e.target.value as EmpListFilters['cardAssignment'],
-              })
-            }
-            className={selectClass}
-            style={{
-              background: 'var(--color-input-bg)',
-              borderColor: 'var(--color-input-border)',
-              color: 'var(--color-text)',
-            }}
-          >
-            <option value="all">전체</option>
-            <option value="has">카드 있음</option>
-            <option value="none">카드 없음</option>
-          </select>
-        </label>
-
-        <div className="flex justify-end gap-2 mt-5">
+    <ListOptionsModalShell
+      open={open}
+      tabs={[FILTER_TAB]}
+      activeTab={FILTER_TAB.id}
+      onTabChange={() => undefined}
+      onClose={onClose}
+      footer={
+        <>
           <Button
             variant="default"
             size="md"
@@ -110,8 +72,27 @@ export const EmpFilterModal = ({
           >
             적용
           </Button>
-        </div>
+        </>
+      }
+    >
+      <div className="flex flex-col gap-3">
+        <ListOptionsFilterField label="보유 카드">
+          <Select
+            value={draft.cardAssignment}
+            fontSize={LIST_OPTIONS_FONT_SIZE}
+            onChange={(v) =>
+              setDraft({
+                cardAssignment: v as EmpListFilters['cardAssignment'],
+              })
+            }
+            options={[
+              { value: 'all', label: '전체' },
+              { value: 'has', label: '카드 있음' },
+              { value: 'none', label: '카드 없음' },
+            ]}
+          />
+        </ListOptionsFilterField>
       </div>
-    </div>
+    </ListOptionsModalShell>
   )
 }

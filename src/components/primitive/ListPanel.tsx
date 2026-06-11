@@ -21,7 +21,7 @@ export const ListPanel = ({
   items,
   selectedId,
   onItemClick,
-  searchPlaceholder = '??',
+  searchPlaceholder = '검색...',
   onSearch,
   totalCount,
   width = 240,
@@ -37,7 +37,7 @@ export const ListPanel = ({
       {/* toolbar */}
       {onSearch && (
         <div
-          className="flex items-center flex-shrink-0"
+          className="flex-shrink-0"
           style={{
             padding: '7px 12px',
             background: 'var(--color-sidebar)',
@@ -55,7 +55,7 @@ export const ListPanel = ({
             className="flex items-center justify-center py-8 text-[14px]"
             style={{ color: 'var(--color-text-subtle)' }}
           >
-            ???? ?...
+            불러오는 중...
           </div>
         ) : (
           items.map((item) => (
@@ -79,7 +79,7 @@ export const ListPanel = ({
           color: 'var(--color-text-dim)',
         }}
       >
-        ?? {count}?
+        전체 {count}건
       </div>
     </div>
   )

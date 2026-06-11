@@ -158,6 +158,8 @@ export const EmpsPage = () => {
             }}
             actions={
               <FilterButton
+                showLabel={false}
+                title="필터"
                 active={isEmpFiltersActive(listFilters)}
                 onClick={() => setFilterModalOpen(true)}
               />

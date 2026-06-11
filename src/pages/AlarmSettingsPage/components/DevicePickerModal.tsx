@@ -210,7 +210,6 @@ export const DevicePickerModal = ({
               placeholder="장치 검색..."
               value={searchQuery}
               onChange={setSearchQuery}
-              className="w-full"
             />
           </div>
 

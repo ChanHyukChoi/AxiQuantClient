@@ -382,18 +382,27 @@ button.app-field-control {
   cursor: not-allowed;
 }
 
-/* SearchField — theme.css --color-search-* */
+/* SearchField — theme.css --color-search-* (--size-search-toolbar-width) */
 .app-search-field {
   display: flex;
   align-items: center;
   gap: 6px;
-  width: 100%;
+  width: var(--size-search-toolbar-width);
+  max-width: 100%;
+  flex-shrink: 0;
   min-width: 0;
   box-sizing: border-box;
-  padding: 4px 8px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0 8px;
   border-radius: 4px;
   background: var(--color-search-bg);
   border: 0.5px solid var(--color-search-border);
+}
+
+.app-search-field--fill {
+  width: 100%;
+  flex-shrink: 1;
 }
 
 .app-search-field input {
@@ -414,23 +423,9 @@ button.app-field-control {
 
 .app-search-field svg {
   flex-shrink: 0;
-  color: var(--color-search-icon);
-}
-
-/* 툴바 등 — Input·Select와 동일 26px */
-.app-search-field--compact {
-  height: 26px;
-  min-height: 26px;
-  padding: 0 8px;
-}
-
-.app-search-field--compact input {
-  font-size: 15px;
-}
-
-.app-search-field--compact svg {
   width: 14px;
   height: 14px;
+  color: var(--color-search-icon);
 }
 
 select.app-field-control {

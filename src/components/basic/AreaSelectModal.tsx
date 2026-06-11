@@ -82,7 +82,7 @@ export const AreaSelectModal = ({
           </button>
         </div>
 
-        <div className="px-3 py-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
+        <div className="px-3 py-2 border-b w-full min-w-0" style={{ borderColor: 'var(--color-border)' }}>
           <SearchField value={query} onChange={setQuery} />
         </div>
 

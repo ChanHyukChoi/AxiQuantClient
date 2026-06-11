@@ -73,10 +73,11 @@
   --color-btn-success-border: #1a3a2e;
 
   /* Search */
-  --color-search-bg: #3c3c3c;
-  --color-search-border: #3c3c3c;
+  --color-search-bg: var(--color-input-bg);
+  --color-search-border: var(--color-input-border);
   --color-search-icon: var(--color-text-muted);
   --color-search-placeholder: var(--color-text-dim);
+  --size-search-toolbar-width: 260px;
 
   /* Input */
   --color-input-bg: #3c3c3c;
@@ -155,10 +156,11 @@
   --color-btn-success-text: #107c10;
   --color-btn-success-border: #a7d4a7;
 
-  --color-search-bg: rgba(0, 0, 0, 0.04);
-  --color-search-border: #cecece;
+  --color-search-bg: var(--color-input-bg);
+  --color-search-border: var(--color-input-border);
   --color-search-icon: var(--color-text-muted);
   --color-search-placeholder: var(--color-text-dim);
+  --size-search-toolbar-width: 260px;
 
   --color-input-bg: #ffffff;
   --color-input-border: var(--color-border);

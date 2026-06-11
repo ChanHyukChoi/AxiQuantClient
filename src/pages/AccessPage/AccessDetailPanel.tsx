@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Pencil, Shield, Trash2, X } from 'lucide-react'
+import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
@@ -143,7 +144,7 @@ export const AccessDetailPanel = ({
           />
         ) : (
           <span
-            className="text-[14px] font-medium leading-tight"
+            className="app-text-lg font-medium leading-tight"
             style={{ color: 'var(--color-text)' }}
           >
             {fallbackAccLvName(accLv.name)}
@@ -206,18 +207,26 @@ export const AccessDetailPanel = ({
     </div>
   ) : (
     <section>
+      {accLv.description?.trim() ? (
+        <DetailInfoField label="설명" className="mb-4">
+          {accLv.description.trim()}
+        </DetailInfoField>
+      ) : null}
+
       <div className="flex items-center justify-between mb-2">
-        <h2 className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
+        <h2 className="app-text-md font-medium" style={{ color: 'var(--color-text)' }}>
           연결된 리더
         </h2>
-        <Button
-          variant="default"
-          size="sm"
-          onClick={() => setReaderEditOpen(true)}
-          disabled={readerLoading}
-        >
-          변경
-        </Button>
+        {editMode ? (
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => setReaderEditOpen(true)}
+            disabled={readerLoading}
+          >
+            변경
+          </Button>
+        ) : null}
       </div>
 
       <div

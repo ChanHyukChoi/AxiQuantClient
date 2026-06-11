@@ -29,7 +29,7 @@ export const TimezoneListPane = ({
     style={{ width: 240, borderRight: '0.5px solid var(--color-border)' }}
   >
     <div
-      className="flex items-center flex-shrink-0"
+      className="flex-shrink-0"
       style={{
         padding: '7px 12px',
         background: 'var(--color-sidebar)',

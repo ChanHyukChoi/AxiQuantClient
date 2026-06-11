@@ -5,8 +5,8 @@ interface SearchFieldProps {
   value?: string
   onChange: (value: string) => void
   className?: string
-  /** Input·Select(app-field-control)와 동일 26px — 툴바 정렬용 */
-  compact?: boolean
+  /** 부모 너비에 맞춤 — 기본은 고정 너비(--size-search-toolbar-width) */
+  fill?: boolean
 }
 
 export const SearchField = ({
@@ -14,18 +14,14 @@ export const SearchField = ({
   value,
   onChange,
   className = '',
-  compact = false,
+  fill = false,
 }: SearchFieldProps) => (
   <div
-    className={[
-      'app-search-field',
-      compact ? 'app-search-field--compact' : '',
-      className,
-    ]
+    className={['app-search-field', fill ? 'app-search-field--fill' : '', className]
       .filter(Boolean)
       .join(' ')}
   >
-    <Search aria-hidden size={compact ? 14 : 15} />
+    <Search aria-hidden size={14} />
     <input
       type="text"
       placeholder={placeholder}

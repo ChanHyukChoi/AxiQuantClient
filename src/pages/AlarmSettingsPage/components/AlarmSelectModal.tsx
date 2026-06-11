@@ -96,9 +96,7 @@ export const AlarmSelectModal = ({
           className="flex items-center gap-2 px-3 py-2 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
-          <div className="flex-1 min-w-0">
-            <SearchField value={query} onChange={setQuery} />
-          </div>
+          <SearchField value={query} onChange={setQuery} />
           <MultiSelectToggleAllButton
             hasSelection={checked.size > 0}
             onSelectAll={selectAllFiltered}

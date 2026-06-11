@@ -26,20 +26,18 @@ export const CardFmtListPane = ({
     style={{ width: 240, borderRight: '0.5px solid var(--color-border)' }}
   >
     <div
-      className="flex items-center flex-shrink-0 min-w-0 w-full"
+      className="flex-shrink-0"
       style={{
         padding: '7px 12px',
         background: 'var(--color-sidebar)',
         borderBottom: '0.5px solid var(--color-border)',
       }}
     >
-      <div className="w-full min-w-0">
-        <SearchField
-          value={searchQuery}
-          placeholder="형식명 검색..."
-          onChange={onSearch}
-        />
-      </div>
+      <SearchField
+        value={searchQuery}
+        placeholder="형식명 검색..."
+        onChange={onSearch}
+      />
     </div>
 
     <div className="flex-1 overflow-y-auto app-scrollbar">

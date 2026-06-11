@@ -139,6 +139,7 @@ export const Grid = <T extends { id: number }>({
   data,
   selectedId,
   onRowClick,
+  searchPlaceholder,
   onSearch,
   actions,
   totalCount,
@@ -346,15 +347,19 @@ export const Grid = <T extends { id: number }>({
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
       <div
-        className="flex items-center gap-2 flex-shrink-0"
+        className="flex items-center gap-2 flex-shrink-0 min-w-0"
         style={{
           padding: '7px 12px',
           background: 'var(--color-sidebar)',
           borderBottom: '0.5px solid var(--color-border)',
         }}
       >
-        {onSearch && <SearchField onChange={onSearch} />}
-        {actions && <div className="flex items-center gap-1.5 ml-auto">{actions}</div>}
+        {onSearch && (
+          <SearchField placeholder={searchPlaceholder} onChange={onSearch} />
+        )}
+        {actions && (
+          <div className="flex items-center gap-1.5 ml-auto shrink-0">{actions}</div>
+        )}
       </div>
 
       <div className="flex-1 min-w-0 overflow-y-auto overflow-x-auto app-scrollbar">

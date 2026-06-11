@@ -52,9 +52,7 @@ export const AlarmUserPermissionList = ({
         className="flex items-center gap-2 flex-shrink-0 px-2 py-1.5"
         style={{ borderBottom: '0.5px solid var(--color-border)' }}
       >
-        <div className="flex-1 min-w-0">
-          <SearchField value={query} onChange={setQuery} placeholder="사용자 검색..." />
-        </div>
+        <SearchField value={query} onChange={setQuery} placeholder="사용자 검색..." />
         {editMode ? (
           <MultiSelectToggleAllButton
             hasSelection={selectedUserIds.length > 0}

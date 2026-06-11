@@ -191,7 +191,6 @@ export const CardsPage = () => {
     columns,
     columnOptions,
     minGridWidth,
-    isLayoutCustomized,
     setColumnWidth,
     moveColumn,
     setColumnVisible,
@@ -200,8 +199,6 @@ export const CardsPage = () => {
     storageKey: CARDS_GRID_LAYOUT_KEY,
     legacyWidthsKey: CARDS_GRID_LEGACY_WIDTHS_KEY,
   })
-
-  const optionsActive = isCardFiltersActive(listFilters) || isLayoutCustomized
 
   const handleRowClick = (row: CardRow) => {
     if (createMode) {
@@ -263,6 +260,7 @@ export const CardsPage = () => {
             data={filteredCards}
             selectedId={selectedId ?? undefined}
             onRowClick={handleRowClick}
+            searchPlaceholder="카드 번호, 사용자 검색..."
             onSearch={setSearchQuery}
             totalCount={filteredCards.length}
             loading={cardLoading}
@@ -278,7 +276,9 @@ export const CardsPage = () => {
             onColumnReorder={moveColumn}
             actions={
               <FilterButton
-                active={optionsActive}
+                showLabel={false}
+                title="필터"
+                active={isCardFiltersActive(listFilters)}
                 onClick={() => openOptions('filter')}
               />
             }
