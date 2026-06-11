@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
-import { LINKAGE_FONT_SIZE, linkagePanelHeaderStyle } from '@/pages/LinkagePage/linkageUi'
+import { LINKAGE_FONT_SIZE, LINKAGE_GRID_HEADER_FONT_SIZE, linkagePanelHeaderStyle } from '@/pages/LinkagePage/linkageUi'
 import type { LinkageWhenRow } from '@/pages/LinkagePage/linkageTypes'
 
 interface LinkageWhenSectionProps {
@@ -13,7 +13,7 @@ interface LinkageWhenSectionProps {
 const thStyle: CSSProperties = {
   padding: '6px 10px',
   textAlign: 'left',
-  fontSize: LINKAGE_FONT_SIZE,
+  fontSize: LINKAGE_GRID_HEADER_FONT_SIZE,
   fontWeight: 500,
   color: 'var(--color-text-dim)',
   borderBottom: '0.5px solid var(--color-border)',

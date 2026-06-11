@@ -67,7 +67,6 @@ const InfoField = ({ label, children }: { label: string; children: React.ReactNo
 
 /**
  * 영역 2안 — WPF 유사 상·하 분할 (Grid 마스터 + 하단 정보/상세)
- * 회의용 목업. 하단 액션·탭은 UI만 제공.
  */
 export const AreaPageB = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -370,17 +369,6 @@ export const AreaPageB = () => {
           </Button>
         </div>
       </div>
-
-      <p
-        className="flex-shrink-0 text-center text-[12px] py-1"
-        style={{
-          color: 'var(--color-text-dim)',
-          borderTop: '0.5px solid var(--color-border-subtle)',
-          background: 'var(--color-sidebar)',
-        }}
-      >
-        레이아웃 2안 (WPF 유사) — 회의용 목업
-      </p>
     </div>
   )
 }

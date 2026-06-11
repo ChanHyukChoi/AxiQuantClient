@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { deviceEventToRecord, nextEventId, resetLiveEventSeq } from '@/lib/eventMonitor/eventRecords'
 import { sseClient } from '@/lib/infra/sse'
+import {
+  createSeedLiveEvents,
+  MOCK_LIVE_INTERVAL_MS,
+  MOCK_LIVE_SEED_COUNT,
+  nextMockDeviceEvent,
+} from '@/pages/EventMonitorPage/mockLiveEvents'
 import type { EventRecord } from '@/types/api/eventMonitor'
 import type { DeviceEventMessage } from '@/types/api/sse'
 
@@ -24,7 +30,10 @@ const parseDeviceEvent = (raw: string): DeviceEventMessage | null => {
 }
 
 export const useLiveEvents = () => {
-  const [events, setEvents] = useState<EventRecord[]>([])
+  const [events, setEvents] = useState<EventRecord[]>(() => {
+    resetLiveEventSeq()
+    return createSeedLiveEvents(MOCK_LIVE_SEED_COUNT)
+  })
   const [paused, setPaused] = useState(false)
   const pausedRef = useRef(paused)
 
@@ -50,6 +59,14 @@ export const useLiveEvents = () => {
 
     sseClient.on('OnEventReceived', handler)
     return () => sseClient.off('OnEventReceived', handler)
+  }, [appendEvent])
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (pausedRef.current) return
+      appendEvent(nextMockDeviceEvent())
+    }, MOCK_LIVE_INTERVAL_MS)
+    return () => window.clearInterval(timer)
   }, [appendEvent])
 
   const clear = useCallback(() => {

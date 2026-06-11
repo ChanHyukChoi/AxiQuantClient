@@ -24,7 +24,7 @@ export const TimezoneTab = () => {
         style={{ borderBottom: '0.5px solid var(--color-border)' }}
       >
         {editor.actionError ? (
-          <p className="text-[13px] mr-auto" style={{ color: '#c75c5c' }}>
+          <p className="app-text-xs mr-auto" style={{ color: '#c75c5c' }}>
             {editor.actionError}
           </p>
         ) : null}
@@ -34,7 +34,7 @@ export const TimezoneTab = () => {
           leftIcon={<Plus size={12} />}
           onClick={() => editor.handleAdd()}
         >
-          추가
+          추�?
         </Button>
       </div>
       <div className="flex flex-1 overflow-hidden">

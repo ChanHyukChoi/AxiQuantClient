@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
-import { EVENT_MONITOR_FONT_SIZE } from '@/pages/EventMonitorPage/eventMonitorUi'
+import { EVENT_MONITOR_FONT_SIZE, EVENT_MONITOR_GRID_HEADER_FONT_SIZE } from '@/pages/EventMonitorPage/eventMonitorUi'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
 interface EventGridProps {
@@ -222,7 +222,7 @@ export const EventGrid = ({
 const headerCellStyle: CSSProperties = {
   padding: '6px 10px',
   textAlign: 'left',
-  fontSize: EVENT_MONITOR_FONT_SIZE,
+  fontSize: EVENT_MONITOR_GRID_HEADER_FONT_SIZE,
   fontWeight: 500,
   color: 'var(--color-text-dim)',
   borderBottom: '0.5px solid var(--color-border)',

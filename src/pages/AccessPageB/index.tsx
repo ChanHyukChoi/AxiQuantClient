@@ -13,7 +13,7 @@ import type { AccLvInfo } from '@/types/api'
 const GRID_COLUMNS: ColumnDef<AccLvInfo>[] = [
   {
     key: 'name',
-    header: '명칭',
+    header: '??',
     width: 200,
     sortable: true,
     render: (value) => (
@@ -24,10 +24,7 @@ const GRID_COLUMNS: ColumnDef<AccLvInfo>[] = [
   },
 ]
 
-/**
- * 접근권한 2안 — WPF 유사 상·하 분할 (Grid 마스터 + 하단 정보/연결 테이블)
- * 회의용 목업. 하단 액션·변경은 UI만 제공.
- */
+/** ???? 2? ? WPF ?? ?�? ?? (Grid ??? + ?? ??/?? ???) */
 export const AccessPageB = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -54,14 +51,13 @@ export const AccessPageB = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="접근 권한"
+        title="?? ??"
         icon={<Lock size={15} />}
         variantPaths={{ a: '/access', b: '/access-b' }}
         actions={<AddButton onClick={() => undefined} />}
       />
 
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        {/* 상단: WPF 스타일 마스터 Grid */}
         <div
           className="flex flex-col min-h-0 overflow-hidden"
           style={{
@@ -75,13 +71,12 @@ export const AccessPageB = () => {
             selectedId={selectedId ?? undefined}
             onRowClick={(row) => setSelectedId(row.id)}
             onSearch={setSearchQuery}
-            searchPlaceholder="권한 검색..."
+            searchPlaceholder="?? ??..."
             totalCount={filteredList.length}
             loading={isLoading}
           />
         </div>
 
-        {/* 하단: 정보 + 연결 테이블 */}
         <div className="flex flex-1 min-h-0 overflow-hidden">
           <div
             className="flex flex-col flex-shrink-0 overflow-hidden"
@@ -99,7 +94,7 @@ export const AccessPageB = () => {
                 borderBottom: '0.5px solid var(--color-border)',
               }}
             >
-              정보
+              ??
             </div>
             <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
               {selectedAccLv ? (
@@ -109,7 +104,7 @@ export const AccessPageB = () => {
                       className="text-[13px] block mb-0.5"
                       style={{ color: 'var(--color-text-subtle)' }}
                     >
-                      명칭
+                      ??
                     </span>
                     <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
                       {fallbackAccLvName(selectedAccLv.name)}
@@ -118,7 +113,7 @@ export const AccessPageB = () => {
                 </div>
               ) : (
                 <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-                  상단 목록에서 권한을 선택하세요.
+                  ?? ???? ??? ?????.
                 </p>
               )}
             </div>
@@ -135,7 +130,7 @@ export const AccessPageB = () => {
                 disabled={!selectedAccLv}
                 onClick={() => undefined}
               >
-                변경
+                ??
               </Button>
             </div>
 
@@ -147,14 +142,13 @@ export const AccessPageB = () => {
                   className="text-[14px] text-center py-8"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
-                  연결 리더를 보려면 권한을 선택하세요.
+                  ?? ??? ??? ??? ?????.
                 </p>
               )}
             </div>
           </div>
         </div>
 
-        {/* WPF 스타일 하단 액션 바 */}
         <div
           className="flex items-center justify-end gap-2 flex-shrink-0 px-3"
           style={{
@@ -164,7 +158,7 @@ export const AccessPageB = () => {
           }}
         >
           <Button variant="accent" size="sm" onClick={() => undefined}>
-            추가
+            ??
           </Button>
           <Button
             variant="default"
@@ -172,7 +166,7 @@ export const AccessPageB = () => {
             disabled={!selectedAccLv}
             onClick={() => undefined}
           >
-            수정
+            ??
           </Button>
           <Button
             variant="danger"
@@ -180,21 +174,10 @@ export const AccessPageB = () => {
             disabled={!selectedAccLv}
             onClick={() => undefined}
           >
-            삭제
+            ??
           </Button>
         </div>
       </div>
-
-      <p
-        className="flex-shrink-0 text-center text-[12px] py-1"
-        style={{
-          color: 'var(--color-text-dim)',
-          borderTop: '0.5px solid var(--color-border-subtle)',
-          background: 'var(--color-sidebar)',
-        }}
-      >
-        레이아웃 2안 (WPF 유사) — 회의용 목업
-      </p>
     </div>
   )
 }

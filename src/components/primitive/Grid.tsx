@@ -409,7 +409,7 @@ export const Grid = <T extends { id: number }>({
                       minWidth: width,
                       maxWidth: width,
                       padding: `${CELL_PAD_Y}px ${CELL_PAD_X}px`,
-                      fontSize: 15,
+                      fontSize: 'var(--font-size-lg)',
                       fontWeight: 'bold',
                       color: 'var(--color-text-dim)',
                       borderBottom: '0.5px solid var(--color-border)',
@@ -507,7 +507,7 @@ export const Grid = <T extends { id: number }>({
                 <td
                   colSpan={columns.length || 1}
                   className="text-center py-8"
-                  style={{ color: 'var(--color-text-subtle)', fontSize: 15 }}
+                  style={{ color: 'var(--color-text-subtle)', fontSize: 'var(--font-size-md)' }}
                 >
                   불러오는 중...
                 </td>
@@ -517,7 +517,7 @@ export const Grid = <T extends { id: number }>({
                 <td
                   colSpan={1}
                   className="text-center py-8"
-                  style={{ color: 'var(--color-text-subtle)', fontSize: 15 }}
+                  style={{ color: 'var(--color-text-subtle)', fontSize: 'var(--font-size-md)' }}
                 >
                   표시할 컬럼이 없습니다. 목록 옵션에서 컬럼을 선택하세요.
                 </td>
@@ -546,7 +546,7 @@ export const Grid = <T extends { id: number }>({
           background: 'var(--color-sidebar)',
           borderTop: '0.5px solid var(--color-border)',
           color: 'var(--color-text-cell)',
-          fontSize: 15,
+          fontSize: 'var(--font-size-md)',
         }}
       >
         <span>전체 {count}건</span>
@@ -568,7 +568,7 @@ export const Grid = <T extends { id: number }>({
               onClick={() => pagination.onPageChange(pagination.page - 1)}
               leftIcon={<ChevronLeft size={14} />}
             />
-            <span style={{ fontSize: 14, color: 'var(--color-text-dim)' }}>
+            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-text-dim)' }}>
               {pagination.page} / {totalPages}
             </span>
             <Button
@@ -626,7 +626,7 @@ const GridRow = <T extends { id: number }>({
             minWidth: width,
             maxWidth: width,
             padding: `${CELL_PAD_Y}px ${CELL_PAD_X}px`,
-            fontSize: 15,
+            fontSize: 'var(--font-size-md)',
             color: 'var(--color-cell)',
             borderBottom: '0.5px solid var(--color-border-subtle)',
             overflow: 'hidden',

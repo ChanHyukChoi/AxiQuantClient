@@ -144,17 +144,6 @@ export const LinkagePageB = () => {
           </Button>
         </div>
       </div>
-
-      <p
-        className="flex-shrink-0 text-center app-text-sm py-1"
-        style={{
-          color: 'var(--color-text-dim)',
-          borderTop: '0.5px solid var(--color-border-subtle)',
-          background: 'var(--color-sidebar)',
-        }}
-      >
-        레이아웃 2안 (WPF 유사) — 회의용 목업
-      </p>
     </div>
   )
 }
