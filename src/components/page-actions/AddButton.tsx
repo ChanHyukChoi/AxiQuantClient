@@ -8,11 +8,13 @@ import {
 
 interface AddButtonProps extends PageActionButtonProps {
   children?: ReactNode
+  loading?: boolean
 }
 
 export const AddButton = ({
   onClick,
   disabled,
+  loading = false,
   className,
   title = '추가',
   size = 'md',
@@ -26,6 +28,7 @@ export const AddButton = ({
     leftIcon={<Plus size={pageActionIconSize(size)} />}
     onClick={onClick}
     disabled={disabled}
+    loading={loading}
     className={className}
     title={title}
     style={{ fontSize }}

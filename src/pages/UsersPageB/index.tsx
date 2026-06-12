@@ -1,17 +1,17 @@
-import { useMemo } from 'react'
 import { UserCog } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
 import { Modal } from '@/components/primitive/Modal'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton } from '@/components/page-actions'
-import { AlarmRuleActionButtons } from '@/pages/AlarmSettingsPage/components/AlarmRuleActionButtons'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import { UserEditorContent } from '@/pages/UsersPage/components/UserEditorContent'
 import { useUserEditor } from '@/pages/UsersPage/useUserEditor'
 import { useUsersData } from '@/pages/UsersPage/useUsersData'
 import { fallbackUserName } from '@/lib/entityDisplayLabels'
 import type { UserInfo } from '@/types/api/user'
 
-const GRID_COLUMNS: ColumnDef<UserInfo>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<UserInfo>[] = [
   {
     key: 'loginId',
     header: '로그인 ID',
@@ -66,8 +66,29 @@ export const UsersPageB = () => {
     onDeleted: data.onUserDeleted,
   })
 
-  const gridColumns = useMemo(() => GRID_COLUMNS, [])
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.users-b',
+  })
+
   const showEditor = editor.isCreating || data.selectedUser != null
+
+  const titleLabel = editor.isCreating
+    ? '사용자 추가'
+    : data.selectedUser
+      ? fallbackUserName(data.selectedUser.name)
+      : ''
+
+  const titleActions = showEditor ? (
+    <CrudDetailActions
+      editMode={editor.editMode || editor.isCreating}
+      isSaving={editor.isSaving}
+      isDeleting={editor.isDeleting}
+      onEdit={editor.handleEdit}
+      onDelete={() => editor.setDeleteOpen(true)}
+      onSave={() => void editor.handleSave()}
+      onCancel={editor.handleCancel}
+    />
+  ) : null
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -87,7 +108,7 @@ export const UsersPageB = () => {
           }}
         >
           <Grid
-            columns={gridColumns}
+            columns={columns}
             data={data.filtered}
             selectedId={editor.isCreating ? undefined : (data.selectedId ?? undefined)}
             onRowClick={(row) => {
@@ -98,6 +119,7 @@ export const UsersPageB = () => {
             searchPlaceholder="명칭, 로그인 ID 검색..."
             totalCount={data.filtered.length}
             loading={data.isLoading}
+            {...layoutGridProps}
           />
           {data.isError ? (
             <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -108,6 +130,17 @@ export const UsersPageB = () => {
 
         <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
           {showEditor ? (
+            <>
+            <DetailTitleBar
+              icon={<UserCog size={14} style={{ color: 'var(--color-accent)' }} />}
+              title={titleLabel}
+              actions={titleActions}
+            />
+            {editor.saveError ? (
+              <p className="text-[13px] px-3 py-1 text-right" style={{ color: '#c75c5c' }}>
+                {editor.saveError}
+              </p>
+            ) : null}
             <UserEditorContent
               activeTab={editor.activeTab}
               editMode={editor.editMode}
@@ -122,6 +155,7 @@ export const UsersPageB = () => {
               onPermissionsChange={(perms) => editor.setValue('permissions', perms)}
               layout="split"
             />
+            </>
           ) : (
             <p
               className="text-[14px] p-4"
@@ -130,32 +164,6 @@ export const UsersPageB = () => {
               상단 목록에서 사용자를 선택하세요.
             </p>
           )}
-
-          <div
-            className="flex-shrink-0 px-3 py-2"
-            style={{
-              borderTop: '0.5px solid var(--color-border)',
-              background: 'var(--color-sidebar)',
-            }}
-          >
-            {editor.saveError ? (
-              <p className="text-[13px] text-right mb-1.5" style={{ color: '#c75c5c' }}>
-                {editor.saveError}
-              </p>
-            ) : null}
-            <AlarmRuleActionButtons
-              hasRule={showEditor}
-              editMode={editor.editMode || editor.isCreating}
-              isSaving={editor.isSaving}
-              isDeleting={editor.isDeleting}
-              showAddAlways
-              onAdd={editor.handleAdd}
-              onEdit={editor.handleEdit}
-              onCancel={editor.handleCancel}
-              onSave={() => void editor.handleSave()}
-              onDelete={() => editor.setDeleteOpen(true)}
-            />
-          </div>
         </div>
       </div>
 

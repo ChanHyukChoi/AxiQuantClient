@@ -1,11 +1,14 @@
+import { useEffect, useState } from 'react'
 import { ScanLine } from 'lucide-react'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton } from '@/components/page-actions'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
 import { ReaderDetailWorkspace } from '@/pages/ReadersPage/components/ReaderDetailWorkspace'
 import { ReaderListPane } from '@/pages/ReadersPage/components/ReaderListPane'
 import { useReadersData } from '@/pages/ReadersPage/useReadersData'
 
 export const ReadersPage = () => {
+  const [editMode, setEditMode] = useState(false)
+
   const {
     useMock,
     scps,
@@ -28,6 +31,20 @@ export const ReadersPage = () => {
     if (!selected || !useMock) return
     patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
+
+  useEffect(() => {
+    setEditMode(false)
+  }, [selected?.scp, selected?.id])
+
+  const titleActions = selected ? (
+    <CrudDetailActions
+      editMode={editMode}
+      onEdit={() => setEditMode(true)}
+      onDelete={() => undefined}
+      onSave={() => setEditMode(false)}
+      onCancel={() => setEditMode(false)}
+    />
+  ) : null
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -58,6 +75,7 @@ export const ReadersPage = () => {
           useMock={useMock}
           layout="rail"
           onToggleActive={handleToggleActive}
+          titleActions={titleActions}
         />
       </div>
     </div>

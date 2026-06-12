@@ -1,3 +1,5 @@
+import { Checkbox } from '@/components/primitive/Checkbox'
+
 export const InfoField = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div>
     <span className="app-text-sm block mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
@@ -27,14 +29,13 @@ export const CheckRow = ({
   checked?: boolean
   disabled?: boolean
 }) => (
-  <label
+  <div
     className="flex items-center gap-2 py-1 app-text-md"
     style={{
       color: disabled ? 'var(--color-text-dim)' : 'var(--color-text)',
-      cursor: disabled ? 'default' : 'pointer',
     }}
   >
-    <input type="checkbox" checked={checked ?? false} disabled={disabled} readOnly />
+    <Checkbox checked={checked ?? false} disabled={disabled} readOnly />
     {label}
-  </label>
+  </div>
 )

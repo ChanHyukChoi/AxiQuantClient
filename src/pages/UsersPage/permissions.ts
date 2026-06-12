@@ -7,6 +7,8 @@ export {
   normalizePermissions,
   PERMISSION_CATEGORIES,
   setAllPermissions,
+  setCategoryPermissions,
+  type CategoryPermissionMode,
   type PermissionCategoryDef,
   type PermissionMenuDef,
 } from '@/lib/userPermissions'

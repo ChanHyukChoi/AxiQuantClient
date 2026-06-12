@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, Pencil, Shield, Trash2, X } from 'lucide-react'
+import { Shield } from 'lucide-react'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
+import { CrudDetailActions } from '@/components/page-actions'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
 import { AccLvReaderEditModal } from '@/pages/AccessPage/components/AccLvReaderEditModal'
@@ -126,78 +128,34 @@ export const AccessDetailPanel = ({
   }
 
   const drawerHeader = accLv ? (
-    <div
-      className="flex items-start gap-3 pb-3"
-      style={{ borderBottom: '0.5px solid var(--color-border)' }}
-    >
-      <div
-        className="w-[38px] h-[38px] rounded-lg flex items-center justify-center flex-shrink-0"
-        style={{ background: '#1a3a5c' }}
-      >
-        <Shield size={20} style={{ color: 'var(--color-accent)' }} />
-      </div>
-      <div className="flex flex-col gap-1 min-w-0 flex-1">
-        {editMode ? (
+    <DetailTitleBar
+      icon={<Shield size={14} style={{ color: 'var(--color-accent)' }} />}
+      title={
+        editMode ? (
           <Input
             {...updateForm.register('name')}
             error={updateForm.formState.errors.name?.message}
+            className="max-w-[240px]"
           />
         ) : (
-          <span
-            className="app-text-lg font-medium leading-tight"
-            style={{ color: 'var(--color-text)' }}
-          >
-            {fallbackAccLvName(accLv.name)}
-          </span>
-        )}
-      </div>
-    </div>
+          fallbackAccLvName(accLv.name)
+        )
+      }
+      actions={
+        <CrudDetailActions
+          editMode={editMode}
+          isSaving={isUpdating}
+          isDeleting={isDeleting}
+          onEdit={onEditClick}
+          onDelete={() => setDeleteModalOpen(true)}
+          onSave={handleSave}
+          onCancel={handleCancelEdit}
+        />
+      }
+    />
   ) : (
     <div />
   )
-
-  const drawerActions = accLv ? (
-    editMode ? (
-      <>
-        <Button
-          variant="default"
-          size="sm"
-          leftIcon={<X size={12} />}
-          onClick={handleCancelEdit}
-        >
-          취소
-        </Button>
-        <Button
-          variant="accent"
-          size="sm"
-          leftIcon={<Check size={12} />}
-          loading={isUpdating}
-          onClick={handleSave}
-        >
-          저장
-        </Button>
-      </>
-    ) : (
-      <>
-        <Button
-          variant="danger"
-          size="sm"
-          leftIcon={<Trash2 size={12} />}
-          onClick={() => setDeleteModalOpen(true)}
-        >
-          삭제
-        </Button>
-        <Button
-          variant="accent"
-          size="sm"
-          leftIcon={<Pencil size={12} />}
-          onClick={onEditClick}
-        >
-          수정
-        </Button>
-      </>
-    )
-  ) : null
 
   const drawerBody = !accLv ? (
     <div className="flex items-center justify-center min-h-[160px]">
@@ -244,12 +202,7 @@ export const AccessDetailPanel = ({
 
   return (
     <>
-      <Drawer
-        fill
-        borderLeft={false}
-        header={drawerHeader}
-        actions={drawerActions ?? undefined}
-      >
+      <Drawer fill borderLeft={false} header={drawerHeader}>
         {drawerBody}
       </Drawer>
 

@@ -1,4 +1,5 @@
 import { SearchField } from '@/components/primitive/SearchField'
+import { Checkbox } from '@/components/primitive/Checkbox'
 import { TreeNode } from '@/pages/DeviceControlPage/TreeNode'
 import type { DeviceTreeNode } from '@/pages/DeviceControlPage/utils/buildTree'
 import type { DeviceTypeFilter } from '@/pages/DeviceControlPage/utils/deviceHelpers'
@@ -64,19 +65,23 @@ export const TreePane = ({
         />
         <div className="flex flex-wrap gap-2">
           {FILTER_OPTIONS.map((opt) => (
-            <label
+            <div
               key={opt.value}
-              className="inline-flex items-center gap-1 cursor-pointer text-[13px]"
-              style={{ color: 'var(--color-text-muted)' }}
+              className="inline-flex items-center gap-1.5"
             >
-              <input
-                type="checkbox"
+              <Checkbox
                 checked={typeFilter === opt.value}
                 onChange={() => onTypeFilterChange(opt.value)}
-                className="accent-[var(--color-accent)]"
               />
-              {opt.label}
-            </label>
+              <button
+                type="button"
+                className="text-[13px] cursor-pointer bg-transparent border-0 p-0"
+                style={{ color: 'var(--color-text-muted)' }}
+                onClick={() => onTypeFilterChange(opt.value)}
+              >
+                {opt.label}
+              </button>
+            </div>
           ))}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/primitive/Button'
+import { AddButton } from '@/components/page-actions'
+import { TabToolbar } from '@/layouts/TabToolbar'
 import { AlarmMailDrawer } from '@/pages/AlarmSettingsPage/components/AlarmMailDrawer'
 import { AlarmMailListPane } from '@/pages/AlarmSettingsPage/components/AlarmMailListPane'
 import { useAlarmMails, useAlarms, useCreateAlarmMail } from '@/hooks/api/useAlarmSettings'
@@ -43,21 +43,13 @@ export const AlarmMailTab = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <div
-        className="flex items-center justify-end flex-shrink-0 px-3 py-1.5"
-        style={{ borderBottom: '0.5px solid var(--color-border)' }}
-      >
-        <Button
-          variant="accent"
-          size="sm"
-          leftIcon={<Plus size={12} />}
-          loading={createMut.isPending}
+      <TabToolbar>
+        <AddButton
           onClick={() => void handleAdd()}
-        >
-          추가
-        </Button>
-      </div>
-      <div className="flex flex-1 overflow-hidden">
+          loading={createMut.isPending}
+        />
+      </TabToolbar>
+      <div className="flex flex-1 overflow-hidden min-h-0">
         <AlarmMailListPane
           items={items}
           selectedId={selectedId}

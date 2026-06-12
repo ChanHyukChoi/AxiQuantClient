@@ -1,7 +1,6 @@
 import type { CSSProperties } from 'react'
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
-import { Checkbox } from '@/components/primitive/Checkbox'
 import { LINKAGE_FONT_SIZE, LINKAGE_GRID_HEADER_FONT_SIZE, linkagePanelHeaderStyle } from '@/pages/LinkagePage/linkageUi'
 import type { LinkageWhenRow } from '@/pages/LinkagePage/linkageTypes'
 
@@ -90,9 +89,7 @@ export const LinkageWhenSection = ({ rows, compact = false }: LinkageWhenSection
                 <td style={tdStyle}>{row.controller}</td>
                 <td style={tdStyle}>{row.device}</td>
                 <td style={tdStyle}>{row.formula || '—'}</td>
-                <td style={tdStyle}>
-                  <Checkbox checked={row.invert} readOnly />
-                </td>
+                <td style={tdStyle}>{row.invert ? '예' : '아니오'}</td>
               </tr>
             ))
           )}

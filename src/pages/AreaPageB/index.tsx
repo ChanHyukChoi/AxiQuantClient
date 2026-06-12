@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { MapPin } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
 import { Badge } from '@/components/primitive/Badge'
-import { Button } from '@/components/primitive/Button'
 import { PageHeader } from '@/layouts/PageHeader'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
-import { AddButton } from '@/components/page-actions'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import {
   mockOccupantsForArea,
   mockReadersForArea,
@@ -18,7 +19,7 @@ import { fallbackAreaName } from '@/lib/entityDisplayLabels'
 import { useAreas } from '@/hooks/api/useArea'
 import type { AreaInfo } from '@/types/api'
 
-const GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
   {
     key: 'name',
     header: '명칭',
@@ -64,6 +65,11 @@ export const AreaPageB = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [detailTab, setDetailTab] = useState<'readers' | 'occupants'>('readers')
+  const [editMode, setEditMode] = useState(false)
+
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.area-b',
+  })
 
   const { data: areaList, isLoading, isError } = useAreas()
 
@@ -89,6 +95,10 @@ export const AreaPageB = () => {
     [selectedId],
   )
 
+  useEffect(() => {
+    setEditMode(false)
+  }, [selectedId])
+
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
@@ -107,7 +117,7 @@ export const AreaPageB = () => {
           }}
         >
           <Grid
-            columns={GRID_COLUMNS}
+            columns={columns}
             data={filteredList}
             selectedId={selectedId ?? undefined}
             onRowClick={(row) => setSelectedId(row.id)}
@@ -115,6 +125,7 @@ export const AreaPageB = () => {
             searchPlaceholder="영역 검색..."
             totalCount={filteredList.length}
             loading={isLoading}
+            {...layoutGridProps}
           />
           {isError ? (
             <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -123,7 +134,29 @@ export const AreaPageB = () => {
           ) : null}
         </div>
 
-        <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
+          {selectedArea ? (
+            <DetailTitleBar
+              icon={<MapPin size={14} style={{ color: 'var(--color-accent)' }} />}
+              title={fallbackAreaName(selectedArea.name)}
+              badge={
+                <Badge variant={isAreaActive(selectedArea.active) ? 'on' : 'off'}>
+                  {isAreaActive(selectedArea.active) ? '활성' : '비활성'}
+                </Badge>
+              }
+              actions={
+                <CrudDetailActions
+                  editMode={editMode}
+                  onEdit={() => setEditMode(true)}
+                  onDelete={() => undefined}
+                  onSave={() => setEditMode(false)}
+                  onCancel={() => setEditMode(false)}
+                />
+              }
+            />
+          ) : null}
+
+          <div className="flex flex-1 min-h-0 overflow-hidden">
           <div
             className="flex flex-col flex-shrink-0 overflow-hidden"
             style={{
@@ -326,35 +359,7 @@ export const AreaPageB = () => {
               )}
             </div>
           </div>
-        </div>
-
-        <div
-          className="flex items-center justify-end gap-2 flex-shrink-0 px-3"
-          style={{
-            height: 44,
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          <Button variant="accent" size="sm" onClick={() => undefined}>
-            추가
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            disabled={!selectedArea}
-            onClick={() => undefined}
-          >
-            수정
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            disabled={!selectedArea}
-            onClick={() => undefined}
-          >
-            삭제
-          </Button>
+          </div>
         </div>
       </div>
     </div>

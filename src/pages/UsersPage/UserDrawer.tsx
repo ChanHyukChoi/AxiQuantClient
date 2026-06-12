@@ -1,6 +1,7 @@
-import { Check, Pencil, Trash2, User, X } from 'lucide-react'
+import { User, UserCog } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
-import { Button } from '@/components/primitive/Button'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { CrudDetailActions } from '@/components/page-actions'
 import { Modal } from '@/components/primitive/Modal'
 import {
   USER_EDITOR_TABS,
@@ -26,27 +27,42 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
       ? user.name?.trim() || '(이름 없음)'
       : null
 
-  const showActions = showUser && (editMode || isCreating)
-
   return (
     <>
       <Drawer
         fill
         header={
           headerTitle ? (
-            <div>
-              <p className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
-                {headerTitle}
-              </p>
-              {!isCreating && user ? (
-                <p
-                  className="text-[13px] font-mono mt-0.5"
-                  style={{ color: 'var(--color-text-subtle)' }}
-                >
-                  {user.loginId}
-                </p>
-              ) : null}
-            </div>
+            <DetailTitleBar
+              icon={<UserCog size={14} style={{ color: 'var(--color-accent)' }} />}
+              title={
+                <span>
+                  {headerTitle}
+                  {!isCreating && user ? (
+                    <span
+                      className="block text-[13px] font-mono font-normal mt-0.5"
+                      style={{ color: 'var(--color-text-subtle)' }}
+                    >
+                      {user.loginId}
+                    </span>
+                  ) : null}
+                </span>
+              }
+              actions={
+                showUser ? (
+                  <CrudDetailActions
+                    editMode={editMode || isCreating}
+                    isSaving={editor.isSaving}
+                    isDeleting={editor.isDeleting}
+                    disabled={!user && !isCreating}
+                    onEdit={editor.handleEdit}
+                    onDelete={() => editor.setDeleteOpen(true)}
+                    onSave={() => void editor.handleSave()}
+                    onCancel={editor.handleCancel}
+                  />
+                ) : undefined
+              }
+            />
           ) : (
             <div className="flex items-center gap-2 py-4">
               <User size={20} style={{ color: 'var(--color-text-dim)' }} />
@@ -59,48 +75,6 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
         tabs={showUser ? USER_EDITOR_TABS : undefined}
         activeTab={activeTab}
         onTabChange={editor.setActiveTab}
-        actions={
-          user && !isCreating && !editMode ? (
-            <>
-              <Button
-                size="sm"
-                variant="default"
-                leftIcon={<Pencil size={13} />}
-                onClick={editor.handleEdit}
-              >
-                수정
-              </Button>
-              <Button
-                size="sm"
-                variant="danger"
-                leftIcon={<Trash2 size={13} />}
-                onClick={() => editor.setDeleteOpen(true)}
-              >
-                삭제
-              </Button>
-            </>
-          ) : showActions ? (
-            <>
-              <Button
-                size="sm"
-                variant="accent"
-                leftIcon={<Check size={13} />}
-                loading={editor.isSaving}
-                onClick={() => void editor.handleSave()}
-              >
-                저장
-              </Button>
-              <Button
-                size="sm"
-                variant="default"
-                leftIcon={<X size={13} />}
-                onClick={editor.handleCancel}
-              >
-                취소
-              </Button>
-            </>
-          ) : undefined
-        }
         footer={
           editor.saveError ? (
             <p className="text-[13px] px-1" style={{ color: '#e06060' }}>

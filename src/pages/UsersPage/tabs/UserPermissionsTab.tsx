@@ -1,11 +1,14 @@
 import { Check } from 'lucide-react'
 import type { Control } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
+import { Checkbox } from '@/components/primitive/Checkbox'
 import {
   PERMISSION_CATEGORIES,
   isFullPermissions,
   mergePermission,
   setAllPermissions,
+  setCategoryPermissions,
+  type PermissionCategoryDef,
 } from '@/pages/UsersPage/permissions'
 import type { UserEditFormValues } from '@/pages/UsersPage/formTypes'
 import type { UserPermissions } from '@/types/api/user'
@@ -23,6 +26,40 @@ const PermIcon = ({ checked }: { checked: boolean }) =>
   ) : (
     <span style={{ width: 14, height: 14, display: 'inline-block' }} />
   )
+
+const categoryBtnStyle = (active: boolean): React.CSSProperties => ({
+  fontSize: 12,
+  padding: '2px 6px',
+  borderRadius: 4,
+  border: '0.5px solid var(--color-btn-default-border)',
+  background: active ? 'var(--color-btn-accent-bg)' : 'transparent',
+  color: active ? 'var(--color-accent)' : 'var(--color-text-muted)',
+})
+
+interface CategoryBulkButtonsProps {
+  category: PermissionCategoryDef
+  permissions: UserPermissions
+  onChange: (perms: UserPermissions) => void
+}
+
+const CategoryBulkButtons = ({ category, permissions, onChange }: CategoryBulkButtonsProps) => (
+  <div className="flex items-center gap-1 flex-shrink-0">
+    {(['read', 'write', 'all'] as const).map((mode) => {
+      const label = mode === 'read' ? '읽기' : mode === 'write' ? '쓰기' : '전체'
+      return (
+        <button
+          key={mode}
+          type="button"
+          className="transition-colors"
+          style={categoryBtnStyle(false)}
+          onClick={() => onChange(setCategoryPermissions(permissions, category, mode))}
+        >
+          {label}
+        </button>
+      )
+    })}
+  </div>
+)
 
 export const UserPermissionsTab = ({
   editMode,
@@ -67,15 +104,25 @@ export const UserPermissionsTab = ({
 
           {PERMISSION_CATEGORIES.map((cat) => (
             <section key={cat.category}>
-              <p
-                className="text-[13px] font-medium mb-2 pb-1"
-                style={{ color: 'var(--color-text-subtle)', borderBottom: '0.5px solid var(--color-border)' }}
+              <div
+                className="flex items-center justify-between gap-2 mb-2 pb-1"
+                style={{ borderBottom: '0.5px solid var(--color-border)' }}
               >
-                {cat.category}
-              </p>
+                <p className="text-[13px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
+                  {cat.category}
+                </p>
+                {editMode && !fullAllow ? (
+                  <CategoryBulkButtons
+                    category={cat}
+                    permissions={permissions}
+                    onChange={onPermissionsChange}
+                  />
+                ) : null}
+              </div>
               <div className="flex flex-col gap-1">
                 {cat.items.map((item) => {
                   const p = permissions[item.key] ?? { read: false, write: false }
+                  const itemDisabled = editMode && fullAllow
                   return (
                     <div
                       key={item.key}
@@ -86,17 +133,16 @@ export const UserPermissionsTab = ({
                         {item.label}
                       </span>
                       <div className="flex items-center gap-3 flex-shrink-0">
-                        <label className="flex items-center gap-1 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
+                        <label className="flex items-center gap-1.5 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
                           {editMode ? (
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               checked={p.read}
-                              onChange={(e) =>
+                              disabled={itemDisabled}
+                              onChange={(checked) =>
                                 onPermissionsChange(
-                                  mergePermission(permissions, item.key, 'read', e.target.checked, item.readOnly),
+                                  mergePermission(permissions, item.key, 'read', checked, item.readOnly),
                                 )
                               }
-                              className="accent-[var(--color-accent)]"
                             />
                           ) : (
                             <PermIcon checked={p.read} />
@@ -104,27 +150,22 @@ export const UserPermissionsTab = ({
                           읽기
                         </label>
                         {!item.readOnly && (
-                          <label
-                            className="flex items-center gap-1 text-[13px]"
-                            style={{ color: 'var(--color-text-muted)' }}
-                          >
+                          <label className="flex items-center gap-1.5 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
                             {editMode ? (
-                              <input
-                                type="checkbox"
+                              <Checkbox
                                 checked={p.write}
-                                disabled={!p.read}
-                                onChange={(e) =>
+                                disabled={itemDisabled || !p.read}
+                                onChange={(checked) =>
                                   onPermissionsChange(
                                     mergePermission(
                                       permissions,
                                       item.key,
                                       'write',
-                                      e.target.checked,
+                                      checked,
                                       item.readOnly,
                                     ),
                                   )
                                 }
-                                className="accent-[var(--color-accent)]"
                               />
                             ) : (
                               <PermIcon checked={p.write} />

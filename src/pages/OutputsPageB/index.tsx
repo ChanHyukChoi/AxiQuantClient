@@ -1,11 +1,12 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeftFromLine } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
 import { Badge } from '@/components/primitive/Badge'
-import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton } from '@/components/page-actions'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import type { OutputDisplayRow } from '@/pages/OutputsPage/outputsMockData'
 import { outputGridId } from '@/pages/OutputsPage/outputsMockData'
 import { useOutputsData } from '@/pages/OutputsPage/useOutputsData'
@@ -16,7 +17,7 @@ import {
 } from '@/pages/OutputsPage/utils/outputDisplay'
 import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 
-const GRID_COLUMNS: ColumnDef<OutputDisplayRow>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<OutputDisplayRow>[] = [
   {
     key: 'name',
     header: '명칭',
@@ -86,6 +87,11 @@ const InfoField = ({ label, children }: { label: string; children: React.ReactNo
 )
 
 export const OutputsPageB = () => {
+  const [editMode, setEditMode] = useState(false)
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.outputs-b',
+  })
+
   const {
     useMock,
     filteredRows,
@@ -107,6 +113,10 @@ export const OutputsPageB = () => {
     patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
 
+  useEffect(() => {
+    setEditMode(false)
+  }, [selected?.scp, selected?.id])
+
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
@@ -125,7 +135,7 @@ export const OutputsPageB = () => {
           }}
         >
           <Grid
-            columns={GRID_COLUMNS}
+            columns={columns}
             data={gridData}
             selectedId={selected ? outputGridId(selected) : undefined}
             onRowClick={(row) => {
@@ -136,6 +146,7 @@ export const OutputsPageB = () => {
             searchPlaceholder="출력 검색..."
             totalCount={filteredRows.length}
             loading={isLoading}
+            {...layoutGridProps}
           />
           {isError ? (
             <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -145,24 +156,29 @@ export const OutputsPageB = () => {
         </div>
 
         <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
-          <div
-            className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
-            style={{
-              background: 'var(--color-accent-subtle)',
-              color: 'var(--color-accent)',
-              borderBottom: '0.5px solid var(--color-border)',
-            }}
-          >
-            일반
-          </div>
+          {selected ? (
+            <DetailTitleBar
+              icon={<ArrowLeftFromLine size={14} style={{ color: 'var(--color-accent)' }} />}
+              title={outputLabel(selected)}
+              badge={
+                <Badge variant={isDeviceActive(selected.active) ? 'on' : 'off'}>
+                  {isDeviceActive(selected.active) ? '활성' : '비활성'}
+                </Badge>
+              }
+              actions={
+                <CrudDetailActions
+                  editMode={editMode}
+                  onEdit={() => setEditMode(true)}
+                  onDelete={() => undefined}
+                  onSave={() => setEditMode(false)}
+                  onCancel={() => setEditMode(false)}
+                />
+              }
+            />
+          ) : null}
           <div className="flex-1 p-4 overflow-y-auto app-scrollbar">
             {selected ? (
               <div className="max-w-md flex flex-col gap-3">
-                <InfoField label="명칭">
-                  <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
-                    {outputLabel(selected)}
-                  </span>
-                </InfoField>
                 <InfoField label="주제어기">
                   <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
                     {selected.scpName}
@@ -204,20 +220,6 @@ export const OutputsPageB = () => {
           </div>
         </div>
 
-        <div
-          className="flex-shrink-0 flex justify-end gap-1.5 px-3 py-2"
-          style={{
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          <Button variant="accent" size="sm" onClick={() => undefined}>
-            확인
-          </Button>
-          <Button variant="default" size="sm" onClick={() => undefined}>
-            취소
-          </Button>
-        </div>
       </div>
     </div>
   )

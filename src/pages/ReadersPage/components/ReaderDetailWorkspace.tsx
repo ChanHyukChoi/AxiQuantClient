@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ScanLine } from 'lucide-react'
-import { Button } from '@/components/primitive/Button'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import {
   ReaderDetailContent,
   ReaderKindBadge,
@@ -14,6 +14,7 @@ interface ReaderDetailWorkspaceProps {
   useMock: boolean
   layout: 'rail' | 'horizontal'
   onToggleActive?: (active: boolean) => void
+  titleActions?: React.ReactNode
 }
 
 export const ReaderDetailWorkspace = ({
@@ -21,6 +22,7 @@ export const ReaderDetailWorkspace = ({
   useMock,
   layout,
   onToggleActive,
+  titleActions,
 }: ReaderDetailWorkspaceProps) => {
   const tabs = reader ? tabsForReaderKind(reader.kind) : []
   const [activeTab, setActiveTab] = useState(tabs[0]?.key ?? 'general')
@@ -42,30 +44,13 @@ export const ReaderDetailWorkspace = ({
     )
   }
 
-  const header = (
-    <div
-      className="flex-shrink-0 flex items-center justify-between gap-2 px-3 py-2"
-      style={{ borderBottom: '0.5px solid var(--color-border)' }}
-    >
-      <div className="flex items-center gap-2 min-w-0">
-        <ScanLine size={14} style={{ color: 'var(--color-accent)', flexShrink: 0 }} />
-        <span
-          className="text-[15px] font-medium truncate"
-          style={{ color: 'var(--color-text)' }}
-        >
-          {readerLabel(reader)}
-        </span>
-        <ReaderKindBadge kind={reader.kind} />
-      </div>
-      <div className="flex gap-1.5 shrink-0">
-        <Button variant="default" size="sm" onClick={() => undefined}>
-          수정
-        </Button>
-        <Button variant="danger" size="sm" onClick={() => undefined}>
-          삭제
-        </Button>
-      </div>
-    </div>
+  const titleBar = (
+    <DetailTitleBar
+      icon={<ScanLine size={14} style={{ color: 'var(--color-accent)' }} />}
+      title={readerLabel(reader)}
+      badge={<ReaderKindBadge kind={reader.kind} />}
+      actions={titleActions}
+    />
   )
 
   const content = (
@@ -82,7 +67,7 @@ export const ReaderDetailWorkspace = ({
   if (layout === 'horizontal') {
     return (
       <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        {header}
+        {titleBar}
         <div className="flex-shrink-0">
           <div className="flex border-b" style={{ borderColor: 'var(--color-border)' }}>
             {tabs.map((tab) => {
@@ -114,7 +99,7 @@ export const ReaderDetailWorkspace = ({
     <div className="flex flex-1 min-h-0 overflow-hidden">
       <ReaderTabRail tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        {header}
+        {titleBar}
         {content}
       </div>
     </div>

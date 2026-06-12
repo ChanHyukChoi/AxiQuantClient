@@ -3,6 +3,7 @@ import type { UseFormRegister } from 'react-hook-form'
 import { Hash, RefreshCw, Settings, SlidersHorizontal, Tag, Users } from 'lucide-react'
 import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
+import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
 import type { AreaEditFormValues } from '@/pages/AreaPage/formTypes'
 import {
@@ -85,17 +86,15 @@ export const AreaInfoTab = ({
             name="active"
             control={control}
             render={({ field }) => (
-              <label className="flex items-center justify-end gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
+              <div className="flex items-center justify-end gap-2">
+                <Checkbox
                   checked={field.value !== 0}
-                  onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
-                  className="accent-[var(--color-accent)]"
+                  onChange={(checked) => field.onChange(checked ? 1 : 0)}
                 />
                 <span className="app-text-md" style={{ color: 'var(--color-text-muted)' }}>
                   활성
                 </span>
-              </label>
+              </div>
             )}
           />
         ) : (
@@ -125,14 +124,12 @@ export const AreaInfoTab = ({
             name="multiocc"
             control={control}
             render={({ field }) => (
-              <label className="flex items-center justify-end gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
+              <div className="flex items-center justify-end">
+                <Checkbox
                   checked={field.value !== 0}
-                  onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
-                  className="accent-[var(--color-accent)]"
+                  onChange={(checked) => field.onChange(checked ? 1 : 0)}
                 />
-              </label>
+              </div>
             )}
           />
         ) : (

@@ -1,12 +1,12 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { ScanLine } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Button } from '@/components/primitive/Button'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton } from '@/components/page-actions'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
 import { ReaderDetailWorkspace } from '@/pages/ReadersPage/components/ReaderDetailWorkspace'
 import type { ReaderDisplayRow } from '@/pages/ReadersPage/readersMockData'
 import { useReadersData } from '@/pages/ReadersPage/useReadersData'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import {
   formatDefMode,
   formatKpadMode,
@@ -18,7 +18,7 @@ import {
 } from '@/pages/ReadersPage/utils/readerDisplay'
 import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 
-const GRID_COLUMNS: ColumnDef<ReaderDisplayRow>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<ReaderDisplayRow>[] = [
   {
     key: 'name',
     header: '명칭',
@@ -125,6 +125,8 @@ const GRID_COLUMNS: ColumnDef<ReaderDisplayRow>[] = [
 ]
 
 export const ReadersPageB = () => {
+  const [editMode, setEditMode] = useState(false)
+
   const {
     useMock,
     filteredRows,
@@ -136,15 +138,33 @@ export const ReadersPageB = () => {
     patchMockRow,
   } = useReadersData()
 
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.readers-b',
+  })
+
   const gridData = useMemo(
     () => filteredRows.map((r) => ({ ...r, id: readerGridId(r) })),
     [filteredRows],
   )
 
+  useEffect(() => {
+    setEditMode(false)
+  }, [selected?.scp, selected?.id])
+
   const handleToggleActive = (active: boolean) => {
     if (!selected || !useMock) return
     patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
+
+  const titleActions = selected ? (
+    <CrudDetailActions
+      editMode={editMode}
+      onEdit={() => setEditMode(true)}
+      onDelete={() => undefined}
+      onSave={() => setEditMode(false)}
+      onCancel={() => setEditMode(false)}
+    />
+  ) : null
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -164,7 +184,7 @@ export const ReadersPageB = () => {
           }}
         >
           <Grid
-            columns={GRID_COLUMNS}
+            columns={columns}
             data={gridData}
             selectedId={selected ? readerGridId(selected) : undefined}
             onRowClick={(row) => {
@@ -175,6 +195,7 @@ export const ReadersPageB = () => {
             searchPlaceholder="리더 검색..."
             totalCount={filteredRows.length}
             loading={isLoading}
+            {...layoutGridProps}
           />
           {isError ? (
             <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -189,25 +210,8 @@ export const ReadersPageB = () => {
             useMock={useMock}
             layout="horizontal"
             onToggleActive={handleToggleActive}
+            titleActions={titleActions}
           />
-        </div>
-
-        <div
-          className="flex-shrink-0 flex justify-end gap-1.5 px-3 py-2"
-          style={{
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          <Button variant="accent" size="sm" onClick={() => undefined}>
-            추가
-          </Button>
-          <Button variant="default" size="sm" onClick={() => undefined}>
-            확인
-          </Button>
-          <Button variant="default" size="sm" onClick={() => undefined}>
-            취소
-          </Button>
         </div>
       </div>
     </div>

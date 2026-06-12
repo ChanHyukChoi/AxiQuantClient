@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Check, Lock, Pencil, Trash2, X } from 'lucide-react'
+import { Lock, Shield } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
 import { PageHeader } from '@/layouts/PageHeader'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
-import { AddButton } from '@/components/page-actions'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import { AccLvReaderEditModal } from '@/pages/AccessPage/components/AccLvReaderEditModal'
 import { AccLvReaderTable } from '@/pages/AccessPage/components/AccLvReaderTable'
 import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
@@ -92,6 +94,10 @@ export const AccessPageB = () => {
     return selectedId != null ? mockReadersForAccLv(selectedId) : []
   }, [readerList, scpNameMap, timezoneNameMap, selectedId])
 
+  const { columns, layoutGridProps } = useGridColumnLayout(GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.access-b',
+  })
+
   useEffect(() => {
     setEditMode(false)
     setReaderEditOpen(false)
@@ -157,7 +163,7 @@ export const AccessPageB = () => {
           }}
         >
           <Grid
-            columns={GRID_COLUMNS}
+            columns={columns}
             data={filteredList}
             selectedId={selectedId ?? undefined}
             onRowClick={(row) => setSelectedId(row.id)}
@@ -165,10 +171,40 @@ export const AccessPageB = () => {
             searchPlaceholder="권한명 검색..."
             totalCount={filteredList.length}
             loading={isLoading}
+            {...layoutGridProps}
           />
         </div>
 
-        <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
+          {selectedAccLv ? (
+            <DetailTitleBar
+              icon={<Shield size={14} style={{ color: 'var(--color-accent)' }} />}
+              title={
+                editMode ? (
+                  <Input
+                    {...updateForm.register('name')}
+                    error={updateForm.formState.errors.name?.message}
+                    className="max-w-[240px]"
+                  />
+                ) : (
+                  fallbackAccLvName(selectedAccLv.name)
+                )
+              }
+              actions={
+                <CrudDetailActions
+                  editMode={editMode}
+                  isSaving={isUpdating}
+                  isDeleting={isDeleting}
+                  onEdit={handleEditClick}
+                  onDelete={() => setDeleteModalOpen(true)}
+                  onSave={handleSave}
+                  onCancel={handleCancelEdit}
+                />
+              }
+            />
+          ) : null}
+
+          <div className="flex flex-1 min-h-0 overflow-hidden">
           <div
             className="flex flex-col flex-shrink-0 overflow-hidden"
             style={{
@@ -190,21 +226,15 @@ export const AccessPageB = () => {
             <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
               {selectedAccLv ? (
                 <div className="flex flex-col gap-3">
-                  <DetailInfoField label="권한명">
-                    {editMode ? (
-                      <Input
-                        {...updateForm.register('name')}
-                        error={updateForm.formState.errors.name?.message}
-                      />
-                    ) : (
-                      fallbackAccLvName(selectedAccLv.name)
-                    )}
-                  </DetailInfoField>
                   {selectedAccLv.description?.trim() ? (
                     <DetailInfoField label="설명">
                       {selectedAccLv.description.trim()}
                     </DetailInfoField>
-                  ) : null}
+                  ) : (
+                    <p className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
+                      추가 정보 없음
+                    </p>
+                  )}
                 </div>
               ) : (
                 <p className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
@@ -247,58 +277,7 @@ export const AccessPageB = () => {
               )}
             </div>
           </div>
-        </div>
-
-        <div
-          className="flex items-center justify-end gap-2 flex-shrink-0 px-3"
-          style={{
-            height: 44,
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          {editMode ? (
-            <>
-              <Button
-                variant="default"
-                size="sm"
-                leftIcon={<X size={12} />}
-                onClick={handleCancelEdit}
-              >
-                취소
-              </Button>
-              <Button
-                variant="accent"
-                size="sm"
-                leftIcon={<Check size={12} />}
-                loading={isUpdating}
-                onClick={handleSave}
-              >
-                저장
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                variant="danger"
-                size="sm"
-                leftIcon={<Trash2 size={12} />}
-                disabled={!selectedAccLv}
-                onClick={() => setDeleteModalOpen(true)}
-              >
-                삭제
-              </Button>
-              <Button
-                variant="accent"
-                size="sm"
-                leftIcon={<Pencil size={12} />}
-                disabled={!selectedAccLv}
-                onClick={handleEditClick}
-              >
-                수정
-              </Button>
-            </>
-          )}
+          </div>
         </div>
       </div>
 

@@ -31,6 +31,9 @@ export const ControllersPage = () => {
     patchMockScp,
     addMockScp,
     removeMockScp,
+    patchMockSio,
+    addMockSio,
+    removeMockSio,
     onScpDeleted,
   } = useControllersData()
 
@@ -60,7 +63,7 @@ export const ControllersPage = () => {
         actions={<AddButton onClick={() => setCreateOpen(true)} />}
       />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-h-0">
         <ScpListPane
           scps={filteredScps}
           selectedId={selectedId}
@@ -78,6 +81,9 @@ export const ControllersPage = () => {
           useMock={useMock}
           patchMockScp={patchMockScp}
           removeMockScp={removeMockScp}
+          patchMockSio={patchMockSio}
+          addMockSio={addMockSio}
+          removeMockSio={removeMockSio}
           onDeleted={onScpDeleted}
         />
       </div>

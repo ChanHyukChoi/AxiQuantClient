@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { Badge } from '@/components/primitive/Badge'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
 import { LINKAGE_FONT_SIZE } from '@/pages/LinkagePage/linkageUi'
@@ -7,6 +8,7 @@ import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
 interface LinkageGeneralSectionProps {
   rule: LinkageRule | null
   layout?: 'stack' | 'compact'
+  editMode?: boolean
 }
 
 const labelStyle: CSSProperties = {
@@ -14,9 +16,39 @@ const labelStyle: CSSProperties = {
   fontSize: LINKAGE_FONT_SIZE,
 }
 
+const NameValue = ({ name }: { name: string }) => (
+  <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
+    {name.trim() || '—'}
+  </span>
+)
+
+const ActiveField = ({
+  active,
+  editMode,
+}: {
+  active: boolean
+  editMode: boolean
+}) => {
+  if (editMode) {
+    return (
+      <label className="flex items-center gap-2 cursor-pointer">
+        <Checkbox checked={active} onChange={() => undefined} />
+        <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
+          활성
+        </span>
+      </label>
+    )
+  }
+
+  return (
+    <Badge variant={active ? 'on' : 'off'}>{active ? '활성' : '비활성'}</Badge>
+  )
+}
+
 export const LinkageGeneralSection = ({
   rule,
   layout = 'stack',
+  editMode = false,
 }: LinkageGeneralSectionProps) => {
   if (!rule) {
     return (
@@ -26,6 +58,12 @@ export const LinkageGeneralSection = ({
     )
   }
 
+  const nameField = editMode ? (
+    <Input defaultValue={rule.name} className="app-text-md max-w-xl" />
+  ) : (
+    <NameValue name={rule.name} />
+  )
+
   if (layout === 'compact') {
     return (
       <div className="flex flex-col gap-3">
@@ -33,14 +71,14 @@ export const LinkageGeneralSection = ({
           <span className="app-text-sm block mb-1" style={labelStyle}>
             명칭
           </span>
-          <Input value={rule.name} readOnly className="app-text-md" />
+          {nameField}
         </div>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <Checkbox checked={rule.active} readOnly />
-          <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
+        <div>
+          <span className="app-text-sm block mb-1" style={labelStyle}>
             활성
           </span>
-        </label>
+          <ActiveField active={rule.active} editMode={editMode} />
+        </div>
       </div>
     )
   }
@@ -54,14 +92,14 @@ export const LinkageGeneralSection = ({
         <span className="app-text-md shrink-0" style={labelStyle}>
           명칭
         </span>
-        <Input value={rule.name} readOnly className="app-text-md max-w-xl" />
+        <div className="min-w-0 flex-1">{nameField}</div>
       </div>
-      <label className="flex items-center gap-2 cursor-pointer shrink-0">
-        <Checkbox checked={rule.active} readOnly />
-        <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
+      <div className="flex items-center gap-2 shrink-0">
+        <span className="app-text-md shrink-0" style={labelStyle}>
           활성
         </span>
-      </label>
+        <ActiveField active={rule.active} editMode={editMode} />
+      </div>
     </div>
   )
 }

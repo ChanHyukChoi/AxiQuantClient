@@ -112,10 +112,15 @@ export const MOCK_SIOS_BY_SCP: Record<number, SioInfo[]> = {
 
 export const mockSiosForScp = (scpId: number): SioInfo[] => MOCK_SIOS_BY_SCP[scpId] ?? []
 
-export const mockSioCountByScpId = (): Record<number, number> => {
+export const mockSioCountByScpId = (): Record<number, number> =>
+  mockSioCountByScpIdFromMap(MOCK_SIOS_BY_SCP)
+
+export const mockSioCountByScpIdFromMap = (
+  map: Record<number, SioInfo[]>,
+): Record<number, number> => {
   const counts: Record<number, number> = {}
   for (const scp of MOCK_SCPS) {
-    counts[scp.id] = (MOCK_SIOS_BY_SCP[scp.id] ?? []).length
+    counts[scp.id] = (map[scp.id] ?? []).length
   }
   return counts
 }

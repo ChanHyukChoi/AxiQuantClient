@@ -1,37 +1,37 @@
-import { Check, Pencil, RotateCcw, Trash2, X } from 'lucide-react'
+import { Check, Pencil, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 
-interface ScpActionButtonsProps {
-  hasScp: boolean
+export interface CrudDetailActionsProps {
   editMode: boolean
+  disabled?: boolean
   isSaving?: boolean
   isDeleting?: boolean
-  isResetting?: boolean
-  onEdit: () => void
-  onCancel: () => void
-  onSave: () => void
-  onDelete: () => void
-  onReset: () => void
+  onEdit?: () => void
+  onDelete?: () => void
+  onSave?: () => void
+  onCancel?: () => void
 }
 
-export const ScpActionButtons = ({
-  hasScp,
+export const CrudDetailActions = ({
   editMode,
+  disabled = false,
   isSaving = false,
   isDeleting = false,
-  isResetting = false,
   onEdit,
-  onCancel,
-  onSave,
   onDelete,
-  onReset,
-}: ScpActionButtonsProps) => {
-  if (!hasScp) return null
-
+  onSave,
+  onCancel,
+}: CrudDetailActionsProps) => {
   if (editMode) {
     return (
-      <div className="flex justify-end gap-1.5">
-        <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={onCancel}>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <Button
+          variant="default"
+          size="sm"
+          leftIcon={<X size={12} />}
+          disabled={disabled}
+          onClick={onCancel}
+        >
           취소
         </Button>
         <Button
@@ -39,6 +39,7 @@ export const ScpActionButtons = ({
           size="sm"
           leftIcon={<Check size={12} />}
           loading={isSaving}
+          disabled={disabled}
           onClick={onSave}
         >
           저장
@@ -48,20 +49,13 @@ export const ScpActionButtons = ({
   }
 
   return (
-    <div className="flex justify-end gap-1.5 flex-wrap">
-      <Button
-        variant="default"
-        size="sm"
-        leftIcon={<RotateCcw size={12} />}
-        loading={isResetting}
-        onClick={onReset}
-      >
-        초기화
-      </Button>
+    <div className="flex items-center gap-1.5 shrink-0">
       <Button
         variant="danger"
         size="sm"
         leftIcon={<Trash2 size={12} />}
+        loading={isDeleting}
+        disabled={disabled}
         onClick={onDelete}
       >
         삭제
@@ -70,6 +64,7 @@ export const ScpActionButtons = ({
         variant="accent"
         size="sm"
         leftIcon={<Pencil size={12} />}
+        disabled={disabled}
         onClick={onEdit}
       >
         수정

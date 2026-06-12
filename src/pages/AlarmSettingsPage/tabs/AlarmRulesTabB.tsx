@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
+import { Bell } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
 import { Modal } from '@/components/primitive/Modal'
-import { AlarmRuleActionButtons } from '@/pages/AlarmSettingsPage/components/AlarmRuleActionButtons'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
+import { TabToolbar } from '@/layouts/TabToolbar'
 import { AlarmRuleFormFields } from '@/pages/AlarmSettingsPage/components/AlarmRuleFormFields'
 import { AlarmUserPermissionList } from '@/pages/AlarmSettingsPage/components/AlarmUserPermissionList'
 import { DevicePickerModal } from '@/pages/AlarmSettingsPage/components/DevicePickerModal'
@@ -120,13 +124,23 @@ export const AlarmRulesTabB = () => {
 
   const userIds = editor.form.watch('userIds')
 
-  const gridColumns = useMemo(
+  const baseGridColumns = useMemo(
     () => buildGridColumns(data.scpNameMap),
     [data.scpNameMap],
   )
 
+  const { columns, layoutGridProps } = useGridColumnLayout(baseGridColumns, {
+    storageKey: 'axiquant.grid.alarm-rules-b',
+  })
+
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <TabToolbar>
+        <AddButton
+          onClick={() => void editor.handleAdd()}
+          loading={editor.isAdding}
+        />
+      </TabToolbar>
       <div
         className="flex flex-col min-h-0 overflow-hidden"
         style={{
@@ -135,7 +149,7 @@ export const AlarmRulesTabB = () => {
         }}
       >
         <Grid
-          columns={gridColumns}
+          columns={columns}
           data={data.filteredRules}
           selectedId={data.selectedId ?? undefined}
           onRowClick={data.selectRule}
@@ -143,6 +157,7 @@ export const AlarmRulesTabB = () => {
           searchPlaceholder="경보 검색..."
           totalCount={data.filteredRules.length}
           loading={data.isLoading}
+          {...layoutGridProps}
         />
         {data.isError ? (
           <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -152,16 +167,28 @@ export const AlarmRulesTabB = () => {
       </div>
 
       <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
-        <div
-          className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
-          style={{
-            background: 'var(--color-accent-subtle)',
-            color: 'var(--color-accent)',
-            borderBottom: '0.5px solid var(--color-border)',
-          }}
-        >
-          일반
-        </div>
+        {data.selectedRule ? (
+          <DetailTitleBar
+            icon={<Bell size={14} style={{ color: 'var(--color-accent)' }} />}
+            title={data.selectedRule.name?.trim() || '경보'}
+            actions={
+              <CrudDetailActions
+                editMode={editor.editMode}
+                isSaving={editor.isSaving}
+                isDeleting={editor.isDeleting}
+                onEdit={editor.handleEdit}
+                onDelete={() => editor.setDeleteOpen(true)}
+                onSave={editor.handleSave}
+                onCancel={editor.handleCancel}
+              />
+            }
+          />
+        ) : null}
+        {editor.actionError ? (
+          <p className="text-[13px] px-3 py-1 text-right" style={{ color: '#c75c5c' }}>
+            {editor.actionError}
+          </p>
+        ) : null}
 
         <div className="flex flex-1 min-h-0 overflow-hidden">
           {data.selectedRule ? (
@@ -219,33 +246,6 @@ export const AlarmRulesTabB = () => {
               상단 목록에서 경보를 선택하세요.
             </p>
           )}
-        </div>
-
-        <div
-          className="flex-shrink-0 px-3 py-2"
-          style={{
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          {editor.actionError ? (
-            <p className="text-[13px] text-right mb-1.5" style={{ color: '#c75c5c' }}>
-              {editor.actionError}
-            </p>
-          ) : null}
-          <AlarmRuleActionButtons
-            hasRule={data.selectedRule != null}
-            editMode={editor.editMode}
-            isSaving={editor.isSaving}
-            isDeleting={editor.isDeleting}
-            isAdding={editor.isAdding}
-            showAddAlways
-            onAdd={() => void editor.handleAdd()}
-            onEdit={editor.handleEdit}
-            onCancel={editor.handleCancel}
-            onSave={editor.handleSave}
-            onDelete={() => editor.setDeleteOpen(true)}
-          />
         </div>
       </div>
 

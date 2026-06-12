@@ -1,15 +1,18 @@
-import { useMemo } from 'react'
+import { Star } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import { Modal } from '@/components/primitive/Modal'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { TabToolbar } from '@/layouts/TabToolbar'
 import { AlarmPriorityFormFields } from '@/pages/AlarmSettingsPage/components/AlarmPriorityFormFields'
 import { AlarmPrioritySamplePreview } from '@/pages/AlarmSettingsPage/components/AlarmPrioritySamplePreview'
-import { AlarmRuleActionButtons } from '@/pages/AlarmSettingsPage/components/AlarmRuleActionButtons'
 import type { AlarmPriorityDisplay } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
 import { useAlarmPrioritiesData } from '@/pages/AlarmSettingsPage/useAlarmPrioritiesData'
 import { useAlarmPriorityEditor } from '@/pages/AlarmSettingsPage/useAlarmPriorityEditor'
 import { normalizeHexColor } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
 
-const GRID_COLUMNS: ColumnDef<AlarmPriorityDisplay>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<AlarmPriorityDisplay>[] = [
   {
     key: 'priority',
     header: '우선순위',
@@ -65,10 +68,18 @@ export const AlarmPriorityTabB = () => {
     onDeleted: data.onItemDeleted,
   })
 
-  const gridColumns = useMemo(() => GRID_COLUMNS, [])
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.alarm-priority-b',
+  })
 
   return (
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+      <TabToolbar>
+        <AddButton
+          onClick={() => void editor.handleAdd()}
+          loading={editor.isAdding}
+        />
+      </TabToolbar>
       <div
         className="flex flex-col min-h-0 overflow-hidden"
         style={{
@@ -77,12 +88,13 @@ export const AlarmPriorityTabB = () => {
         }}
       >
         <Grid
-          columns={gridColumns}
+          columns={columns}
           data={data.items}
           selectedId={data.selectedId ?? undefined}
           onRowClick={data.selectItem}
           totalCount={data.items.length}
           loading={data.isLoading}
+          {...layoutGridProps}
         />
         {data.isError ? (
           <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -92,16 +104,34 @@ export const AlarmPriorityTabB = () => {
       </div>
 
       <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
-        <div
-          className="flex-shrink-0 px-3 py-2 text-[14px] font-medium"
-          style={{
-            background: 'var(--color-accent-subtle)',
-            color: 'var(--color-accent)',
-            borderBottom: '0.5px solid var(--color-border)',
-          }}
-        >
-          일반
-        </div>
+        {data.selectedItem ? (
+          <DetailTitleBar
+            icon={<Star size={14} style={{ color: 'var(--color-accent)' }} />}
+            title={`우선순위 ${data.selectedItem.priority}`}
+            badge={
+              <span
+                className="inline-block w-3 h-3 rounded-full"
+                style={{ background: normalizeHexColor(data.selectedItem.alarmFg) }}
+              />
+            }
+            actions={
+              <CrudDetailActions
+                editMode={editor.editMode}
+                isSaving={editor.isSaving}
+                isDeleting={editor.isDeleting}
+                onEdit={editor.handleEdit}
+                onDelete={() => editor.setDeleteOpen(true)}
+                onSave={editor.handleSave}
+                onCancel={editor.handleCancel}
+              />
+            }
+          />
+        ) : null}
+        {editor.actionError ? (
+          <p className="text-[13px] px-3 py-1 text-right" style={{ color: '#c75c5c' }}>
+            {editor.actionError}
+          </p>
+        ) : null}
 
         <div className="flex-1 p-4 overflow-y-auto app-scrollbar min-h-0">
           {data.selectedItem ? (
@@ -115,33 +145,6 @@ export const AlarmPriorityTabB = () => {
               상단 목록에서 우선순위를 선택하세요.
             </p>
           )}
-        </div>
-
-        <div
-          className="flex-shrink-0 px-3 py-2"
-          style={{
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          {editor.actionError ? (
-            <p className="text-[13px] text-right mb-1.5" style={{ color: '#c75c5c' }}>
-              {editor.actionError}
-            </p>
-          ) : null}
-          <AlarmRuleActionButtons
-            hasRule={data.selectedItem != null}
-            editMode={editor.editMode}
-            isSaving={editor.isSaving}
-            isDeleting={editor.isDeleting}
-            isAdding={editor.isAdding}
-            showAddAlways
-            onAdd={() => void editor.handleAdd()}
-            onEdit={editor.handleEdit}
-            onCancel={editor.handleCancel}
-            onSave={editor.handleSave}
-            onDelete={() => editor.setDeleteOpen(true)}
-          />
         </div>
       </div>
 

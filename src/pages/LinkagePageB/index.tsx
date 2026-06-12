@@ -1,18 +1,19 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link2 } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Button } from '@/components/primitive/Button'
 import { Badge } from '@/components/primitive/Badge'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton, ExportButton, ImportButton } from '@/components/page-actions'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions, ExportButton, ImportButton } from '@/components/page-actions'
 import { LinkageGeneralSection } from '@/pages/LinkagePage/components/LinkageGeneralSection'
 import { LinkageThenSection } from '@/pages/LinkagePage/components/LinkageThenSection'
 import { LinkageWhenSection } from '@/pages/LinkagePage/components/LinkageWhenSection'
 import { linkageRuleSummary } from '@/pages/LinkagePage/utils/linkageDisplay'
 import { useLinkageData } from '@/pages/LinkagePage/useLinkageData'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
 
-const GRID_COLUMNS: ColumnDef<LinkageRule>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<LinkageRule>[] = [
   {
     key: 'name',
     header: '명칭',
@@ -48,12 +49,21 @@ const GRID_COLUMNS: ColumnDef<LinkageRule>[] = [
 
 /** 연동 B안 — 상 Grid 마스터 + 하 3단 (일반 | 조건 | 동작) */
 export const LinkagePageB = () => {
+  const [editMode, setEditMode] = useState(false)
   const { rules, selectedId, selectedRule, setSearchQuery, selectRule } = useLinkageData()
+
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.linkage-b',
+  })
 
   const gridData = useMemo(
     () => rules.map((r) => ({ ...r, summary: linkageRuleSummary(r) })),
     [rules],
   )
+
+  useEffect(() => {
+    setEditMode(false)
+  }, [selectedId])
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -79,69 +89,78 @@ export const LinkagePageB = () => {
           }}
         >
           <Grid
-            columns={GRID_COLUMNS}
+            columns={columns}
             data={gridData}
             selectedId={selectedId ?? undefined}
             onRowClick={(row) => selectRule(row.id)}
             onSearch={setSearchQuery}
             searchPlaceholder="명칭 검색..."
             totalCount={rules.length}
+            {...layoutGridProps}
           />
         </div>
 
-        <div className="flex flex-1 min-h-0 overflow-hidden">
-          <div
-            className="flex flex-col flex-shrink-0 overflow-hidden"
-            style={{
-              width: 220,
-              borderRight: '0.5px solid var(--color-border)',
-              background: 'var(--color-sidebar)',
-            }}
-          >
+        <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
+          {selectedRule ? (
+            <DetailTitleBar
+              icon={<Link2 size={14} style={{ color: 'var(--color-accent)' }} />}
+              title={selectedRule.name}
+              badge={
+                <Badge variant={selectedRule.active ? 'on' : 'off'}>
+                  {selectedRule.active ? '활성' : '비활성'}
+                </Badge>
+              }
+              actions={
+                <CrudDetailActions
+                  editMode={editMode}
+                  onEdit={() => setEditMode(true)}
+                  onDelete={() => undefined}
+                  onSave={() => setEditMode(false)}
+                  onCancel={() => setEditMode(false)}
+                />
+              }
+            />
+          ) : null}
+
+          <div className="flex flex-1 min-h-0 overflow-hidden">
             <div
-              className="flex-shrink-0 px-3 py-2 app-text-md font-medium"
+              className="flex flex-col flex-shrink-0 overflow-hidden"
               style={{
-                background: 'var(--color-accent-subtle)',
-                color: 'var(--color-accent)',
-                borderBottom: '0.5px solid var(--color-border)',
+                width: 220,
+                borderRight: '0.5px solid var(--color-border)',
+                background: 'var(--color-sidebar)',
               }}
             >
-              일반
+              <div
+                className="flex-shrink-0 px-3 py-2 app-text-md font-medium"
+                style={{
+                  background: 'var(--color-accent-subtle)',
+                  color: 'var(--color-accent)',
+                  borderBottom: '0.5px solid var(--color-border)',
+                }}
+              >
+                일반
+              </div>
+              <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
+                <LinkageGeneralSection
+                  rule={selectedRule}
+                  layout="compact"
+                  editMode={editMode}
+                />
+              </div>
             </div>
-            <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
-              <LinkageGeneralSection rule={selectedRule} layout="compact" />
+
+            <div
+              className="flex flex-col flex-1 min-w-0 overflow-hidden"
+              style={{ borderRight: '0.5px solid var(--color-border)' }}
+            >
+              <LinkageWhenSection rows={selectedRule?.when ?? []} compact />
+            </div>
+
+            <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
+              <LinkageThenSection rows={selectedRule?.then ?? []} compact />
             </div>
           </div>
-
-          <div
-            className="flex flex-col flex-1 min-w-0 overflow-hidden"
-            style={{ borderRight: '0.5px solid var(--color-border)' }}
-          >
-            <LinkageWhenSection rows={selectedRule?.when ?? []} compact />
-          </div>
-
-          <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-            <LinkageThenSection rows={selectedRule?.then ?? []} compact />
-          </div>
-        </div>
-
-        <div
-          className="flex items-center justify-end gap-2 flex-shrink-0 px-3"
-          style={{
-            height: 44,
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          <Button variant="accent" size="sm" onClick={() => undefined}>
-            추가
-          </Button>
-          <Button variant="default" size="sm" disabled={!selectedRule} onClick={() => undefined}>
-            수정
-          </Button>
-          <Button variant="danger" size="sm" disabled={!selectedRule} onClick={() => undefined}>
-            삭제
-          </Button>
         </div>
       </div>
     </div>

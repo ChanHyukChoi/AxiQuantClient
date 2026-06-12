@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Binary } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Button } from '@/components/primitive/Button'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton } from '@/components/page-actions'
+import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { AddButton, CrudDetailActions } from '@/components/page-actions'
+import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import { BitVisualizer } from '@/pages/CardFmtPage/BitVisualizer'
 import { CardFmtBitStatGrid } from '@/pages/CardFmtPageB/components/CardFmtBitStatGrid'
 import { fallbackCardFmtName } from '@/lib/entityDisplayLabels'
@@ -16,7 +17,7 @@ const WIEGAND_BADGE_STYLE: React.CSSProperties = {
   border: '0.5px solid color-mix(in srgb, #7f77dd 50%, transparent)',
 }
 
-const GRID_COLUMNS: ColumnDef<CardfmtInfo>[] = [
+const BASE_GRID_COLUMNS: ColumnDef<CardfmtInfo>[] = [
   {
     key: 'name',
     header: '명칭',
@@ -69,6 +70,11 @@ const InfoField = ({ label, children }: { label: string; children: React.ReactNo
 export const CardFmtPageB = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [editMode, setEditMode] = useState(false)
+
+  const { columns, layoutGridProps } = useGridColumnLayout(BASE_GRID_COLUMNS, {
+    storageKey: 'axiquant.grid.cardfmt-b',
+  })
 
   const { data: cardfmtList, isLoading, isError } = useCardFmts()
 
@@ -83,6 +89,10 @@ export const CardFmtPageB = () => {
     () => filteredList.find((item) => item.id === selectedId) ?? null,
     [filteredList, selectedId],
   )
+
+  useEffect(() => {
+    setEditMode(false)
+  }, [selectedId])
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
@@ -102,7 +112,7 @@ export const CardFmtPageB = () => {
           }}
         >
           <Grid
-            columns={GRID_COLUMNS}
+            columns={columns}
             data={filteredList}
             selectedId={selectedId ?? undefined}
             onRowClick={(row) => setSelectedId(row.id)}
@@ -110,6 +120,7 @@ export const CardFmtPageB = () => {
             searchPlaceholder="형식 검색..."
             totalCount={filteredList.length}
             loading={isLoading}
+            {...layoutGridProps}
           />
           {isError ? (
             <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
@@ -118,7 +129,32 @@ export const CardFmtPageB = () => {
           ) : null}
         </div>
 
-        <div className="flex flex-1 min-h-0 overflow-hidden">
+        <div className="flex flex-1 min-h-0 flex-col overflow-hidden">
+          {selectedCardfmt ? (
+            <DetailTitleBar
+              icon={<Binary size={14} style={{ color: '#7f77dd' }} />}
+              title={fallbackCardFmtName(selectedCardfmt.name)}
+              badge={
+                <span
+                  className="inline-flex items-center text-[12px] font-medium px-1.5 py-0.5 rounded-full"
+                  style={WIEGAND_BADGE_STYLE}
+                >
+                  WIEGAND
+                </span>
+              }
+              actions={
+                <CrudDetailActions
+                  editMode={editMode}
+                  onEdit={() => setEditMode(true)}
+                  onDelete={() => undefined}
+                  onSave={() => setEditMode(false)}
+                  onCancel={() => setEditMode(false)}
+                />
+              }
+            />
+          ) : null}
+
+          <div className="flex flex-1 min-h-0 overflow-hidden">
           <div
             className="flex flex-col flex-shrink-0 overflow-hidden"
             style={{
@@ -210,35 +246,7 @@ export const CardFmtPageB = () => {
               )}
             </div>
           </div>
-        </div>
-
-        <div
-          className="flex items-center justify-end gap-2 flex-shrink-0 px-3"
-          style={{
-            height: 44,
-            borderTop: '0.5px solid var(--color-border)',
-            background: 'var(--color-sidebar)',
-          }}
-        >
-          <Button variant="accent" size="sm" onClick={() => undefined}>
-            추가
-          </Button>
-          <Button
-            variant="default"
-            size="sm"
-            disabled={!selectedCardfmt}
-            onClick={() => undefined}
-          >
-            수정
-          </Button>
-          <Button
-            variant="danger"
-            size="sm"
-            disabled={!selectedCardfmt}
-            onClick={() => undefined}
-          >
-            삭제
-          </Button>
+          </div>
         </div>
       </div>
     </div>
