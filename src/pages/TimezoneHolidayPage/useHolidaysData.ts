@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { MOCK_HOLIDAYS } from '@/pages/TimezoneHolidayPage/timezoneHolidayMockData'
 import { useHolidayList } from '@/hooks/api/useHoliday'
 import type { HolidayInfo } from '@/types/api'
@@ -24,16 +24,6 @@ export const useHolidaysData = () => {
       (h) => h.name.toLowerCase().includes(q) || h.date.toLowerCase().includes(q),
     )
   }, [items, searchQuery])
-
-  useEffect(() => {
-    if (filtered.length === 0) {
-      setSelectedId(null)
-      return
-    }
-    if (selectedId == null || !filtered.some((h) => h.id === selectedId)) {
-      setSelectedId(filtered[0].id)
-    }
-  }, [filtered, selectedId])
 
   const selectedItem = useMemo(
     () => items.find((h) => h.id === selectedId) ?? null,

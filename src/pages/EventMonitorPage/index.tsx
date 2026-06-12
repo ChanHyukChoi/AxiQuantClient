@@ -1,6 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Activity } from 'lucide-react'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { PageHeader } from '@/layouts/PageHeader'
+import {
+  SPLIT_DRAWER_DEFAULT_WIDTH,
+  SPLIT_DRAWER_MIN_WIDTH,
+} from '@/lib/layout/splitDrawerDefaults'
 import { EventDetailPanel } from '@/pages/EventMonitorPage/EventDetailPanel'
 import { EventGrid } from '@/pages/EventMonitorPage/EventGrid'
 import { MonitorToolbar, type MonitorMode } from '@/pages/EventMonitorPage/MonitorToolbar'
@@ -22,6 +27,7 @@ import {
 import type { AccessLogParams, AlarmLogParams, EventRecord } from '@/types/api/eventMonitor'
 
 const PAGE_SIZE = 50
+const EVENT_GRID_MIN_WIDTH = 640
 
 export const EventMonitorPage = () => {
   const [mode, setMode] = useState<MonitorMode>('live')
@@ -115,11 +121,7 @@ export const EventMonitorPage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader
-        title="이벤트 모니터"
-        icon={<Activity size={15} />}
-        variantPaths={{ a: '/monitor', b: '/monitor-b' }}
-      />
+      <PageHeader title="이벤트 모니터" icon={<Activity size={15} />} />
 
       <MonitorToolbar
         mode={mode}
@@ -141,21 +143,27 @@ export const EventMonitorPage = () => {
         onSearch={handleSearch}
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <EventGrid
-          events={displayEvents}
-          selectedId={selectedId}
-          onSelect={(row) => setSelectedId(row.id)}
-          loading={mode === 'history' && history.isLoading}
-          error={mode === 'history' && history.isError}
-          mode={mode}
-          page={page}
-          pageSize={PAGE_SIZE}
-          total={mode === 'history' ? history.total : displayEvents.length}
-          onPageChange={setPage}
-        />
-        <EventDetailPanel event={selectedEvent} onAck={handleAck} />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={EVENT_GRID_MIN_WIDTH}
+        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
+        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
+        storageKey="axiquant.drawer.monitor"
+        main={
+          <EventGrid
+            events={displayEvents}
+            selectedId={selectedId}
+            onSelect={(row) => setSelectedId(row.id)}
+            loading={mode === 'history' && history.isLoading}
+            error={mode === 'history' && history.isError}
+            mode={mode}
+            page={page}
+            pageSize={PAGE_SIZE}
+            total={mode === 'history' ? history.total : displayEvents.length}
+            onPageChange={setPage}
+          />
+        }
+        drawer={<EventDetailPanel event={selectedEvent} onAck={handleAck} />}
+      />
     </div>
   )
 }

@@ -410,7 +410,12 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
 
   return (
     <>
-      <Drawer fill header={drawerHeader} actions={drawerActions ?? undefined}>
+      <Drawer
+        fill
+        borderLeft={false}
+        header={drawerHeader}
+        actions={drawerActions ?? undefined}
+      >
         {drawerChildren}
       </Drawer>
 

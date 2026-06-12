@@ -1,64 +1,116 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ArrowRightToLine } from 'lucide-react'
-import { PageHeader } from '@/layouts/PageHeader'
+import { Grid } from '@/components/primitive/Grid'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
-import { InputDetailPanel } from '@/pages/InputsPage/components/InputDetailPanel'
-import { InputListPane } from '@/pages/InputsPage/components/InputListPane'
+import { PageHeader } from '@/layouts/PageHeader'
+import { useGridLayout } from '@/hooks/ui/useGridLayout'
+import {
+  SPLIT_DRAWER_DEFAULT_WIDTH,
+  SPLIT_DRAWER_MIN_WIDTH,
+} from '@/lib/layout/splitDrawerDefaults'
+import { InputDrawer } from '@/pages/InputsPage/InputDrawer'
+import { useInputColumns } from '@/pages/InputsPage/useInputColumns'
+import type { InputDisplayRow } from '@/pages/InputsPage/inputsMockData'
+import { inputGridId } from '@/pages/InputsPage/inputsMockData'
 import { useInputsData } from '@/pages/InputsPage/useInputsData'
 
+const INPUTS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.inputs.v1'
+
 export const InputsPage = () => {
-  const {
-    useMock,
-    scps,
-    filteredRows,
-    selected,
-    selectedKey,
-    selectRow,
-    searchQuery,
-    setSearchQuery,
-    scpFilter,
-    setScpFilter,
-    isLoading,
-    isError,
-    patchMockRow,
-  } = useInputsData()
+  const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
+  const [editMode, setEditMode] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
+
+  const { useMock, filteredRows, setSearchQuery, isLoading, isError, patchMockRow } =
+    useInputsData()
+
+  const gridData = useMemo(
+    () => filteredRows.map((r) => ({ ...r, id: inputGridId(r) })),
+    [filteredRows],
+  )
+
+  const selected = useMemo(
+    () => filteredRows.find((r) => inputGridId(r) === selectedGridId) ?? null,
+    [filteredRows, selectedGridId],
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [filteredRows.length])
+
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size)
+    setPage(1)
+  }, [])
+
+  const handleRowClick = (row: InputDisplayRow & { id: number }) => {
+    if (editMode) setEditMode(false)
+    setSelectedGridId(row.id)
+  }
 
   const handleToggleActive = (active: boolean) => {
-    if (!selected) return
-    if (useMock) {
-      patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
-      return
-    }
-    // TODO: API 연동
+    if (!selected || !useMock) return
+    patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
+
+  const baseColumns = useInputColumns()
+  const { columns, minGridWidth, setColumnWidth, moveColumn } = useGridLayout(baseColumns, {
+    storageKey: INPUTS_GRID_LAYOUT_KEY,
+  })
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
         title="입력"
         icon={<ArrowRightToLine size={15} />}
-        variantPaths={{ a: '/inputs', b: '/inputs-b' }}
         actions={<AddButton onClick={() => undefined} />}
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <InputListPane
-          rows={filteredRows}
-          scps={scps}
-          selectedKey={selectedKey}
-          searchQuery={searchQuery}
-          scpFilter={scpFilter}
-          loading={isLoading}
-          error={isError}
-          onSearch={setSearchQuery}
-          onScpFilterChange={setScpFilter}
-          onSelect={selectRow}
-        />
-        <InputDetailPanel
-          row={selected}
-          useMock={useMock}
-          onToggleActive={handleToggleActive}
-        />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={minGridWidth}
+        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
+        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
+        storageKey="axiquant.drawer.inputs"
+        main={
+          <>
+            <Grid
+              columns={columns}
+              data={gridData}
+              selectedId={selectedGridId ?? undefined}
+              onRowClick={handleRowClick}
+              onSearch={setSearchQuery}
+              searchPlaceholder="입력 검색..."
+              totalCount={filteredRows.length}
+              loading={isLoading}
+              pagination={{
+                page,
+                pageSize,
+                onPageChange: setPage,
+                onPageSizeChange: handlePageSizeChange,
+              }}
+              resizableColumns
+              onColumnWidthChange={setColumnWidth}
+              reorderableColumns
+              onColumnReorder={moveColumn}
+            />
+            {isError ? (
+              <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
+                입력 목록을 불러오지 못했습니다.
+              </p>
+            ) : null}
+          </>
+        }
+        drawer={
+          <InputDrawer
+            row={selected}
+            useMock={useMock}
+            onToggleActive={handleToggleActive}
+            onEditModeChange={setEditMode}
+          />
+        }
+      />
     </div>
   )
 }

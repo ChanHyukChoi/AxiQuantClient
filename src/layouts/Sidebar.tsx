@@ -25,8 +25,6 @@ interface MenuItem {
   id: string
   label: string
   path: string
-  /** B안 등 동일 메뉴로 묶을 추가 경로 */
-  activePaths?: string[]
   icon: React.ReactNode
 }
 
@@ -56,21 +54,18 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'access',
         label: '접근 권한',
         path: '/access',
-        activePaths: ['/access', '/access-b'],
         icon: <Lock size={28} strokeWidth={2} />,
       },
       {
         id: 'area',
         label: '영역',
         path: '/area',
-        activePaths: ['/area', '/area-b'],
         icon: <MapPin size={28} strokeWidth={2} />,
       },
       {
         id: 'cardfmt',
         label: '카드 형식',
         path: '/cardfmt',
-        activePaths: ['/cardfmt', '/cardfmt-b'],
         icon: <Binary size={28} strokeWidth={2} />,
       },
     ],
@@ -82,7 +77,6 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'monitor',
         label: '이벤트 모니터',
         path: '/monitor',
-        activePaths: ['/monitor', '/monitor-b'],
         icon: <Activity size={28} strokeWidth={2} />,
       },
     ],
@@ -94,7 +88,6 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'alarm-settings',
         label: '경보 설정',
         path: '/alarm-settings',
-        activePaths: ['/alarm-settings', '/alarm-settings-b'],
         icon: <Bell size={28} strokeWidth={2} />,
       },
     ],
@@ -106,28 +99,24 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'controllers',
         label: '제어기',
         path: '/controllers',
-        activePaths: ['/controllers', '/controllers-b'],
         icon: <Cpu size={28} strokeWidth={2} />,
       },
       {
         id: 'readers',
         label: '리더',
         path: '/readers',
-        activePaths: ['/readers', '/readers-b'],
         icon: <ScanLine size={28} strokeWidth={2} />,
       },
       {
         id: 'inputs',
         label: '입력',
         path: '/inputs',
-        activePaths: ['/inputs', '/inputs-b'],
         icon: <ArrowRightToLine size={28} strokeWidth={2} />,
       },
       {
         id: 'outputs',
         label: '출력',
         path: '/outputs',
-        activePaths: ['/outputs', '/outputs-b'],
         icon: <ArrowLeftFromLine size={28} strokeWidth={2} />,
       },
     ],
@@ -139,7 +128,6 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'timezone-holiday',
         label: '타임존·휴일',
         path: '/timezone-holiday',
-        activePaths: ['/timezone-holiday', '/timezone-holiday-b'],
         icon: <CalendarClock size={28} strokeWidth={2} />,
       },
     ],
@@ -151,7 +139,6 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'linkage',
         label: '연동',
         path: '/linkage',
-        activePaths: ['/linkage', '/linkage-b'],
         icon: <Link2 size={28} strokeWidth={2} />,
       },
     ],
@@ -169,7 +156,6 @@ const MENU_GROUPS: MenuGroup[] = [
         id: 'users',
         label: '사용자',
         path: '/users',
-        activePaths: ['/users', '/users-b'],
         icon: <UserCog size={28} strokeWidth={2} />,
       },
     ],
@@ -258,7 +244,7 @@ const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
           <ul className="flex flex-col">
             {groupIndex > 0 ? <MenuDivider isCollapsed={isCollapsed} /> : null}
             {group.items.map((item) => {
-              const matchPaths = item.activePaths ?? [item.path]
+              const matchPaths = [item.path]
               const isActive = matchPaths.some(
                 (p) => currentPath === p || currentPath.startsWith(`${p}/`),
               )

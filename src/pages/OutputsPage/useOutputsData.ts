@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getOutputList } from '@/api/output'
 import { MOCK_SCPS } from '@/pages/ControllersPage/controllersMockData'
 import {
-  MOCK_OUTPUTS,
   outputRowKey,
+  MOCK_OUTPUTS,
   type OutputDisplayRow,
 } from '@/pages/OutputsPage/outputsMockData'
 import { outputLabel } from '@/pages/OutputsPage/utils/outputDisplay'
@@ -73,16 +73,6 @@ export const useOutputsData = () => {
         r.sioName.toLowerCase().includes(q),
     )
   }, [allRows, scpFilter, searchQuery])
-
-  useEffect(() => {
-    if (filteredRows.length === 0) {
-      setSelectedKey(null)
-      return
-    }
-    if (selectedKey == null || !filteredRows.some((r) => outputRowKey(r) === selectedKey)) {
-      setSelectedKey(outputRowKey(filteredRows[0]))
-    }
-  }, [filteredRows, selectedKey])
 
   const selected = useMemo(
     () => filteredRows.find((r) => outputRowKey(r) === selectedKey) ?? null,

@@ -1,15 +1,24 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { DoorOpen } from 'lucide-react'
-import { PageHeader } from '@/layouts/PageHeader'
+import { Grid } from '@/components/primitive/Grid'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
+import { PageHeader } from '@/layouts/PageHeader'
+import { useGridLayout } from '@/hooks/ui/useGridLayout'
+import {
+  SPLIT_DRAWER_DEFAULT_WIDTH,
+  SPLIT_DRAWER_MIN_WIDTH,
+} from '@/lib/layout/splitDrawerDefaults'
 import { AccessDetailPanel } from '@/pages/AccessPage/AccessDetailPanel'
-import { AccessListPane } from '@/pages/AccessPage/components/AccessListPane'
+import { useAccLvColumns } from '@/pages/AccessPage/useAccLvColumns'
 import { CreateAccLvModal } from '@/pages/AccessPage/components/CreateAccLvModal'
 import { getAccLvList } from '@/api/acclv'
 import { useAccLvList } from '@/hooks/api/useAccLv'
 import { queryKeys } from '@/lib/query/queryKeys'
 import type { AccLvInfo } from '@/types/api'
+
+const ACCESS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.access.v1'
 
 export const AccessPage = () => {
   const qc = useQueryClient()
@@ -17,6 +26,8 @@ export const AccessPage = () => {
   const [editMode, setEditMode] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
 
@@ -32,9 +43,18 @@ export const AccessPage = () => {
     return accLvList.filter((a) => a.name.toLowerCase().includes(q))
   }, [accLvList, searchQuery])
 
-  const handleSelect = (item: AccLvInfo) => {
+  useEffect(() => {
+    setPage(1)
+  }, [searchQuery, filteredList.length])
+
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size)
+    setPage(1)
+  }, [])
+
+  const handleRowClick = (row: AccLvInfo) => {
     if (editMode) setEditMode(false)
-    setSelectedId(item.id)
+    setSelectedId(row.id)
   }
 
   const handleCreated = useCallback(
@@ -50,30 +70,54 @@ export const AccessPage = () => {
     [qc],
   )
 
+  const baseColumns = useAccLvColumns()
+  const { columns, minGridWidth, setColumnWidth, moveColumn } = useGridLayout(baseColumns, {
+    storageKey: ACCESS_GRID_LAYOUT_KEY,
+  })
+
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
         title="접근 권한"
         icon={<DoorOpen size={15} />}
-        variantPaths={{ a: '/access', b: '/access-b' }}
         actions={<AddButton onClick={() => setCreateOpen(true)} />}
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <AccessListPane
-          items={filteredList}
-          selectedId={selectedId}
-          searchQuery={searchQuery}
-          loading={accLvLoading}
-          onSearch={setSearchQuery}
-          onSelect={handleSelect}
-        />
-        <AccessDetailPanel
-          accLv={selectedAccLv}
-          onDeleted={() => setSelectedId(null)}
-          onEditModeChange={setEditMode}
-        />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={minGridWidth}
+        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
+        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
+        storageKey="axiquant.drawer.access"
+        main={
+          <Grid
+            columns={columns}
+            data={filteredList}
+            selectedId={selectedId ?? undefined}
+            onRowClick={handleRowClick}
+            searchPlaceholder="권한명 검색..."
+            onSearch={setSearchQuery}
+            totalCount={filteredList.length}
+            loading={accLvLoading}
+            pagination={{
+              page,
+              pageSize,
+              onPageChange: setPage,
+              onPageSizeChange: handlePageSizeChange,
+            }}
+            resizableColumns
+            onColumnWidthChange={setColumnWidth}
+            reorderableColumns
+            onColumnReorder={moveColumn}
+          />
+        }
+        drawer={
+          <AccessDetailPanel
+            accLv={selectedAccLv}
+            onDeleted={() => setSelectedId(null)}
+            onEditModeChange={setEditMode}
+          />
+        }
+      />
 
       <CreateAccLvModal
         open={createOpen}

@@ -106,7 +106,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
 
   return (
     <>
-      <Drawer fill header={drawerHeader} actions={drawerActions}>
+      <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions}>
         {item ? (
           <AlarmPriorityFormFields
             form={editor.form}

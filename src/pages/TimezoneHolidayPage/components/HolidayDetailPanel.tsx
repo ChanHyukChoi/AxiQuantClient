@@ -82,7 +82,7 @@ export const HolidayDetailPanel = ({ item, editor }: HolidayDetailPanelProps) =>
 
   return (
     <>
-      <Drawer fill header={header} actions={drawerActions}>
+      <Drawer fill borderLeft={false} header={header} actions={drawerActions}>
         {item ? (
           <HolidayDetailFields
             item={item}

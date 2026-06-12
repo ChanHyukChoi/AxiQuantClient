@@ -15,25 +15,19 @@ const PAGE_TABS: TabItem[] = [
 interface AlarmSettingsShellProps {
   rulesTab: ReactNode
   priorityTab: ReactNode
-  variantPaths: { a: string; b: string }
   title?: string
 }
 
 export const AlarmSettingsShell = ({
   rulesTab,
   priorityTab,
-  variantPaths,
   title = '경보 설정',
 }: AlarmSettingsShellProps) => {
   const [activeTab, setActiveTab] = useState<AlarmSettingsTab>('rules')
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader
-        title={title}
-        icon={<Bell size={15} />}
-        variantPaths={variantPaths}
-      />
+      <PageHeader title={title} icon={<Bell size={15} />} />
 
       <div className="flex-shrink-0 px-3 pt-2">
         <Tab

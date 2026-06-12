@@ -252,6 +252,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
     <>
       <Drawer
         fill
+        borderLeft={false}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
         tabs={drawerTabs}

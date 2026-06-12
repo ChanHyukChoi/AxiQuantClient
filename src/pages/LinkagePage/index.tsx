@@ -1,37 +1,48 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link2 } from 'lucide-react'
+import { Grid } from '@/components/primitive/Grid'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { AddButton, ExportButton, ImportButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton, CrudDetailActions, ExportButton, ImportButton } from '@/components/page-actions'
-import { LinkageListPane } from '@/pages/LinkagePage/components/LinkageListPane'
-import { LinkageWorkspace } from '@/pages/LinkagePage/components/LinkageWorkspace'
+import { useGridLayout } from '@/hooks/ui/useGridLayout'
+import {
+  SPLIT_DRAWER_DEFAULT_WIDTH,
+  SPLIT_DRAWER_MIN_WIDTH,
+} from '@/lib/layout/splitDrawerDefaults'
+import { LinkageDrawer } from '@/pages/LinkagePage/LinkageDrawer'
+import { toLinkageGridRows, useLinkageColumns } from '@/pages/LinkagePage/useLinkageColumns'
 import { useLinkageData } from '@/pages/LinkagePage/useLinkageData'
 
-/** 연동 A안 — 좌 ListPane + 우 Workspace */
+const LINKAGE_GRID_LAYOUT_KEY = 'axiquant.grid.layout.linkage.v1'
+
 export const LinkagePage = () => {
   const [editMode, setEditMode] = useState(false)
-  const { rules, selectedId, selectedRule, searchQuery, setSearchQuery, selectRule } =
-    useLinkageData()
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
+
+  const { rules, selectedId, selectedRule, setSearchQuery, selectRule } = useLinkageData()
+
+  const gridData = useMemo(() => toLinkageGridRows(rules), [rules])
 
   useEffect(() => {
-    setEditMode(false)
-  }, [selectedId])
+    setPage(1)
+  }, [rules.length])
 
-  const titleActions = selectedRule ? (
-    <CrudDetailActions
-      editMode={editMode}
-      onEdit={() => setEditMode(true)}
-      onDelete={() => undefined}
-      onSave={() => setEditMode(false)}
-      onCancel={() => setEditMode(false)}
-    />
-  ) : null
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size)
+    setPage(1)
+  }, [])
+
+  const baseColumns = useLinkageColumns()
+  const { columns, minGridWidth, setColumnWidth, moveColumn } = useGridLayout(baseColumns, {
+    storageKey: LINKAGE_GRID_LAYOUT_KEY,
+  })
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
         title="연동"
         icon={<Link2 size={15} />}
-        variantPaths={{ a: '/linkage', b: '/linkage-b' }}
         actions={
           <>
             <ImportButton size="sm" showLabel={false} onClick={() => undefined} />
@@ -41,20 +52,37 @@ export const LinkagePage = () => {
         }
       />
 
-      <div className="flex flex-1 overflow-hidden min-h-0">
-        <LinkageListPane
-          rules={rules}
-          selectedId={selectedId}
-          searchQuery={searchQuery}
-          onSearch={setSearchQuery}
-          onSelect={(rule) => selectRule(rule.id)}
-        />
-        <LinkageWorkspace
-          rule={selectedRule}
-          editMode={editMode}
-          titleActions={titleActions}
-        />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={minGridWidth}
+        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
+        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
+        storageKey="axiquant.drawer.linkage"
+        main={
+          <Grid
+            columns={columns}
+            data={gridData}
+            selectedId={selectedId ?? undefined}
+            onRowClick={(row) => {
+              if (editMode) setEditMode(false)
+              selectRule(row.id)
+            }}
+            onSearch={setSearchQuery}
+            searchPlaceholder="명칭 검색..."
+            totalCount={rules.length}
+            pagination={{
+              page,
+              pageSize,
+              onPageChange: setPage,
+              onPageSizeChange: handlePageSizeChange,
+            }}
+            resizableColumns
+            onColumnWidthChange={setColumnWidth}
+            reorderableColumns
+            onColumnReorder={moveColumn}
+          />
+        }
+        drawer={<LinkageDrawer rule={selectedRule} onEditModeChange={setEditMode} />}
+      />
     </div>
   )
 }

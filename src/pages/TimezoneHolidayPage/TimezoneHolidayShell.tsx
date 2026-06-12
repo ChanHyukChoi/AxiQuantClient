@@ -2,7 +2,6 @@ import { useState, type ReactNode } from 'react'
 import { Calendar, Clock } from 'lucide-react'
 import { Tab, type TabItem } from '@/components/primitive/Tab'
 import { PageHeader } from '@/layouts/PageHeader'
-import type { PageVariantPaths } from '@/layouts/PageVariantToggle'
 
 export type TimezoneHolidayTab = 'timezone' | 'holiday'
 
@@ -14,23 +13,19 @@ const PAGE_TABS: TabItem[] = [
 interface TimezoneHolidayShellProps {
   timezoneTab: ReactNode
   holidayTab: ReactNode
-  variantPaths: PageVariantPaths
+  title?: string
 }
 
 export const TimezoneHolidayShell = ({
   timezoneTab,
   holidayTab,
-  variantPaths,
+  title = '타임존 · 휴일',
 }: TimezoneHolidayShellProps) => {
   const [activeTab, setActiveTab] = useState<TimezoneHolidayTab>('timezone')
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader
-        title="타임존-휴일"
-        icon={<Clock size={15} />}
-        variantPaths={variantPaths}
-      />
+      <PageHeader title={title} icon={<Clock size={15} />} />
 
       <div className="flex-shrink-0 px-3 pt-2">
         <Tab

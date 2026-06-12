@@ -10,30 +10,18 @@ import { LoginPage } from '@/pages/LoginPage'
 import { EmpsPage } from '@/pages/EmpsPage'
 import { CardsPage } from '@/pages/CardsPage'
 import { AccessPage } from '@/pages/AccessPage'
-import { AccessPageB } from '@/pages/AccessPageB'
 import { ControllersPage } from '@/pages/ControllersPage'
-import { ControllersPageB } from '@/pages/ControllersPageB'
 import { InputsPage } from '@/pages/InputsPage'
-import { InputsPageB } from '@/pages/InputsPageB'
 import { OutputsPage } from '@/pages/OutputsPage'
-import { OutputsPageB } from '@/pages/OutputsPageB'
 import { ReadersPage } from '@/pages/ReadersPage'
-import { ReadersPageB } from '@/pages/ReadersPageB'
 import { AreaPage } from '@/pages/AreaPage'
-import { AreaPageB } from '@/pages/AreaPageB'
 import { CardFmtPage } from '@/pages/CardFmtPage'
-import { CardFmtPageB } from '@/pages/CardFmtPageB'
 import { EventMonitorPage } from '@/pages/EventMonitorPage'
-import { EventMonitorPageB } from '@/pages/EventMonitorPageB'
 import { UsersPage } from '@/pages/UsersPage'
-import { UsersPageB } from '@/pages/UsersPageB'
 import { AuditLogPage } from '@/pages/AuditLogPage'
 import { AlarmSettingsPage } from '@/pages/AlarmSettingsPage'
-import { AlarmSettingsPageB } from '@/pages/AlarmSettingsPageB'
 import { TimezoneHolidayPage } from '@/pages/TimezoneHolidayPage'
-import { TimezoneHolidayPageB } from '@/pages/TimezoneHolidayPageB'
 import { LinkagePage } from '@/pages/LinkagePage'
-import { LinkagePageB } from '@/pages/LinkagePageB'
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
@@ -83,22 +71,10 @@ const accessRoute = createRoute({
   component: AccessPage,
 })
 
-const accessBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/access-b',
-  component: AccessPageB,
-})
-
 const controllersRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/controllers',
   component: ControllersPage,
-})
-
-const controllersBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/controllers-b',
-  component: ControllersPageB,
 })
 
 const readersRoute = createRoute({
@@ -107,22 +83,10 @@ const readersRoute = createRoute({
   component: ReadersPage,
 })
 
-const readersBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/readers-b',
-  component: ReadersPageB,
-})
-
 const inputsRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/inputs',
   component: InputsPage,
-})
-
-const inputsBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/inputs-b',
-  component: InputsPageB,
 })
 
 const outputsRoute = createRoute({
@@ -131,40 +95,16 @@ const outputsRoute = createRoute({
   component: OutputsPage,
 })
 
-const outputsBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/outputs-b',
-  component: OutputsPageB,
-})
-
 const areaRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/area',
   component: AreaPage,
 })
 
-const areaBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/area-b',
-  component: AreaPageB,
-})
-
 const cardfmtRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/cardfmt',
   component: CardFmtPage,
-})
-
-const cardfmtBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/cardfmt-b',
-  component: CardFmtPageB,
-})
-
-const monitorBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/monitor-b',
-  component: EventMonitorPageB,
 })
 
 const monitorRoute = createRoute({
@@ -179,12 +119,6 @@ const usersRoute = createRoute({
   component: UsersPage,
 })
 
-const usersBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/users-b',
-  component: UsersPageB,
-})
-
 const auditRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/audit',
@@ -197,34 +131,16 @@ const alarmSettingsRoute = createRoute({
   component: AlarmSettingsPage,
 })
 
-const alarmSettingsBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/alarm-settings-b',
-  component: AlarmSettingsPageB,
-})
-
 const timezoneHolidayRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/timezone-holiday',
   component: TimezoneHolidayPage,
 })
 
-const timezoneHolidayBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/timezone-holiday-b',
-  component: TimezoneHolidayPageB,
-})
-
 const linkageRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/linkage',
   component: LinkagePage,
-})
-
-const linkageBRoute = createRoute({
-  getParentRoute: () => appRoute,
-  path: '/linkage-b',
-  component: LinkagePageB,
 })
 
 const routeTree = rootRoute.addChildren([
@@ -234,30 +150,18 @@ const routeTree = rootRoute.addChildren([
     empsRoute,
     cardsRoute,
     accessRoute,
-    accessBRoute,
     controllersRoute,
-    controllersBRoute,
     readersRoute,
-    readersBRoute,
     inputsRoute,
-    inputsBRoute,
     outputsRoute,
-    outputsBRoute,
     areaRoute,
-    areaBRoute,
     cardfmtRoute,
-    cardfmtBRoute,
-    monitorBRoute,
     monitorRoute,
     usersRoute,
-    usersBRoute,
     auditRoute,
     alarmSettingsRoute,
-    alarmSettingsBRoute,
     timezoneHolidayRoute,
-    timezoneHolidayBRoute,
     linkageRoute,
-    linkageBRoute,
   ]),
 ])
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { MOCK_TIMEZONES } from '@/pages/TimezoneHolidayPage/timezoneHolidayMockData'
 import { timezoneDisplayName } from '@/pages/TimezoneHolidayPage/utils/timezoneDisplay'
 import { useTimezoneList } from '@/hooks/api/useTimezone'
@@ -23,16 +23,6 @@ export const useTimezonesData = () => {
     const q = searchQuery.trim().toLowerCase()
     return items.filter((t) => timezoneDisplayName(t).toLowerCase().includes(q))
   }, [items, searchQuery])
-
-  useEffect(() => {
-    if (filtered.length === 0) {
-      setSelectedId(null)
-      return
-    }
-    if (selectedId == null || !filtered.some((t) => t.id === selectedId)) {
-      setSelectedId(filtered[0].id)
-    }
-  }, [filtered, selectedId])
 
   const selectedItem = useMemo(
     () => items.find((t) => t.id === selectedId) ?? null,

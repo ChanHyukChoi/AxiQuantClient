@@ -6,6 +6,5 @@ export const TimezoneHolidayPage = () => (
   <TimezoneHolidayShell
     timezoneTab={<TimezoneTab />}
     holidayTab={<HolidayTab />}
-    variantPaths={{ a: '/timezone-holiday', b: '/timezone-holiday-b' }}
   />
 )

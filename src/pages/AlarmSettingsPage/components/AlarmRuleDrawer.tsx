@@ -131,7 +131,7 @@ export const AlarmRuleDrawer = ({
 
   return (
     <>
-      <Drawer fill header={drawerHeader} actions={drawerActions}>
+      <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions}>
         {rule ? (
           <div className="flex flex-col gap-3 min-h-0 flex-1">
             <Tab

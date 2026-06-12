@@ -31,6 +31,7 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
     <>
       <Drawer
         fill
+        borderLeft={false}
         header={
           headerTitle ? (
             <DetailTitleBar

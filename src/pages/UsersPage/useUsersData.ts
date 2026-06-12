@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { MOCK_USERS } from '@/pages/UsersPage/usersMockData'
 import { useUsers } from '@/hooks/api/useUsers'
 import type { UserInfo } from '@/types/api/user'
@@ -27,16 +27,6 @@ export const useUsersData = () => {
       (u) => u.name.toLowerCase().includes(q) || u.loginId.toLowerCase().includes(q),
     )
   }, [users, searchQuery])
-
-  useEffect(() => {
-    if (filtered.length === 0) {
-      setSelectedId(null)
-      return
-    }
-    if (selectedId == null || !filtered.some((u) => u.id === selectedId)) {
-      setSelectedId(filtered[0].id)
-    }
-  }, [filtered, selectedId])
 
   const selectedUser = useMemo(
     () => users.find((u) => u.id === selectedId) ?? null,
@@ -68,7 +58,6 @@ export const useUsersData = () => {
 
   return {
     useMock,
-    apiNotReady: useMock ? false : apiNotReady,
     users,
     filtered,
     selectedId,
@@ -76,8 +65,8 @@ export const useUsersData = () => {
     searchQuery,
     setSearchQuery,
     selectUser,
-    isLoading: useMock ? false : isLoading,
-    isError: useMock ? false : isError,
+    isLoading: !useMock && isLoading,
+    isError: !useMock && isError,
     patchMockUser,
     addMockUser,
     removeMockUser,

@@ -6,6 +6,5 @@ export const AlarmSettingsPage = () => (
   <AlarmSettingsShell
     rulesTab={<AlarmRulesTab />}
     priorityTab={<AlarmPriorityTab />}
-    variantPaths={{ a: '/alarm-settings', b: '/alarm-settings-b' }}
   />
 )

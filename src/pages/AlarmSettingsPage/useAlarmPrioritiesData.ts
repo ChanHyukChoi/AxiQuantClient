@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   DEFAULT_ALARM_PRIORITY_EXTRA,
   type AlarmPriorityDisplay,
@@ -37,16 +37,6 @@ export const useAlarmPrioritiesData = () => {
     () => [...items].sort((a, b) => a.priority - b.priority),
     [items],
   )
-
-  useEffect(() => {
-    if (sortedItems.length === 0) {
-      setSelectedId(null)
-      return
-    }
-    if (selectedId == null || !sortedItems.some((p) => p.id === selectedId)) {
-      setSelectedId(sortedItems[0].id)
-    }
-  }, [sortedItems, selectedId])
 
   const selectedItem = useMemo(
     () => items.find((p) => p.id === selectedId) ?? null,

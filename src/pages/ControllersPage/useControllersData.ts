@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   MOCK_SCPS,
   MOCK_SIOS_BY_SCP,
@@ -33,16 +33,6 @@ export const useControllersData = () => {
     const q = searchQuery.trim().toLowerCase()
     return scps.filter((s) => entityLabel('scp', s).toLowerCase().includes(q))
   }, [scps, searchQuery])
-
-  useEffect(() => {
-    if (filteredScps.length === 0) {
-      setSelectedId(null)
-      return
-    }
-    if (selectedId == null || !filteredScps.some((s) => s.id === selectedId)) {
-      setSelectedId(filteredScps[0].id)
-    }
-  }, [filteredScps, selectedId])
 
   const selectedScp = useMemo(
     () => scps.find((s) => s.id === selectedId) ?? null,

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getReaderList } from '@/api/reader'
 import { MOCK_SCPS } from '@/pages/ControllersPage/controllersMockData'
@@ -80,16 +80,6 @@ export const useReadersData = () => {
         r.modelName.toLowerCase().includes(q),
     )
   }, [allRows, scpFilter, kindFilter, searchQuery])
-
-  useEffect(() => {
-    if (filteredRows.length === 0) {
-      setSelectedKey(null)
-      return
-    }
-    if (selectedKey == null || !filteredRows.some((r) => readerRowKey(r) === selectedKey)) {
-      setSelectedKey(readerRowKey(filteredRows[0]))
-    }
-  }, [filteredRows, selectedKey])
 
   const selected = useMemo(
     () => filteredRows.find((r) => readerRowKey(r) === selectedKey) ?? null,

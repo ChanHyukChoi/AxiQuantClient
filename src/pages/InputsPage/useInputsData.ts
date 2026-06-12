@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getInputList } from '@/api/input'
 import { MOCK_SCPS } from '@/pages/ControllersPage/controllersMockData'
@@ -73,16 +73,6 @@ export const useInputsData = () => {
         r.sioName.toLowerCase().includes(q),
     )
   }, [allRows, scpFilter, searchQuery])
-
-  useEffect(() => {
-    if (filteredRows.length === 0) {
-      setSelectedKey(null)
-      return
-    }
-    if (selectedKey == null || !filteredRows.some((r) => inputRowKey(r) === selectedKey)) {
-      setSelectedKey(inputRowKey(filteredRows[0]))
-    }
-  }, [filteredRows, selectedKey])
 
   const selected = useMemo(
     () => filteredRows.find((r) => inputRowKey(r) === selectedKey) ?? null,

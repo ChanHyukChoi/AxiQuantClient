@@ -4,7 +4,7 @@ import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
 
 export const useLinkageData = () => {
   const [rules, setRules] = useState<LinkageRule[]>(LINKAGE_MOCK_RULES)
-  const [selectedId, setSelectedId] = useState<number | null>(LINKAGE_MOCK_RULES[0]?.id ?? null)
+  const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredRules = useMemo(() => {
@@ -14,8 +14,8 @@ export const useLinkageData = () => {
   }, [rules, searchQuery])
 
   const selectedRule = useMemo(
-    () => filteredRules.find((r) => r.id === selectedId) ?? rules.find((r) => r.id === selectedId) ?? null,
-    [filteredRules, rules, selectedId],
+    () => filteredRules.find((r) => r.id === selectedId) ?? null,
+    [filteredRules, selectedId],
   )
 
   return {

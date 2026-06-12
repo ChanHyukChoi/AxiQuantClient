@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import {
   DEFAULT_ALARM_RULE_EXTRA,
   type AlarmRuleDisplay,
@@ -54,16 +54,6 @@ export const useAlarmRulesData = () => {
         (scpNameMap[r.scpId] ?? '').toLowerCase().includes(q),
     )
   }, [rules, searchQuery, scpNameMap])
-
-  useEffect(() => {
-    if (filteredRules.length === 0) {
-      setSelectedId(null)
-      return
-    }
-    if (selectedId == null || !filteredRules.some((r) => r.id === selectedId)) {
-      setSelectedId(filteredRules[0].id)
-    }
-  }, [filteredRules, selectedId])
 
   const selectedRule = useMemo(
     () => rules.find((r) => r.id === selectedId) ?? null,

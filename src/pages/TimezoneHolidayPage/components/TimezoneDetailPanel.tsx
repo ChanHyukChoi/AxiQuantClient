@@ -81,7 +81,7 @@ export const TimezoneDetailPanel = ({ item, editor }: TimezoneDetailPanelProps) 
 
   return (
     <>
-      <Drawer fill header={header} actions={drawerActions}>
+      <Drawer fill borderLeft={false} header={header} actions={drawerActions}>
         {item ? (
           <TimezoneDetailFields
             item={item}

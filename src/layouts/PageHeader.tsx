@@ -1,11 +1,9 @@
 import type { ReactNode } from 'react'
-import { PageVariantToggle, type PageVariantPaths } from '@/layouts/PageVariantToggle'
 
 interface PageHeaderProps {
   title: string
   icon?: ReactNode
   actions?: ReactNode
-  variantPaths?: PageVariantPaths
   /** default 50px — CardsPage baseline */
   height?: number
 }
@@ -14,7 +12,6 @@ export const PageHeader = ({
   title,
   icon,
   actions,
-  variantPaths,
   height = 50,
 }: PageHeaderProps) => (
   <header
@@ -37,7 +34,6 @@ export const PageHeader = ({
       <h1 className="app-text-lg truncate" style={{ color: 'var(--color-text)' }}>
         {title}
       </h1>
-      {variantPaths != null && <PageVariantToggle paths={variantPaths} />}
     </div>
 
     {actions != null && (

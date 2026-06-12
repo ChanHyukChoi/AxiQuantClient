@@ -1,83 +1,122 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ScanLine } from 'lucide-react'
+import { Grid } from '@/components/primitive/Grid'
+import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
-import { AddButton, CrudDetailActions } from '@/components/page-actions'
-import { ReaderDetailWorkspace } from '@/pages/ReadersPage/components/ReaderDetailWorkspace'
-import { ReaderListPane } from '@/pages/ReadersPage/components/ReaderListPane'
+import { useGridLayout } from '@/hooks/ui/useGridLayout'
+import {
+  SPLIT_DRAWER_DEFAULT_WIDTH,
+  SPLIT_DRAWER_MIN_WIDTH,
+} from '@/lib/layout/splitDrawerDefaults'
+import { ReaderDrawer } from '@/pages/ReadersPage/ReaderDrawer'
+import { useReaderColumns } from '@/pages/ReadersPage/useReaderColumns'
+import type { ReaderDisplayRow } from '@/pages/ReadersPage/readersMockData'
+import { readerGridId } from '@/pages/ReadersPage/utils/readerDisplay'
 import { useReadersData } from '@/pages/ReadersPage/useReadersData'
 
+const READERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.readers.v1'
+
 export const ReadersPage = () => {
+  const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(20)
 
   const {
     useMock,
-    scps,
     filteredRows,
-    selected,
-    selectedKey,
-    selectRow,
-    searchQuery,
     setSearchQuery,
-    scpFilter,
-    setScpFilter,
-    kindFilter,
-    setKindFilter,
     isLoading,
     isError,
     patchMockRow,
   } = useReadersData()
+
+  const gridData = useMemo(
+    () => filteredRows.map((r) => ({ ...r, id: readerGridId(r) })),
+    [filteredRows],
+  )
+
+  const selected = useMemo(
+    () => filteredRows.find((r) => readerGridId(r) === selectedGridId) ?? null,
+    [filteredRows, selectedGridId],
+  )
+
+  useEffect(() => {
+    setPage(1)
+  }, [filteredRows.length])
+
+  const handlePageSizeChange = useCallback((size: number) => {
+    setPageSize(size)
+    setPage(1)
+  }, [])
+
+  const handleRowClick = (row: ReaderDisplayRow & { id: number }) => {
+    if (editMode) setEditMode(false)
+    setSelectedGridId(row.id)
+  }
 
   const handleToggleActive = (active: boolean) => {
     if (!selected || !useMock) return
     patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
 
-  useEffect(() => {
-    setEditMode(false)
-  }, [selected?.scp, selected?.id])
-
-  const titleActions = selected ? (
-    <CrudDetailActions
-      editMode={editMode}
-      onEdit={() => setEditMode(true)}
-      onDelete={() => undefined}
-      onSave={() => setEditMode(false)}
-      onCancel={() => setEditMode(false)}
-    />
-  ) : null
+  const baseColumns = useReaderColumns()
+  const { columns, minGridWidth, setColumnWidth, moveColumn } = useGridLayout(baseColumns, {
+    storageKey: READERS_GRID_LAYOUT_KEY,
+  })
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
         title="리더"
         icon={<ScanLine size={15} />}
-        variantPaths={{ a: '/readers', b: '/readers-b' }}
         actions={<AddButton onClick={() => undefined} />}
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <ReaderListPane
-          rows={filteredRows}
-          scps={scps}
-          selectedKey={selectedKey}
-          searchQuery={searchQuery}
-          scpFilter={scpFilter}
-          kindFilter={kindFilter}
-          loading={isLoading}
-          error={isError}
-          onSearch={setSearchQuery}
-          onScpFilterChange={setScpFilter}
-          onKindFilterChange={setKindFilter}
-          onSelect={selectRow}
-        />
-        <ReaderDetailWorkspace
-          reader={selected}
-          useMock={useMock}
-          layout="rail"
-          onToggleActive={handleToggleActive}
-          titleActions={titleActions}
-        />
-      </div>
+      <SplitDrawerLayout
+        minMainWidth={minGridWidth}
+        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
+        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
+        storageKey="axiquant.drawer.readers"
+        main={
+          <>
+            <Grid
+              columns={columns}
+              data={gridData}
+              selectedId={selectedGridId ?? undefined}
+              onRowClick={handleRowClick}
+              onSearch={setSearchQuery}
+              searchPlaceholder="리더 검색..."
+              totalCount={filteredRows.length}
+              loading={isLoading}
+              pagination={{
+                page,
+                pageSize,
+                onPageChange: setPage,
+                onPageSizeChange: handlePageSizeChange,
+              }}
+              resizableColumns
+              onColumnWidthChange={setColumnWidth}
+              reorderableColumns
+              onColumnReorder={moveColumn}
+            />
+            {isError ? (
+              <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
+                리더 목록을 불러오지 못했습니다.
+              </p>
+            ) : null}
+          </>
+        }
+        drawer={
+          <ReaderDrawer
+            reader={selected}
+            useMock={useMock}
+            onToggleActive={handleToggleActive}
+            onEditModeChange={setEditMode}
+          />
+        }
+      />
     </div>
   )
 }
