@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Layers } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
-import { Badge } from '@/components/primitive/Badge'
 import { Modal } from '@/components/primitive/Modal'
+import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { AddButton, CrudDetailActions } from '@/components/page-actions'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { TabToolbar } from '@/layouts/TabToolbar'
@@ -129,11 +129,7 @@ export const SioWorkspace = ({
       <DetailTitleBar
         icon={<Layers size={14} style={{ color: 'var(--color-accent)' }} />}
         title={sioName}
-        badge={
-          <Badge variant={isDeviceActive(selectedSio.active) ? 'on' : 'off'}>
-            {isDeviceActive(selectedSio.active) ? '활성' : '비활성'}
-          </Badge>
-        }
+        badge={<ActiveStatusBadge active={isDeviceActive(selectedSio.active)} />}
         actions={
           <CrudDetailActions
             editMode={editor.editMode}
@@ -159,6 +155,7 @@ export const SioWorkspace = ({
           activePending={editor.isSaving}
           onToggleActive={editor.handleToggleActive}
           layout={layout === 'panel' ? 'columns' : 'stack'}
+          statusInTitleBar
         />
       </div>
     </>

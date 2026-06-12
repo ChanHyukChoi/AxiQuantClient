@@ -1,7 +1,7 @@
 import { ArrowLeftFromLine } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
-import { Badge } from '@/components/primitive/Badge'
-import { Checkbox } from '@/components/primitive/Checkbox'
+import { ActiveMockToggle } from '@/components/basic/ActiveMockToggle'
+import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import type { OutputDisplayRow } from '@/pages/OutputsPage/outputsMockData'
 import {
   formatOutputAddr,
@@ -42,6 +42,8 @@ export const OutputDetailPanel = ({ row, useMock, onToggleActive }: OutputDetail
     )
   }
 
+  const canToggle = useMock || onToggleActive != null
+
   return (
     <Drawer
       fill
@@ -55,9 +57,7 @@ export const OutputDetailPanel = ({ row, useMock, onToggleActive }: OutputDetail
           >
             {outputLabel(row)}
           </h2>
-          <Badge variant={isDeviceActive(row.active) ? 'on' : 'off'}>
-            {isDeviceActive(row.active) ? '활성' : '비활성'}
-          </Badge>
+          <ActiveStatusBadge active={isDeviceActive(row.active)} />
         </div>
       }
     >
@@ -66,21 +66,18 @@ export const OutputDetailPanel = ({ row, useMock, onToggleActive }: OutputDetail
       <FieldRow label="부제어기" value={formatSioName(row.sio, row.sioName)} />
       <FieldRow label="어드레스" value={formatOutputAddr(row.addr)} />
       <FieldRow label="지속 시간" value={`${row.defpulse} sec`} />
-      <div className="flex justify-between items-center py-1.5 gap-4">
-        <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-          활성
-        </span>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <Checkbox
+      {canToggle ? (
+        <div className="flex justify-between items-center py-1.5 gap-4">
+          <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
+            활성
+          </span>
+          <ActiveMockToggle
             checked={isDeviceActive(row.active)}
             disabled={!useMock && onToggleActive == null}
             onChange={(checked) => onToggleActive?.(checked)}
           />
-          <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            {isDeviceActive(row.active) ? '활성' : '비활성'}
-          </span>
-        </label>
-      </div>
+        </div>
+      ) : null}
     </Drawer>
   )
 }

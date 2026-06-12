@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react'
-import { Badge } from '@/components/primitive/Badge'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
 import { LINKAGE_FONT_SIZE } from '@/pages/LinkagePage/linkageUi'
@@ -22,29 +21,6 @@ const NameValue = ({ name }: { name: string }) => (
   </span>
 )
 
-const ActiveField = ({
-  active,
-  editMode,
-}: {
-  active: boolean
-  editMode: boolean
-}) => {
-  if (editMode) {
-    return (
-      <label className="flex items-center gap-2 cursor-pointer">
-        <Checkbox checked={active} onChange={() => undefined} />
-        <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
-          활성
-        </span>
-      </label>
-    )
-  }
-
-  return (
-    <Badge variant={active ? 'on' : 'off'}>{active ? '활성' : '비활성'}</Badge>
-  )
-}
-
 export const LinkageGeneralSection = ({
   rule,
   layout = 'stack',
@@ -64,6 +40,15 @@ export const LinkageGeneralSection = ({
     <NameValue name={rule.name} />
   )
 
+  const activeField = editMode ? (
+    <label className="flex items-center gap-2 cursor-pointer">
+      <Checkbox checked={rule.active} onChange={() => undefined} />
+      <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
+        활성
+      </span>
+    </label>
+  ) : null
+
   if (layout === 'compact') {
     return (
       <div className="flex flex-col gap-3">
@@ -73,12 +58,14 @@ export const LinkageGeneralSection = ({
           </span>
           {nameField}
         </div>
-        <div>
-          <span className="app-text-sm block mb-1" style={labelStyle}>
-            활성
-          </span>
-          <ActiveField active={rule.active} editMode={editMode} />
-        </div>
+        {activeField ? (
+          <div>
+            <span className="app-text-sm block mb-1" style={labelStyle}>
+              활성
+            </span>
+            {activeField}
+          </div>
+        ) : null}
       </div>
     )
   }
@@ -94,12 +81,14 @@ export const LinkageGeneralSection = ({
         </span>
         <div className="min-w-0 flex-1">{nameField}</div>
       </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <span className="app-text-md shrink-0" style={labelStyle}>
-          활성
-        </span>
-        <ActiveField active={rule.active} editMode={editMode} />
-      </div>
+      {activeField ? (
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="app-text-md shrink-0" style={labelStyle}>
+            활성
+          </span>
+          {activeField}
+        </div>
+      ) : null}
     </div>
   )
 }

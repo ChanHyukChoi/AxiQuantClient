@@ -1,5 +1,5 @@
 import { Link2 } from 'lucide-react'
-import { Badge } from '@/components/primitive/Badge'
+import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { LinkageGeneralSection } from '@/pages/LinkagePage/components/LinkageGeneralSection'
 import { LinkageThenSection } from '@/pages/LinkagePage/components/LinkageThenSection'
@@ -33,9 +33,7 @@ export const LinkageWorkspace = ({
       <DetailTitleBar
         icon={<Link2 size={14} style={{ color: 'var(--color-accent)' }} />}
         title={rule.name}
-        badge={
-          <Badge variant={rule.active ? 'on' : 'off'}>{rule.active ? '활성' : '비활성'}</Badge>
-        }
+        badge={<ActiveStatusBadge active={rule.active} />}
         actions={titleActions}
       />
 

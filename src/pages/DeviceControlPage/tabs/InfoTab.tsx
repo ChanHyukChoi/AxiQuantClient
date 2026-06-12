@@ -1,13 +1,9 @@
 import type { UseFormRegister } from 'react-hook-form'
 import { Clock, Hash, Settings, Tag } from 'lucide-react'
-import { Badge } from '@/components/primitive/Badge'
 import { Input } from '@/components/primitive/Input'
 import type { DeviceControlFormValues } from '@/pages/DeviceControlPage/formTypes'
 import type { ParsedDeviceNode } from '@/pages/DeviceControlPage/utils/buildTree'
-import {
-  formatConnectedAt,
-  isDeviceActive,
-} from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { formatConnectedAt } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import type {
   InputInfo,
   ModuleInfo,
@@ -80,12 +76,6 @@ const FieldValue = ({
   </span>
 )
 
-const ActiveBadge = ({ active }: { active: number }) => (
-  <Badge variant={isDeviceActive(active) ? 'on' : 'off'}>
-    {isDeviceActive(active) ? '활성' : '비활성'}
-  </Badge>
-)
-
 const NumField = ({
   label,
   name,
@@ -137,16 +127,14 @@ const StrField = ({
 )
 
 const ActiveField = ({
-  active,
   editMode,
   register,
 }: {
-  active: number
   editMode: boolean
   register: UseFormRegister<DeviceControlFormValues>
-}) => (
-  <FRow icon={<Settings size={12} />} label="활성">
-    {editMode ? (
+}) =>
+  editMode ? (
+    <FRow icon={<Settings size={12} />} label="활성">
       <select
         {...register('active', { valueAsNumber: true })}
         className="text-[14px] px-2 py-1 rounded border outline-none"
@@ -160,11 +148,8 @@ const ActiveField = ({
         <option value={1}>활성</option>
         <option value={0}>비활성</option>
       </select>
-    ) : (
-      <ActiveBadge active={active} />
-    )}
-  </FRow>
-)
+    </FRow>
+  ) : null
 
 export const InfoTab = ({
   parsed,
@@ -211,7 +196,7 @@ export const InfoTab = ({
           editMode={editMode}
           register={register}
         />
-        <ActiveField active={scp.active} editMode={editMode} register={register} />
+        <ActiveField editMode={editMode} register={register} />
         <StrField
           label="연결문자열"
           name="connstr"
@@ -259,7 +244,7 @@ export const InfoTab = ({
           editMode={editMode}
           register={register}
         />
-        <ActiveField active={sio.active} editMode={editMode} register={register} />
+        <ActiveField editMode={editMode} register={register} />
         <NumField
           label="SCP"
           name="scp"
@@ -313,7 +298,7 @@ export const InfoTab = ({
           editMode={editMode}
           register={register}
         />
-        <ActiveField active={reader.active} editMode={editMode} register={register} />
+        <ActiveField editMode={editMode} register={register} />
         <NumField
           label="주소"
           name="addr"
@@ -350,7 +335,7 @@ export const InfoTab = ({
           editMode={editMode}
           register={register}
         />
-        <ActiveField active={input.active} editMode={editMode} register={register} />
+        <ActiveField editMode={editMode} register={register} />
         <NumField
           label="주소"
           name="addr"
@@ -401,7 +386,7 @@ export const InfoTab = ({
           editMode={editMode}
           register={register}
         />
-        <ActiveField active={output.active} editMode={editMode} register={register} />
+        <ActiveField editMode={editMode} register={register} />
         <NumField
           label="주소"
           name="addr"

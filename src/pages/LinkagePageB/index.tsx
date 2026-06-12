@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link2 } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Badge } from '@/components/primitive/Badge'
 import { PageHeader } from '@/layouts/PageHeader'
+import { ActiveGridMark, ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { AddButton, CrudDetailActions, ExportButton, ImportButton } from '@/components/page-actions'
 import { LinkageGeneralSection } from '@/pages/LinkagePage/components/LinkageGeneralSection'
@@ -31,9 +31,7 @@ const BASE_GRID_COLUMNS: ColumnDef<LinkageRule>[] = [
     width: 72,
     align: 'center',
     sortable: true,
-    render: (value) => (
-      <Badge variant={value === true ? 'on' : 'off'}>{value === true ? '활성' : '비활성'}</Badge>
-    ),
+    render: (value) => <ActiveGridMark active={value === true} />,
   },
   {
     key: 'summary',
@@ -105,11 +103,7 @@ export const LinkagePageB = () => {
             <DetailTitleBar
               icon={<Link2 size={14} style={{ color: 'var(--color-accent)' }} />}
               title={selectedRule.name}
-              badge={
-                <Badge variant={selectedRule.active ? 'on' : 'off'}>
-                  {selectedRule.active ? '활성' : '비활성'}
-                </Badge>
-              }
+              badge={<ActiveStatusBadge active={selectedRule.active} />}
               actions={
                 <CrudDetailActions
                   editMode={editMode}

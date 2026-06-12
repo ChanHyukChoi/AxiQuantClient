@@ -2,30 +2,33 @@ import { WindowRestoreIcon } from '@/components/primitive/icons/WindowRestoreIco
 import { Minus, Square, X } from 'lucide-react'
 import { useThemeStore } from '../stores/themeStore'
 import { useState, useEffect } from 'react'
-
-const isElectron = navigator.userAgent.includes('Electron')
+import { isElectronRuntime } from '@/lib/isElectronRuntime'
 
 export const TitleBar = () => {
+  if (!isElectronRuntime()) return null
+  return <ElectronTitleBar />
+}
+
+const ElectronTitleBar = () => {
   const { theme } = useThemeStore()
   const [isMaximized, setIsMaximized] = useState(false)
+  const electronWindow = window.electronAPI!.window
 
   useEffect(() => {
-    if (!isElectron) return
-
-    void window.electronAPI.window.isMaximized().then(setIsMaximized)
-    return window.electronAPI.window.onMaximizedChange(setIsMaximized)
-  }, [])
+    void electronWindow.isMaximized().then(setIsMaximized)
+    return electronWindow.onMaximizedChange(setIsMaximized)
+  }, [electronWindow])
 
   const handleMinimize = () => {
-    if (isElectron) window.electronAPI.window.minimize()
+    electronWindow.minimize()
   }
 
   const handleMaximize = () => {
-    if (isElectron) window.electronAPI.window.maximize()
+    electronWindow.maximize()
   }
 
   const handleClose = () => {
-    if (isElectron) window.electronAPI.window.close()
+    electronWindow.close()
   }
 
   const hoverIn = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -72,46 +75,42 @@ export const TitleBar = () => {
         className="flex h-full"
         style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
       >
-        {isElectron && (
-          <>
-            <button
-              onClick={handleMinimize}
-              className="flex items-center justify-center w-12 h-full transition-colors duration-100"
-              style={{ background: 'transparent', color: 'var(--color-icon)' }}
-              onMouseEnter={hoverIn}
-              onMouseLeave={hoverOut}
-              title="최소화"
-            >
-              <Minus size={12} strokeWidth={1.5} />
-            </button>
+        <button
+          onClick={handleMinimize}
+          className="flex items-center justify-center w-12 h-full transition-colors duration-100"
+          style={{ background: 'transparent', color: 'var(--color-icon)' }}
+          onMouseEnter={hoverIn}
+          onMouseLeave={hoverOut}
+          title="최소화"
+        >
+          <Minus size={12} strokeWidth={1.5} />
+        </button>
 
-            <button
-              onClick={handleMaximize}
-              className="flex items-center justify-center w-12 h-full transition-colors duration-100"
-              style={{ background: 'transparent', color: 'var(--color-icon)' }}
-              onMouseEnter={hoverIn}
-              onMouseLeave={hoverOut}
-              title={isMaximized ? '이전 크기로' : '최대화'}
-            >
-              {isMaximized ? (
-                <WindowRestoreIcon size={12} />
-              ) : (
-                <Square size={12} strokeWidth={1.5} />
-              )}
-            </button>
+        <button
+          onClick={handleMaximize}
+          className="flex items-center justify-center w-12 h-full transition-colors duration-100"
+          style={{ background: 'transparent', color: 'var(--color-icon)' }}
+          onMouseEnter={hoverIn}
+          onMouseLeave={hoverOut}
+          title={isMaximized ? '이전 크기로' : '최대화'}
+        >
+          {isMaximized ? (
+            <WindowRestoreIcon size={12} />
+          ) : (
+            <Square size={12} strokeWidth={1.5} />
+          )}
+        </button>
 
-            <button
-              onClick={handleClose}
-              className="flex items-center justify-center w-12 h-full transition-colors duration-100"
-              style={{ background: 'transparent', color: 'var(--color-icon)' }}
-              onMouseEnter={closeHoverIn}
-              onMouseLeave={closeHoverOut}
-              title="닫기"
-            >
-              <X size={12} strokeWidth={1.5} />
-            </button>
-          </>
-        )}
+        <button
+          onClick={handleClose}
+          className="flex items-center justify-center w-12 h-full transition-colors duration-100"
+          style={{ background: 'transparent', color: 'var(--color-icon)' }}
+          onMouseEnter={closeHoverIn}
+          onMouseLeave={closeHoverOut}
+          title="닫기"
+        >
+          <X size={12} strokeWidth={1.5} />
+        </button>
       </div>
     </div>
   )

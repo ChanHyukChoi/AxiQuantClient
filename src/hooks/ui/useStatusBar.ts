@@ -4,9 +4,8 @@ import { getModuleList } from '@/api/modules'
 import { getLicenseInfo } from '@/api/system'
 import { sseClient } from '@/lib/infra/sse'
 import { queryKeys } from '@/lib/query/queryKeys'
+import { isElectronRuntime } from '@/lib/isElectronRuntime'
 import { useAuthStore } from '@/stores/authStore'
-
-const isElectron = navigator.userAgent.includes('Electron')
 
 const formatMemoryMb = (bytes: number): string => `${Math.round(bytes / 1024 / 1024)} MB`
 
@@ -51,7 +50,7 @@ export const useStatusBar = () => {
     const updateMemory = async () => {
       if (!active) return
 
-      if (isElectron && window.electronAPI?.system?.getMemoryUsageMb) {
+      if (isElectronRuntime() && window.electronAPI?.system?.getMemoryUsageMb) {
         const mb = await window.electronAPI.system.getMemoryUsageMb()
         if (active) setMemoryLabel(`${mb} MB`)
         return

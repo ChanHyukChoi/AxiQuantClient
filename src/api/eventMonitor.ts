@@ -2,6 +2,11 @@ import { axiosInstance } from '@/lib/infra/axios'
 import { isApiNotReady } from '@/lib/wire/apiErrors'
 import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
 import { wireToAccessLogItem, wireToAlarmLogItem } from '@/lib/mappers/eventMonitorMappers'
+import {
+  getMockAccessLog,
+  getMockAlarmLog,
+  shouldUseEventHistoryMock,
+} from '@/pages/EventMonitorPage/mockHistoryEvents'
 import type {
   AccessLogParams,
   AlarmLogParams,
@@ -43,10 +48,13 @@ export const getAccessLog = async (
 ): Promise<PagedLogResponse<AccessLogItem>> => {
   try {
     const { data } = await axiosInstance.get<unknown>('/api/access-log', { params })
-    return parsePaged(data, wireToAccessLogItem)
+    const result = parsePaged(data, wireToAccessLogItem)
+    if (shouldUseEventHistoryMock(result)) return getMockAccessLog(params)
+    return result
   } catch (error) {
-    if (isApiNotReady(error)) return emptyPaged(true)
-    return emptyPaged()
+    const fallback = isApiNotReady(error) ? emptyPaged<AccessLogItem>(true) : emptyPaged<AccessLogItem>()
+    if (shouldUseEventHistoryMock(fallback)) return getMockAccessLog(params)
+    return fallback
   }
 }
 
@@ -55,9 +63,12 @@ export const getAlarmLog = async (
 ): Promise<PagedLogResponse<AlarmLogItem>> => {
   try {
     const { data } = await axiosInstance.get<unknown>('/api/alarm-log', { params })
-    return parsePaged(data, wireToAlarmLogItem)
+    const result = parsePaged(data, wireToAlarmLogItem)
+    if (shouldUseEventHistoryMock(result)) return getMockAlarmLog(params)
+    return result
   } catch (error) {
-    if (isApiNotReady(error)) return emptyPaged(true)
-    return emptyPaged()
+    const fallback = isApiNotReady(error) ? emptyPaged<AlarmLogItem>(true) : emptyPaged<AlarmLogItem>()
+    if (shouldUseEventHistoryMock(fallback)) return getMockAlarmLog(params)
+    return fallback
   }
 }

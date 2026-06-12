@@ -1,6 +1,6 @@
 import type { UseFormRegister } from 'react-hook-form'
-import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
+import { ActiveMockToggle } from '@/components/basic/ActiveMockToggle'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import type { SioFormValues } from '@/pages/ControllersPage/sioFormTypes'
 import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
@@ -13,6 +13,7 @@ interface SioDetailFieldsProps {
   activePending?: boolean
   onToggleActive?: (active: boolean) => void
   layout?: 'stack' | 'columns'
+  statusInTitleBar?: boolean
 }
 
 const formatPort = (port: number): string => (port > 0 ? `PORT ${port}` : '—')
@@ -24,6 +25,7 @@ export const SioDetailFields = ({
   activePending = false,
   onToggleActive,
   layout = 'stack',
+  statusInTitleBar = false,
 }: SioDetailFieldsProps) => {
   const wrapClass =
     layout === 'columns'
@@ -83,24 +85,21 @@ export const SioDetailFields = ({
           {item.model}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="활성">
-        {onToggleActive ? (
-          <label className="flex items-center gap-2 cursor-pointer">
-            <Checkbox
+      {statusInTitleBar && !onToggleActive ? null : (
+        <DetailInfoField label="활성">
+          {onToggleActive ? (
+            <ActiveMockToggle
               checked={isDeviceActive(item.active)}
               disabled={activePending}
               onChange={onToggleActive}
             />
+          ) : (
             <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
               {isDeviceActive(item.active) ? '활성' : '비활성'}
             </span>
-          </label>
-        ) : (
-          <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            {isDeviceActive(item.active) ? '활성' : '비활성'}
-          </span>
-        )}
-      </DetailInfoField>
+          )}
+        </DetailInfoField>
+      )}
       {item.ext?.trim() ? (
         <DetailInfoField label="확장">
           <span className="text-[14px] break-all" style={{ color: 'var(--color-text)' }}>

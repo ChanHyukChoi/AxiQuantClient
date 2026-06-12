@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Cpu, Info, Layers } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Modal } from '@/components/primitive/Modal'
-import { Badge } from '@/components/primitive/Badge'
 import type { TabItem } from '@/components/primitive/Tab'
+import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { ScpDetailFields } from '@/pages/ControllersPage/components/ScpDetailFields'
 import { ScpTitleActions } from '@/pages/ControllersPage/components/ScpTitleActions'
@@ -82,11 +82,7 @@ export const ScpDetailPanel = ({
           <DetailTitleBar
             icon={<Cpu size={14} style={{ color: 'var(--color-accent)' }} />}
             title={scpName}
-            badge={
-              <Badge variant={isDeviceActive(scp.active) ? 'on' : 'off'}>
-                {isDeviceActive(scp.active) ? '활성' : '비활성'}
-              </Badge>
-            }
+            badge={<ActiveStatusBadge active={isDeviceActive(scp.active)} />}
             actions={
               <ScpTitleActions
                 hasScp
@@ -121,6 +117,7 @@ export const ScpDetailPanel = ({
             register={editor.form.register}
             activePending={editor.isSaving}
             onToggleActive={editor.handleToggleActive}
+            statusInTitleBar
           />
         ) : (
           <SioWorkspace

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
+import { isElectronRuntime } from '@/lib/isElectronRuntime'
 
-const isElectron = navigator.userAgent.includes('Electron')
+const isElectron = isElectronRuntime()
 
 interface SidebarState {
   isElectron: boolean

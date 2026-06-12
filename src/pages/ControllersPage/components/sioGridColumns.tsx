@@ -1,5 +1,5 @@
 import type { ColumnDef } from '@/components/primitive/Grid'
-import { Badge } from '@/components/primitive/Badge'
+import { ActiveGridMark } from '@/components/basic/ActiveStatusBadge'
 import { entityLabel, isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
 import type { SioInfo } from '@/types/api'
 
@@ -56,11 +56,6 @@ export const BASE_SIO_GRID_COLUMNS: ColumnDef<SioInfo>[] = [
     width: 80,
     align: 'center',
     sortable: true,
-    render: (value) => {
-      const active = isDeviceActive(Number(value))
-      return (
-        <Badge variant={active ? 'on' : 'off'}>{active ? '활성' : '비활성'}</Badge>
-      )
-    },
+    render: (value) => <ActiveGridMark active={isDeviceActive(Number(value))} />,
   },
 ]

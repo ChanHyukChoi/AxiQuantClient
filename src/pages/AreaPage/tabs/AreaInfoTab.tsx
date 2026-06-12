@@ -1,16 +1,11 @@
 import { Controller, type Control } from 'react-hook-form'
 import type { UseFormRegister } from 'react-hook-form'
 import { Hash, RefreshCw, Settings, SlidersHorizontal, Tag, Users } from 'lucide-react'
-import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
 import type { AreaEditFormValues } from '@/pages/AreaPage/formTypes'
-import {
-  isAreaActive,
-  occupancyPercent,
-  occupancyRatio,
-} from '@/pages/AreaPage/utils/areaHelpers'
+import { occupancyPercent, occupancyRatio } from '@/pages/AreaPage/utils/areaHelpers'
 import type { AreaInfo } from '@/types/api'
 
 interface AreaInfoTabProps {
@@ -80,8 +75,8 @@ export const AreaInfoTab = ({
         )}
       </FRow>
 
-      <FRow icon={<Settings size={12} />} label="활성 여부">
-        {editMode ? (
+      {editMode ? (
+        <FRow icon={<Settings size={12} />} label="활성 여부">
           <Controller
             name="active"
             control={control}
@@ -97,12 +92,8 @@ export const AreaInfoTab = ({
               </div>
             )}
           />
-        ) : (
-          <Badge variant={isAreaActive(area.active) ? 'on' : 'off'}>
-            {isAreaActive(area.active) ? '활성' : '비활성'}
-          </Badge>
-        )}
-      </FRow>
+        </FRow>
+      ) : null}
 
       <FRow icon={<Users size={12} />} label="최대 수용">
         {editMode ? (

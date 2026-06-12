@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { login } from '@/api/auth'
 import { axiosInstance } from '@/lib/infra/axios'
+import { isElectronRuntime } from '@/lib/isElectronRuntime'
 import { sseClient } from '@/lib/infra/sse'
 import { useAuthStore } from '@/stores/authStore'
 import { router } from '@/router'
@@ -33,9 +34,7 @@ export const LoginForm = () => {
 
   const onSubmit = async (values: LoginFormValues) => {
     setErrorMessage(null)
-    const isElectron =
-      typeof window.electronAPI !== 'undefined' ||
-      navigator.userAgent.includes('Electron')
+    const isElectron = isElectronRuntime()
     const serverUrl = values.serverUrl.trim()
 
     if (isElectron && !serverUrl) {

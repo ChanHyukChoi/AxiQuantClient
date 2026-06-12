@@ -1,6 +1,6 @@
 import type { UseFormRegister } from 'react-hook-form'
-import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
+import { ActiveMockToggle } from '@/components/basic/ActiveMockToggle'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import type { ScpFormValues } from '@/pages/ControllersPage/scpFormTypes'
 import { entityLabel, isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
@@ -13,6 +13,8 @@ interface ScpDetailFieldsProps {
   activePending?: boolean
   onToggleActive?: (active: boolean) => void
   layout?: 'stack' | 'columns'
+  /** 타이틀바에 활성 뱃지가 있으면 조회 모드에서 상태 필드 생략 (토글만 유지) */
+  statusInTitleBar?: boolean
 }
 
 export const ScpDetailFields = ({
@@ -22,6 +24,7 @@ export const ScpDetailFields = ({
   activePending = false,
   onToggleActive,
   layout = 'stack',
+  statusInTitleBar = false,
 }: ScpDetailFieldsProps) => {
   const wrapClass =
     layout === 'columns'
@@ -76,24 +79,21 @@ export const ScpDetailFields = ({
           {entityLabel('scp', scp)}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="활성">
-        {onToggleActive ? (
-          <label className="flex items-center gap-2 cursor-pointer">
-            <Checkbox
+      {statusInTitleBar && !onToggleActive ? null : (
+        <DetailInfoField label="활성">
+          {onToggleActive ? (
+            <ActiveMockToggle
               checked={isDeviceActive(scp.active)}
               disabled={activePending}
               onChange={onToggleActive}
             />
+          ) : (
             <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
               {isDeviceActive(scp.active) ? '활성' : '비활성'}
             </span>
-          </label>
-        ) : (
-          <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            {isDeviceActive(scp.active) ? '활성' : '비활성'}
-          </span>
-        )}
-      </DetailInfoField>
+          )}
+        </DetailInfoField>
+      )}
       <DetailInfoField label="연결문자열">
         <span className="text-[14px] font-mono break-all" style={{ color: 'var(--color-text)' }}>
           {scp.connstr?.trim() || '—'}

@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MapPin } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Badge } from '@/components/primitive/Badge'
 import { PageHeader } from '@/layouts/PageHeader'
+import { ActiveGridMark, ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { AddButton, CrudDetailActions } from '@/components/page-actions'
@@ -37,12 +37,7 @@ const BASE_GRID_COLUMNS: ColumnDef<AreaInfo>[] = [
     width: 80,
     align: 'center',
     sortable: true,
-    render: (value) => {
-      const active = isAreaActive(Number(value))
-      return (
-        <Badge variant={active ? 'on' : 'off'}>{active ? '활성' : '비활성'}</Badge>
-      )
-    },
+    render: (value) => <ActiveGridMark active={isAreaActive(Number(value))} />,
   },
   {
     key: 'occup',
@@ -139,11 +134,7 @@ export const AreaPageB = () => {
             <DetailTitleBar
               icon={<MapPin size={14} style={{ color: 'var(--color-accent)' }} />}
               title={fallbackAreaName(selectedArea.name)}
-              badge={
-                <Badge variant={isAreaActive(selectedArea.active) ? 'on' : 'off'}>
-                  {isAreaActive(selectedArea.active) ? '활성' : '비활성'}
-                </Badge>
-              }
+              badge={<ActiveStatusBadge active={isAreaActive(selectedArea.active)} />}
               actions={
                 <CrudDetailActions
                   editMode={editMode}
@@ -180,11 +171,6 @@ export const AreaPageB = () => {
                 <div className="flex flex-col gap-3">
                   <DetailInfoField label="명칭">
                     {fallbackAreaName(selectedArea.name)}
-                  </DetailInfoField>
-                  <DetailInfoField label="상태">
-                    <Badge variant={isAreaActive(selectedArea.active) ? 'on' : 'off'}>
-                      {isAreaActive(selectedArea.active) ? '활성' : '비활성'}
-                    </Badge>
                   </DetailInfoField>
                   <DetailInfoField label="점유">
                     <span className="font-mono">

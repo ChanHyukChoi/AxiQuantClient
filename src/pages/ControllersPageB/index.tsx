@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Cpu } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Badge } from '@/components/primitive/Badge'
 import { Modal } from '@/components/primitive/Modal'
+import { ActiveGridMark, ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { PageHeader } from '@/layouts/PageHeader'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { AddButton } from '@/components/page-actions'
@@ -52,12 +52,7 @@ const BASE_SCP_GRID_COLUMNS: ColumnDef<ScpInfo>[] = [
     width: 80,
     align: 'center',
     sortable: true,
-    render: (value) => {
-      const active = isDeviceActive(Number(value))
-      return (
-        <Badge variant={active ? 'on' : 'off'}>{active ? '활성' : '비활성'}</Badge>
-      )
-    },
+    render: (value) => <ActiveGridMark active={isDeviceActive(Number(value))} />,
   },
   {
     key: 'connstr',
@@ -179,11 +174,7 @@ export const ControllersPageB = () => {
             <DetailTitleBar
               icon={<Cpu size={14} style={{ color: 'var(--color-accent)' }} />}
               title={scpName}
-              badge={
-                <Badge variant={isDeviceActive(selectedScp.active) ? 'on' : 'off'}>
-                  {isDeviceActive(selectedScp.active) ? '활성' : '비활성'}
-                </Badge>
-              }
+              badge={<ActiveStatusBadge active={isDeviceActive(selectedScp.active)} />}
               actions={
                 <ScpTitleActions
                   hasScp
@@ -233,6 +224,7 @@ export const ControllersPageB = () => {
                     register={editor.form.register}
                     activePending={editor.isSaving}
                     onToggleActive={editor.handleToggleActive}
+                    statusInTitleBar
                   />
                 ) : (
                   <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>

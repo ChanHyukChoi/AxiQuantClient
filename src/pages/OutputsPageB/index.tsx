@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeftFromLine } from 'lucide-react'
 import { Grid, type ColumnDef } from '@/components/primitive/Grid'
-import { Badge } from '@/components/primitive/Badge'
-import { Checkbox } from '@/components/primitive/Checkbox'
 import { PageHeader } from '@/layouts/PageHeader'
+import { ActiveMockToggle } from '@/components/basic/ActiveMockToggle'
+import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { AddButton, CrudDetailActions } from '@/components/page-actions'
 import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
@@ -160,11 +160,7 @@ export const OutputsPageB = () => {
             <DetailTitleBar
               icon={<ArrowLeftFromLine size={14} style={{ color: 'var(--color-accent)' }} />}
               title={outputLabel(selected)}
-              badge={
-                <Badge variant={isDeviceActive(selected.active) ? 'on' : 'off'}>
-                  {isDeviceActive(selected.active) ? '활성' : '비활성'}
-                </Badge>
-              }
+              badge={<ActiveStatusBadge active={isDeviceActive(selected.active)} />}
               actions={
                 <CrudDetailActions
                   editMode={editMode}
@@ -199,18 +195,14 @@ export const OutputsPageB = () => {
                     {selected.defpulse} sec
                   </span>
                 </InfoField>
-                <InfoField label="활성">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox
+                {useMock ? (
+                  <InfoField label="활성">
+                    <ActiveMockToggle
                       checked={isDeviceActive(selected.active)}
-                      disabled={!useMock}
                       onChange={handleToggleActive}
                     />
-                    <Badge variant={isDeviceActive(selected.active) ? 'on' : 'off'}>
-                      {isDeviceActive(selected.active) ? '활성' : '비활성'}
-                    </Badge>
-                  </label>
-                </InfoField>
+                  </InfoField>
+                ) : null}
               </div>
             ) : (
               <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>

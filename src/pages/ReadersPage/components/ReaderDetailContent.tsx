@@ -71,21 +71,22 @@ const GeneralTab = ({
         <FieldRow label="부제어기" value={formatSioName(reader.sio, reader.sioName)} />
         <FieldRow label="어드레스" value={formatReaderAddr(reader.addr)} />
         <FieldRow label="모델" value={reader.modelName} />
-        <div className="flex justify-between items-center py-1">
-          <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-            활성
-          </span>
-          <label className="flex items-center gap-2 cursor-pointer">
+        {useMock ? (
+          <div className="flex justify-between items-center py-1">
+            <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
+              활성
+            </span>
             <Checkbox
               checked={isDeviceActive(reader.active)}
-              disabled={!useMock}
               onChange={(c) => onToggleActive?.(c)}
             />
-            <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-              {isDeviceActive(reader.active) ? '활성' : '비활성'}
-            </span>
-          </label>
-        </div>
+          </div>
+        ) : (
+          <FieldRow
+            label="활성"
+            value={isDeviceActive(reader.active) ? '활성' : '비활성'}
+          />
+        )}
       </div>
 
       <div className="flex flex-col gap-1">
