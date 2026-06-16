@@ -1,18 +1,8 @@
 import { useMemo, useState } from 'react'
-import { useQueries } from '@tanstack/react-query'
-import { getInputList } from '@/api/input'
-import { MOCK_SCPS } from '@/pages/ControllersPage/controllersMockData'
-import {
-  inputRowKey,
-  MOCK_INPUTS,
-  type InputDisplayRow,
-} from '@/pages/InputsPage/inputsMockData'
+import { inputRowKey, type InputDisplayRow } from '@/pages/InputsPage/inputDisplayTypes'
 import { inputLabel } from '@/pages/InputsPage/utils/inputDisplay'
-import { useScps } from '@/hooks/api/useDeviceControl'
-import { queryKeys } from '@/lib/query/queryKeys'
+import { useInputListsForScps, useScps } from '@/hooks/api/useDeviceControl'
 import type { InputInfo } from '@/types/api'
-
-const forceMock = import.meta.env.VITE_INPUTS_MOCK === 'true'
 
 const toDisplayRow = (
   input: InputInfo,
@@ -28,25 +18,13 @@ export const useInputsData = () => {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [scpFilter, setScpFilter] = useState<number | 'all'>('all')
-  const [mockRows, setMockRows] = useState(MOCK_INPUTS)
 
   const { data: scpList, isLoading: scpsLoading, isError: scpsError } = useScps()
-  const useMock =
-    forceMock ||
-    (import.meta.env.DEV && !scpsLoading && (scpsError || !scpList?.length))
+  const scps = scpList ?? []
 
-  const scps = useMock ? MOCK_SCPS : (scpList ?? [])
+  const inputQueries = useInputListsForScps(scps)
 
-  const inputQueries = useQueries({
-    queries: scps.map((scp) => ({
-      queryKey: queryKeys.deviceControl.inputs(scp.id),
-      queryFn: () => getInputList(scp.id),
-      enabled: !useMock && scp.id > 0,
-    })),
-  })
-
-  const apiRows = useMemo((): InputDisplayRow[] => {
-    if (useMock) return []
+  const allRows = useMemo((): InputDisplayRow[] => {
     const rows: InputDisplayRow[] = []
     scps.forEach((scp, index) => {
       const list = inputQueries[index]?.data ?? []
@@ -55,9 +33,7 @@ export const useInputsData = () => {
       })
     })
     return rows
-  }, [useMock, scps, inputQueries])
-
-  const allRows = useMock ? mockRows : apiRows
+  }, [scps, inputQueries])
 
   const filteredRows = useMemo(() => {
     let list = allRows
@@ -79,17 +55,9 @@ export const useInputsData = () => {
     [filteredRows, selectedKey],
   )
 
-  const inputsLoading =
-    !useMock && (scpsLoading || inputQueries.some((q) => q.isLoading))
-
-  const patchMockRow = (scp: number, id: number, patch: Partial<InputDisplayRow>) => {
-    setMockRows((prev) =>
-      prev.map((r) => (r.scp === scp && r.id === id ? { ...r, ...patch } : r)),
-    )
-  }
+  const isLoading = scpsLoading || inputQueries.some((q) => q.isLoading)
 
   return {
-    useMock,
     scps,
     filteredRows,
     selected,
@@ -99,8 +67,7 @@ export const useInputsData = () => {
     setSearchQuery,
     scpFilter,
     setScpFilter,
-    isLoading: inputsLoading,
-    isError: !useMock && scpsError,
-    patchMockRow,
+    isLoading,
+    isError: scpsError,
   }
 }

@@ -1,9 +1,9 @@
 import type { UseFormRegister } from 'react-hook-form'
 import { Input } from '@/components/primitive/Input'
-import { ActiveMockToggle } from '@/components/basic/ActiveMockToggle'
+import { Checkbox } from '@/components/primitive/Checkbox'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import type { ScpFormValues } from '@/pages/ControllersPage/scpFormTypes'
-import { entityLabel, isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
 import type { ScpInfo } from '@/types/api'
 
 interface ScpDetailFieldsProps {
@@ -13,7 +13,7 @@ interface ScpDetailFieldsProps {
   activePending?: boolean
   onToggleActive?: (active: boolean) => void
   layout?: 'stack' | 'columns'
-  /** 타이틀바에 활성 뱃지가 있으면 조회 모드에서 상태 필드 생략 (토글만 유지) */
+  /** ?�?��??? ?�? ?�?? ?�?�??? ???�? ?�? ?�? ?�? (?��?�??��?) */
   statusInTitleBar?: boolean
 }
 
@@ -34,19 +34,19 @@ export const ScpDetailFields = ({
   if (editMode) {
     return (
       <div className={wrapClass}>
-        <DetailInfoField label="명칭">
+        <DetailInfoField label="??">
           <Input {...register('name')} />
         </DetailInfoField>
-        <DetailInfoField label="연결문자열">
+        <DetailInfoField label="?�?????>
           <Input {...register('connstr')} />
         </DetailInfoField>
-        <DetailInfoField label="모델">
+        <DetailInfoField label="??">
           <Input type="number" {...register('model', { valueAsNumber: true })} />
         </DetailInfoField>
-        <DetailInfoField label="통신유형">
+        <DetailInfoField label="?�??�?">
           <Input type="number" {...register('ctype', { valueAsNumber: true })} />
         </DetailInfoField>
-        <DetailInfoField label="활성">
+        <DetailInfoField label="?�?">
           <select
             {...register('active', { valueAsNumber: true })}
             className="text-[14px] px-2 py-1 rounded border outline-none w-full"
@@ -56,11 +56,11 @@ export const ScpDetailFields = ({
               color: 'var(--color-text)',
             }}
           >
-            <option value={1}>활성</option>
-            <option value={0}>비활성</option>
+            <option value={1}>?�?</option>
+            <option value={0}>????/option>
           </select>
         </DetailInfoField>
-        <DetailInfoField label="확장">
+        <DetailInfoField label="?�?">
           <Input {...register('ext')} />
         </DetailInfoField>
       </div>
@@ -74,43 +74,43 @@ export const ScpDetailFields = ({
           {scp.id}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="명칭">
+      <DetailInfoField label="??">
         <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
           {entityLabel('scp', scp)}
         </span>
       </DetailInfoField>
       {statusInTitleBar && !onToggleActive ? null : (
-        <DetailInfoField label="활성">
+        <DetailInfoField label="?�?">
           {onToggleActive ? (
-            <ActiveMockToggle
+            <Checkbox
               checked={isDeviceActive(scp.active)}
               disabled={activePending}
               onChange={onToggleActive}
             />
           ) : (
             <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-              {isDeviceActive(scp.active) ? '활성' : '비활성'}
+              {isDeviceActive(scp.active) ? '?�?' : '????}
             </span>
           )}
         </DetailInfoField>
       )}
-      <DetailInfoField label="연결문자열">
+      <DetailInfoField label="?�?????>
         <span className="text-[14px] font-mono break-all" style={{ color: 'var(--color-text)' }}>
-          {scp.connstr?.trim() || '—'}
+          {scp.connstr?.trim() || '??}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="모델">
+      <DetailInfoField label="??">
         <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
           {scp.model}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="통신유형">
+      <DetailInfoField label="?�??�?">
         <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
           {scp.ctype}
         </span>
       </DetailInfoField>
       {scp.ext?.trim() ? (
-        <DetailInfoField label="확장">
+        <DetailInfoField label="?�?">
           <span className="text-[14px] break-all" style={{ color: 'var(--color-text)' }}>
             {scp.ext}
           </span>

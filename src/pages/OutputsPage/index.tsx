@@ -11,8 +11,8 @@ import {
 } from '@/lib/layout/splitDrawerDefaults'
 import { OutputDrawer } from '@/pages/OutputsPage/OutputDrawer'
 import { useOutputColumns } from '@/pages/OutputsPage/useOutputColumns'
-import type { OutputDisplayRow } from '@/pages/OutputsPage/outputsMockData'
-import { outputGridId } from '@/pages/OutputsPage/outputsMockData'
+import type { OutputDisplayRow } from '@/pages/OutputsPage/outputDisplayTypes'
+import { outputGridId } from '@/pages/OutputsPage/outputDisplayTypes'
 import { useOutputsData } from '@/pages/OutputsPage/useOutputsData'
 
 const OUTPUTS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.outputs.v1'
@@ -23,8 +23,7 @@ export const OutputsPage = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
-  const { useMock, filteredRows, setSearchQuery, isLoading, isError, patchMockRow } =
-    useOutputsData()
+  const { filteredRows, setSearchQuery, isLoading, isError } = useOutputsData()
 
   const gridData = useMemo(
     () => filteredRows.map((r) => ({ ...r, id: outputGridId(r) })),
@@ -48,11 +47,6 @@ export const OutputsPage = () => {
   const handleRowClick = (row: OutputDisplayRow & { id: number }) => {
     if (editMode) setEditMode(false)
     setSelectedGridId(row.id)
-  }
-
-  const handleToggleActive = (active: boolean) => {
-    if (!selected || !useMock) return
-    patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
 
   const baseColumns = useOutputColumns()
@@ -105,8 +99,6 @@ export const OutputsPage = () => {
         drawer={
           <OutputDrawer
             row={selected}
-            useMock={useMock}
-            onToggleActive={handleToggleActive}
             onEditModeChange={setEditMode}
           />
         }

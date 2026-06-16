@@ -3,7 +3,7 @@ import { ActiveGridMark } from '@/components/basic/ActiveStatusBadge'
 import {
   entityLabel,
   isDeviceActive,
-} from '@/pages/DeviceControlPage/utils/deviceHelpers'
+} from '@/lib/device/deviceHelpers'
 import type { ScpInfo } from '@/types/api'
 
 export const useScpColumns = (): ColumnDef<ScpInfo>[] => [
@@ -32,7 +32,7 @@ export const useScpColumns = (): ColumnDef<ScpInfo>[] => [
   },
   {
     key: 'active',
-    header: '상태',
+    header: '?�태',
     width: 80,
     align: 'center',
     sortable: true,
@@ -40,12 +40,12 @@ export const useScpColumns = (): ColumnDef<ScpInfo>[] => [
   },
   {
     key: 'connstr',
-    header: '연결',
+    header: '?�결',
     width: 180,
     sortable: true,
     render: (value) => (
       <span className="text-[14px] font-mono truncate block" style={{ color: 'var(--color-text-muted)' }}>
-        {typeof value === 'string' && value.trim() ? value : '—'}
+        {typeof value === 'string' && value.trim() ? value : '??}
       </span>
     ),
   },

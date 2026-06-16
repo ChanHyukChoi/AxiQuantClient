@@ -34,7 +34,7 @@ Electron + React 기반 데스크톱/웹 듀얼 타겟
 - CSS 변수만 사용 (Tailwind 커스텀 컬러 사용 안 함)
 - **색상 단일 소스:** `src/styles/theme.css` (검색창: `--color-search-*`)
 - 공통 UI 스타일: `src/styles/ui-primitives.css` (`.app-scrollbar`, `.app-search-field`)
-- 검색 입력: `<SearchField />` (`components/basic/SearchField.tsx`) — 인라인 검색 색상 금지
+- 검색 입력: `<SearchField />` (`components/primitive/SearchField.tsx`) — 인라인 검색 색상 금지
 - `src/index.css`는 import·base만; 토큰 정의는 theme.css에만 추가
 - 주요 변수: --color-bg, --color-accent, --color-text, --color-text-muted, --color-icon, --color-btn-hover, --color-sidebar
 - Tailwind v4: tailwind.config 없음, 자동 스캔 방식
@@ -42,23 +42,38 @@ Electron + React 기반 데스크톱/웹 듀얼 타겟
 ## 폴더 구조
 
 src/
-├── api/ # HTTP (도메인별, mapper 연동)
-├── styles/ # theme.css, ui-primitives.css
+├── api/                 # HTTP (도메인별, mapper 연동)
+├── assets/              # 정적 에셋
 ├── components/
-│   ├── basic/       # Button, Grid, Input 등 스타일 지정 기본 UI
-│   └── page-actions/  # ExportButton, PrintButton, AddButton 등 페이지 공통 액션
-├── hooks/ # TanStack Query
-├── layouts/
+│   ├── primitive/       # Button, Grid, Drawer, SearchField 등 기본 UI
+│   ├── basic/           # 도메인 선택 모달, DetailTitleBar 등 조합 UI
+│   ├── layout/          # SplitDrawerLayout
+│   └── page-actions/    # AddButton, ExportButton, PrintButton 등
+├── hooks/
+│   ├── api/             # TanStack Query
+│   ├── sse/             # SSE 무효화 훅
+│   └── ui/              # Grid 레이아웃, Drawer 리사이즈 등
+├── layouts/             # RootLayout, TitleBar, Sidebar, PageHeader
 ├── lib/
-│ ├── infra/ # axios, sse
-│ ├── query/ # queryKeys
-│ ├── wire/ # wireJson, apiErrors
-│ ├── mappers/ # 도메인 wire ↔ UI 변환
-│ ├── eventMonitor/ # EventRecord 표시 변환
-│ └── userPermissions.ts
-├── pages/ # 라우트 (단일 tsx + AreaPage/DevicesPage/…)
-├── stores/
-└── types/api/ # 도메인 타입 + index.ts 배럴
+│   ├── infra/           # axios, sse
+│   ├── query/           # queryKeys
+│   ├── wire/            # wireJson, apiErrors
+│   ├── mappers/         # 도메인 wire ↔ UI 변환
+│   ├── layout/          # columnWidths, splitDrawerDefaults
+│   ├── eventMonitor/    # EventRecord 표시 변환
+│   ├── image/           # 사진·생체 이미지 처리
+│   └── userPermissions.ts
+├── pages/               # 라우트별 도메인 폴더 (index.tsx + Drawer/탭/훅)
+├── stores/              # Zustand (auth, sidebar, theme, toast)
+├── styles/              # theme.css, ui-primitives.css
+└── types/api/           # 도메인 타입 + index.ts 배럴
+
+## 페이지 UI 패턴
+
+- 목록+상세: `Grid` + `SplitDrawerLayout` + `*Drawer` (기본 너비 400px, 최소 320px — `lib/layout/splitDrawerDefaults.ts`)
+- 참조 모델: `CardsPage/`, `EmpsPage/`
+- 장치: `/controllers`, `/readers`, `/inputs`, `/outputs` (구 `/devices` 라우트 없음)
+- 장치 공통 유틸: `lib/device/` (`deviceHelpers`, `buildTree`)
 
 ## API 레이어
 

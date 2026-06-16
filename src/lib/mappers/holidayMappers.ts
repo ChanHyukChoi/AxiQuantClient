@@ -1,4 +1,4 @@
-import { asRecordArray } from '@/lib/wire/wireJson'
+import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
 import type { CreateHolidayRequest, HolidayInfo, UpdateHolidayRequest } from '@/types/api/holiday'
 
 const bool = (v: unknown): boolean => {
@@ -10,6 +10,7 @@ const bool = (v: unknown): boolean => {
 
 export const wireToHolidayInfo = (row: Record<string, unknown>): HolidayInfo => ({
   id: typeof row.id === 'number' ? Math.trunc(row.id) : Number(row.id) || 0,
+  timezoneId: firstNumber(row, ['timezoneId', 'tzid', 'tz']),
   name: String(row.name ?? ''),
   date: String(row.date ?? ''),
   isRecurring: bool(row.isRecurring ?? row.repeat),
@@ -32,6 +33,9 @@ export const holidayToWire = (
   id: number,
 ): Record<string, unknown> => ({
   id,
+  timezoneId: holiday.timezoneId,
+  tzid: holiday.timezoneId,
+  tz: holiday.timezoneId,
   name: holiday.name,
   date: holiday.date,
   repeat: holiday.isRecurring ?? false,

@@ -11,7 +11,7 @@ import {
 } from '@/lib/layout/splitDrawerDefaults'
 import { ReaderDrawer } from '@/pages/ReadersPage/ReaderDrawer'
 import { useReaderColumns } from '@/pages/ReadersPage/useReaderColumns'
-import type { ReaderDisplayRow } from '@/pages/ReadersPage/readersMockData'
+import type { ReaderDisplayRow } from '@/pages/ReadersPage/readerDisplayTypes'
 import { readerGridId } from '@/pages/ReadersPage/utils/readerDisplay'
 import { useReadersData } from '@/pages/ReadersPage/useReadersData'
 
@@ -23,14 +23,7 @@ export const ReadersPage = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
-  const {
-    useMock,
-    filteredRows,
-    setSearchQuery,
-    isLoading,
-    isError,
-    patchMockRow,
-  } = useReadersData()
+  const { filteredRows, setSearchQuery, isLoading, isError } = useReadersData()
 
   const gridData = useMemo(
     () => filteredRows.map((r) => ({ ...r, id: readerGridId(r) })),
@@ -54,11 +47,6 @@ export const ReadersPage = () => {
   const handleRowClick = (row: ReaderDisplayRow & { id: number }) => {
     if (editMode) setEditMode(false)
     setSelectedGridId(row.id)
-  }
-
-  const handleToggleActive = (active: boolean) => {
-    if (!selected || !useMock) return
-    patchMockRow(selected.scp, selected.id, { active: active ? 1 : 0 })
   }
 
   const baseColumns = useReaderColumns()
@@ -111,8 +99,6 @@ export const ReadersPage = () => {
         drawer={
           <ReaderDrawer
             reader={selected}
-            useMock={useMock}
-            onToggleActive={handleToggleActive}
             onEditModeChange={setEditMode}
           />
         }

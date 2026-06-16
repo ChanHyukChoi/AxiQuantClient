@@ -24,8 +24,8 @@ export const AuditLogPage = () => {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(50)
 
-  const { data: userResult } = useUsers()
-  const users = userResult?.users ?? []
+  const { data: users } = useUsers()
+  const userList = users ?? []
 
   const range = useMemo(() => {
     if (datePreset !== 'custom') return presetRange(datePreset)
@@ -105,7 +105,7 @@ export const AuditLogPage = () => {
           setUserId(id)
           setPage(1)
         }}
-        users={users}
+        users={userList}
         actionType={actionType}
         onActionTypeChange={(v) => {
           setActionType(v)

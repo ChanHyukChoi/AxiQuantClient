@@ -23,11 +23,7 @@ export const AlarmRulesTab = () => {
 
   const editor = useAlarmRuleEditor({
     rule: data.selectedRule,
-    useMock: data.useMock,
     scpNameMap: data.scpNameMap,
-    patchMockRule: data.patchMockRule,
-    addMockRule: data.addMockRule,
-    removeMockRule: data.removeMockRule,
     onDeleted: data.onRuleDeleted,
   })
 
@@ -95,7 +91,6 @@ export const AlarmRulesTab = () => {
         drawer={
           <AlarmRuleDrawer
             rule={data.selectedRule}
-            useMock={data.useMock}
             scps={data.scpList}
             scpNameMap={data.scpNameMap}
             editor={editor}

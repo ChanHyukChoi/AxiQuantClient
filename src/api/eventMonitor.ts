@@ -1,12 +1,6 @@
 import { axiosInstance } from '@/lib/infra/axios'
-import { isApiNotReady } from '@/lib/wire/apiErrors'
 import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
 import { wireToAccessLogItem, wireToAlarmLogItem } from '@/lib/mappers/eventMonitorMappers'
-import {
-  getMockAccessLog,
-  getMockAlarmLog,
-  shouldUseEventHistoryMock,
-} from '@/pages/EventMonitorPage/mockHistoryEvents'
 import type {
   AccessLogParams,
   AlarmLogParams,
@@ -15,10 +9,9 @@ import type {
   AlarmLogItem,
 } from '@/types/api/eventMonitor'
 
-const emptyPaged = <T>(apiNotReady?: boolean): PagedLogResponse<T> & { apiNotReady?: boolean } => ({
+const emptyPaged = <T>(): PagedLogResponse<T> => ({
   items: [],
   total: 0,
-  ...(apiNotReady ? { apiNotReady: true } : {}),
 })
 
 const parsePaged = <T>(
@@ -48,13 +41,9 @@ export const getAccessLog = async (
 ): Promise<PagedLogResponse<AccessLogItem>> => {
   try {
     const { data } = await axiosInstance.get<unknown>('/api/access-log', { params })
-    const result = parsePaged(data, wireToAccessLogItem)
-    if (shouldUseEventHistoryMock(result)) return getMockAccessLog(params)
-    return result
-  } catch (error) {
-    const fallback = isApiNotReady(error) ? emptyPaged<AccessLogItem>(true) : emptyPaged<AccessLogItem>()
-    if (shouldUseEventHistoryMock(fallback)) return getMockAccessLog(params)
-    return fallback
+    return parsePaged(data, wireToAccessLogItem)
+  } catch {
+    return emptyPaged()
   }
 }
 
@@ -63,12 +52,8 @@ export const getAlarmLog = async (
 ): Promise<PagedLogResponse<AlarmLogItem>> => {
   try {
     const { data } = await axiosInstance.get<unknown>('/api/alarm-log', { params })
-    const result = parsePaged(data, wireToAlarmLogItem)
-    if (shouldUseEventHistoryMock(result)) return getMockAlarmLog(params)
-    return result
-  } catch (error) {
-    const fallback = isApiNotReady(error) ? emptyPaged<AlarmLogItem>(true) : emptyPaged<AlarmLogItem>()
-    if (shouldUseEventHistoryMock(fallback)) return getMockAlarmLog(params)
-    return fallback
+    return parsePaged(data, wireToAlarmLogItem)
+  } catch {
+    return emptyPaged()
   }
 }

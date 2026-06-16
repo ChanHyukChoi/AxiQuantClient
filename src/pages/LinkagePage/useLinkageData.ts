@@ -1,17 +1,19 @@
 import { useMemo, useState } from 'react'
-import { LINKAGE_MOCK_RULES } from '@/pages/LinkagePage/linkageMockData'
+import { useLinkageList } from '@/hooks/api/useLinkage'
 import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
 
 export const useLinkageData = () => {
-  const [rules, setRules] = useState<LinkageRule[]>(LINKAGE_MOCK_RULES)
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
+  const { data: rules, isLoading, isError } = useLinkageList()
+  const allRules = rules ?? []
+
   const filteredRules = useMemo(() => {
-    if (!searchQuery.trim()) return rules
+    if (!searchQuery.trim()) return allRules
     const q = searchQuery.trim().toLowerCase()
-    return rules.filter((r) => r.name.toLowerCase().includes(q))
-  }, [rules, searchQuery])
+    return allRules.filter((r) => r.name.toLowerCase().includes(q))
+  }, [allRules, searchQuery])
 
   const selectedRule = useMemo(
     () => filteredRules.find((r) => r.id === selectedId) ?? null,
@@ -20,12 +22,13 @@ export const useLinkageData = () => {
 
   return {
     rules: filteredRules,
-    allRules: rules,
+    allRules,
     selectedId,
     selectedRule,
     searchQuery,
     setSearchQuery,
     selectRule: (id: number) => setSelectedId(id),
-    setRules,
+    isLoading,
+    isError: isError || rules === null,
   }
 }

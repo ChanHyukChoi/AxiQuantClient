@@ -23,7 +23,7 @@ import {
   useDeleteAccLv,
   useUpdateAccLv,
 } from '@/hooks/api/useAccLv'
-import { useScps } from '@/hooks/api/useDevices'
+import { useScps } from '@/hooks/api/useDeviceControl'
 import { useTimezoneList } from '@/hooks/api/useTimezone'
 import type { AccLvInfo, UpdateAccLvRequest } from '@/types/api'
 

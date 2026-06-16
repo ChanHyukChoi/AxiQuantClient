@@ -31,12 +31,6 @@ export type {
   ReaderControlRequest,
   OutputControlRequest,
 } from './deviceControl'
-export type {
-  LogLevelInfo,
-  SetLogLevelRequest,
-  TestEventStatus,
-  StartTestEventsRequest,
-} from './management'
 export type { DeviceEventMessage, SseEventName } from './sse'
 export type {
   UserInfo,

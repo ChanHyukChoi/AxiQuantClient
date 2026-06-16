@@ -52,15 +52,11 @@ export const useHistoryEvents = ({
     (accessEnabled && accessQuery.isLoading) || (alarmEnabled && alarmQuery.isLoading)
   const isError = (accessEnabled && accessQuery.isError) || (alarmEnabled && alarmQuery.isError)
 
-  const apiNotReady =
-    Boolean(accessQuery.data?.apiNotReady) || Boolean(alarmQuery.data?.apiNotReady)
-
   return {
     events,
     total,
     isLoading,
     isError,
-    apiNotReady,
     refetch: () => {
       void accessQuery.refetch()
       void alarmQuery.refetch()

@@ -69,5 +69,4 @@ export interface AlarmLogItem {
 export interface PagedLogResponse<T> {
   items: T[]
   total: number
-  apiNotReady?: boolean
 }

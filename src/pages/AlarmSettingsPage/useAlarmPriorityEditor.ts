@@ -18,10 +18,6 @@ import {
 
 interface UseAlarmPriorityEditorOptions {
   item: AlarmPriorityDisplay | null
-  useMock: boolean
-  patchMockItem: (id: number, patch: Partial<AlarmPriorityDisplay>) => void
-  addMockItem: () => number
-  removeMockItem: (id: number) => void
   onDeleted: () => void
 }
 
@@ -37,27 +33,7 @@ const itemToForm = (item: AlarmPriorityDisplay): AlarmPriorityFormValues => ({
   alarmSound: item.alarmSound,
 })
 
-const formToItemPatch = (values: AlarmPriorityFormValues): Partial<AlarmPriorityDisplay> => ({
-  priority: values.priority,
-  color: normalizeHexColor(values.alarmFg),
-  alarmFg: normalizeHexColor(values.alarmFg),
-  alarmBg: normalizeHexColor(values.alarmBg),
-  alarmBgEnabled: values.alarmBgEnabled,
-  ackFg: normalizeHexColor(values.ackFg),
-  ackBg: normalizeHexColor(values.ackBg),
-  ackBgEnabled: values.ackBgEnabled,
-  blinking: values.blinking,
-  alarmSound: values.alarmSound,
-})
-
-export const useAlarmPriorityEditor = ({
-  item,
-  useMock,
-  patchMockItem,
-  addMockItem,
-  removeMockItem,
-  onDeleted,
-}: UseAlarmPriorityEditorOptions) => {
+export const useAlarmPriorityEditor = ({ item, onDeleted }: UseAlarmPriorityEditorOptions) => {
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
@@ -113,12 +89,6 @@ export const useAlarmPriorityEditor = ({
     if (!item) return
     setActionError(null)
 
-    if (useMock) {
-      patchMockItem(item.id, formToItemPatch(values))
-      setEditMode(false)
-      return
-    }
-
     const ok = await updateMut.mutateAsync({
       id: item.id,
       data: {
@@ -133,35 +103,23 @@ export const useAlarmPriorityEditor = ({
 
   const handleAdd = useCallback(async () => {
     setActionError(null)
-    if (useMock) {
-      enterEditOnSelectRef.current = true
-      addMockItem()
-      return
-    }
     const ok = await createMut.mutateAsync({
       priority: 50,
       color: '#4f9cf9',
     })
     if (!ok) setActionError('추가하지 못했습니다.')
-  }, [useMock, addMockItem, createMut])
+  }, [createMut])
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!item) return
     setActionError(null)
-
-    if (useMock) {
-      removeMockItem(item.id)
-      setDeleteOpen(false)
-      onDeleted()
-      return
-    }
 
     const ok = await deleteMut.mutateAsync(item.id)
     if (ok) {
       setDeleteOpen(false)
       onDeleted()
     } else setActionError('삭제하지 못했습니다.')
-  }, [item, useMock, removeMockItem, deleteMut, onDeleted])
+  }, [item, deleteMut, onDeleted])
 
   return {
     form,

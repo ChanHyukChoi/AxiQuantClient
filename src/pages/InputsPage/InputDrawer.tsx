@@ -1,33 +1,25 @@
 import { useEffect, useState } from 'react'
 import { ArrowRightToLine } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
-import { ActiveMockToggle } from '@/components/basic/ActiveMockToggle'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { CrudDetailActions } from '@/components/page-actions'
-import type { InputDisplayRow } from '@/pages/InputsPage/inputsMockData'
+import type { InputDisplayRow } from '@/pages/InputsPage/inputDisplayTypes'
 import {
   formatInputAddr,
   formatInputMode,
   formatSioName,
   inputLabel,
 } from '@/pages/InputsPage/utils/inputDisplay'
-import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { isDeviceActive } from '@/lib/device/deviceHelpers'
 
 interface InputDrawerProps {
   row: InputDisplayRow | null
-  useMock: boolean
-  onToggleActive?: (active: boolean) => void
   onEditModeChange?: (editing: boolean) => void
 }
 
-export const InputDrawer = ({
-  row,
-  useMock,
-  onToggleActive,
-  onEditModeChange,
-}: InputDrawerProps) => {
+export const InputDrawer = ({ row, onEditModeChange }: InputDrawerProps) => {
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -50,7 +42,7 @@ export const InputDrawer = ({
     <div className="flex items-center gap-2 py-2">
       <ArrowRightToLine size={18} style={{ color: 'var(--color-text-dim)' }} />
       <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-        입력을 선택하세요
+        ??? ?????.
       </p>
     </div>
   )
@@ -66,34 +58,20 @@ export const InputDrawer = ({
   ) : null
 
   return (
-    <Drawer
-      fill
-      borderLeft={false}
-      header={drawerHeader}
-      actions={drawerActions ?? undefined}
-    >
+    <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions ?? undefined}>
       {row ? (
         <div className="max-w-md flex flex-col gap-3">
-          <DetailInfoField label="주제어기">{row.scpName}</DetailInfoField>
-          <DetailInfoField label="부제어기">
+          <DetailInfoField label="????">{row.scpName}</DetailInfoField>
+          <DetailInfoField label="????">
             {formatSioName(row.sio, row.sioName)}
           </DetailInfoField>
-          <DetailInfoField label="어드레스">{formatInputAddr(row.addr)}</DetailInfoField>
-          <DetailInfoField label="모드">{formatInputMode(row.mode)}</DetailInfoField>
-          <DetailInfoField label="레버 센서">{String(row.icvt)}</DetailInfoField>
-          <DetailInfoField label="유지 시간">{`${row.holdtime} sec`}</DetailInfoField>
-          {useMock ? (
-            <DetailInfoField label="활성">
-              <ActiveMockToggle
-                checked={isDeviceActive(row.active)}
-                onChange={onToggleActive ?? (() => undefined)}
-              />
-            </DetailInfoField>
-          ) : (
-            <DetailInfoField label="활성">
-              {isDeviceActive(row.active) ? '활성' : '비활성'}
-            </DetailInfoField>
-          )}
+          <DetailInfoField label="????">{formatInputAddr(row.addr)}</DetailInfoField>
+          <DetailInfoField label="??">{formatInputMode(row.mode)}</DetailInfoField>
+          <DetailInfoField label="??? ??">{String(row.icvt)}</DetailInfoField>
+          <DetailInfoField label="?? ??">{`${row.holdtime} sec`}</DetailInfoField>
+          <DetailInfoField label="??">
+            {isDeviceActive(row.active) ? '??' : '???'}
+          </DetailInfoField>
         </div>
       ) : (
         <div className="flex-1 min-h-[120px]" aria-hidden />

@@ -14,11 +14,7 @@ import { useCreateAlarm, useDeleteAlarm, useUpdateAlarm } from '@/hooks/api/useA
 
 interface UseAlarmRuleEditorOptions {
   rule: AlarmRuleDisplay | null
-  useMock: boolean
   scpNameMap: Record<number, string>
-  patchMockRule: (id: number, patch: Partial<AlarmRuleDisplay>) => void
-  addMockRule: () => number
-  removeMockRule: (id: number) => void
   onDeleted: () => void
 }
 
@@ -38,18 +34,9 @@ const ruleToForm = (rule: AlarmRuleDisplay): AlarmRuleFormValues => ({
   userIds: [...rule.userIds],
 })
 
-const formToRulePatch = (values: AlarmRuleFormValues): Partial<AlarmRuleDisplay> => ({
-  ...values,
-  eventCondition: values.eventCode,
-})
-
 export const useAlarmRuleEditor = ({
   rule,
-  useMock,
   scpNameMap,
-  patchMockRule,
-  addMockRule,
-  removeMockRule,
   onDeleted,
 }: UseAlarmRuleEditorOptions) => {
   const [editMode, setEditMode] = useState(false)
@@ -119,12 +106,6 @@ export const useAlarmRuleEditor = ({
     if (!rule) return
     setActionError(null)
 
-    if (useMock) {
-      patchMockRule(rule.id, formToRulePatch(values))
-      setEditMode(false)
-      return
-    }
-
     const ok = await updateMut.mutateAsync({
       id: rule.id,
       data: {
@@ -142,11 +123,6 @@ export const useAlarmRuleEditor = ({
 
   const handleAdd = useCallback(async () => {
     setActionError(null)
-    if (useMock) {
-      enterEditOnSelectRef.current = true
-      addMockRule()
-      return
-    }
     const ok = await createMut.mutateAsync({
       name: '새 경보',
       active: 1,
@@ -155,25 +131,18 @@ export const useAlarmRuleEditor = ({
       eventCondition: '',
     })
     if (!ok) setActionError('추가하지 못했습니다.')
-  }, [useMock, addMockRule, createMut])
+  }, [createMut])
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!rule) return
     setActionError(null)
-
-    if (useMock) {
-      removeMockRule(rule.id)
-      setDeleteOpen(false)
-      onDeleted()
-      return
-    }
 
     const ok = await deleteMut.mutateAsync(rule.id)
     if (ok) {
       setDeleteOpen(false)
       onDeleted()
     } else setActionError('삭제하지 못했습니다.')
-  }, [rule, useMock, removeMockRule, deleteMut, onDeleted])
+  }, [rule, deleteMut, onDeleted])
 
   const handleDevicePick = useCallback(
     (deviceType: string, deviceId: number, label: string) => {

@@ -1,7 +1,6 @@
 import { MultiSelectToggleAllButton } from '@/components/basic/MultiSelectToggleAllButton'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { SearchField } from '@/components/primitive/SearchField'
-import { MOCK_ALARM_USERS } from '@/pages/AlarmSettingsPage/alarmRulesMockData'
 import { useUsers } from '@/hooks/api/useUsers'
 import { useMemo, useState } from 'react'
 
@@ -11,7 +10,6 @@ interface AlarmUserPermissionListProps {
   onToggle: (userId: number, checked: boolean) => void
   onSelectAll: (userIds: number[]) => void
   onDeselectAll: () => void
-  useMock?: boolean
 }
 
 export const AlarmUserPermissionList = ({
@@ -20,29 +18,27 @@ export const AlarmUserPermissionList = ({
   onToggle,
   onSelectAll,
   onDeselectAll,
-  useMock = false,
 }: AlarmUserPermissionListProps) => {
   const [query, setQuery] = useState('')
-  const { data: userResult } = useUsers()
+  const { data: users } = useUsers()
 
-  const users = useMemo(() => {
-    if (useMock || userResult?.apiNotReady || !userResult?.users.length) {
-      return MOCK_ALARM_USERS
-    }
-    return userResult.users.map((u) => ({
-      id: u.id,
-      loginId: u.loginId,
-      name: u.name || u.loginId,
-    }))
-  }, [useMock, userResult])
+  const userList = useMemo(
+    () =>
+      (users ?? []).map((u) => ({
+        id: u.id,
+        loginId: u.loginId,
+        name: u.name || u.loginId,
+      })),
+    [users],
+  )
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return users
+    if (!query.trim()) return userList
     const q = query.trim().toLowerCase()
-    return users.filter(
+    return userList.filter(
       (u) => u.loginId.toLowerCase().includes(q) || u.name.toLowerCase().includes(q),
     )
-  }, [users, query])
+  }, [userList, query])
 
   const selectedSet = useMemo(() => new Set(selectedUserIds), [selectedUserIds])
 

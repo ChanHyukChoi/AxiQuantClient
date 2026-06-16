@@ -5,18 +5,18 @@ import { queryKeys } from '@/lib/query/queryKeys'
 import type { SseEventName } from '@/types/api'
 
 const eventKeyMap: Partial<Record<string, readonly unknown[]>> = {
-  OnScpChanged: queryKeys.devices.scps(),
+  OnScpChanged: queryKeys.deviceControl.scps(),
   OnCardChanged: queryKeys.card.all,
   OnCardFmtChanged: queryKeys.cardFmts.all(),
   OnAreaChanged: queryKeys.areas.all(),
   OnHolidayChanged: queryKeys.holiday.all,
   OnTimezoneChanged: queryKeys.timezone.all,
   OnAccLvChanged: queryKeys.acclv.all,
-  OnModuleStatusChanged: queryKeys.modules.all,
-  OnSioChanged: ['devices', 'sios'],
-  OnInputChanged: ['devices', 'inputs'],
-  OnOutputChanged: ['devices', 'outputs'],
-  OnReaderChanged: ['devices', 'readers'],
+  OnModuleStatusChanged: queryKeys.deviceControl.modules(),
+  OnSioChanged: ['deviceControl', 'sios'],
+  OnInputChanged: ['deviceControl', 'inputs'],
+  OnOutputChanged: ['deviceControl', 'outputs'],
+  OnReaderChanged: ['deviceControl', 'readers'],
   OnAccLvRdrChanged: ['acclv'],
   OnCardAccLvChanged: ['card'],
 }

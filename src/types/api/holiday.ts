@@ -1,5 +1,6 @@
 export interface HolidayInfo {
   id: number
+  timezoneId: number
   name: string
   date: string
   isRecurring?: boolean

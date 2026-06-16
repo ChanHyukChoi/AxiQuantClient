@@ -1,5 +1,5 @@
 import { type ColumnDef } from '@/components/primitive/Grid'
-import type { OutputDisplayRow } from '@/pages/OutputsPage/outputsMockData'
+import type { OutputDisplayRow } from '@/pages/OutputsPage/outputDisplayTypes'
 import {
   formatOutputAddr,
   formatSioName,

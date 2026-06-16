@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { controlOutput, controlReader } from '@/api/deviceControl'
 import { createInput, deleteInput, getInputList, updateInput } from '@/api/input'
 import { getModuleList } from '@/api/modules'
@@ -54,6 +54,33 @@ export const useOutputs = (scpId: number) =>
     queryKey: queryKeys.deviceControl.outputs(scpId),
     queryFn: () => getOutputList(scpId),
     enabled: scpId > 0,
+  })
+
+export const useReaderListsForScps = (scps: { id: number }[]) =>
+  useQueries({
+    queries: scps.map((scp) => ({
+      queryKey: queryKeys.deviceControl.readers(scp.id),
+      queryFn: () => getReaderList(scp.id),
+      enabled: scp.id > 0,
+    })),
+  })
+
+export const useInputListsForScps = (scps: { id: number }[]) =>
+  useQueries({
+    queries: scps.map((scp) => ({
+      queryKey: queryKeys.deviceControl.inputs(scp.id),
+      queryFn: () => getInputList(scp.id),
+      enabled: scp.id > 0,
+    })),
+  })
+
+export const useOutputListsForScps = (scps: { id: number }[]) =>
+  useQueries({
+    queries: scps.map((scp) => ({
+      queryKey: queryKeys.deviceControl.outputs(scp.id),
+      queryFn: () => getOutputList(scp.id),
+      enabled: scp.id > 0,
+    })),
   })
 
 export const useModules = () =>

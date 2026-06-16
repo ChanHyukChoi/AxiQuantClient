@@ -8,21 +8,17 @@ import {
   ReaderDetailContent,
   ReaderKindBadge,
 } from '@/pages/ReadersPage/components/ReaderDetailContent'
-import type { ReaderDisplayRow } from '@/pages/ReadersPage/readersMockData'
+import type { ReaderDisplayRow } from '@/pages/ReadersPage/readerDisplayTypes'
 import { readerLabel, tabsForReaderKind } from '@/pages/ReadersPage/utils/readerDisplay'
-import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { isDeviceActive } from '@/lib/device/deviceHelpers'
 
 interface ReaderDrawerProps {
   reader: ReaderDisplayRow | null
-  useMock: boolean
-  onToggleActive?: (active: boolean) => void
   onEditModeChange?: (editing: boolean) => void
 }
 
 export const ReaderDrawer = ({
   reader,
-  useMock,
-  onToggleActive,
   onEditModeChange,
 }: ReaderDrawerProps) => {
   const [editMode, setEditMode] = useState(false)
@@ -71,7 +67,7 @@ export const ReaderDrawer = ({
     <div className="flex items-center gap-2 py-2">
       <ScanLine size={18} style={{ color: 'var(--color-text-dim)' }} />
       <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-        리더를 선택하세요
+        ????????????
       </p>
     </div>
   )
@@ -100,8 +96,6 @@ export const ReaderDrawer = ({
         <ReaderDetailContent
           reader={reader}
           activeTab={activeTab}
-          useMock={useMock}
-          onToggleActive={onToggleActive}
         />
       ) : (
         <div className="flex-1 min-h-[120px]" aria-hidden />

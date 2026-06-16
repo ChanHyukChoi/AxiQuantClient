@@ -1,20 +1,17 @@
 import { axiosInstance } from '@/lib/infra/axios'
-import { isApiNotReady } from '@/lib/wire/apiErrors'
 import { parseUserList, userInfoToWire } from '@/lib/mappers/userMappers'
 import type { CreateUserRequest, UpdateUserRequest, UserInfo } from '@/types/api/user'
 
 export type UserWriteResult = { ok: true } | { ok: false; message: string }
-export type UserListResult = { users: UserInfo[]; apiNotReady?: boolean }
 
 const NOT_READY_MSG = '요청을 처리하지 못했습니다.'
 
-export const getUserList = async (): Promise<UserListResult> => {
+export const getUserList = async (): Promise<UserInfo[]> => {
   try {
     const { data } = await axiosInstance.get<unknown>('/api/users')
-    return { users: parseUserList(data) }
-  } catch (error) {
-    if (isApiNotReady(error)) return { users: [], apiNotReady: true }
-    throw new Error('사용자 목록을 불러오지 못했습니다.')
+    return parseUserList(data)
+  } catch {
+    return []
   }
 }
 
@@ -22,9 +19,8 @@ export const createUser = async (user: CreateUserRequest): Promise<UserWriteResu
   try {
     await axiosInstance.post('/api/users', userInfoToWire({ ...user, id: 0 }))
     return { ok: true }
-  } catch (error) {
-    if (isApiNotReady(error)) return { ok: false, message: NOT_READY_MSG }
-    return { ok: false, message: '사용자를 생성하지 못했습니다.' }
+  } catch {
+    return { ok: false, message: NOT_READY_MSG }
   }
 }
 
@@ -36,8 +32,7 @@ export const updateUser = async (id: number, user: UpdateUserRequest): Promise<U
   try {
     await axiosInstance.put(`/api/users/${nid}`, userInfoToWire({ ...user, id: nid }))
     return { ok: true }
-  } catch (error) {
-    if (isApiNotReady(error)) return { ok: false, message: NOT_READY_MSG }
+  } catch {
     return { ok: false, message: '사용자를 수정하지 못했습니다.' }
   }
 }
@@ -50,8 +45,7 @@ export const deleteUser = async (id: number): Promise<UserWriteResult> => {
   try {
     await axiosInstance.delete(`/api/users/${nid}`)
     return { ok: true }
-  } catch (error) {
-    if (isApiNotReady(error)) return { ok: false, message: NOT_READY_MSG }
+  } catch {
     return { ok: false, message: '사용자를 삭제하지 못했습니다.' }
   }
 }

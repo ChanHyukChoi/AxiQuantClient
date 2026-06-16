@@ -1,4 +1,4 @@
-import { entityLabel } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { entityLabel } from '@/lib/device/deviceHelpers'
 import type { InputInfo } from '@/types/api'
 
 export const formatInputAddr = (addr: number): string => `IN ${addr}`

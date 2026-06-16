@@ -1,6 +1,6 @@
 import { type ColumnDef } from '@/components/primitive/Grid'
-import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
-import type { ReaderDisplayRow } from '@/pages/ReadersPage/readersMockData'
+import { isDeviceActive } from '@/lib/device/deviceHelpers'
+import type { ReaderDisplayRow } from '@/pages/ReadersPage/readerDisplayTypes'
 import {
   formatDefMode,
   formatReaderAddr,
@@ -25,7 +25,7 @@ export const useReaderColumns = (): ColumnDef<ReaderDisplayRow>[] => [
   },
   {
     key: 'scpName',
-    header: '주제어기',
+    header: '주제?�기',
     width: 110,
     sortable: true,
     render: (value) => (
@@ -36,7 +36,7 @@ export const useReaderColumns = (): ColumnDef<ReaderDisplayRow>[] => [
   },
   {
     key: 'sioName',
-    header: '부제어기',
+    header: '부?�어�?,
     width: 88,
     sortable: true,
     render: (_, row) => (
@@ -47,7 +47,7 @@ export const useReaderColumns = (): ColumnDef<ReaderDisplayRow>[] => [
   },
   {
     key: 'addr',
-    header: '어드레스',
+    header: '?�드?�스',
     width: 80,
     align: 'center',
     sortable: true,
@@ -59,7 +59,7 @@ export const useReaderColumns = (): ColumnDef<ReaderDisplayRow>[] => [
   },
   {
     key: 'modelName',
-    header: '모델',
+    header: '모띸',
     width: 120,
     sortable: true,
     render: (value) => (

@@ -7,7 +7,7 @@ import { getInputList } from '@/api/input'
 import { getOutputList } from '@/api/output'
 import { getReaderList } from '@/api/reader'
 import { getSioList } from '@/api/sio'
-import { TreeNode } from '@/pages/DeviceControlPage/TreeNode'
+import { DeviceTreeNode as DeviceTreeNodeView } from '@/components/basic/DeviceTreeNode'
 import {
   ancestorKeys,
   buildDeviceTree,
@@ -15,7 +15,7 @@ import {
   parseDeviceNodeKey,
   type DeviceTreeNode,
   type ScpChildData,
-} from '@/pages/DeviceControlPage/utils/buildTree'
+} from '@/lib/device/buildTree'
 import { useModules, useScps } from '@/hooks/api/useDeviceControl'
 import { queryKeys } from '@/lib/query/queryKeys'
 
@@ -190,7 +190,7 @@ export const DevicePickerModal = ({
               className="text-[15px] font-medium"
               style={{ color: 'var(--color-text)' }}
             >
-              장치 선택
+              ??? ???
             </span>
             <button
               type="button"
@@ -207,7 +207,7 @@ export const DevicePickerModal = ({
             style={{ borderColor: 'var(--color-border)' }}
           >
             <SearchField
-              placeholder="장치 검색..."
+              placeholder="??? ???.."
               value={searchQuery}
               onChange={setSearchQuery}
             />
@@ -219,18 +219,18 @@ export const DevicePickerModal = ({
                 className="text-[14px] text-center py-8"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
-                불러오는 중...
+                ????? ??..
               </p>
             ) : scpsError ? (
               <p
                 className="text-[14px] text-center py-8 px-3"
                 style={{ color: '#c75c5c' }}
               >
-                장치 목록을 불러오지 못했습니다.
+                ??? ?????????? ???????
               </p>
             ) : (
               tree.map((node) => (
-                <TreeNode
+                <DeviceTreeNodeView
                   key={node.key}
                   node={node}
                   depth={0}
@@ -248,7 +248,7 @@ export const DevicePickerModal = ({
             style={{ borderColor: 'var(--color-border)' }}
           >
             <Button variant="default" size="md" onClick={onCancel}>
-              취소
+              ??
             </Button>
             <Button
               variant="accent"
@@ -257,7 +257,7 @@ export const DevicePickerModal = ({
               disabled={!canSelect}
               onClick={handleConfirm}
             >
-              선택
+              ???
             </Button>
           </div>
         </div>

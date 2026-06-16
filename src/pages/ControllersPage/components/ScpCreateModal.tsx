@@ -20,14 +20,12 @@ const DEFAULT_VALUES: ScpFormValues = {
 // TODO: 카드 페이지처럼 추가는 모달이 아니라 드로어 create 모드로 전환할 것
 interface ScpCreateModalProps {
   open: boolean
-  useMock: boolean
   onCancel: () => void
   onCreated: (data: CreateScpRequest) => void
 }
 
 export const ScpCreateModal = ({
   open,
-  useMock,
   onCancel,
   onCreated,
 }: ScpCreateModalProps) => {
@@ -51,11 +49,6 @@ export const ScpCreateModal = ({
       model: Number(values.model) || 0,
       ctype: Number(values.ctype) || 0,
       ext: values.ext ?? '',
-    }
-
-    if (useMock) {
-      onCreated(payload)
-      return
     }
 
     createScp(payload, {
@@ -121,7 +114,7 @@ export const ScpCreateModal = ({
             <Button type="button" variant="default" size="sm" onClick={onCancel}>
               취소
             </Button>
-            <Button type="submit" variant="accent" size="sm" loading={!useMock && isPending}>
+            <Button type="submit" variant="accent" size="sm" loading={isPending}>
               추가
             </Button>
           </div>

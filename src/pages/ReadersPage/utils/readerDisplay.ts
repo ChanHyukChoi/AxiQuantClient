@@ -1,4 +1,4 @@
-import { entityLabel, isStandaloneReader } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { entityLabel, isStandaloneReader } from '@/lib/device/deviceHelpers'
 import type { ReaderInfo } from '@/types/api'
 
 export type ReaderKind = 'general' | 'standalone' | 'bio'
@@ -7,7 +7,7 @@ export type ReaderKindFilter = 'all' | ReaderKind
 export const readerLabel = (reader: ReaderInfo): string => entityLabel('reader', reader)
 
 export const formatReaderAddr = (addr: number): string =>
-  addr > 0 ? `READER ${addr}` : '—'
+  addr > 0 ? `READER ${addr}` : '??
 
 export const formatSioName = (sio: number, sioName?: string): string => {
   if (sioName?.trim()) return sioName
@@ -24,11 +24,11 @@ export const detectReaderKind = (reader: ReaderInfo): ReaderKind => {
 export const readerKindLabel = (kind: ReaderKind): string => {
   switch (kind) {
     case 'standalone':
-      return '단독'
+      return '?�독'
     case 'bio':
-      return '바이오'
+      return '바이??
     default:
-      return '일반'
+      return '?�반'
   }
 }
 
@@ -67,19 +67,19 @@ export interface ReaderTabDef {
 
 export const tabsForReaderKind = (kind: ReaderKind): ReaderTabDef[] => {
   if (kind === 'standalone') {
-    return [{ key: 'general', label: '일반' }]
+    return [{ key: 'general', label: '?�반' }]
   }
   if (kind === 'bio') {
     return [
-      { key: 'general', label: '일반' },
-      { key: 'protocol', label: '프로토콜' },
+      { key: 'general', label: '?�반' },
+      { key: 'protocol', label: '?�로?�콜' },
     ]
   }
   return [
-    { key: 'general', label: '일반' },
+    { key: 'general', label: '?�반' },
     { key: 'mode', label: '모드' },
-    { key: 'apb', label: '안티패스백' },
-    { key: 'pair', label: '연관리더' },
-    { key: 'protocol', label: '프로토콜' },
+    { key: 'apb', label: '?�티?�스�? },
+    { key: 'pair', label: '?��?리더' },
+    { key: 'protocol', label: '?�로?�콜' },
   ]
 }

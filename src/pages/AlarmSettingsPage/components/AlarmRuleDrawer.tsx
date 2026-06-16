@@ -21,7 +21,6 @@ type AlarmRuleEditor = ReturnType<typeof useAlarmRuleEditor>
 
 interface AlarmRuleDrawerProps {
   rule: AlarmRuleDisplay | null
-  useMock: boolean
   scps: ScpInfo[]
   scpNameMap: Record<number, string>
   editor: AlarmRuleEditor
@@ -36,7 +35,6 @@ const DRAWER_TABS: TabItem[] = [
 
 export const AlarmRuleDrawer = ({
   rule,
-  useMock,
   scps,
   scpNameMap,
   editor,
@@ -157,7 +155,6 @@ export const AlarmRuleDrawer = ({
               <AlarmUserPermissionList
                 selectedUserIds={userIds}
                 editMode={editor.editMode}
-                useMock={useMock}
                 onToggle={editor.toggleUserId}
                 onSelectAll={(ids) =>
                   editor.form.setValue('userIds', ids, { shouldDirty: true })

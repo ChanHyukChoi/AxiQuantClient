@@ -12,7 +12,7 @@ import {
   useAddAccLvReader,
   useDeleteAccLvReader,
 } from '@/hooks/api/useAccLv'
-import { useReaders, useScps } from '@/hooks/api/useDevices'
+import { useReaders, useScps } from '@/hooks/api/useDeviceControl'
 import { useTimezoneList } from '@/hooks/api/useTimezone'
 import type { AccLvRdrInfo } from '@/types/api'
 

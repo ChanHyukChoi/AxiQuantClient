@@ -41,15 +41,3 @@ export const useDeleteCardFmt = () => {
     onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.cardFmts.all() }),
   })
 }
-
-/** @deprecated useCardFmts */
-export const useCardfmtList = useCardFmts
-
-/** @deprecated useCreateCardFmt */
-export const useCreateCardfmt = useCreateCardFmt
-
-/** @deprecated useUpdateCardFmt */
-export const useUpdateCardfmt = useUpdateCardFmt
-
-/** @deprecated useDeleteCardFmt */
-export const useDeleteCardfmt = useDeleteCardFmt

@@ -3,8 +3,6 @@
 > 보안/출입 관제 시스템 프론트엔드  
 > Electron + React 기반 데스크톱/웹 듀얼 타겟
 
-상세 아키텍처·통신·인증 흐름은 [DOCS.md](./DOCS.md)를 참고하세요.
-
 ---
 
 ## 목차
@@ -36,10 +34,10 @@ axiquant-client/
 │   ├── api/                     # HTTP 호출 (도메인별)
 │   ├── assets/                  # 정적 에셋
 │   ├── components/
-│   │   ├── layout/              # 레이아웃 조합 컴포넌트
-│   │   ├── page-actions/        # 페이지 공통 액션 버튼
-│   │   └── primitive/           # 기본 UI 컴포넌트
-│   ├── features/                # (예약, 현재 비어 있음)
+│   │   ├── primitive/           # Grid, Drawer, Button, SearchField 등
+│   │   ├── basic/               # 도메인 선택 모달, DetailTitleBar 등
+│   │   ├── layout/              # SplitDrawerLayout
+│   │   └── page-actions/        # 페이지 공통 액션 버튼
 │   ├── hooks/
 │   │   ├── api/                 # TanStack Query 훅
 │   │   ├── sse/                 # SSE 실시간 갱신 훅
@@ -50,7 +48,6 @@ axiquant-client/
 │   ├── stores/                  # Zustand 클라이언트 상태
 │   ├── styles/                  # CSS 디자인 토큰
 │   ├── types/                   # TypeScript 타입 정의
-│   ├── utils/                   # (예약, 현재 비어 있음)
 │   ├── index.css                # Tailwind·폰트·theme import
 │   ├── main.tsx                 # React 엔트리포인트
 │   └── router.tsx               # TanStack Router 정의
@@ -61,8 +58,6 @@ axiquant-client/
 ├── tsconfig.node.json
 ├── vite.config.ts               # 웹 빌드 설정
 ├── vite.config.electron.ts      # Electron 빌드 설정
-├── README.md
-├── DOCS.md                      # 상세 아키텍처 문서
 └── PROJECT_STRUCTURE.md         # 이 문서
 ```
 
@@ -81,8 +76,7 @@ axiquant-client/
 | `.eslintrc.cjs` | ESLint 규칙 |
 | `.prettierrc` / `.prettierignore` | 코드 포맷 설정 |
 | `.gitignore` | Git 제외 목록 |
-| `README.md` | 프로젝트 소개·시작 가이드 |
-| `DOCS.md` | 통신·인증·상태관리·UI 시스템 상세 문서 |
+| `PROJECT_STRUCTURE.md` | 폴더·파일 구조 문서 (이 문서) |
 
 ---
 
@@ -133,7 +127,6 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `holiday.ts` | 휴일 | `holidayMappers` |
 | `timezone.ts` | 시간대 | `timezoneMappers` |
 | `modules.ts` | 모듈 상태 | `moduleMappers` |
-| `management.ts` | 로그·테스트 이벤트 | `managementMappers` |
 | `deviceControl.ts` | 장치 제어 | 리더/출력 제어 |
 | `alarmSettings.ts` | 경보 설정 | 경보·우선순위·메일 |
 | `users.ts` | 사용자 | flat body, `userMappers` |
@@ -152,11 +145,10 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `useCard.ts` | 카드 CRUD, 카드별 접근권한 |
 | `useAccLv.ts` | 접근권한 CRUD, 리더 매핑 |
 | `useArea.ts` | 영역 |
-| `useDevices.ts` | SCP 트리 (scp/sio/input/output/reader 통합) |
+| `useDeviceControl.ts` | SCP·SIO·입력·출력·리더 조회·CRUD·제어 명령 |
 | `useCardfmt.ts` | 카드 형식 |
 | `useHoliday.ts` | 휴일 |
 | `useTimezone.ts` | 시간대 |
-| `useDeviceControl.ts` | 장치 제어 명령 |
 | `useAlarmSettings.ts` | 경보·우선순위·메일 설정 |
 | `useUsers.ts` | 사용자 CRUD |
 | `useAuditLog.ts` | 운영 기록 페이징 |
@@ -174,7 +166,9 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | 파일 | 역할 |
 |------|------|
 | `useGridLayout.ts` | Grid 컬럼 레이아웃·드래그 상태 |
+| `useGridColumnLayout.ts` | Grid 컬럼 순서·너비 저장/복원 |
 | `useResizableDrawerWidth.ts` | Drawer 너비 리사이즈 |
+| `useStatusBar.ts` | 상태바 메시지 |
 
 ---
 
@@ -190,7 +184,13 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `userPermissions.ts` | 사용자 메뉴 권한 정의·정규화 |
 | `grid/gridLayout.ts` | Grid 컬럼 순서·너비 저장/복원 |
 | `layout/columnWidths.ts` | 컬럼 너비 상수·헬퍼 |
+| `layout/splitDrawerDefaults.ts` | SplitDrawer 기본/최소 너비 (400/320) |
+| `image/` | 사원·생체 사진 처리 (`processEmpPhoto`, `processBioPhoto` 등) |
+| `entityDisplayLabels.ts` | 엔티티 표시 라벨 |
+| `isElectronRuntime.ts` | Electron 런타임 판별 |
 | `eventMonitor/eventRecords.ts` | SSE·이력 → `EventRecord` 표시 변환 |
+| `device/deviceHelpers.ts` | 장치 라벨·활성 상태·아이콘 헬퍼 |
+| `device/buildTree.ts` | SCP 장치 트리 구성 (`DevicePickerModal` 등) |
 
 #### `lib/mappers/` — wire ↔ UI 변환
 
@@ -202,10 +202,10 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `holidayMappers.ts` | `repeat` ↔ `isRecurring` |
 | `timezoneMappers.ts` | `TzInfo` + `intervals[]` ↔ UI 시간 필드 |
 | `moduleMappers.ts` | `moduleType`, `connectedAt` → UI 표시 필드 |
-| `managementMappers.ts` | test-events 상태 필드 변환 |
 | `userMappers.ts` | users flat wire, `permissions` |
 | `auditMappers.ts` | audit-log 페이징 파싱 |
 | `eventMonitorMappers.ts` | access/alarm 로그 wire 파싱 |
+| `systemMappers.ts` | 시스템 설정 wire 변환 |
 
 ---
 
@@ -213,7 +213,8 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 
 #### `components/primitive/` — 기본 UI
 
-스타일이 지정된 재사용 컴포넌트. `index.ts`에서 배럴 export.
+스타일이 지정된 재사용 컴포넌트. `index.ts`에서 배럴 export.  
+`SearchField`는 검색 색상 단일 소스(`--color-search-*`)를 사용합니다.
 
 | 파일 | 역할 |
 |------|------|
@@ -227,7 +228,23 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `Tab.tsx` | 탭 네비게이션 |
 | `ListPanel.tsx` | 목록 + 상세 분할 패널 |
 | `Toast.tsx` | 토스트 알림 (`ToastHost`) |
+| `Checkbox.tsx` | 체크박스 |
+| `Select.tsx` | 셀렉트 |
 | `icons/` | 커스텀 아이콘 (`WindowRestoreIcon` 등) |
+
+#### `components/basic/` — 도메인 조합 UI
+
+| 파일 | 역할 |
+|------|------|
+| `DetailTitleBar.tsx` | Drawer 상단 제목·상태 바 |
+| `DetailInfoField.tsx` | 상세 필드 레이아웃 |
+| `AccLvSelectModal.tsx` | 접근권한 선택 모달 |
+| `AreaSelectModal.tsx` | 영역 선택 모달 |
+| `EmpSelectModal.tsx` | 사원 선택 모달 |
+| `ActiveStatusBadge.tsx` | 활성 상태 뱃지 |
+| `ActiveMockToggle.tsx` | 목 데이터 토글 |
+| `ListOptionsModalShell.tsx` | 목록 옵션 모달 셸 |
+| `MultiSelectToggleAllButton.tsx` | 전체 선택 토글 |
 
 #### `components/page-actions/` — 페이지 액션 버튼
 
@@ -240,6 +257,8 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `ImportButton.tsx` | 가져오기 |
 | `ExportButton.tsx` |보내기 |
 | `PrintButton.tsx` | 인쇄 |
+| `SearchButton.tsx` | 검색 |
+| `CrudDetailActions.tsx` | Drawer CRUD 액션 (저장/삭제) |
 | `types.ts` | `PageActionButtonProps` 공통 타입 |
 | `index.ts` | 배럴 export |
 
@@ -247,7 +266,7 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 
 | 파일 | 역할 |
 |------|------|
-| `SplitDrawerLayout.tsx` | Grid + Drawer 분할 레이아웃 래퍼 |
+| `SplitDrawerLayout.tsx` | Grid + Drawer 분할 레이아웃 (리사이즈, 기본 400px) |
 
 ---
 
@@ -298,7 +317,6 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `timezone.ts` | `TimezoneInfo`, `TimezoneInterval` |
 | `module.ts` | `ModuleInfo` |
 | `deviceControl.ts` | 장치 제어 요청/액션 |
-| `management.ts` | 로그 레벨, 테스트 이벤트 |
 | `alarmSettings.ts` | `AlarmInfo`, `AlarmPriorityInfo`, `AlarmMailInfo` |
 | `user.ts` | `UserInfo`, `UserPermissions` |
 | `audit.ts` | `AuditLogItem`, `PagedAuditLogResponse` |
@@ -312,6 +330,7 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | 파일 | 역할 |
 |------|------|
 | `theme.css` | **색상 단일 소스** — `--color-bg`, `--color-accent`, `--color-search-*` 등 CSS 변수. `data-theme="light"`로 라이트 전환 |
+| `ui-primitives.css` | `.app-scrollbar`, `.app-search-field` 등 공통 UI 스타일 |
 
 > 색상·토큰은 `theme.css`에만 추가합니다. `index.css`는 import·base 스타일만 담당합니다.
 
@@ -334,14 +353,19 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `LoginPage/` | `/login` | 로그인·서버 주소 설정 |
 | `EmpsPage/` | `/emps` | 카드 사용자(사원) 관리 |
 | `CardsPage/` | `/cards` | 카드 관리 (번호 = 서버 `id`) |
-| `AccessPage/` | `/access` | 접근권한·리더·시간대 |
-| `DeviceControlPage/` | `/devices` | SCP 장치 트리·제어 (라우트명 `devices`) |
+| `AccessPage/` | `/access` | 접근권한·리더 매핑 |
+| `ControllersPage/` | `/controllers` | SCP(제어기) 목록 + 상세 패널 |
+| `ReadersPage/` | `/readers` | 리더 목록 + Drawer |
+| `InputsPage/` | `/inputs` | 입력 포트 목록 + Drawer |
+| `OutputsPage/` | `/outputs` | 출력 포트 목록 + Drawer |
 | `AreaPage/` | `/area` | 영역 관리 |
 | `CardFmtPage/` | `/cardfmt` | 카드 형식(비트 포맷) |
+| `LinkagePage/` | `/linkage` | 연동 규칙 |
 | `EventMonitorPage/` | `/monitor` | 실시간 SSE + 이력 조회 |
-| `AlarmSettingsPage/` | `/alarm-settings` | 경보·우선순위·메일 설정 |
+| `AlarmSettingsPage/` | `/alarm-settings` | 경보·우선순위·메일 설정 (탭 Shell) |
+| `SchedulePage/` | `/schedule` | 스케쥴 (타임존 + 휴일) |
 | `UsersPage/` | `/users` | 사용자·메뉴 권한 |
-| `AuditLogPage/` | `/audit` | 운영 기록 |
+| `AuditLogPage/` | `/audit` | 운영 기록 (Grid만) |
 
 ---
 
@@ -370,7 +394,7 @@ hooks/api/useXxx.ts        ← 자동 리패치 → UI 갱신
 
 **규칙**
 
-- 컴포넌트는 `api/`를 직접 호출하지 않음 → 반드시 `hooks/` 사용
+- 컴포넌트·페이지는 `api/`를 직접 호출하지 않음 → `hooks/api/` 사용 (생성 후 목록 갱신 등은 mutation `onSuccess` + `invalidateQueries` 권장)
 - 서버 wire 형식 변환은 `lib/mappers/`에서 처리
 - 클라이언트 UI 상태는 `stores/` (Zustand), 서버 데이터는 TanStack Query
 
@@ -378,15 +402,16 @@ hooks/api/useXxx.ts        ← 자동 리패치 → UI 갱신
 
 ## 6. 페이지 폴더 내부 패턴
 
-복잡한 페이지는 아래 구조를 따릅니다.
+목록+상세 페이지는 `CardsPage`/`EmpsPage` 패턴을 따릅니다.
 
 ```
 PageName/
-├── index.tsx              # 페이지 진입점 (라우트 컴포넌트)
+├── index.tsx              # Grid + SplitDrawerLayout 조합
+├── useXxxColumns.tsx      # Grid 컬럼 정의 훅
+├── useXxxData.ts          # 로컬 데이터·선택 상태 (해당 시)
+├── XxxDrawer.tsx          # 선택 항목 상세 Drawer (또는 *DetailPanel)
 ├── formTypes.ts           # React Hook Form + Zod 스키마
-├── XxxDrawer.tsx          # 선택 항목 상세 Drawer
-├── XxxListPane.tsx        # 좌측 목록 패널 (해당 시)
-├── useXxxColumns.tsx      # Grid 컬럼 정의 훅 (해당 시)
+├── *MockData.ts           # API 미연결 시 fallback (해당 시)
 ├── tabs/                  # Drawer 내 탭 콘텐츠
 │   ├── XxxInfoTab.tsx
 │   └── ...
@@ -397,6 +422,8 @@ PageName/
 └── hooks/                 # 페이지 전용 훅 (EventMonitorPage 등)
     └── useLiveEvents.ts
 ```
+
+공통 레이아웃 상수: `lib/layout/splitDrawerDefaults.ts` (`SPLIT_DRAWER_DEFAULT_WIDTH=400`, `SPLIT_DRAWER_MIN_WIDTH=320`).
 
 ### 페이지별 주요 파일
 
@@ -439,30 +466,38 @@ PageName/
 #### `AccessPage/`
 | 파일 | 역할 |
 |------|------|
-| `index.tsx` | 접근권한·시간대·휴일 통합 화면 |
-| `AccessDrawer.tsx` | 접근권한 상세 Drawer |
-| `components/SectionBlock.tsx` | 섹션 블록 |
-| `components/IdNameTable.tsx` | ID/이름 테이블 |
+| `index.tsx` | 접근권한 Grid + SplitDrawerLayout |
+| `AccessDetailPanel.tsx` | 접근권한 상세 패널 (Drawer) |
+| `useAccLvColumns.tsx` | Grid 컬럼 |
+| `components/CreateAccLvModal.tsx` | 접근권한 생성 모달 |
+| `components/AccLvReaderTable.tsx` | 리더 매핑 테이블 |
+| `utils/accLvHelpers.ts` | 헬퍼 |
 
-#### `DeviceControlPage/` (라우트 `/devices`)
+#### `ControllersPage/`
 | 파일 | 역할 |
 |------|------|
-| `index.tsx` | 장치 트리 + 상세 |
-| `TreePane.tsx` | SCP/SIO/입출력/리더 트리 |
-| `TreeNode.tsx` | 트리 노드 컴포넌트 |
-| `DetailDrawer.tsx` | 장치 상세 Drawer |
-| `tabs/InfoTab.tsx` | 정보 탭 |
-| `tabs/ControlTab.tsx` | 제어 탭 |
-| `tabs/ChildrenTab.tsx` | 하위 장치 탭 |
-| `utils/buildTree.ts` | 트리 데이터 구성 |
-| `utils/deviceHelpers.ts` | 헬퍼 |
+| `index.tsx` | SCP Grid + SplitDrawerLayout |
+| `useScpColumns.tsx` | Grid 컬럼 |
+| `useControllersData.ts` | SCP/SIO 데이터 |
+| `components/ScpDetailPanel.tsx` | SCP 상세 패널 |
+| `components/SioWorkspace.tsx` | SIO 하위 편집 |
+| `components/ScpCreateModal.tsx` | SCP 생성 모달 |
+
+#### `ReadersPage/`, `InputsPage/`, `OutputsPage/`
+| 파일 | 역할 |
+|------|------|
+| `index.tsx` | 장치 포트 Grid + SplitDrawerLayout |
+| `use*Columns.tsx` | Grid 컬럼 |
+| `use*Data.ts` | 데이터·선택 상태 |
+| `*Drawer.tsx` | 상세 Drawer |
+| `*MockData.ts` | API fallback |
 
 #### `AreaPage/`
 | 파일 | 역할 |
 |------|------|
-| `index.tsx` | 영역 목록 + Drawer |
-| `AreaListPane.tsx` | 영역 목록 패널 |
+| `index.tsx` | 영역 Grid + SplitDrawerLayout |
 | `AreaDrawer.tsx` | 영역 상세 Drawer |
+| `useAreaColumns.tsx` | Grid 컬럼 |
 | `tabs/AreaInfoTab.tsx` | 영역 정보 |
 | `tabs/AreaReadersTab.tsx` | 리더 매핑 |
 | `tabs/AreaOccupantsTab.tsx` | 재실자 |
@@ -471,18 +506,40 @@ PageName/
 #### `CardFmtPage/`
 | 파일 | 역할 |
 |------|------|
-| `index.tsx` | 카드 형식 목록 |
-| `CardFmtListPane.tsx` | 목록 패널 |
+| `index.tsx` | 카드 형식 Grid + SplitDrawerLayout |
 | `CardFmtDrawer.tsx` | 형식 상세 Drawer |
+| `useCardFmtColumns.tsx` | Grid 컬럼 |
 | `BitVisualizer.tsx` | 비트 시각화 |
 | `utils/cardFmtHelpers.ts` | 헬퍼 |
+
+#### `LinkagePage/`
+| 파일 | 역할 |
+|------|------|
+| `index.tsx` | 연동 규칙 Grid + SplitDrawerLayout |
+| `LinkageDrawer.tsx` | `LinkageWorkspace` 래핑 Drawer |
+| `useLinkageColumns.tsx` | Grid 컬럼 |
+| `components/LinkageWhenSection.tsx` | 조건 섹션 |
+| `components/LinkageThenSection.tsx` | 동작 섹션 |
+
+#### `SchedulePage/`
+| 파일 | 역할 |
+|------|------|
+| `index.tsx` | 타임존 Grid + Drawer (`PageHeader`「스케쥴」) |
+| `components/TimezoneDetailPanel.tsx` | 타임존 상세 Drawer |
+| `components/TimezoneDetailFields.tsx` | 타임존 필드 |
+| `components/HolidaySection.tsx` | Drawer 내 휴일 섹션 (타임존 소속) |
+| `components/HolidayDetailFields.tsx` | 휴일 필드 |
+| `useTimezoneColumns.tsx` | Grid 컬럼 |
+| `useTimezonesData.ts` | 타임존 목록·선택 |
+| `useScheduleHolidays.ts` | 휴일 목록·타임존별 필터 |
+| `scheduleMockData.ts` | 목 데이터 |
 
 #### `EventMonitorPage/`
 | 파일 | 역할 |
 |------|------|
 | `index.tsx` | 실시간·이력 모니터 |
 | `EventGrid.tsx` | 이벤트 Grid |
-| `EventDetailPanel.tsx` | 이벤트 상세 패널 |
+| `EventDetailPanel.tsx` | 이벤트 상세 Drawer |
 | `MonitorToolbar.tsx` | 툴바 (날짜·필터) |
 | `hooks/useLiveEvents.ts` | SSE 실시간 이벤트 |
 | `hooks/useHistoryEvents.ts` | 이력 API 이벤트 |
@@ -491,26 +548,23 @@ PageName/
 #### `AlarmSettingsPage/`
 | 파일 | 역할 |
 |------|------|
-| `index.tsx` | 경보 설정 메인 |
-| `tabs/AlarmRulesTab.tsx` | 경보 규칙 탭 |
-| `tabs/AlarmPriorityTab.tsx` | 우선순위 탭 |
-| `tabs/AlarmMailTab.tsx` | 메일 탭 |
+| `index.tsx` | 경보 설정 Shell |
+| `AlarmSettingsShell.tsx` | 탭 컨테이너 |
+| `tabs/AlarmRulesTab.tsx` | 규칙 Grid + SplitDrawerLayout |
+| `tabs/AlarmPriorityTab.tsx` | 우선순위 Grid + SplitDrawerLayout |
+| `tabs/AlarmMailTab.tsx` | 메일 (`AlarmMailListPane` — 예외) |
 | `components/AlarmRuleDrawer.tsx` | 규칙 Drawer |
-| `components/AlarmRulesListPane.tsx` | 규칙 목록 |
 | `components/AlarmPriorityDrawer.tsx` | 우선순위 Drawer |
-| `components/AlarmPriorityListPane.tsx` | 우선순위 목록 |
 | `components/AlarmMailDrawer.tsx` | 메일 Drawer |
-| `components/AlarmMailListPane.tsx` | 메일 목록 |
-| `components/AlarmSelectModal.tsx` | 경보 선택 모달 |
-| `components/DevicePickerModal.tsx` | 장치 선택 모달 |
+| `useAlarmRuleColumns.tsx`, `useAlarmPriorityColumns.tsx` | Grid 컬럼 |
 | `utils/alarmHelpers.ts` | 헬퍼 |
 
 #### `UsersPage/`
 | 파일 | 역할 |
 |------|------|
-| `index.tsx` | 사용자 목록 + Drawer |
-| `UserListPane.tsx` | 사용자 목록 |
+| `index.tsx` | 사용자 Grid + SplitDrawerLayout |
 | `UserDrawer.tsx` | 사용자 상세 Drawer |
+| `useUserColumns.tsx` | Grid 컬럼 |
 | `tabs/UserInfoTab.tsx` | 기본 정보 |
 | `tabs/UserPermissionsTab.tsx` | 메뉴 권한 |
 | `permissions.ts` | 권한 상수 |
@@ -535,16 +589,21 @@ PageName/
 /login               → LoginPage
 
 /_app (RootLayout)
-├── /emps            → EmpsPage
-├── /cards           → CardsPage
-├── /access          → AccessPage
-├── /devices         → DeviceControlPage   ← 폴더명과 라우트명 다름
-├── /area            → AreaPage
-├── /cardfmt         → CardFmtPage
-├── /monitor         → EventMonitorPage
-├── /alarm-settings  → AlarmSettingsPage
-├── /users           → UsersPage
-└── /audit           → AuditLogPage
+├── /emps              → EmpsPage
+├── /cards             → CardsPage
+├── /access            → AccessPage
+├── /controllers       → ControllersPage
+├── /readers           → ReadersPage
+├── /inputs            → InputsPage
+├── /outputs           → OutputsPage
+├── /area              → AreaPage
+├── /cardfmt           → CardFmtPage
+├── /monitor           → EventMonitorPage
+├── /users             → UsersPage
+├── /audit             → AuditLogPage
+├── /alarm-settings    → AlarmSettingsPage
+├── /schedule          → SchedulePage
+└── /linkage           → LinkagePage
 ```
 
 ---

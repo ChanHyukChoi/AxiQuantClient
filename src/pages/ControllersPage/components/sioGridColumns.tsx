@@ -1,17 +1,17 @@
 import type { ColumnDef } from '@/components/primitive/Grid'
 import { ActiveGridMark } from '@/components/basic/ActiveStatusBadge'
-import { entityLabel, isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
 import type { SioInfo } from '@/types/api'
 
 export const BASE_SIO_GRID_COLUMNS: ColumnDef<SioInfo>[] = [
   {
     key: 'port',
-    header: '포트',
+    header: '?�트',
     width: 80,
     sortable: true,
     render: (value) => (
       <span className="text-[14px] font-mono" style={{ color: 'var(--color-text-muted)' }}>
-        {Number(value) > 0 ? `PORT ${value}` : '—'}
+        {Number(value) > 0 ? `PORT ${value}` : '??}
       </span>
     ),
   },
@@ -40,7 +40,7 @@ export const BASE_SIO_GRID_COLUMNS: ColumnDef<SioInfo>[] = [
   },
   {
     key: 'addr',
-    header: '어드레스',
+    header: '?�드?�스',
     width: 80,
     align: 'center',
     sortable: true,
@@ -52,7 +52,7 @@ export const BASE_SIO_GRID_COLUMNS: ColumnDef<SioInfo>[] = [
   },
   {
     key: 'active',
-    header: '상태',
+    header: '?�태',
     width: 80,
     align: 'center',
     sortable: true,

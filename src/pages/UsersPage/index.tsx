@@ -25,10 +25,6 @@ export const UsersPage = () => {
 
   const editor = useUserEditor({
     user: data.selectedUser,
-    useMock: data.useMock,
-    patchMockUser: data.patchMockUser,
-    addMockUser: data.addMockUser,
-    removeMockUser: data.removeMockUser,
     onDeleted: data.onUserDeleted,
   })
 

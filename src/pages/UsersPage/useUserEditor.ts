@@ -13,21 +13,10 @@ import type { UserInfo } from '@/types/api/user'
 
 interface UseUserEditorOptions {
   user: UserInfo | null
-  useMock: boolean
-  patchMockUser: (id: number, patch: Partial<UserInfo>) => void
-  addMockUser: (user: Omit<UserInfo, 'id'>) => number
-  removeMockUser: (id: number) => void
   onDeleted: () => void
 }
 
-export const useUserEditor = ({
-  user,
-  useMock,
-  patchMockUser,
-  addMockUser,
-  removeMockUser,
-  onDeleted,
-}: UseUserEditorOptions) => {
+export const useUserEditor = ({ user, onDeleted }: UseUserEditorOptions) => {
   const [isCreating, setIsCreating] = useState(false)
   const [activeTab, setActiveTab] = useState('info')
   const [editMode, setEditMode] = useState(false)
@@ -93,16 +82,6 @@ export const useUserEditor = ({
         return
       }
 
-      if (useMock) {
-        addMockUser({
-          ...formToCreatePayload(formValues),
-          permissions: formValues.permissions,
-        })
-        setIsCreating(false)
-        setEditMode(false)
-        return
-      }
-
       const result = await createMut.mutateAsync(formToCreatePayload(formValues))
       if (result.ok) {
         setIsCreating(false)
@@ -114,15 +93,6 @@ export const useUserEditor = ({
     }
 
     if (!user) return
-
-    if (useMock) {
-      patchMockUser(user.id, {
-        ...formToUpdatePayload(formValues),
-        permissions: formValues.permissions,
-      })
-      setEditMode(false)
-      return
-    }
 
     const result = await updateMut.mutateAsync({
       id: user.id,
@@ -138,19 +108,12 @@ export const useUserEditor = ({
   const handleDeleteConfirm = useCallback(async () => {
     if (!user) return
 
-    if (useMock) {
-      removeMockUser(user.id)
-      setDeleteOpen(false)
-      onDeleted()
-      return
-    }
-
     const result = await deleteMut.mutateAsync(user.id)
     if (result.ok) {
       setDeleteOpen(false)
       onDeleted()
     }
-  }, [user, useMock, removeMockUser, deleteMut, onDeleted])
+  }, [user, deleteMut, onDeleted])
 
   return {
     form,

@@ -125,9 +125,9 @@ const MENU_GROUPS: MenuGroup[] = [
     id: 'schedule',
     items: [
       {
-        id: 'timezone-holiday',
-        label: '타임존·휴일',
-        path: '/timezone-holiday',
+        id: 'schedule',
+        label: '스케쥴',
+        path: '/schedule',
         icon: <CalendarClock size={28} strokeWidth={2} />,
       },
     ],

@@ -41,8 +41,8 @@ export const PERMISSION_CATEGORIES: PermissionCategoryDef[] = [
     ],
   },
   {
-    category: '타임존·휴일',
-    items: [{ key: 'timezoneHoliday', label: '타임존·휴일', readOnly: false }],
+    category: '스케쥴',
+    items: [{ key: 'schedule', label: '스케쥴', readOnly: false }],
   },
   {
     category: '연동',
@@ -82,8 +82,12 @@ export const createFullPermissions = (): UserPermissions => {
 export const normalizePermissions = (raw: UserPermissions | undefined): UserPermissions => {
   const base = createDefaultPermissions()
   if (!raw) return base
+  const migrated = { ...raw }
+  if (migrated.timezoneHoliday && !migrated.schedule) {
+    migrated.schedule = migrated.timezoneHoliday
+  }
   for (const key of ALL_MENU_KEYS) {
-    const p = raw[key]
+    const p = migrated[key]
     if (p) {
       base[key] = {
         read: Boolean(p.read),

@@ -31,7 +31,7 @@ import { empDisplayName } from '@/lib/mappers/empsMappers'
 import { useCardList } from '@/hooks/api/useCard'
 import { useEmpList } from '@/hooks/api/useEmps'
 import { useAccLvList } from '@/hooks/api/useAccLv'
-import { useAreaList } from '@/hooks/api/useArea'
+import { useAreas } from '@/hooks/api/useArea'
 
 /** v3: 사용자 사진 컬럼·empId 너비 조정 — 이전 localStorage와 분리 */
 const CARDS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cards.v3'
@@ -62,7 +62,7 @@ export const CardsPage = () => {
   const { data: cardList, isLoading: cardLoading } = useCardList()
   const { data: empList, isLoading: empLoading } = useEmpList()
   const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
-  const { data: areaList } = useAreaList()
+  const { data: areaList } = useAreas()
 
   const normalizedCards = useMemo<CardRow[]>(
     () =>

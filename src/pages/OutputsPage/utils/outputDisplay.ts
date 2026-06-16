@@ -1,4 +1,4 @@
-import { entityLabel } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { entityLabel } from '@/lib/device/deviceHelpers'
 import type { OutputInfo } from '@/types/api'
 
 export const formatOutputAddr = (addr: number): string => `OUT ${addr}`

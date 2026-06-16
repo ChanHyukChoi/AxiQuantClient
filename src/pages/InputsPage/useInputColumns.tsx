@@ -1,6 +1,6 @@
 import { type ColumnDef } from '@/components/primitive/Grid'
-import { isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
-import type { InputDisplayRow } from '@/pages/InputsPage/inputsMockData'
+import { isDeviceActive } from '@/lib/device/deviceHelpers'
+import type { InputDisplayRow } from '@/pages/InputsPage/inputDisplayTypes'
 import {
   formatInputAddr,
   formatInputMode,
@@ -22,18 +22,18 @@ export const useInputColumns = (): ColumnDef<InputDisplayRow>[] => [
   },
   {
     key: 'active',
-    header: '활성',
+    header: '?�성',
     width: 64,
     align: 'center',
     sortable: true,
     render: (value) =>
       isDeviceActive(Number(value)) ? (
-        <span style={{ color: 'var(--color-accent)' }}>✓</span>
+        <span style={{ color: 'var(--color-accent)' }}>??/span>
       ) : null,
   },
   {
     key: 'scpName',
-    header: '주제어기',
+    header: '주제?�기',
     width: 120,
     sortable: true,
     render: (value) => (
@@ -44,7 +44,7 @@ export const useInputColumns = (): ColumnDef<InputDisplayRow>[] => [
   },
   {
     key: 'sioName',
-    header: '부제어기',
+    header: '부?�어�?,
     width: 100,
     sortable: true,
     render: (_, row) => (
@@ -55,7 +55,7 @@ export const useInputColumns = (): ColumnDef<InputDisplayRow>[] => [
   },
   {
     key: 'addr',
-    header: '어드레스',
+    header: '?�드?�스',
     width: 72,
     align: 'center',
     sortable: true,

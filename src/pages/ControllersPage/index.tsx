@@ -27,7 +27,6 @@ export const ControllersPage = () => {
   const [pageSize, setPageSize] = useState(20)
 
   const {
-    useMock,
     filteredScps,
     selectedId,
     selectedScp,
@@ -37,12 +36,6 @@ export const ControllersPage = () => {
     selectScp,
     isLoading,
     isError,
-    patchMockScp,
-    addMockScp,
-    removeMockScp,
-    patchMockSio,
-    addMockSio,
-    removeMockSio,
     onScpDeleted,
   } = useControllersData()
 
@@ -62,10 +55,6 @@ export const ControllersPage = () => {
   const handleCreated = useCallback(
     async (data: CreateScpRequest) => {
       setCreateOpen(false)
-      if (useMock) {
-        addMockScp(data)
-        return
-      }
       const list = await qc.fetchQuery({
         queryKey: queryKeys.deviceControl.scps(),
         queryFn: getScpList,
@@ -73,7 +62,7 @@ export const ControllersPage = () => {
       const created = list?.find((s) => s.name === data.name)
       if (created) selectScp(created)
     },
-    [useMock, addMockScp, qc, selectScp],
+    [qc, selectScp],
   )
 
   const baseColumns = useScpColumns()
@@ -130,12 +119,6 @@ export const ControllersPage = () => {
             scp={selectedScp}
             sios={sios}
             siosLoading={siosLoading}
-            useMock={useMock}
-            patchMockScp={patchMockScp}
-            removeMockScp={removeMockScp}
-            patchMockSio={patchMockSio}
-            addMockSio={addMockSio}
-            removeMockSio={removeMockSio}
             onDeleted={onScpDeleted}
           />
         }
@@ -143,7 +126,6 @@ export const ControllersPage = () => {
 
       <ScpCreateModal
         open={createOpen}
-        useMock={useMock}
         onCancel={() => setCreateOpen(false)}
         onCreated={handleCreated}
       />

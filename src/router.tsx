@@ -20,7 +20,7 @@ import { EventMonitorPage } from '@/pages/EventMonitorPage'
 import { UsersPage } from '@/pages/UsersPage'
 import { AuditLogPage } from '@/pages/AuditLogPage'
 import { AlarmSettingsPage } from '@/pages/AlarmSettingsPage'
-import { TimezoneHolidayPage } from '@/pages/TimezoneHolidayPage'
+import { SchedulePage } from '@/pages/SchedulePage'
 import { LinkagePage } from '@/pages/LinkagePage'
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -131,10 +131,10 @@ const alarmSettingsRoute = createRoute({
   component: AlarmSettingsPage,
 })
 
-const timezoneHolidayRoute = createRoute({
+const scheduleRoute = createRoute({
   getParentRoute: () => appRoute,
-  path: '/timezone-holiday',
-  component: TimezoneHolidayPage,
+  path: '/schedule',
+  component: SchedulePage,
 })
 
 const linkageRoute = createRoute({
@@ -160,7 +160,7 @@ const routeTree = rootRoute.addChildren([
     usersRoute,
     auditRoute,
     alarmSettingsRoute,
-    timezoneHolidayRoute,
+    scheduleRoute,
     linkageRoute,
   ]),
 ])

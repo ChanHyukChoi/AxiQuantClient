@@ -11,21 +11,16 @@ import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
 import { BASE_SIO_GRID_COLUMNS } from '@/pages/ControllersPage/components/sioGridColumns'
 import { SioDetailFields } from '@/pages/ControllersPage/components/SioDetailFields'
 import { useSioEditor } from '@/pages/ControllersPage/useSioEditor'
-import { entityLabel, isDeviceActive } from '@/pages/DeviceControlPage/utils/deviceHelpers'
+import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
 import { getSioList } from '@/api/sio'
 import { queryKeys } from '@/lib/query/queryKeys'
-import type { CreateSioRequest, ScpInfo, SioInfo } from '@/types/api'
+import type { ScpInfo, SioInfo } from '@/types/api'
 
 interface SioWorkspaceProps {
   scp: ScpInfo | null
   sios: SioInfo[]
   siosLoading: boolean
-  useMock: boolean
-  patchMockSio: (scpId: number, id: number, patch: Partial<SioInfo>) => void
-  addMockSio: (scpId: number, data: CreateSioRequest) => number
-  removeMockSio: (scpId: number, id: number) => void
   gridStorageKey: string
-  /** drawer 탭 안(세로) vs B안 우측 패널 */
   layout?: 'stack' | 'panel'
 }
 
@@ -33,10 +28,6 @@ export const SioWorkspace = ({
   scp,
   sios,
   siosLoading,
-  useMock,
-  patchMockSio,
-  addMockSio,
-  removeMockSio,
   gridStorageKey,
   layout = 'stack',
 }: SioWorkspaceProps) => {
@@ -81,10 +72,6 @@ export const SioWorkspace = ({
   const editor = useSioEditor({
     sio: selectedSio,
     scpId,
-    useMock,
-    patchMockSio,
-    addMockSio,
-    removeMockSio,
     onAdded: (id) => {
       if (id > 0) setSelectedSioId(id)
       else void selectNewestSio()
@@ -102,7 +89,7 @@ export const SioWorkspace = ({
   if (!scp) {
     return (
       <p className="text-[14px] p-4" style={{ color: 'var(--color-text-subtle)' }}>
-        주제어기를 선택하면 부제어기를 관리할 수 있습니다.
+        ????? ???? ????? ??? ? ????.
       </p>
     )
   }
@@ -162,8 +149,8 @@ export const SioWorkspace = ({
   ) : (
     <p className="text-[14px] p-4" style={{ color: 'var(--color-text-subtle)' }}>
       {sios.length === 0
-        ? `「${scpName}」에 부제어기가 없습니다. 추가 버튼으로 등록하세요.`
-        : '목록에서 부제어기를 선택하세요.'}
+        ? `?${scpName}?? ????? ????. ?? ???? ?????.`
+        : '???? ????? ?????.'}
     </p>
   )
 
@@ -190,9 +177,9 @@ export const SioWorkspace = ({
 
       <Modal
         open={editor.deleteOpen}
-        title="부제어기 삭제"
-        description={selectedSio ? `「${sioName}」 부제어기를 삭제하시겠습니까?` : undefined}
-        confirmLabel="삭제"
+        title="???? ??"
+        description={selectedSio ? `?${sioName}? ????? ?????????` : undefined}
+        confirmLabel="??"
         variant="danger"
         loading={editor.isDeleting}
         onConfirm={editor.handleDeleteConfirm}

@@ -22,10 +22,6 @@ export const AlarmPriorityTab = () => {
 
   const editor = useAlarmPriorityEditor({
     item: data.selectedItem,
-    useMock: data.useMock,
-    patchMockItem: data.patchMockItem,
-    addMockItem: data.addMockItem,
-    removeMockItem: data.removeMockItem,
     onDeleted: data.onItemDeleted,
   })
 

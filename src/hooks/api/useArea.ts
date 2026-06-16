@@ -35,6 +35,3 @@ export const useDeleteArea = () => {
     onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.areas.all() }),
   })
 }
-
-/** @deprecated useAreas */
-export const useAreaList = useAreas

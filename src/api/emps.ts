@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { axiosInstance } from '@/lib/infra/axios'
-import { buildEmpWirePayload } from '@/lib/mappers/empsMappers'
-import { MOCK_EMP_LIST } from '@/mocks/empMockData'
+import { buildEmpWirePayload, parseEmpList } from '@/lib/mappers/empsMappers'
 import type { CreateEmpRequest, EmpInfo, UpdateEmpRequest } from '@/types/api'
 
 export type EmpWriteResult = { ok: true } | { ok: false; message: string }
@@ -75,8 +74,13 @@ const logEmpAxiosError = (op: string, error: unknown) => {
 }
 
 export const getEmpList = async (): Promise<EmpInfo[] | null> => {
-  // TODO: API 스펙 확정 후 실 API 복구
-  return MOCK_EMP_LIST
+  try {
+    const { data } = await axiosInstance.get<unknown>('/api/emps')
+    return parseEmpList(data)
+  } catch (error) {
+    logEmpAxiosError('GET /api/emps', error)
+    return null
+  }
 }
 
 export const createEmp = async (emp: CreateEmpRequest): Promise<EmpWriteResult> => {
