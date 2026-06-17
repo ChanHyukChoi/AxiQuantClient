@@ -5,10 +5,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { TabToolbar } from '@/layouts/TabToolbar'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { AlarmRuleDrawer } from '@/pages/AlarmSettingsPage/components/AlarmRuleDrawer'
 import { useAlarmRuleColumns } from '@/pages/AlarmSettingsPage/useAlarmRuleColumns'
 import { useAlarmRulesData } from '@/pages/AlarmSettingsPage/useAlarmRulesData'
@@ -54,9 +50,6 @@ export const AlarmRulesTab = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.alarm-rules"
         main={
           <>
             <Grid

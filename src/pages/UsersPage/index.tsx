@@ -6,10 +6,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { UserDrawer } from '@/pages/UsersPage/UserDrawer'
 import { useUserColumns } from '@/pages/UsersPage/useUserColumns'
 import { useUserEditor } from '@/pages/UsersPage/useUserEditor'
@@ -61,9 +57,6 @@ export const UsersPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.users"
         main={
           <Grid
             columns={columns}

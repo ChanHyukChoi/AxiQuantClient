@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bell, Check, Pencil, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
 import { Tab, type TabItem } from '@/components/primitive/Tab'
@@ -80,9 +81,7 @@ export const AlarmRuleDrawer = ({
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      {t('alarm:selectRule')}
-    </div>
+    <div />
   )
 
   const drawerActions = rule ? (
@@ -137,7 +136,7 @@ export const AlarmRuleDrawer = ({
 
   return (
     <>
-      <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions}>
+      <Drawer fill borderLeft={false} contentFill={!rule} header={drawerHeader} actions={drawerActions}>
         {rule ? (
           <div className="flex flex-col gap-3 min-h-0 flex-1">
             <Tab
@@ -173,7 +172,9 @@ export const AlarmRuleDrawer = ({
               />
             )}
           </div>
-        ) : null}
+        ) : (
+          <DrawerSelectPrompt message={t('alarm:selectRule')} />
+        )}
       </Drawer>
 
       <DevicePickerModal

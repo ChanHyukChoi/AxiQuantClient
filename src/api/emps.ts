@@ -5,9 +5,10 @@ import type { CreateEmpRequest, EmpInfo, UpdateEmpRequest } from '@/types/api'
 
 export type EmpWriteResult = { ok: true } | { ok: false; message: string }
 
-/** ASP.NET ProblemDetails·빈 응답·네트워크 실패 등 — 백엔드 없이 브라우저만으로 확인 가능한 수준의 안내 */
-export const extractEmpAxiosErrorMessage = (error: unknown): string => {
-  if (!axios.isAxiosError(error)) return '알 수 없는 오류가 발생했습니다.'
+const formatEmpAxiosErrorForLog = (error: unknown): string => {
+  if (!axios.isAxiosError(error)) {
+    return error instanceof Error ? error.message : String(error)
+  }
 
   const res = error.response
   if (res == null) {
@@ -25,27 +26,13 @@ export const extractEmpAxiosErrorMessage = (error: unknown): string => {
   const raw = res.data
 
   if (raw === undefined || raw === null || (typeof raw === 'string' && raw.trim() === '')) {
-    if (status >= 500) {
-      return `HTTP ${status} — 응답 본문이 비어 있습니다. 서버 내부 오류일 가능성이 큽니다. 백엔드에 접근할 수 없다면, 담당자에게 "직원 저장 시 ${status}, 본문 없음"과 요청 시각·URL만 전달해 주세요.`
-    }
     return `HTTP ${status} (본문 없음)`
   }
 
-  if (typeof raw === 'string') {
-    const t = raw.trim()
-    if (t === '') return `HTTP ${status} (본문 없음)`
-    return t.length > 400 ? `${t.slice(0, 400)}…` : t
-  }
-
+  if (typeof raw === 'string') return raw
   if (typeof raw === 'object') {
-    const o = raw as Record<string, unknown>
-    if (typeof o.detail === 'string' && o.detail.trim() !== '') return o.detail
-    if (typeof o.title === 'string' && o.title.trim() !== '') return o.title
-    if (typeof o.message === 'string') return o.message
-    if (typeof o.error === 'string') return o.error
     try {
-      const s = JSON.stringify(raw)
-      return s.length > 400 ? `${s.slice(0, 400)}…` : s
+      return JSON.stringify(raw)
     } catch {
       return '서버 오류 응답을 파싱하지 못했습니다.'
     }
@@ -54,14 +41,42 @@ export const extractEmpAxiosErrorMessage = (error: unknown): string => {
   return error.message
 }
 
+/** UI에 표시할 짧은 오류 메시지 */
+export const extractEmpAxiosErrorMessage = (error: unknown): string => {
+  if (!axios.isAxiosError(error)) return '처리하지 못했습니다.'
+
+  const res = error.response
+  if (res == null) {
+    if (error.code === 'ECONNABORTED') return '요청 시간이 초과되었습니다.'
+    return '서버에 연결하지 못했습니다.'
+  }
+
+  const raw = res.data
+  if (typeof raw === 'object' && raw !== null) {
+    const o = raw as Record<string, unknown>
+    if (typeof o.detail === 'string' && o.detail.trim() !== '') return o.detail
+    if (typeof o.title === 'string' && o.title.trim() !== '') return o.title
+    if (typeof o.message === 'string' && o.message.trim() !== '') return o.message
+    if (typeof o.error === 'string' && o.error.trim() !== '') return o.error
+  }
+
+  if (typeof raw === 'string' && raw.trim() !== '') {
+    const text = raw.trim()
+    return text.length > 200 ? `${text.slice(0, 200)}…` : text
+  }
+
+  if (res.status >= 500) return '서버 오류가 발생했습니다.'
+  if (res.status === 404) return '요청한 항목을 찾을 수 없습니다.'
+  return '처리하지 못했습니다.'
+}
+
 const logEmpAxiosError = (op: string, error: unknown) => {
   if (!import.meta.env.DEV) return
   if (axios.isAxiosError(error)) {
     const cfg = error.config
     const url = cfg ? `${cfg.baseURL ?? ''}${cfg.url ?? ''}` : '(url 없음)'
-    const detail = extractEmpAxiosErrorMessage(error)
     console.error(`[api/emps] ${op}`, {
-      message: detail,
+      message: formatEmpAxiosErrorForLog(error),
       code: error.code,
       status: error.response?.status,
       responseData: error.response?.data,

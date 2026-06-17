@@ -5,13 +5,8 @@ import { CalendarClock } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
-import { TabToolbar } from '@/layouts/TabToolbar'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { fetchTimezoneList } from '@/hooks/api/queryCache'
 import { TimezoneDetailPanel } from '@/pages/SchedulePage/components/TimezoneDetailPanel'
 import { useScheduleHolidays } from '@/pages/SchedulePage/useScheduleHolidays'
@@ -61,17 +56,16 @@ export const SchedulePage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader title={t('menu.schedule')} icon={<CalendarClock size={15} />} />
-
-      <TabToolbar>
-        <AddButton onClick={() => void editor.handleAdd()} loading={editor.isAdding} />
-      </TabToolbar>
+      <PageHeader
+        title={t('menu.schedule')}
+        icon={<CalendarClock size={15} />}
+        actions={
+          <AddButton onClick={() => void editor.handleAdd()} loading={editor.isAdding} />
+        }
+      />
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.schedule"
         main={
           <>
             <Grid

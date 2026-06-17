@@ -13,9 +13,6 @@ export const AreaOccupantsTab = () => {
       <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         {t('occupants.empty')}
       </p>
-      <p className="text-[13px] text-center max-w-[200px]" style={{ color: 'var(--color-text-dim)' }}>
-        {t('occupants.comingSoon')}
-      </p>
     </div>
   )
 }

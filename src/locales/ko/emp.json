@@ -37,10 +37,8 @@
   },
   "summary": {
     "addTitle": "사용자 추가",
-    "addHint": "새 사용자 정보를 입력하세요",
     "deptBadge": "부서 {{dept}}"
   },
-  "empNoHint": "WPF AdminClient와 동일: 이 값은 API 본문에 넣지 않습니다.",
   "noCards": "발급된 카드가 없습니다",
   "bio": {
     "reader": "바이오 리더",

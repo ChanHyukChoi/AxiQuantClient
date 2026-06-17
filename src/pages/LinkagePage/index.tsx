@@ -6,10 +6,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton, ExportButton, ImportButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { LinkageDrawer } from '@/pages/LinkagePage/LinkageDrawer'
 import { toLinkageGridRows, useLinkageColumns } from '@/pages/LinkagePage/useLinkageColumns'
 import { useLinkageData } from '@/pages/LinkagePage/useLinkageData'
@@ -56,9 +52,6 @@ export const LinkagePage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.linkage"
         main={
           <Grid
             columns={columns}

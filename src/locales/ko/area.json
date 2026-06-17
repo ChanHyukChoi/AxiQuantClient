@@ -29,16 +29,13 @@
     "detail": "퇴장 {{occdown}} · 설정 {{occset}}",
     "reset": "점유 초기화",
     "set": "점유 설정",
-    "setTitle": "점유 설정 (occset)",
-    "setHint": "영역 점유 설정값을 입력하세요."
+    "setTitle": "점유 설정"
   },
   "readers": {
-    "empty": "연결된 리더가 없습니다.",
-    "comingSoon": "추후 리더 연결/해제 기능이 추가될 예정입니다."
+    "empty": "연결된 리더가 없습니다."
   },
   "occupants": {
-    "empty": "등록된 점유 인원이 없습니다.",
-    "comingSoon": "추후 실시간 SSE 연동이 추가될 예정입니다."
+    "empty": "등록된 점유 인원이 없습니다."
   },
   "modal": {
     "deleteTitle": "영역 삭제",
@@ -48,7 +45,7 @@
     "resetDescriptionWithError": "현재 점유({{occup}})와 퇴장 카운트를 0으로 초기화합니다.\n\n{{error}}"
   },
   "error": {
-    "saveFailed": "저장하지 못했습니다. 서버 응답을 확인하세요.",
+    "saveFailed": "저장하지 못했습니다.",
     "resetFailed": "점유 초기화에 실패했습니다.",
     "invalidNumber": "0 이상의 숫자를 입력하세요.",
     "setFailed": "점유 설정에 실패했습니다."

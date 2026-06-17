@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { Activity } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { EVENT_MONITOR_FONT_SIZE } from '@/pages/EventMonitorPage/eventMonitorUi'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
@@ -34,12 +34,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
       </p>
     </div>
   ) : (
-    <div className="flex items-center gap-2 py-2">
-      <Activity size={18} style={{ color: 'var(--color-text-dim)' }} />
-      <p className="app-text-md" style={{ color: 'var(--color-text-dim)' }}>
-        {t('eventMonitor:selectEvent')}
-      </p>
-    </div>
+    <div />
   )
 
   const footer =
@@ -68,7 +63,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
     event?.type === 'alarm' ? t('eventMonitor:type.alarm') : t('eventMonitor:type.access')
 
   return (
-    <Drawer fill borderLeft={false} header={drawerHeader} footer={footer}>
+    <Drawer fill borderLeft={false} contentFill={!event} header={drawerHeader} footer={footer}>
       {event ? (
         <div className="px-1">
           <DetailRow label={t('eventMonitor:field.type')} value={typeLabel} />
@@ -79,7 +74,7 @@ export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
           <DetailRow label={t('eventMonitor:field.direction')} value={event.direction} />
         </div>
       ) : (
-        <div className="flex-1 min-h-[120px]" aria-hidden />
+        <DrawerSelectPrompt message={t('eventMonitor:selectEvent')} />
       )}
     </Drawer>
   )

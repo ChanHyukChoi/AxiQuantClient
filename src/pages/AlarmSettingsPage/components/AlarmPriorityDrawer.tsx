@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Check, Pencil, Star, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
 import { AlarmPriorityFormFields } from '@/pages/AlarmSettingsPage/components/AlarmPriorityFormFields'
@@ -51,9 +52,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      {t('alarm:selectPriority')}
-    </div>
+    <div />
   )
 
   const drawerActions = item ? (
@@ -108,14 +107,16 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
 
   return (
     <>
-      <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions}>
+      <Drawer fill borderLeft={false} contentFill={!item} header={drawerHeader} actions={drawerActions}>
         {item ? (
           <AlarmPriorityFormFields
             form={editor.form}
             editMode={editor.editMode}
             layout="stack"
           />
-        ) : null}
+        ) : (
+          <DrawerSelectPrompt message={t('alarm:selectPriority')} />
+        )}
       </Drawer>
 
       <Modal

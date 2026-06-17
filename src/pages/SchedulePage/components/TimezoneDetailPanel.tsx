@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Check, Clock, Pencil, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
 import { HolidaySection } from '@/pages/SchedulePage/components/HolidaySection'
@@ -51,9 +52,7 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      {t('schedule:selectTimezone')}
-    </div>
+    <div />
   )
 
   const drawerActions =
@@ -86,7 +85,7 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
 
   return (
     <>
-      <Drawer fill borderLeft={false} header={header} actions={drawerActions}>
+      <Drawer fill borderLeft={false} contentFill={!item} header={header} actions={drawerActions}>
         {item ? (
           <div className="flex flex-col gap-1 min-h-0">
             <TimezoneDetailFields
@@ -97,7 +96,9 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
             />
             <HolidaySection timezoneId={item.id} holidays={holidays} />
           </div>
-        ) : null}
+        ) : (
+          <DrawerSelectPrompt message={t('schedule:selectTimezone')} />
+        )}
       </Drawer>
 
       {editor ? (

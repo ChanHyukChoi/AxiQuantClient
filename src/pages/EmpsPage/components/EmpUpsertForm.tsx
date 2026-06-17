@@ -46,16 +46,8 @@ export const EmpUpsertForm = ({ mode, register, control, errors }: EmpUpsertForm
         <Input {...register('lastName')} style={fieldFontStyle} />
       </FRow>
       {mode === 'create' ? (
-        <FRow icon={<Hash size={15} />} label={t('field.empNo')} fontSize={FONT_SIZE} align="top">
-          <div className="flex flex-col gap-0.5 w-full min-w-0">
-            <Input {...register('empNo')} style={fieldFontStyle} />
-            <p
-              className="leading-snug"
-              style={{ fontSize: 13, color: 'var(--color-text-subtle)' }}
-            >
-              {t('empNoHint')}
-            </p>
-          </div>
+        <FRow icon={<Hash size={15} />} label={t('field.empNo')} fontSize={FONT_SIZE}>
+          <Input {...register('empNo')} style={fieldFontStyle} />
         </FRow>
       ) : null}
       <FRow icon={<Calendar size={15} />} label={t('field.birth')} fontSize={FONT_SIZE}>

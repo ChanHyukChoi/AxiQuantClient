@@ -6,10 +6,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { ReaderDrawer } from '@/pages/ReadersPage/ReaderDrawer'
 import { useReaderColumns } from '@/pages/ReadersPage/useReaderColumns'
 import type { ReaderDisplayRow } from '@/pages/ReadersPage/readerDisplayTypes'
@@ -19,7 +15,7 @@ import { useReadersData } from '@/pages/ReadersPage/useReadersData'
 const READERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.readers.v1'
 
 export const ReadersPage = () => {
-  const { t } = useTranslation('nav')
+  const { t } = useTranslation(['nav', 'reader'])
   const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
@@ -66,9 +62,6 @@ export const ReadersPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.readers"
         main={
           <>
             <Grid
@@ -77,7 +70,7 @@ export const ReadersPage = () => {
               selectedId={selectedGridId ?? undefined}
               onRowClick={handleRowClick}
               onSearch={setSearchQuery}
-              searchPlaceholder="리더 검색..."
+              searchPlaceholder={t('reader:searchPlaceholder')}
               totalCount={filteredRows.length}
               loading={isLoading}
               pagination={{
@@ -93,7 +86,7 @@ export const ReadersPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                리더 목록을 불러오지 못했습니다.
+                {t('reader:loadError')}
               </p>
             ) : null}
           </>

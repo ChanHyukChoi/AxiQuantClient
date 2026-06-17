@@ -6,6 +6,7 @@ import { Modal } from '@/components/primitive/Modal'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { AddButton, CrudDetailActions } from '@/components/page-actions'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { TabToolbar } from '@/layouts/TabToolbar'
 import { useTranslation } from 'react-i18next'
 import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
@@ -32,7 +33,7 @@ export const SioWorkspace = ({
   layout = 'stack',
 }: SioWorkspaceProps) => {
   const qc = useQueryClient()
-  const { t } = useTranslation('device')
+  const { t } = useTranslation(['device', 'common'])
   const baseSioColumns = useSioGridColumns()
   const [selectedSioId, setSelectedSioId] = useState<number | null>(null)
   const scpId = scp?.id ?? 0
@@ -146,11 +147,15 @@ export const SioWorkspace = ({
       </div>
     </>
   ) : (
-    <p className="text-[14px] p-4" style={{ color: 'var(--color-text-subtle)' }}>
-      {sios.length === 0
-        ? `?${scpName}?? ????? ????. ?? ???? ?????.`
-        : '???? ????? ?????.'}
-    </p>
+    <DrawerSelectPrompt
+      fill={false}
+      message={
+        sios.length === 0
+          ? t('device:sio.emptyList', { scpName })
+          : t('device:sio.selectRow')
+      }
+      hint={sios.length === 0 ? t('device:sio.emptyListHint') : undefined}
+    />
   )
 
   return (
@@ -176,9 +181,13 @@ export const SioWorkspace = ({
 
       <Modal
         open={editor.deleteOpen}
-        title="???? ??"
-        description={selectedSio ? `?${sioName}? ????? ?????????` : undefined}
-        confirmLabel="??"
+        title={t('device:sio.modal.deleteTitle')}
+        description={
+          selectedSio
+            ? t('device:sio.modal.deleteDescription', { name: sioName })
+            : undefined
+        }
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={editor.isDeleting}
         onConfirm={editor.handleDeleteConfirm}

@@ -44,7 +44,7 @@
     "deleteDescription": "\"{{name}}\" 형식을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
   },
   "error": {
-    "saveFailed": "저장하지 못했습니다. 서버 응답을 확인하세요."
+    "saveFailed": "저장하지 못했습니다."
   },
   "validation": {
     "nameRequired": "형식명을 입력하세요",

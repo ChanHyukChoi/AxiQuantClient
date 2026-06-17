@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { CSSProperties } from 'react'
 import { Checkbox } from '@/components/primitive/Checkbox'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Input } from '@/components/primitive/Input'
 import { LINKAGE_FONT_SIZE } from '@/pages/LinkagePage/linkageUi'
 import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
@@ -30,11 +31,7 @@ export const LinkageGeneralSection = ({
   const { t } = useTranslation(['linkage', 'common'])
 
   if (!rule) {
-    return (
-      <p className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
-        {t('linkage:selectRuleWithPeriod')}
-      </p>
-    )
+    return <DrawerSelectPrompt message={t('linkage:selectRuleWithPeriod')} fill={false} />
   }
 
   const nameField = editMode ? (

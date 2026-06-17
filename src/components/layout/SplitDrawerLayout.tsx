@@ -1,5 +1,10 @@
 import { useRef } from 'react'
 import {
+  SPLIT_DRAWER_DEFAULT_WIDTH,
+  SPLIT_DRAWER_MIN_WIDTH,
+  SPLIT_DRAWER_WIDTH_STORAGE_KEY,
+} from '@/lib/layout/splitDrawerDefaults'
+import {
   SPLIT_HANDLE_WIDTH,
   useResizableDrawerWidth,
 } from '@/hooks/ui/useResizableDrawerWidth'
@@ -14,16 +19,13 @@ interface SplitDrawerLayoutProps {
   storageKey?: string
 }
 
-const DEFAULT_MIN_DRAWER = 320
-const DEFAULT_DRAWER_WIDTH = 400
-
 export const SplitDrawerLayout = ({
   main,
   drawer,
   minMainWidth,
-  minDrawerWidth = DEFAULT_MIN_DRAWER,
-  defaultDrawerWidth = DEFAULT_DRAWER_WIDTH,
-  storageKey,
+  minDrawerWidth = SPLIT_DRAWER_MIN_WIDTH,
+  defaultDrawerWidth = SPLIT_DRAWER_DEFAULT_WIDTH,
+  storageKey = SPLIT_DRAWER_WIDTH_STORAGE_KEY,
 }: SplitDrawerLayoutProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { drawerWidth, maxDrawerWidth, onResizePointerDown } = useResizableDrawerWidth({

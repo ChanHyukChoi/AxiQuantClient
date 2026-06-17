@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScanLine } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { CrudDetailActions } from '@/components/page-actions'
 import {
   ReaderDetailContent,
@@ -21,6 +23,7 @@ export const ReaderDrawer = ({
   reader,
   onEditModeChange,
 }: ReaderDrawerProps) => {
+  const { t } = useTranslation('reader')
   const [editMode, setEditMode] = useState(false)
   const [activeTab, setActiveTab] = useState('general')
 
@@ -64,12 +67,7 @@ export const ReaderDrawer = ({
       }
     />
   ) : (
-    <div className="flex items-center gap-2 py-2">
-      <ScanLine size={18} style={{ color: 'var(--color-text-dim)' }} />
-      <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-        ????????????
-      </p>
-    </div>
+    <div />
   )
 
   const drawerActions = reader ? (
@@ -86,6 +84,7 @@ export const ReaderDrawer = ({
     <Drawer
       fill
       borderLeft={false}
+      contentFill={!reader}
       header={drawerHeader}
       actions={drawerActions ?? undefined}
       tabs={reader && !editMode ? tabs : undefined}
@@ -98,7 +97,7 @@ export const ReaderDrawer = ({
           activeTab={activeTab}
         />
       ) : (
-        <div className="flex-1 min-h-[120px]" aria-hidden />
+        <DrawerSelectPrompt message={t('selectRow')} />
       )}
     </Drawer>
   )

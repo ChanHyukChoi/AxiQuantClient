@@ -45,8 +45,7 @@
     "returned": "반납"
   },
   "summary": {
-    "addTitle": "카드 추가",
-    "createHint": "새 카드 정보를 입력하세요"
+    "addTitle": "카드 추가"
   },
   "emp": {
     "none": "선택 안 함",

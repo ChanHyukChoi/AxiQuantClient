@@ -6,10 +6,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { InputDrawer } from '@/pages/InputsPage/InputDrawer'
 import { useInputColumns } from '@/pages/InputsPage/useInputColumns'
 import type { InputDisplayRow } from '@/pages/InputsPage/inputDisplayTypes'
@@ -66,9 +62,6 @@ export const InputsPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.inputs"
         main={
           <>
             <Grid

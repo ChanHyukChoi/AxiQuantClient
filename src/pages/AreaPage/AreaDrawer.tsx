@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Info, MapPin, Pencil, ScanLine, Trash2, Users, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
@@ -225,11 +226,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
   ) : null
 
   const drawerChildren = !area ? (
-    <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-        {t('area:selectRow')}
-      </span>
-    </div>
+    <DrawerSelectPrompt message={t('area:selectRow')} />
   ) : (
     <>
       {activeTab === 'info' && (
@@ -259,6 +256,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
       <Drawer
         fill
         borderLeft={false}
+        contentFill={!area}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
         tabs={drawerTabs}
@@ -310,13 +308,10 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
             }}
           >
             <p
-              className="text-[15px] font-medium mb-1"
+              className="text-[15px] font-medium mb-3"
               style={{ color: 'var(--color-text)' }}
             >
               {t('area:occupancy.setTitle')}
-            </p>
-            <p className="text-[13px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
-              {t('area:occupancy.setHint')}
             </p>
             <Input
               type="number"

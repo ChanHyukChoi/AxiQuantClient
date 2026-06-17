@@ -253,9 +253,6 @@ export const CardsPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={320}
-        defaultDrawerWidth={400}
-        storageKey="axiquant.drawer.cards"
         main={
           <Grid
             columns={columns}

@@ -13,9 +13,6 @@ export const AreaReadersTab = () => {
       <p className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
         {t('readers.empty')}
       </p>
-      <p className="text-[13px] text-center max-w-[200px]" style={{ color: 'var(--color-text-dim)' }}>
-        {t('readers.comingSoon')}
-      </p>
     </div>
   )
 }

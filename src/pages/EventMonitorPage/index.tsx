@@ -3,10 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Activity } from 'lucide-react'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { PageHeader } from '@/layouts/PageHeader'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { EventDetailPanel } from '@/pages/EventMonitorPage/EventDetailPanel'
 import { EventGrid } from '@/pages/EventMonitorPage/EventGrid'
 import { MonitorToolbar, type MonitorMode } from '@/pages/EventMonitorPage/MonitorToolbar'
@@ -147,9 +143,6 @@ export const EventMonitorPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={EVENT_GRID_MIN_WIDTH}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.monitor"
         main={
           <EventGrid
             events={displayEvents}

@@ -1,10 +1,13 @@
 import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/primitive/Badge'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
+import { DrawerSummaryCardShell } from '@/components/basic/DrawerSummaryCardShell'
 import { EmpPhotoSlot } from '@/pages/EmpsPage/components/EmpPhotoSlot'
 import { empDeptLabel, empNoDisplay } from '@/pages/EmpsPage/utils/empHelpers'
+import { DRAWER_SUMMARY_CARD_HEIGHT } from '@/lib/layout/splitDrawerDefaults'
 
-/** 학생증형 — 사진 + 이름·사번·부서 뱃지 */
-export const EMP_SUMMARY_HEIGHT = 126
+/** @deprecated DRAWER_SUMMARY_CARD_HEIGHT 사용 */
+export const EMP_SUMMARY_HEIGHT = DRAWER_SUMMARY_CARD_HEIGHT
 
 const FONT_SIZE = 15
 
@@ -35,22 +38,9 @@ export const EmpSummaryHeader = ({
 
   if (mode === 'empty') {
     return (
-      <div className="pb-3 w-full min-w-0" style={{ minHeight: EMP_SUMMARY_HEIGHT + 12 }}>
-        <div
-          className="w-full min-w-0 flex items-center justify-center"
-          style={{
-            minHeight: EMP_SUMMARY_HEIGHT,
-            border: '0.5px solid var(--color-border)',
-            borderRadius: 8,
-            background: 'var(--color-bg)',
-            padding: '12px 14px',
-          }}
-        >
-          <span style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}>
-            {t('common:selectRow')}
-          </span>
-        </div>
-      </div>
+      <DrawerSummaryCardShell centerContent>
+        <DrawerSelectPrompt message={t('common:selectRow')} compact />
+      </DrawerSummaryCardShell>
     )
   }
 
@@ -63,62 +53,53 @@ export const EmpSummaryHeader = ({
   const noLabel = isCreate
     ? empNo?.trim()
       ? empNoDisplay(empNo)
-      : t('emp:summary.addHint')
+      : t('common:empty')
     : empNoDisplay(empNo)
   const deptLabel = empDeptLabel(dept)
 
   return (
-    <div className="pb-3 w-full min-w-0">
-      <div
-        className="w-full min-w-0"
-        style={{
-          minHeight: EMP_SUMMARY_HEIGHT,
-          border: '0.5px solid var(--color-border)',
-          borderRadius: 8,
-          background: 'var(--color-bg)',
-          padding: '12px 14px',
-        }}
-      >
-        <div className="flex gap-3 items-stretch min-w-0">
-          <EmpPhotoSlot
-            variant="drawer"
-            photoUrl={photoUrl}
-            editable={photoEditable}
-            loading={photoLoading}
-            onFileSelect={onPhotoFileSelect}
-            onClear={onPhotoClear}
-          />
-          <div className="flex flex-col flex-1 min-w-0 justify-between">
-            <div className="min-w-0">
-              <span
-                className="font-medium leading-tight truncate block min-w-0"
-                style={{ color: 'var(--color-text)', fontSize: 20 }}
-              >
-                {displayName}
-              </span>
-              <span
-                className={[
-                  'block leading-tight mt-1.5 truncate',
-                  !isCreate || empNo?.trim() ? 'font-mono' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                style={{
-                  color: 'var(--color-text-muted)',
-                  fontSize: FONT_SIZE,
-                }}
-              >
-                {noLabel}
-              </span>
-            </div>
-            {dept !== 0 ? (
-              <div className="flex justify-end items-center mt-2 flex-shrink-0">
-                <Badge variant="card">{t('emp:summary.deptBadge', { dept: deptLabel })}</Badge>
-              </div>
-            ) : null}
+    <DrawerSummaryCardShell>
+      <div className="flex gap-3 items-stretch min-w-0">
+        <EmpPhotoSlot
+          variant="drawer"
+          photoUrl={photoUrl}
+          editable={photoEditable}
+          loading={photoLoading}
+          onFileSelect={onPhotoFileSelect}
+          onClear={onPhotoClear}
+        />
+        <div className="flex flex-col flex-1 min-w-0 justify-between">
+          <div className="min-w-0">
+            <span
+              className="font-medium leading-tight truncate block min-w-0"
+              style={{ color: 'var(--color-text)', fontSize: 20 }}
+            >
+              {displayName}
+            </span>
+            <span
+              className={[
+                'block leading-tight mt-1.5 truncate',
+                !isCreate || empNo?.trim() ? 'font-mono' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              style={{
+                color: 'var(--color-text-muted)',
+                fontSize: FONT_SIZE,
+              }}
+            >
+              {noLabel}
+            </span>
           </div>
+          {dept !== 0 ? (
+            <div className="flex justify-end items-center mt-2 flex-shrink-0">
+              <Badge variant="card">{t('emp:summary.deptBadge', { dept: deptLabel })}</Badge>
+            </div>
+          ) : (
+            <div className="flex-shrink-0" style={{ minHeight: 24 }} aria-hidden />
+          )}
         </div>
       </div>
-    </div>
+    </DrawerSummaryCardShell>
   )
 }

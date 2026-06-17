@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Bell, Check, Mail, Pencil, Plus, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
@@ -152,9 +153,7 @@ export const AlarmMailDrawer = ({
       </div>
     </div>
   ) : (
-    <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      {t('alarm:mail.selectItem')}
-    </div>
+    <div />
   )
 
   const drawerActions = item ? (
@@ -209,7 +208,7 @@ export const AlarmMailDrawer = ({
 
   return (
     <>
-      <Drawer fill header={drawerHeader} actions={drawerActions}>
+      <Drawer fill contentFill={!item} header={drawerHeader} actions={drawerActions}>
         {item && editMode ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
@@ -328,7 +327,9 @@ export const AlarmMailDrawer = ({
                 : (item.emails ?? []).join(', ')}
             </p>
           </div>
-        ) : null}
+        ) : (
+          <DrawerSelectPrompt message={t('alarm:mail.selectItem')} />
+        )}
       </Drawer>
 
       <AlarmSelectModal

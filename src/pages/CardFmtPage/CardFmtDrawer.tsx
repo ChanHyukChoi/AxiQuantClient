@@ -4,6 +4,7 @@ import { useForm, type UseFormRegister } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Binary, Check, Hash, Pencil, Settings, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
@@ -311,11 +312,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
   ) : null
 
   const drawerChildren = !cardfmt ? (
-    <div className="flex items-center justify-center h-full min-h-[120px]">
-      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-        {t('cardFmt:selectItem')}
-      </span>
-    </div>
+    <DrawerSelectPrompt message={t('cardFmt:selectItem')} />
   ) : (
     <div>
       <SectionTitle>{t('cardFmt:section.basic')}</SectionTitle>
@@ -416,6 +413,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
       <Drawer
         fill
         borderLeft={false}
+        contentFill={!cardfmt}
         header={drawerHeader}
         actions={drawerActions ?? undefined}
       >

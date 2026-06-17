@@ -5,6 +5,7 @@ import { Drawer } from '@/components/primitive/Drawer'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { CrudDetailActions } from '@/components/page-actions'
 import type { OutputDisplayRow } from '@/pages/OutputsPage/outputDisplayTypes'
 import {
@@ -40,12 +41,7 @@ export const OutputDrawer = ({ row, onEditModeChange }: OutputDrawerProps) => {
       badge={<ActiveStatusBadge active={isDeviceActive(row.active)} />}
     />
   ) : (
-    <div className="flex items-center gap-2 py-2">
-      <ArrowLeftFromLine size={18} style={{ color: 'var(--color-text-dim)' }} />
-      <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-        {t('common:selectRow')}
-      </p>
-    </div>
+    <div />
   )
 
   const drawerActions = row ? (
@@ -59,7 +55,7 @@ export const OutputDrawer = ({ row, onEditModeChange }: OutputDrawerProps) => {
   ) : null
 
   return (
-    <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions ?? undefined}>
+    <Drawer fill borderLeft={false} contentFill={!row} header={drawerHeader} actions={drawerActions ?? undefined}>
       {row ? (
         <div className="max-w-md flex flex-col gap-3">
           <DetailInfoField label={t('device:grid.scp')}>{row.scpName}</DetailInfoField>
@@ -73,7 +69,7 @@ export const OutputDrawer = ({ row, onEditModeChange }: OutputDrawerProps) => {
           </DetailInfoField>
         </div>
       ) : (
-        <div className="flex-1 min-h-[120px]" aria-hidden />
+        <DrawerSelectPrompt message={t('common:selectRow')} />
       )}
     </Drawer>
   )

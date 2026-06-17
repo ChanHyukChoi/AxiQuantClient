@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
-import { Link2 } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { CrudDetailActions } from '@/components/page-actions'
 import { LinkageWorkspace } from '@/pages/LinkagePage/components/LinkageWorkspace'
 import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
@@ -37,19 +37,8 @@ export const LinkageDrawer = ({ rule, onEditModeChange }: LinkageDrawerProps) =>
 
   if (!rule) {
     return (
-      <Drawer
-        fill
-        borderLeft={false}
-        header={
-          <div className="flex items-center gap-2 py-2">
-            <Link2 size={18} style={{ color: 'var(--color-text-dim)' }} />
-            <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-              {t('selectRule')}
-            </p>
-          </div>
-        }
-      >
-        <div className="flex-1 min-h-[120px]" aria-hidden />
+      <Drawer fill borderLeft={false} contentFill header={<div />}>
+        <DrawerSelectPrompt message={t('selectRule')} />
       </Drawer>
     )
   }

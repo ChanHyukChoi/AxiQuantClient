@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link2 } from 'lucide-react'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { LinkageGeneralSection } from '@/pages/LinkagePage/components/LinkageGeneralSection'
@@ -22,11 +23,8 @@ export const LinkageWorkspace = ({
 
   if (!rule) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-2 px-6">
-        <Link2 size={28} style={{ color: 'var(--color-text-dim)' }} />
-        <p className="app-text-md text-center" style={{ color: 'var(--color-text-subtle)' }}>
-          {t('selectRuleWithPeriod')}
-        </p>
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+        <DrawerSelectPrompt message={t('selectRuleWithPeriod')} />
       </div>
     )
   }

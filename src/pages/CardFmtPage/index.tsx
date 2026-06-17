@@ -6,10 +6,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { CardFmtDrawer } from '@/pages/CardFmtPage/CardFmtDrawer'
 import { useCardFmtColumns } from '@/pages/CardFmtPage/useCardFmtColumns'
 import { useCardFmts } from '@/hooks/api/useCardfmt'
@@ -66,9 +62,6 @@ export const CardFmtPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.cardfmt"
         main={
           <>
             <Grid

@@ -7,10 +7,6 @@ import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import {
-  SPLIT_DRAWER_DEFAULT_WIDTH,
-  SPLIT_DRAWER_MIN_WIDTH,
-} from '@/lib/layout/splitDrawerDefaults'
 import { ScpCreateModal } from '@/pages/ControllersPage/components/ScpCreateModal'
 import { ScpDetailPanel } from '@/pages/ControllersPage/components/ScpDetailPanel'
 import { useScpColumns } from '@/pages/ControllersPage/useScpColumns'
@@ -21,7 +17,7 @@ import type { CreateScpRequest, ScpInfo } from '@/types/api'
 const CONTROLLERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.controllers.v1'
 
 export const ControllersPage = () => {
-  const { t } = useTranslation('nav')
+  const { t } = useTranslation(['nav', 'device'])
   const qc = useQueryClient()
   const [createOpen, setCreateOpen] = useState(false)
   const [page, setPage] = useState(1)
@@ -80,9 +76,6 @@ export const ControllersPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={SPLIT_DRAWER_MIN_WIDTH}
-        defaultDrawerWidth={SPLIT_DRAWER_DEFAULT_WIDTH}
-        storageKey="axiquant.drawer.controllers"
         main={
           <>
             <Grid
@@ -91,7 +84,7 @@ export const ControllersPage = () => {
               selectedId={selectedId ?? undefined}
               onRowClick={handleRowClick}
               onSearch={setSearchQuery}
-              searchPlaceholder={t('scp.searchPlaceholder')}
+              searchPlaceholder={t('device:scp.searchPlaceholder')}
               totalCount={filteredScps.length}
               loading={isLoading}
               pagination={{
@@ -107,7 +100,7 @@ export const ControllersPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                {t('scp.loadError')}
+                {t('device:scp.loadError')}
               </p>
             ) : null}
           </>

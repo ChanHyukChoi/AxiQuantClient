@@ -139,9 +139,6 @@ export const EmpsPage = () => {
 
       <SplitDrawerLayout
         minMainWidth={minGridWidth}
-        minDrawerWidth={320}
-        defaultDrawerWidth={400}
-        storageKey="axiquant.drawer.emps"
         main={
           <Grid
             columns={columns}

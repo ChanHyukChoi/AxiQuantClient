@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Cpu, Info, Layers } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Modal } from '@/components/primitive/Modal'
 import type { TabItem } from '@/components/primitive/Tab'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
@@ -25,6 +27,7 @@ export const ScpDetailPanel = ({
   siosLoading,
   onDeleted,
 }: ScpDetailPanelProps) => {
+  const { t } = useTranslation(['device', 'common'])
   const [activeTab, setActiveTab] = useState<'info' | 'sios'>('info')
 
   const editor = useScpEditor({
@@ -35,15 +38,13 @@ export const ScpDetailPanel = ({
   if (!scp) {
     return (
       <div
-        className="flex-1 flex flex-col items-center justify-center gap-2 px-6"
+        className="flex flex-1 flex-col min-h-0 overflow-hidden"
         style={{ background: 'var(--color-sidebar)' }}
       >
-        <p className="text-[15px] text-center" style={{ color: 'var(--color-text-subtle)' }}>
-          ???? ????? ?????.
-        </p>
-        <p className="text-[14px] text-center max-w-sm" style={{ color: 'var(--color-text-dim)' }}>
-          ??? ????? ??? ??? ????? ??? ? ????.
-        </p>
+        <DrawerSelectPrompt
+          message={t('device:scp.selectRow')}
+          hint={t('device:scp.selectRowHint')}
+        />
       </div>
     )
   }
@@ -51,10 +52,10 @@ export const ScpDetailPanel = ({
   const scpName = entityLabel('scp', scp)
 
   const drawerTabs: TabItem[] = [
-    { key: 'info', label: '??', icon: <Info size={12} /> },
+    { key: 'info', label: t('device:scp.tab.info'), icon: <Info size={12} /> },
     {
       key: 'sios',
-      label: `????${siosLoading ? '' : ` (${sios.length})`}`,
+      label: `${t('device:scp.tab.sios')}${siosLoading ? '' : ` (${sios.length})`}`,
       icon: <Layers size={12} /> },
   ]
 
@@ -117,9 +118,9 @@ export const ScpDetailPanel = ({
 
       <Modal
         open={editor.deleteOpen}
-        title="???? ??"
-        description={`?${scpName}? ????? ?????????`}
-        confirmLabel="??"
+        title={t('device:scp.modal.deleteTitle')}
+        description={t('device:scp.modal.deleteDescription', { name: scpName })}
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={editor.isDeleting}
         onConfirm={editor.handleDeleteConfirm}
@@ -128,9 +129,9 @@ export const ScpDetailPanel = ({
 
       <Modal
         open={editor.resetOpen}
-        title="???? ???"
-        description={`?${scpName}? ????? ?????????? ??? ??? ?? ??? ? ????.`}
-        confirmLabel="???"
+        title={t('device:scp.modal.resetTitle')}
+        description={t('device:scp.modal.resetDescription', { name: scpName })}
+        confirmLabel={t('common:reset')}
         variant="default"
         loading={editor.isResetting}
         onConfirm={editor.handleResetConfirm}

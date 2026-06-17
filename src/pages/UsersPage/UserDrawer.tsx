@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { User, UserCog } from 'lucide-react'
+import { UserCog } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { CrudDetailActions } from '@/components/page-actions'
 import { Modal } from '@/components/primitive/Modal'
@@ -73,17 +74,13 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
               }
             />
           ) : (
-            <div className="flex items-center gap-2 py-4">
-              <User size={20} style={{ color: 'var(--color-text-dim)' }} />
-              <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-                {t('user:selectUser')}
-              </p>
-            </div>
+            <div />
           )
         }
         tabs={showUser ? editorTabs : undefined}
         activeTab={activeTab}
         onTabChange={editor.setActiveTab}
+        contentFill={!showUser}
         footer={
           editor.saveError ? (
             <p className="text-[13px] px-1" style={{ color: '#e06060' }}>
@@ -107,7 +104,9 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
             onPermissionsChange={(perms) => editor.setValue('permissions', perms)}
             layout="drawer"
           />
-        ) : null}
+        ) : (
+          <DrawerSelectPrompt message={t('user:selectUser')} />
+        )}
       </Drawer>
 
       <Modal

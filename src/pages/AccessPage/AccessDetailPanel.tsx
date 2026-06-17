@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Shield } from 'lucide-react'
 import { DetailInfoField } from '@/components/basic/DetailInfoField'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
 import { CrudDetailActions } from '@/components/page-actions'
@@ -161,11 +162,7 @@ export const AccessDetailPanel = ({
   )
 
   const drawerBody = !accLv ? (
-    <div className="flex items-center justify-center min-h-[160px]">
-      <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-        {t('access:selectRow')}
-      </span>
-    </div>
+    <DrawerSelectPrompt message={t('access:selectRow')} />
   ) : (
     <section>
       {accLv.description?.trim() ? (
@@ -205,7 +202,7 @@ export const AccessDetailPanel = ({
 
   return (
     <>
-      <Drawer fill borderLeft={false} header={drawerHeader}>
+      <Drawer fill borderLeft={false} contentFill={!accLv} header={drawerHeader}>
         {drawerBody}
       </Drawer>
 
