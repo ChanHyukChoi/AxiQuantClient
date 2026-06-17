@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { login } from '@/api/auth'
 import { axiosInstance } from '@/lib/infra/axios'
 import { isElectronRuntime } from '@/lib/isElectronRuntime'
 import { sseClient } from '@/lib/infra/sse'
 import { useAuthStore } from '@/stores/authStore'
 import { router } from '@/router'
+import { useLogin } from '@/hooks/api/useAuth'
 import { loginSchema, type LoginFormValues } from '@/pages/LoginPage/formTypes'
 import {
   LoginField,
@@ -18,11 +18,12 @@ import {
 export const LoginForm = () => {
   const { setAuth } = useAuthStore()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const loginMutation = useLogin()
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting: formSubmitting },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -31,6 +32,8 @@ export const LoginForm = () => {
       password: 'admin1234',
     },
   })
+
+  const isSubmitting = formSubmitting || loginMutation.isPending
 
   const onSubmit = async (values: LoginFormValues) => {
     setErrorMessage(null)
@@ -45,7 +48,10 @@ export const LoginForm = () => {
     // Electron: 입력한 서버로 직접 연결. Web: Vite /api 프록시(상대 경로).
     axiosInstance.defaults.baseURL = isElectron ? serverUrl : ''
 
-    const result = await login(values.username, values.password)
+    const result = await loginMutation.mutateAsync({
+      username: values.username,
+      password: values.password,
+    })
 
     if (!result) {
       setErrorMessage('서버 연결 또는 인증에 실패했습니다.')

@@ -56,37 +56,58 @@ export const useOutputs = (scpId: number) =>
     enabled: scpId > 0,
   })
 
-export const useReaderListsForScps = (scps: { id: number }[]) =>
+export const useReaderListsForScps = (scps: { id: number }[], enabled = true) =>
   useQueries({
     queries: scps.map((scp) => ({
       queryKey: queryKeys.deviceControl.readers(scp.id),
       queryFn: () => getReaderList(scp.id),
-      enabled: scp.id > 0,
+      enabled: enabled && scp.id > 0,
     })),
   })
 
-export const useInputListsForScps = (scps: { id: number }[]) =>
+export const useInputListsForScps = (scps: { id: number }[], enabled = true) =>
   useQueries({
     queries: scps.map((scp) => ({
       queryKey: queryKeys.deviceControl.inputs(scp.id),
       queryFn: () => getInputList(scp.id),
-      enabled: scp.id > 0,
+      enabled: enabled && scp.id > 0,
     })),
   })
 
-export const useOutputListsForScps = (scps: { id: number }[]) =>
+export const useOutputListsForScps = (scps: { id: number }[], enabled = true) =>
   useQueries({
     queries: scps.map((scp) => ({
       queryKey: queryKeys.deviceControl.outputs(scp.id),
       queryFn: () => getOutputList(scp.id),
-      enabled: scp.id > 0,
+      enabled: enabled && scp.id > 0,
     })),
   })
 
-export const useModules = () =>
+export const useSioListsForScps = (scps: { id: number }[], enabled = true) =>
+  useQueries({
+    queries: scps.map((scp) => ({
+      queryKey: queryKeys.deviceControl.sios(scp.id),
+      queryFn: () => getSioList(scp.id),
+      enabled: enabled && scp.id > 0,
+    })),
+  })
+
+export const useDevicePeripheralsForScps = (scpIds: number[], enabled = true) => {
+  const scps = scpIds.map((id) => ({ id }))
+  const sioQueries = useSioListsForScps(scps, enabled)
+  const readerQueries = useReaderListsForScps(scps, enabled)
+  const inputQueries = useInputListsForScps(scps, enabled)
+  const outputQueries = useOutputListsForScps(scps, enabled)
+  return { sioQueries, readerQueries, inputQueries, outputQueries }
+}
+
+export const useModules = (enabled = true) =>
   useQuery({
     queryKey: queryKeys.deviceControl.modules(),
     queryFn: async () => (await getModuleList()) ?? [],
+    enabled,
+    refetchInterval: 15_000,
+    retry: false,
   })
 
 export const useCreateScp = () => {

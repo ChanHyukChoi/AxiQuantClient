@@ -13,9 +13,8 @@ import {
 import { AccessDetailPanel } from '@/pages/AccessPage/AccessDetailPanel'
 import { useAccLvColumns } from '@/pages/AccessPage/useAccLvColumns'
 import { CreateAccLvModal } from '@/pages/AccessPage/components/CreateAccLvModal'
-import { getAccLvList } from '@/api/acclv'
+import { fetchAccLvList } from '@/hooks/api/queryCache'
 import { useAccLvList } from '@/hooks/api/useAccLv'
-import { queryKeys } from '@/lib/query/queryKeys'
 import type { AccLvInfo } from '@/types/api'
 
 const ACCESS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.access.v1'
@@ -60,10 +59,7 @@ export const AccessPage = () => {
   const handleCreated = useCallback(
     async (name: string) => {
       setCreateOpen(false)
-      const list = await qc.fetchQuery({
-        queryKey: queryKeys.acclv.all,
-        queryFn: getAccLvList,
-      })
+      const list = await fetchAccLvList(qc)
       const created = list?.find((a) => a.name === name)
       if (created) setSelectedId(created.id)
     },

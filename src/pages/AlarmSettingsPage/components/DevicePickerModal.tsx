@@ -1,12 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useQueries } from '@tanstack/react-query'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
-import { getInputList } from '@/api/input'
-import { getOutputList } from '@/api/output'
-import { getReaderList } from '@/api/reader'
-import { getSioList } from '@/api/sio'
 import { DeviceTreeNode as DeviceTreeNodeView } from '@/components/basic/DeviceTreeNode'
 import {
   ancestorKeys,
@@ -16,8 +11,7 @@ import {
   type DeviceTreeNode,
   type ScpChildData,
 } from '@/lib/device/buildTree'
-import { useModules, useScps } from '@/hooks/api/useDeviceControl'
-import { queryKeys } from '@/lib/query/queryKeys'
+import { useDevicePeripheralsForScps, useModules, useScps } from '@/hooks/api/useDeviceControl'
 
 const DEFAULT_EXPANDED = new Set([
   'group:controllers',
@@ -68,37 +62,8 @@ export const DevicePickerModal = ({
     return Array.from(ids).sort((a, b) => a - b)
   }, [expandedKeys, selectedKey, scps])
 
-  const sioQueries = useQueries({
-    queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.deviceControl.sios(scpId),
-      queryFn: () => getSioList(scpId),
-      enabled: open && scpId > 0,
-    })),
-  })
-
-  const readerQueries = useQueries({
-    queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.deviceControl.readers(scpId),
-      queryFn: () => getReaderList(scpId),
-      enabled: open && scpId > 0,
-    })),
-  })
-
-  const inputQueries = useQueries({
-    queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.deviceControl.inputs(scpId),
-      queryFn: () => getInputList(scpId),
-      enabled: open && scpId > 0,
-    })),
-  })
-
-  const outputQueries = useQueries({
-    queries: scpIdsToLoad.map((scpId) => ({
-      queryKey: queryKeys.deviceControl.outputs(scpId),
-      queryFn: () => getOutputList(scpId),
-      enabled: open && scpId > 0,
-    })),
-  })
+  const { sioQueries, readerQueries, inputQueries, outputQueries } =
+    useDevicePeripheralsForScps(scpIdsToLoad, open)
 
   const childDataByScp = useMemo(() => {
     const map = new Map<number, ScpChildData>()

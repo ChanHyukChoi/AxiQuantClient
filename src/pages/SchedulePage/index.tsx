@@ -11,8 +11,7 @@ import {
   SPLIT_DRAWER_DEFAULT_WIDTH,
   SPLIT_DRAWER_MIN_WIDTH,
 } from '@/lib/layout/splitDrawerDefaults'
-import { getTimezoneList } from '@/api/timezone'
-import { queryKeys } from '@/lib/query/queryKeys'
+import { fetchTimezoneList } from '@/hooks/api/queryCache'
 import { TimezoneDetailPanel } from '@/pages/SchedulePage/components/TimezoneDetailPanel'
 import { useScheduleHolidays } from '@/pages/SchedulePage/useScheduleHolidays'
 import { useTimezoneColumns } from '@/pages/SchedulePage/useTimezoneColumns'
@@ -34,10 +33,7 @@ export const SchedulePage = () => {
     item: data.selectedItem,
     onDeleted: data.onItemDeleted,
     onCreated: async () => {
-      const list = await qc.fetchQuery({
-        queryKey: queryKeys.timezone.all,
-        queryFn: getTimezoneList,
-      })
+      const list = await fetchTimezoneList(qc)
       const newest = [...(list ?? [])].sort((a, b) => b.id - a.id)[0]
       if (newest) data.selectItem(newest)
     },

@@ -79,3 +79,22 @@ export const useMoveCardArea = (cid: number) => {
     },
   })
 }
+
+/** 카드-접근권한 연결 diff 동기화 (생성·수정 저장 후) */
+export const syncCardAccLvLinks = async (
+  cid: number,
+  beforeIds: number[],
+  afterIds: number[],
+): Promise<boolean> => {
+  const before = new Set(beforeIds)
+  const after = new Set(afterIds)
+  const toAdd = afterIds.filter((id) => !before.has(id))
+  const toRemove = beforeIds.filter((id) => !after.has(id))
+  if (toAdd.length === 0 && toRemove.length === 0) return true
+
+  const results = await Promise.all([
+    ...toAdd.map((id) => addCardAccLv(cid, { accLvId: id })),
+    ...toRemove.map((id) => deleteCardAccLv(cid, id)),
+  ])
+  return results.every(Boolean)
+}

@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
-import { getHolidayList } from '@/api/holiday'
-import { queryKeys } from '@/lib/query/queryKeys'
+import { fetchHolidayList } from '@/hooks/api/queryCache'
 import { HolidayDetailFields } from '@/pages/SchedulePage/components/HolidayDetailFields'
 import { useHolidayEditor } from '@/pages/SchedulePage/useHolidayEditor'
 import type { ScheduleHolidaysApi } from '@/pages/SchedulePage/useScheduleHolidays'
@@ -29,10 +28,7 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
   }, [timezoneId])
 
   const selectNewestHoliday = useCallback(async () => {
-    const list = await qc.fetchQuery({
-      queryKey: queryKeys.holiday.all,
-      queryFn: getHolidayList,
-    })
+    const list = await fetchHolidayList(qc)
     const tzHolidays = (list ?? []).filter((h) => h.timezoneId === timezoneId)
     const newest = [...tzHolidays].sort((a, b) => b.id - a.id)[0]
     if (newest) setSelectedId(newest.id)

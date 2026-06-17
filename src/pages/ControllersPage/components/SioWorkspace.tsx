@@ -12,8 +12,7 @@ import { BASE_SIO_GRID_COLUMNS } from '@/pages/ControllersPage/components/sioGri
 import { SioDetailFields } from '@/pages/ControllersPage/components/SioDetailFields'
 import { useSioEditor } from '@/pages/ControllersPage/useSioEditor'
 import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
-import { getSioList } from '@/api/sio'
-import { queryKeys } from '@/lib/query/queryKeys'
+import { fetchSioList } from '@/hooks/api/queryCache'
 import type { ScpInfo, SioInfo } from '@/types/api'
 
 interface SioWorkspaceProps {
@@ -61,10 +60,7 @@ export const SioWorkspace = ({
   const selectNewestSio = useCallback(async () => {
     if (scpId <= 0) return
     const list =
-      (await qc.fetchQuery({
-        queryKey: queryKeys.deviceControl.sios(scpId),
-        queryFn: () => getSioList(scpId),
-      })) ?? []
+      (await fetchSioList(qc, scpId)) ?? []
     const newest = [...list].sort((a, b) => b.id - a.id)[0]
     if (newest) setSelectedSioId(newest.id)
   }, [scpId, qc])

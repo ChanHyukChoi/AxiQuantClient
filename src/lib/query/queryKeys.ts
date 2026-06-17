@@ -49,4 +49,7 @@ export const queryKeys = {
   linkage: {
     all: () => ['linkage'] as const,
   },
+  system: {
+    license: () => ['system', 'license'] as const,
+  },
 }

@@ -132,6 +132,8 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `users.ts` | 사용자 | flat body, `userMappers` |
 | `audit.ts` | 운영 기록 | `auditMappers` |
 | `eventMonitor.ts` | 출입·경보 이력 | `eventMonitorMappers` |
+| `linkage.ts` | 연동 규칙 | 백엔드 연동 예정 (스텁) |
+| `system.ts` | 라이선스 정보 | `systemMappers` |
 
 ---
 
@@ -139,17 +141,23 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 
 #### `hooks/api/` — TanStack Query 래퍼
 
+`pages/`는 이 레이어만 호출합니다. HTTP·캐시 무효화·`queryKeys` 관리는 여기서 담당하고, 실제 요청은 `@/api/*`로 위임합니다.
+
 | 파일 | 역할 |
 |------|------|
+| `queryCache.ts` | 생성·수정 직후 목록 재조회 (`fetchScpList`, `fetchTimezoneList` 등) |
+| `useAuth.ts` | 로그인 mutation |
+| `useSystem.ts` | 라이선스 조회 |
 | `useEmps.ts` | 사원 CRUD |
-| `useCard.ts` | 카드 CRUD, 카드별 접근권한 |
+| `useCard.ts` | 카드 CRUD, 카드별 접근권한, `syncCardAccLvLinks` |
 | `useAccLv.ts` | 접근권한 CRUD, 리더 매핑 |
 | `useArea.ts` | 영역 |
-| `useDeviceControl.ts` | SCP·SIO·입력·출력·리더 조회·CRUD·제어 명령 |
+| `useDeviceControl.ts` | SCP·SIO·입력·출력·리더 조회·CRUD·제어, `useDevicePeripheralsForScps` |
 | `useCardfmt.ts` | 카드 형식 |
 | `useHoliday.ts` | 휴일 |
 | `useTimezone.ts` | 시간대 |
 | `useAlarmSettings.ts` | 경보·우선순위·메일 설정 |
+| `useLinkage.ts` | 연동 규칙 (스텁) |
 | `useUsers.ts` | 사용자 CRUD |
 | `useAuditLog.ts` | 운영 기록 페이징 |
 | `useEventMonitor.ts` | 출입·경보 이력 API |
@@ -168,7 +176,7 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `useGridLayout.ts` | Grid 컬럼 레이아웃·드래그 상태 |
 | `useGridColumnLayout.ts` | Grid 컬럼 순서·너비 저장/복원 |
 | `useResizableDrawerWidth.ts` | Drawer 너비 리사이즈 |
-| `useStatusBar.ts` | 상태바 메시지 |
+| `useStatusBar.ts` | 상태바 (모듈 연결·라이선스·SSE·메모리) |
 
 ---
 
@@ -180,7 +188,7 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `infra/sse.ts` | `SseClient` (fetch 스트림), Bearer 인증, 자동 재연결 |
 | `query/queryKeys.ts` | TanStack Query 키 중앙 관리 |
 | `wire/wireJson.ts` | 구·신 필드명 흡수 (`firstNumber`, `asRecordArray` 등) |
-| `wire/apiErrors.ts` | `isApiNotReady` (HTTP 404 판별) |
+| `wire/apiErrors.ts` | `isAxiosNotFound` (HTTP 404 판별) |
 | `userPermissions.ts` | 사용자 메뉴 권한 정의·정규화 |
 | `grid/gridLayout.ts` | Grid 컬럼 순서·너비 저장/복원 |
 | `layout/columnWidths.ts` | 컬럼 너비 상수·헬퍼 |
@@ -241,8 +249,8 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `AccLvSelectModal.tsx` | 접근권한 선택 모달 |
 | `AreaSelectModal.tsx` | 영역 선택 모달 |
 | `EmpSelectModal.tsx` | 사원 선택 모달 |
+| `DeviceTreeNode.tsx` | SCP 장치 트리 노드 (`DevicePickerModal` 등) |
 | `ActiveStatusBadge.tsx` | 활성 상태 뱃지 |
-| `ActiveMockToggle.tsx` | 목 데이터 토글 |
 | `ListOptionsModalShell.tsx` | 목록 옵션 모달 셸 |
 | `MultiSelectToggleAllButton.tsx` | 전체 선택 토글 |
 
@@ -371,30 +379,44 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 
 ## 5. 데이터 흐름
 
+### 레이어 책임
+
+| 레이어 | 경로 | 역할 | 호출 대상 |
+|--------|------|------|-----------|
+| UI | `pages/`, `components/` | 화면·폼·로컬 선택 상태 | `hooks/api/`, `hooks/ui/`, `stores/` |
+| 서버 상태 | `hooks/api/` | TanStack Query, 캐시·mutation | `api/`, `lib/query/queryKeys` |
+| HTTP | `api/` | axios 요청·응답 파싱 | `lib/infra/axios`, `lib/mappers/` |
+| 변환 | `lib/mappers/` | wire ↔ UI 타입 | — |
+| 클라이언트 상태 | `stores/` | 인증·테마·토스트 등 | — |
+
+### 요청 흐름
+
 ```
-페이지 컴포넌트
-    ↓
-hooks/api/useXxx.ts        ← TanStack Query (캐시·리패치)
-    ↓
-api/xxx.ts                 ← axios HTTP 호출
-    ↓
-lib/mappers/*Mappers.ts    ← wire ↔ UI 변환 (필요 시)
-    ↓
-lib/infra/axios.ts         ← Bearer 주입, 401 처리
-    ↓
-백엔드 서버 (/api/*)
-
-── 실시간 갱신 ──
-lib/infra/sse.ts           ← GET /api/events/stream
-    ↓
-hooks/sse/useSseInvalidate ← 이벤트 → queryKeys 무효화
-    ↓
-hooks/api/useXxx.ts        ← 자동 리패치 → UI 갱신
+pages/ (index.tsx, *Drawer, 페이지 전용 훅)
+    ↓  hooks/api/useXxx, queryCache.fetchXxxList
+hooks/api/
+    ↓  api/xxx.ts
+api/
+    ↓  lib/mappers/*Mappers.ts (필요 시)
+lib/infra/axios.ts  →  백엔드 (/api/*)
 ```
 
-**규칙**
+### 실시간 갱신
 
-- 컴포넌트·페이지는 `api/`를 직접 호출하지 않음 → `hooks/api/` 사용 (생성 후 목록 갱신 등은 mutation `onSuccess` + `invalidateQueries` 권장)
+```
+lib/infra/sse.ts              ← GET /api/events/stream
+    ↓
+hooks/sse/useSseInvalidate    ← 이벤트 → queryKeys 무효화
+    ↓
+hooks/api/useXxx.ts           ← 자동 리패치 → UI 갱신
+```
+
+### 규칙
+
+- **`pages/`는 `api/`를 직접 import하지 않음** → `hooks/api/`만 사용
+- 일반 CRUD: mutation `onSuccess` → `invalidateQueries`
+- 생성 직후 새 항목 선택: `hooks/api/queryCache.ts`의 `fetchXxxList(qc)` 사용
+- 페이지 전용 훅(`useXxxData.ts`, `useXxxEditor.ts`)도 데이터는 `hooks/api`에서 가져옴
 - 서버 wire 형식 변환은 `lib/mappers/`에서 처리
 - 클라이언트 UI 상태는 `stores/` (Zustand), 서버 데이터는 TanStack Query
 
@@ -408,16 +430,16 @@ hooks/api/useXxx.ts        ← 자동 리패치 → UI 갱신
 PageName/
 ├── index.tsx              # Grid + SplitDrawerLayout 조합
 ├── useXxxColumns.tsx      # Grid 컬럼 정의 훅
-├── useXxxData.ts          # 로컬 데이터·선택 상태 (해당 시)
+├── useXxxData.ts          # 선택·필터 등 로컬 상태 (데이터는 hooks/api)
+├── useXxxEditor.ts        # 생성·수정·삭제 (hooks/api mutation)
 ├── XxxDrawer.tsx          # 선택 항목 상세 Drawer (또는 *DetailPanel)
 ├── formTypes.ts           # React Hook Form + Zod 스키마
-├── *MockData.ts           # API 미연결 시 fallback (해당 시)
 ├── tabs/                  # Drawer 내 탭 콘텐츠
 │   ├── XxxInfoTab.tsx
 │   └── ...
 ├── components/            # 페이지 전용 하위 컴포넌트
 │   └── ...
-├── utils/                 # 페이지 전용 헬퍼
+├── utils/                 # 페이지 전용 헬퍼 (표시 변환, 폼 매핑)
 │   └── xxxHelpers.ts
 └── hooks/                 # 페이지 전용 훅 (EventMonitorPage 등)
     └── useLiveEvents.ts
@@ -431,7 +453,7 @@ PageName/
 | 파일 | 역할 |
 |------|------|
 | `index.tsx` | 로그인 페이지 레이아웃 |
-| `LoginForm.tsx` | 로그인 폼 (서버 주소·계정) |
+| `LoginForm.tsx` | 로그인 폼 (`useLogin`) |
 | `LoginField.tsx` | 폼 필드 UI |
 | `LogoSection.tsx` | 로고 영역 |
 | `formTypes.ts` | 폼 스키마 |
@@ -461,7 +483,7 @@ PageName/
 | `tabs/CardAccessTab.tsx` | 접근권한 탭 |
 | `tabs/CardHistTab.tsx` | 이력 탭 |
 | `components/` | `CardFieldUi`, `AccLvGroupCards`, `LastAreaCard` 등 |
-| `utils/cardPageHelpers.ts` | 헬퍼 |
+| `utils/cardPageHelpers.ts` | 폼·표시 헬퍼 (API 호출 없음) |
 
 #### `AccessPage/`
 | 파일 | 역할 |
@@ -488,9 +510,9 @@ PageName/
 |------|------|
 | `index.tsx` | 장치 포트 Grid + SplitDrawerLayout |
 | `use*Columns.tsx` | Grid 컬럼 |
-| `use*Data.ts` | 데이터·선택 상태 |
+| `use*Data.ts` | 데이터·선택 (`hooks/api/useDeviceControl`) |
 | `*Drawer.tsx` | 상세 Drawer |
-| `*MockData.ts` | API fallback |
+| `*DisplayTypes.ts` | 표시용 타입·라벨 |
 
 #### `AreaPage/`
 | 파일 | 역할 |
@@ -531,8 +553,8 @@ PageName/
 | `components/HolidayDetailFields.tsx` | 휴일 필드 |
 | `useTimezoneColumns.tsx` | Grid 컬럼 |
 | `useTimezonesData.ts` | 타임존 목록·선택 |
-| `useScheduleHolidays.ts` | 휴일 목록·타임존별 필터 |
-| `scheduleMockData.ts` | 목 데이터 |
+| `useScheduleHolidays.ts` | 휴일 목록·타임존별 필터 (`useHolidayList`) |
+| `useTimezoneEditor.ts` / `useHolidayEditor.ts` | CRUD mutation 래퍼 |
 
 #### `EventMonitorPage/`
 | 파일 | 역할 |

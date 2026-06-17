@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { getModuleList } from '@/api/modules'
-import { getLicenseInfo } from '@/api/system'
 import { sseClient } from '@/lib/infra/sse'
-import { queryKeys } from '@/lib/query/queryKeys'
 import { isElectronRuntime } from '@/lib/isElectronRuntime'
 import { useAuthStore } from '@/stores/authStore'
+import { useModules } from '@/hooks/api/useDeviceControl'
+import { useLicenseInfo } from '@/hooks/api/useSystem'
 
 const formatMemoryMb = (bytes: number): string => `${Math.round(bytes / 1024 / 1024)} MB`
 
@@ -23,21 +21,8 @@ export const useStatusBar = () => {
 
   useEffect(() => sseClient.subscribeConnection(setSseConnected), [])
 
-  const modulesQuery = useQuery({
-    queryKey: queryKeys.modules.all,
-    queryFn: getModuleList,
-    enabled: isAuthenticated,
-    refetchInterval: 15_000,
-    retry: false,
-  })
-
-  const licenseQuery = useQuery({
-    queryKey: ['system', 'license'],
-    queryFn: getLicenseInfo,
-    enabled: isAuthenticated,
-    refetchInterval: 60_000,
-    retry: false,
-  })
+  const modulesQuery = useModules(isAuthenticated)
+  const licenseQuery = useLicenseInfo(isAuthenticated)
 
   useEffect(() => {
     if (!isAuthenticated) {

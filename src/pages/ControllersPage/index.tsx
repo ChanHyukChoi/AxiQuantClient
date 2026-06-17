@@ -14,8 +14,7 @@ import { ScpCreateModal } from '@/pages/ControllersPage/components/ScpCreateModa
 import { ScpDetailPanel } from '@/pages/ControllersPage/components/ScpDetailPanel'
 import { useScpColumns } from '@/pages/ControllersPage/useScpColumns'
 import { useControllersData } from '@/pages/ControllersPage/useControllersData'
-import { getScpList } from '@/api/scp'
-import { queryKeys } from '@/lib/query/queryKeys'
+import { fetchScpList } from '@/hooks/api/queryCache'
 import type { CreateScpRequest, ScpInfo } from '@/types/api'
 
 const CONTROLLERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.controllers.v1'
@@ -55,10 +54,7 @@ export const ControllersPage = () => {
   const handleCreated = useCallback(
     async (data: CreateScpRequest) => {
       setCreateOpen(false)
-      const list = await qc.fetchQuery({
-        queryKey: queryKeys.deviceControl.scps(),
-        queryFn: getScpList,
-      })
+      const list = await fetchScpList(qc)
       const created = list?.find((s) => s.name === data.name)
       if (created) selectScp(created)
     },

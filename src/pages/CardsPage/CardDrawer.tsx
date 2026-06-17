@@ -19,12 +19,17 @@ import {
   cardStatusLabel,
   cardDatetimeToInput,
   cardTypeLabel,
-  syncCardAccLv,
   toCreateRequest,
   toUpdateRequest,
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
-import { useCardAccLvList, useCreateCard, useDeleteCard, useUpdateCard } from '@/hooks/api/useCard'
+import {
+  syncCardAccLvLinks,
+  useCardAccLvList,
+  useCreateCard,
+  useDeleteCard,
+  useUpdateCard,
+} from '@/hooks/api/useCard'
 import type { AccLvInfo, AreaInfo, CardAccLvInfo, EmpInfo } from '@/types/api'
 
 const FORM_DEFAULTS: UpdateCardFormValues = {
@@ -209,7 +214,7 @@ export const CardDrawer = ({
         }
 
         if (selectedAccLvIds.length > 0) {
-          const synced = await syncCardAccLv(newId, [], selectedAccLvIds)
+          const synced = await syncCardAccLvLinks(newId, [], selectedAccLvIds)
           if (!synced) {
             setSaveError('카드는 저장됐지만 접근 권한 연결에 실패했습니다.')
             return
@@ -231,7 +236,7 @@ export const CardDrawer = ({
         return
       }
 
-      const synced = await syncCardAccLv(selectedId, beforeIds, selectedAccLvIds)
+      const synced = await syncCardAccLvLinks(selectedId, beforeIds, selectedAccLvIds)
       if (!synced) {
         setSaveError('카드는 저장됐지만 접근 권한 연결에 실패했습니다.')
         return
