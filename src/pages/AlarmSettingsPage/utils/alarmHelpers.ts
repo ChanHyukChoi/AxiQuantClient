@@ -1,4 +1,4 @@
-import { fallbackDeviceKindLabel, fallbackScpName } from '@/lib/entityDisplayLabels'
+import { fallbackDeviceKindLabel, fallbackScpName } from '@/lib/app/entityDisplayLabels'
 import i18n from '@/lib/i18n'
 import type { AlarmInfo, AlarmMailInfo, AlarmPriorityInfo } from '@/types/api'
 

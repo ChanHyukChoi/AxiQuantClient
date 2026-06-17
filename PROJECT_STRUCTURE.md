@@ -35,8 +35,8 @@ axiquant-client/
 │   ├── assets/                  # 정적 에셋
 │   ├── components/
 │   │   ├── primitive/           # Grid, Drawer, Button, SearchField 등
-│   │   ├── basic/               # 도메인 선택 모달, DetailTitleBar 등
-│   │   ├── layout/              # SplitDrawerLayout
+│   │   ├── basic/               # DrawerSelectPrompt, DetailTitleBar, 모달 등
+│   │   ├── patterns/            # 페이지 내 재사용 레이아웃 (SplitDrawerLayout)
 │   │   └── page-actions/        # 페이지 공통 액션 버튼
 │   ├── hooks/
 │   │   ├── api/                 # TanStack Query 훅
@@ -46,6 +46,7 @@ axiquant-client/
 │   ├── lib/                     # 인프라·유틸·매퍼
 │   ├── pages/                   # 라우트별 페이지
 │   ├── stores/                  # Zustand 클라이언트 상태
+│   ├── locales/                 # i18n 리소스 (ko, en)
 │   ├── styles/                  # CSS 디자인 토큰
 │   ├── types/                   # TypeScript 타입 정의
 │   ├── index.css                # Tailwind·폰트·theme import
@@ -189,16 +190,16 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `query/queryKeys.ts` | TanStack Query 키 중앙 관리 |
 | `wire/wireJson.ts` | 구·신 필드명 흡수 (`firstNumber`, `asRecordArray` 등) |
 | `wire/apiErrors.ts` | `isAxiosNotFound` (HTTP 404 판별) |
-| `userPermissions.ts` | 사용자 메뉴 권한 정의·정규화 |
-| `grid/gridLayout.ts` | Grid 컬럼 순서·너비 저장/복원 |
-| `layout/columnWidths.ts` | 컬럼 너비 상수·헬퍼 |
-| `layout/splitDrawerDefaults.ts` | SplitDrawer 기본/최소 너비 (400/320) |
-| `image/` | 사원·생체 사진 처리 (`processEmpPhoto`, `processBioPhoto` 등) |
-| `entityDisplayLabels.ts` | 엔티티 표시 라벨 |
-| `isElectronRuntime.ts` | Electron 런타임 판별 |
-| `eventMonitor/eventRecords.ts` | SSE·이력 → `EventRecord` 표시 변환 |
-| `device/deviceHelpers.ts` | 장치 라벨·활성 상태·아이콘 헬퍼 |
-| `device/buildTree.ts` | SCP 장치 트리 구성 (`DevicePickerModal` 등) |
+| `layout/columnWidths.ts` | Grid 최소 표시 폭 추정 (`sumColumnWidths`) |
+| `layout/gridLayout.ts` | Grid 컬럼 순서·너비 localStorage 저장/복원 |
+| `layout/splitDrawerDefaults.ts` | drawer 너비·요약 카드 높이 상수 |
+| `app/entityDisplayLabels.ts` | 엔티티 이름 fallback (`entity` locale) |
+| `app/isElectronRuntime.ts` | Electron 런타임 판별 |
+| `app/userPermissions.ts` | 사용자 메뉴 권한 정의·정규화 |
+| `i18n/index.ts` | i18next 초기화 |
+| `image/` | 사원·생체 사진 처리·상수 (WPF 규칙) |
+| `device/` | 장치 트리·라벨 헬퍼 |
+| `eventMonitor/` | SSE·이력 → `EventRecord` 표시 변환 |
 
 #### `lib/mappers/` — wire ↔ UI 변환
 
@@ -250,7 +251,8 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `AreaSelectModal.tsx` | 영역 선택 모달 |
 | `EmpSelectModal.tsx` | 사원 선택 모달 |
 | `DeviceTreeNode.tsx` | SCP 장치 트리 노드 (`DevicePickerModal` 등) |
-| `ActiveStatusBadge.tsx` | 활성 상태 뱃지 |
+| `DrawerSelectPrompt.tsx` | drawer 미선택 안내 (중앙 정렬) |
+| `DrawerSummaryCardShell.tsx` | Emp/Cards drawer 상단 요약 카드 셸 |
 | `ListOptionsModalShell.tsx` | 목록 옵션 모달 셸 |
 | `MultiSelectToggleAllButton.tsx` | 전체 선택 토글 |
 
@@ -270,11 +272,13 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 | `types.ts` | `PageActionButtonProps` 공통 타입 |
 | `index.ts` | 배럴 export |
 
-#### `components/layout/`
+#### `components/patterns/` — 페이지 내 레이아웃 패턴
 
 | 파일 | 역할 |
 |------|------|
-| `SplitDrawerLayout.tsx` | Grid + Drawer 분할 레이아웃 (리사이즈, 기본 400px) |
+| `SplitDrawerLayout.tsx` | Grid + Drawer 분할 (리사이즈, 공통 drawer 너비 `axiquant.drawer.width`) |
+
+> 앱 전체 셸(TitleBar, Sidebar)은 `src/layouts/`. 패턴 컴포넌트와 구분합니다.
 
 ---
 
@@ -352,7 +356,17 @@ proto/WPF wire 형식과 다른 필드는 `lib/mappers/`에서 변환 후 전송
 
 ---
 
-### 4.11 `pages/` — 라우트별 페이지
+### 4.11 `locales/` — i18n 리소스
+
+| 경로 | 역할 |
+|------|------|
+| `locales/ko/index.ts` | 한국어 namespace 배럴 export |
+| `locales/en/index.ts` | 영어 namespace 배럴 export |
+| `locales/{ko,en}/*.json` | 도메인별 번역 키 (영어 도메인 namespace는 점진 추가, `fallbackLng: ko`) |
+
+---
+
+### 4.12 `pages/` — 라우트별 페이지
 
 각 페이지는 **도메인 폴더**로 구성됩니다. 상세 구조는 [§6 페이지 폴더 내부 패턴](#6-페이지-폴더-내부-패턴) 참고.
 
@@ -432,20 +446,21 @@ PageName/
 ├── useXxxColumns.tsx      # Grid 컬럼 정의 훅
 ├── useXxxData.ts          # 선택·필터 등 로컬 상태 (데이터는 hooks/api)
 ├── useXxxEditor.ts        # 생성·수정·삭제 (hooks/api mutation)
-├── XxxDrawer.tsx          # 선택 항목 상세 Drawer (또는 *DetailPanel)
+├── XxxDrawer.tsx          # 선택 항목 상세 Drawer (항상 페이지 루트)
 ├── formTypes.ts           # React Hook Form + Zod 스키마
 ├── tabs/                  # Drawer 내 탭 콘텐츠
 │   ├── XxxInfoTab.tsx
 │   └── ...
-├── components/            # 페이지 전용 하위 컴포넌트
+├── components/            # 페이지 전용 하위 컴포넌트 (Drawer 제외)
 │   └── ...
 ├── utils/                 # 페이지 전용 헬퍼 (표시 변환, 폼 매핑)
 │   └── xxxHelpers.ts
-└── hooks/                 # 페이지 전용 훅 (EventMonitorPage 등)
-    └── useLiveEvents.ts
+└── useXxxPageHook.ts      # 페이지 전용 훅 (루트에 배치, hooks/ 서브폴더 없음)
 ```
 
-공통 레이아웃 상수: `lib/layout/splitDrawerDefaults.ts` (`SPLIT_DRAWER_DEFAULT_WIDTH=400`, `SPLIT_DRAWER_MIN_WIDTH=320`).
+공통 레이아웃: `@/components/patterns/SplitDrawerLayout`, 상수는 `lib/layout/splitDrawerDefaults.ts` (`SPLIT_DRAWER_DEFAULT_WIDTH=400`, `SPLIT_DRAWER_MIN_WIDTH=320`, storage key `axiquant.drawer.width`).
+
+**이름·위치 규칙:** 목록+상세의 오른쪽 상세 영역 = `{PageName}/{Domain}Drawer.tsx` / `export const XxxDrawer` (`*DetailPanel` 사용 금지, `components/` 하위 배치 금지).
 
 ### 페이지별 주요 파일
 
@@ -489,7 +504,7 @@ PageName/
 | 파일 | 역할 |
 |------|------|
 | `index.tsx` | 접근권한 Grid + SplitDrawerLayout |
-| `AccessDetailPanel.tsx` | 접근권한 상세 패널 (Drawer) |
+| `AccessDrawer.tsx` | 접근권한 상세 Drawer |
 | `useAccLvColumns.tsx` | Grid 컬럼 |
 | `components/CreateAccLvModal.tsx` | 접근권한 생성 모달 |
 | `components/AccLvReaderTable.tsx` | 리더 매핑 테이블 |
@@ -501,7 +516,7 @@ PageName/
 | `index.tsx` | SCP Grid + SplitDrawerLayout |
 | `useScpColumns.tsx` | Grid 컬럼 |
 | `useControllersData.ts` | SCP/SIO 데이터 |
-| `components/ScpDetailPanel.tsx` | SCP 상세 패널 |
+| `ScpDrawer.tsx` | SCP 상세 Drawer |
 | `components/SioWorkspace.tsx` | SIO 하위 편집 |
 | `components/ScpCreateModal.tsx` | SCP 생성 모달 |
 
@@ -547,7 +562,7 @@ PageName/
 | 파일 | 역할 |
 |------|------|
 | `index.tsx` | 타임존 Grid + Drawer (`PageHeader`「스케쥴」) |
-| `components/TimezoneDetailPanel.tsx` | 타임존 상세 Drawer |
+| `TimezoneDrawer.tsx` | 타임존 상세 Drawer |
 | `components/TimezoneDetailFields.tsx` | 타임존 필드 |
 | `components/HolidaySection.tsx` | Drawer 내 휴일 섹션 (타임존 소속) |
 | `components/HolidayDetailFields.tsx` | 휴일 필드 |
@@ -561,10 +576,10 @@ PageName/
 |------|------|
 | `index.tsx` | 실시간·이력 모니터 |
 | `EventGrid.tsx` | 이벤트 Grid |
-| `EventDetailPanel.tsx` | 이벤트 상세 Drawer |
+| `EventDrawer.tsx` | 이벤트 상세 Drawer |
 | `MonitorToolbar.tsx` | 툴바 (날짜·필터) |
-| `hooks/useLiveEvents.ts` | SSE 실시간 이벤트 |
-| `hooks/useHistoryEvents.ts` | 이력 API 이벤트 |
+| `useLiveEvents.ts` | SSE 실시간 이벤트 |
+| `useHistoryEvents.ts` | 이력 API 이벤트 |
 | `utils/dateRange.ts` | 날짜 범위 헬퍼 |
 
 #### `AlarmSettingsPage/`
@@ -575,9 +590,9 @@ PageName/
 | `tabs/AlarmRulesTab.tsx` | 규칙 Grid + SplitDrawerLayout |
 | `tabs/AlarmPriorityTab.tsx` | 우선순위 Grid + SplitDrawerLayout |
 | `tabs/AlarmMailTab.tsx` | 메일 (`AlarmMailListPane` — 예외) |
-| `components/AlarmRuleDrawer.tsx` | 규칙 Drawer |
-| `components/AlarmPriorityDrawer.tsx` | 우선순위 Drawer |
-| `components/AlarmMailDrawer.tsx` | 메일 Drawer |
+| `AlarmRuleDrawer.tsx` | 규칙 Drawer |
+| `AlarmPriorityDrawer.tsx` | 우선순위 Drawer |
+| `AlarmMailDrawer.tsx` | 메일 Drawer |
 | `useAlarmRuleColumns.tsx`, `useAlarmPriorityColumns.tsx` | Grid 컬럼 |
 | `utils/alarmHelpers.ts` | 헬퍼 |
 
@@ -632,15 +647,22 @@ PageName/
 
 ## 국제화 (i18n)
 
-UI 표시 문자열은 **컴포넌트 JSX에 한글을 직접 넣지 않습니다.** `src/locales/ko/*.json` + `react-i18next`를 사용합니다.
+UI 표시 문자열은 **컴포넌트 JSX에 한글을 직접 넣지 않습니다.** `src/locales/{ko,en}/*.json` + `react-i18next`를 사용합니다.
 
 | 경로 | 역할 |
 |------|------|
-| `src/lib/i18n/index.ts` | i18next 초기화 (`main.tsx`에서 import) |
+| `src/lib/i18n/index.ts` | i18next 초기화 (`main.tsx`에서 import), `supportedLngs: ko \| en`, `fallbackLng: ko` |
+| `src/locales/ko/index.ts` | 한국어 namespace 배럴 |
+| `src/locales/en/index.ts` | 영어 namespace 배럴 (도메인 namespace는 점진 번역, 미번역 키는 ko fallback) |
+| `src/lib/app/entityDisplayLabels.ts` | 엔티티 표시 fallback (`entity` locale) |
 | `src/locales/ko/common.json` | 공통 라벨 (명칭, 상태, 활성 등) |
+| `src/locales/en/common.json` | 공통 라벨 (영어) |
 | `src/locales/ko/nav.json` | 사이드바 메뉴·권한 카테고리/항목 |
+| `src/locales/en/nav.json` | 사이드바 메뉴·권한 (영어) |
 | `src/locales/ko/layout.json` | 타이틀바·상태바·사이드바 헤더 |
+| `src/locales/en/layout.json` | 타이틀바·상태바 (영어) |
 | `src/locales/ko/auth.json` | 로그인 폼·검증 메시지 |
+| `src/locales/en/auth.json` | 로그인 폼 (영어) |
 | `src/locales/ko/device.json` | 장치 도메인 (제어기·입출력·리더·트리) |
 | `src/locales/ko/reader.json` | 리더 상세·탭 |
 | `src/locales/ko/emp.json` | 직원 |

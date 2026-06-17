@@ -1,5 +1,5 @@
 import i18n from '@/lib/i18n'
-import { fallbackTimezoneName } from '@/lib/entityDisplayLabels'
+import { fallbackTimezoneName } from '@/lib/app/entityDisplayLabels'
 import type { HolidayInfo, TimezoneInfo } from '@/types/api'
 
 export const timezoneRangeLabel = (item: TimezoneInfo): string => {

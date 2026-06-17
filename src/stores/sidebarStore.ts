@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { isElectronRuntime } from '@/lib/isElectronRuntime'
+import { isElectronRuntime } from '@/lib/app/isElectronRuntime'
 
 const isElectron = isElectronRuntime()
 

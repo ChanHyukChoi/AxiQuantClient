@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { CalendarClock } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
-import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { SplitDrawerLayout } from '@/components/patterns/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
 import { fetchTimezoneList } from '@/hooks/api/queryCache'
-import { TimezoneDetailPanel } from '@/pages/SchedulePage/components/TimezoneDetailPanel'
+import { TimezoneDrawer } from '@/pages/SchedulePage/TimezoneDrawer'
 import { useScheduleHolidays } from '@/pages/SchedulePage/useScheduleHolidays'
 import { useTimezoneColumns } from '@/pages/SchedulePage/useTimezoneColumns'
 import { useTimezoneEditor } from '@/pages/SchedulePage/useTimezoneEditor'
@@ -96,7 +96,7 @@ export const SchedulePage = () => {
           </>
         }
         drawer={
-          <TimezoneDetailPanel
+          <TimezoneDrawer
             item={data.selectedItem}
             editor={editor}
             holidays={holidays}

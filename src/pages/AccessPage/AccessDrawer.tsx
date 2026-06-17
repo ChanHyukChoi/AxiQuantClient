@@ -19,7 +19,7 @@ import {
   fallbackAccLvName,
   fallbackScpName,
   fallbackTimezoneName,
-} from '@/lib/entityDisplayLabels'
+} from '@/lib/app/entityDisplayLabels'
 import {
   useAccLvReaderList,
   useDeleteAccLv,
@@ -29,17 +29,17 @@ import { useScps } from '@/hooks/api/useDeviceControl'
 import { useTimezoneList } from '@/hooks/api/useTimezone'
 import type { AccLvInfo, UpdateAccLvRequest } from '@/types/api'
 
-interface AccessDetailPanelProps {
+interface AccessDrawerProps {
   accLv: AccLvInfo | null
   onDeleted: () => void
   onEditModeChange?: (editing: boolean) => void
 }
 
-export const AccessDetailPanel = ({
+export const AccessDrawer = ({
   accLv,
   onDeleted,
   onEditModeChange,
-}: AccessDetailPanelProps) => {
+}: AccessDrawerProps) => {
   const { t } = useTranslation(['access', 'common'])
   const accLvSchema = useMemo(() => createAccLvSchema(t), [t])
   const selectedId = accLv?.id ?? 0

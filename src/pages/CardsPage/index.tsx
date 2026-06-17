@@ -4,7 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/queryKeys'
 import { CreditCard } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
-import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { SplitDrawerLayout } from '@/components/patterns/SplitDrawerLayout'
 import {
   AddButton,
   ExportButton,

@@ -5,7 +5,7 @@ import { Badge } from '@/components/primitive/Badge'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { SearchField } from '@/components/primitive/SearchField'
-import { fallbackAccLvName } from '@/lib/entityDisplayLabels'
+import { fallbackAccLvName } from '@/lib/app/entityDisplayLabels'
 
 const FONT_SIZE = 15
 

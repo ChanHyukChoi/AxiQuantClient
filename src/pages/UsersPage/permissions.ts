@@ -11,4 +11,4 @@ export {
   type CategoryPermissionMode,
   type PermissionCategoryDef,
   type PermissionMenuDef,
-} from '@/lib/userPermissions'
+} from '@/lib/app/userPermissions'

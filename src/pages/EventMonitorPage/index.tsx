@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Activity } from 'lucide-react'
-import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { SplitDrawerLayout } from '@/components/patterns/SplitDrawerLayout'
 import { PageHeader } from '@/layouts/PageHeader'
-import { EventDetailPanel } from '@/pages/EventMonitorPage/EventDetailPanel'
+import { EventDrawer } from '@/pages/EventMonitorPage/EventDrawer'
 import { EventGrid } from '@/pages/EventMonitorPage/EventGrid'
 import { MonitorToolbar, type MonitorMode } from '@/pages/EventMonitorPage/MonitorToolbar'
-import { useHistoryEvents } from '@/pages/EventMonitorPage/hooks/useHistoryEvents'
-import { useLiveEvents } from '@/pages/EventMonitorPage/hooks/useLiveEvents'
+import { useHistoryEvents } from '@/pages/EventMonitorPage/useHistoryEvents'
+import { useLiveEvents } from '@/pages/EventMonitorPage/useLiveEvents'
 import {
   formatDateInput,
   parseDateInput,
@@ -157,7 +157,7 @@ export const EventMonitorPage = () => {
             onPageChange={setPage}
           />
         }
-        drawer={<EventDetailPanel event={selectedEvent} onAck={handleAck} />}
+        drawer={<EventDrawer event={selectedEvent} onAck={handleAck} />}
       />
     </div>
   )

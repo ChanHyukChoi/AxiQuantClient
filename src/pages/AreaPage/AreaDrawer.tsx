@@ -12,7 +12,7 @@ import { createAreaEditSchema, type AreaEditFormValues } from '@/pages/AreaPage/
 import { AreaInfoTab } from '@/pages/AreaPage/tabs/AreaInfoTab'
 import { AreaOccupantsTab } from '@/pages/AreaPage/tabs/AreaOccupantsTab'
 import { AreaReadersTab } from '@/pages/AreaPage/tabs/AreaReadersTab'
-import { fallbackAreaName } from '@/lib/entityDisplayLabels'
+import { fallbackAreaName } from '@/lib/app/entityDisplayLabels'
 import { areaToUpdatePayload, isAreaActive } from '@/pages/AreaPage/utils/areaHelpers'
 import { useDeleteArea, useUpdateArea } from '@/hooks/api/useArea'
 import type { AreaInfo } from '@/types/api'

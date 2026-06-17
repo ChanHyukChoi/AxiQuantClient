@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
-import { fallbackEmpName } from '@/lib/entityDisplayLabels'
+import { fallbackEmpName } from '@/lib/app/entityDisplayLabels'
 
 const FONT_SIZE = 15
 

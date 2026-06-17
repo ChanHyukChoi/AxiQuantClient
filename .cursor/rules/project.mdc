@@ -25,6 +25,16 @@ alwaysApply: true
 - 검색: `<SearchField />` only (`--color-search-*`)
 - 공통 UI: `src/styles/ui-primitives.css`
 
+## 폴더 구조 (요약)
+
+- `layouts/` — 앱 셸 (TitleBar, Sidebar, RootLayout)
+- `components/patterns/` — 페이지 내 패턴 (`SplitDrawerLayout`)
+- `components/basic/` — `DrawerSelectPrompt`, `DetailTitleBar` 등
+- `lib/app/` — 앱 전역 (`entityDisplayLabels`, `userPermissions`, `isElectronRuntime`)
+- `lib/layout/` — drawer·grid 치수 (`splitDrawerDefaults`, `gridLayout`, `columnWidths`)
+- `locales/{ko,en}/` — i18n 리소스 (`fallbackLng: ko`)
+- `pages/*/` — 상세 영역 `{Domain}Drawer.tsx`는 **페이지 루트** (`*DetailPanel`·`components/*Drawer` 금지)
+
 ## 아키텍처 (요약)
 
 - `pages/` → `hooks/api/` → `api/` → `lib/mappers/` → axios

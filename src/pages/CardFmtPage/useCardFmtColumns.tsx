@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type ColumnDef } from '@/components/primitive/Grid'
-import { fallbackCardFmtName } from '@/lib/entityDisplayLabels'
+import { fallbackCardFmtName } from '@/lib/app/entityDisplayLabels'
 import type { CardfmtInfo } from '@/types/api'
 
 export const useCardFmtColumns = (): ColumnDef<CardfmtInfo>[] => {

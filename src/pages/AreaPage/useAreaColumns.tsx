@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { type ColumnDef } from '@/components/primitive/Grid'
 import { ActiveGridMark } from '@/components/basic/ActiveStatusBadge'
 import { isAreaActive } from '@/pages/AreaPage/utils/areaHelpers'
-import { fallbackAreaName } from '@/lib/entityDisplayLabels'
+import { fallbackAreaName } from '@/lib/app/entityDisplayLabels'
 import type { AreaInfo } from '@/types/api'
 
 export const useAreaColumns = (): ColumnDef<AreaInfo>[] => {

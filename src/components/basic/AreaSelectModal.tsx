@@ -3,7 +3,7 @@ import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Badge } from '@/components/primitive/Badge'
 import { SearchField } from '@/components/primitive/SearchField'
-import { fallbackAreaName } from '@/lib/entityDisplayLabels'
+import { fallbackAreaName } from '@/lib/app/entityDisplayLabels'
 
 export interface AreaSelectItem {
   id: number

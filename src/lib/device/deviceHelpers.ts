@@ -6,7 +6,7 @@ import {
   ScanLine,
   type LucideIcon,
 } from 'lucide-react'
-import { fallbackDeviceKindLabel } from '@/lib/entityDisplayLabels'
+import { fallbackDeviceKindLabel } from '@/lib/app/entityDisplayLabels'
 import type { InputInfo, ModuleInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 
 export type DeviceEntityKind = 'scp' | 'sio' | 'reader' | 'input' | 'output' | 'module'

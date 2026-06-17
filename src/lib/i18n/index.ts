@@ -1,6 +1,10 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
+import { enResources } from '@/locales/en'
 import { koResources } from '@/locales/ko'
+
+export const I18N_LANGUAGES = ['ko', 'en'] as const
+export type I18nLanguage = (typeof I18N_LANGUAGES)[number]
 
 export const I18N_NAMESPACES = [
   'common',
@@ -27,9 +31,11 @@ export type I18nNamespace = (typeof I18N_NAMESPACES)[number]
 void i18n.use(initReactI18next).init({
   resources: {
     ko: koResources,
+    en: enResources,
   },
   lng: 'ko',
   fallbackLng: 'ko',
+  supportedLngs: [...I18N_LANGUAGES],
   defaultNS: 'common',
   ns: [...I18N_NAMESPACES],
   interpolation: {

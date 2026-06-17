@@ -1,0 +1,26 @@
+{
+  "sidebar": {
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar"
+  },
+  "titleBar": {
+    "minimize": "Minimize",
+    "restore": "Restore",
+    "maximize": "Maximize",
+    "close": "Close"
+  },
+  "statusBar": {
+    "events": "Events",
+    "connected": "CONNECTED",
+    "disconnected": "DISCONNECTED",
+    "licenseVerified": "License verified",
+    "licenseUnverified": "License not verified",
+    "roleDefault": "Standard user",
+    "themeToLight": "Switch to light mode",
+    "themeToDark": "Switch to dark mode",
+    "keyId": "Key ID",
+    "maxReader": "Max Reader",
+    "maxClient": "Max Client",
+    "maxMap": "Max Map"
+  }
+}

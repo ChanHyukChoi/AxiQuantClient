@@ -5,7 +5,7 @@ import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { EVENT_MONITOR_FONT_SIZE } from '@/pages/EventMonitorPage/eventMonitorUi'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
-interface EventDetailPanelProps {
+interface EventDrawerProps {
   event: EventRecord | null
   onAck: (id: number) => void
 }
@@ -21,7 +21,7 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
-export const EventDetailPanel = ({ event, onAck }: EventDetailPanelProps) => {
+export const EventDrawer = ({ event, onAck }: EventDrawerProps) => {
   const { t } = useTranslation(['eventMonitor', 'common'])
 
   const drawerHeader = event ? (

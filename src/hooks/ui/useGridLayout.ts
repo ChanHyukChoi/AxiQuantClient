@@ -10,7 +10,7 @@ import {
   resolveColumnOrder,
   writeGridLayout,
   type GridLayoutPersist,
-} from '@/lib/grid/gridLayout'
+} from '@/lib/layout/gridLayout'
 
 export interface GridColumnOption {
   key: string

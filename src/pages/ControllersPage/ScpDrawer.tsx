@@ -14,19 +14,19 @@ import { useScpEditor } from '@/pages/ControllersPage/useScpEditor'
 import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
 import type { ScpInfo, SioInfo } from '@/types/api'
 
-interface ScpDetailPanelProps {
+interface ScpDrawerProps {
   scp: ScpInfo | null
   sios: SioInfo[]
   siosLoading: boolean
   onDeleted?: () => void
 }
 
-export const ScpDetailPanel = ({
+export const ScpDrawer = ({
   scp,
   sios,
   siosLoading,
   onDeleted,
-}: ScpDetailPanelProps) => {
+}: ScpDrawerProps) => {
   const { t } = useTranslation(['device', 'common'])
   const [activeTab, setActiveTab] = useState<'info' | 'sios'>('info')
 

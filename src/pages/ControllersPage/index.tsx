@@ -3,12 +3,12 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Cpu } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
-import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { SplitDrawerLayout } from '@/components/patterns/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
 import { ScpCreateModal } from '@/pages/ControllersPage/components/ScpCreateModal'
-import { ScpDetailPanel } from '@/pages/ControllersPage/components/ScpDetailPanel'
+import { ScpDrawer } from '@/pages/ControllersPage/ScpDrawer'
 import { useScpColumns } from '@/pages/ControllersPage/useScpColumns'
 import { useControllersData } from '@/pages/ControllersPage/useControllersData'
 import { fetchScpList } from '@/hooks/api/queryCache'
@@ -106,7 +106,7 @@ export const ControllersPage = () => {
           </>
         }
         drawer={
-          <ScpDetailPanel
+          <ScpDrawer
             scp={selectedScp}
             sios={sios}
             siosLoading={siosLoading}

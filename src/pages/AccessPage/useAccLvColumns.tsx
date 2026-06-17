@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { type ColumnDef } from '@/components/primitive/Grid'
-import { fallbackAccLvName } from '@/lib/entityDisplayLabels'
+import { fallbackAccLvName } from '@/lib/app/entityDisplayLabels'
 import type { AccLvInfo } from '@/types/api'
 
 export const useAccLvColumns = (): ColumnDef<AccLvInfo>[] => {

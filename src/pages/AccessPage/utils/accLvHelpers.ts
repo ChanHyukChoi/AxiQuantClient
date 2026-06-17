@@ -2,7 +2,7 @@ import {
   fallbackReaderName,
   fallbackScpName,
   fallbackTimezoneName,
-} from '@/lib/entityDisplayLabels'
+} from '@/lib/app/entityDisplayLabels'
 import type { AccLvRdrInfo } from '@/types/api'
 
 export interface AccLvReaderRow {

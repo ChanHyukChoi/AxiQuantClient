@@ -17,7 +17,7 @@ import {
   cardfmtToForm,
   formToCardfmtPayload,
 } from '@/pages/CardFmtPage/utils/cardFmtHelpers'
-import { fallbackCardFmtName } from '@/lib/entityDisplayLabels'
+import { fallbackCardFmtName } from '@/lib/app/entityDisplayLabels'
 import { useDeleteCardFmt, useUpdateCardFmt } from '@/hooks/api/useCardfmt'
 import type { CardfmtInfo } from '@/types/api'
 

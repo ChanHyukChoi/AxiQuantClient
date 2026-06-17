@@ -1,4 +1,4 @@
-import { normalizePermissions } from '@/lib/userPermissions'
+import { normalizePermissions } from '@/lib/app/userPermissions'
 import { asRecordArray, firstNumber } from '@/lib/wire/wireJson'
 import type { UserInfo, UserPermissions } from '@/types/api/user'
 

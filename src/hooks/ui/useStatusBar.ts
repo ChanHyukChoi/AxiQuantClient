@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import i18n from '@/lib/i18n'
 import { sseClient } from '@/lib/infra/sse'
-import { isElectronRuntime } from '@/lib/isElectronRuntime'
+import { isElectronRuntime } from '@/lib/app/isElectronRuntime'
 import { useAuthStore } from '@/stores/authStore'
 import { useModules } from '@/hooks/api/useDeviceControl'
 import { useLicenseInfo } from '@/hooks/api/useSystem'

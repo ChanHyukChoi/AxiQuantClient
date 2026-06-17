@@ -3,11 +3,11 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { DoorOpen } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
-import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
+import { SplitDrawerLayout } from '@/components/patterns/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import { AccessDetailPanel } from '@/pages/AccessPage/AccessDetailPanel'
+import { AccessDrawer } from '@/pages/AccessPage/AccessDrawer'
 import { useAccLvColumns } from '@/pages/AccessPage/useAccLvColumns'
 import { CreateAccLvModal } from '@/pages/AccessPage/components/CreateAccLvModal'
 import { fetchAccLvList } from '@/hooks/api/queryCache'
@@ -102,7 +102,7 @@ export const AccessPage = () => {
           />
         }
         drawer={
-          <AccessDetailPanel
+          <AccessDrawer
             accLv={selectedAccLv}
             onDeleted={() => setSelectedId(null)}
             onEditModeChange={setEditMode}

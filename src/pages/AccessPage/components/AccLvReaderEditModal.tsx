@@ -8,7 +8,7 @@ import {
   fallbackReaderName,
   fallbackScpName,
   fallbackTimezoneName,
-} from '@/lib/entityDisplayLabels'
+} from '@/lib/app/entityDisplayLabels'
 import {
   useAddAccLvReader,
   useDeleteAccLvReader,

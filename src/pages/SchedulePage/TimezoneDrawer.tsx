@@ -13,13 +13,13 @@ import type { TimezoneInfo } from '@/types/api'
 
 type TimezoneEditor = ReturnType<typeof useTimezoneEditor>
 
-interface TimezoneDetailPanelProps {
+interface TimezoneDrawerProps {
   item: TimezoneInfo | null
   editor?: TimezoneEditor
   holidays: ScheduleHolidaysApi
 }
 
-export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPanelProps) => {
+export const TimezoneDrawer = ({ item, editor, holidays }: TimezoneDrawerProps) => {
   const { t } = useTranslation(['schedule', 'common'])
   const editMode = editor?.editMode ?? false
 

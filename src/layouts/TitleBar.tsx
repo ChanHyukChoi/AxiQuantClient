@@ -3,7 +3,7 @@ import { Minus, Square, X } from 'lucide-react'
 import { useThemeStore } from '../stores/themeStore'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { isElectronRuntime } from '@/lib/isElectronRuntime'
+import { isElectronRuntime } from '@/lib/app/isElectronRuntime'
 
 export const TitleBar = () => {
   if (!isElectronRuntime()) return null

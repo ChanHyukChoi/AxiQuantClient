@@ -1,0 +1,55 @@
+{
+  "menu": {
+    "emps": "Card Users",
+    "cards": "Cards",
+    "access": "Access Levels",
+    "area": "Areas",
+    "cardfmt": "Card Formats",
+    "monitor": "Event Monitor",
+    "alarm-settings": "Alarm Settings",
+    "controllers": "Controllers",
+    "readers": "Readers",
+    "inputs": "Inputs",
+    "outputs": "Outputs",
+    "schedule": "Schedule",
+    "linkage": "Linkage",
+    "audit": "Audit Log",
+    "users": "Users"
+  },
+  "permission": {
+    "category": {
+      "accessMgmt": "Access Management",
+      "eventMonitor": "Event Monitor",
+      "alarmSetting": "Alarm Settings",
+      "securityEquipment": "Security Equipment",
+      "schedule": "Schedule",
+      "linkage": "Linkage",
+      "systemMgmt": "System Management"
+    },
+    "item": {
+      "cardUser": "Card Users",
+      "card": "Cards",
+      "accessLevel": "Access Levels",
+      "area": "Areas",
+      "cardFormat": "Card Formats",
+      "eventMonitor": "Event Monitor",
+      "alarmSetting": "Alarm Settings",
+      "controller": "Controllers",
+      "reader": "Readers",
+      "input": "Inputs",
+      "output": "Outputs",
+      "schedule": "Schedule",
+      "linkage": "Linkage",
+      "audit": "Audit Log",
+      "user": "Users"
+    },
+    "ui": {
+      "allowAll": "Allow All",
+      "allowed": "Allowed",
+      "individual": "Individual",
+      "read": "Read",
+      "write": "Write",
+      "all": "All"
+    }
+  }
+}
