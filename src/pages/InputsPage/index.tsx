@@ -16,6 +16,7 @@ const INPUTS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.inputs.v1'
 
 export const InputsPage = () => {
   const { t } = useTranslation('nav')
+  const { t: tDevice } = useTranslation('device')
   const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
@@ -70,7 +71,7 @@ export const InputsPage = () => {
               selectedId={selectedGridId ?? undefined}
               onRowClick={handleRowClick}
               onSearch={setSearchQuery}
-              searchPlaceholder="입력 검색..."
+              searchPlaceholder={tDevice('input.searchPlaceholder')}
               totalCount={filteredRows.length}
               loading={isLoading}
               pagination={{
@@ -86,7 +87,7 @@ export const InputsPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                입력 목록을 불러오지 못했습니다.
+                {tDevice('input.loadError')}
               </p>
             ) : null}
           </>

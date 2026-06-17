@@ -516,7 +516,7 @@ PageName/
 | `index.tsx` | SCP Grid + SplitDrawerLayout |
 | `useScpColumns.tsx` | Grid 컬럼 |
 | `useControllersData.ts` | SCP/SIO 데이터 |
-| `ScpDrawer.tsx` | SCP 상세 Drawer |
+| `ScpDrawer.tsx` | SCP 상세 Drawer (create 모드 포함) |
 | `components/SioWorkspace.tsx` | SIO 하위 편집 |
 | `components/ScpCreateModal.tsx` | SCP 생성 모달 |
 

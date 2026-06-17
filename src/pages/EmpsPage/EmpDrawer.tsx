@@ -8,17 +8,9 @@ import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
 import { queryKeys } from '@/lib/query/queryKeys'
-import {
-  BIO_IMAGE_INVALID_EXTENSION_MESSAGE,
-  BIO_IMAGE_PROCESS_ERROR_MESSAGE,
-  BIO_NO_PROFILE_MESSAGE,
-} from '@/lib/image/bioImageConstants'
+import { BIO_IMAGE_MIN_DIMENSION_PX } from '@/lib/image/bioImageConstants'
 import { isAllowedBioImageFile } from '@/lib/image/isAllowedBioImageFile'
 import { BioImageTooSmallError, processBioPhoto } from '@/lib/image/processBioPhoto'
-import {
-  EMP_IMAGE_INVALID_EXTENSION_MESSAGE,
-  EMP_IMAGE_PROCESS_ERROR_MESSAGE,
-} from '@/lib/image/empImageConstants'
 import { isAllowedEmpImageFile } from '@/lib/image/isAllowedEmpImageFile'
 import { processEmpPhoto } from '@/lib/image/processEmpPhoto'
 import { processEmpPhotoFromBytes } from '@/lib/image/processEmpPhotoFromBytes'
@@ -52,6 +44,11 @@ import {
   type EmpPhotoDraft,
 } from '@/pages/EmpsPage/utils/empPhotoDraft'
 import { useCreateEmp, useDeleteEmp, useUpdateEmp } from '@/hooks/api/useEmps'
+import {
+  useSyncEmpBio,
+  useSyncEmpPhoto,
+  type EmpBioSyncPayload,
+} from '@/hooks/api/useEmpMedia'
 import type { CardInfo, EmpInfo } from '@/types/api'
 
 const FORM_DEFAULTS: UpdateEmpFormValues = {
@@ -122,6 +119,15 @@ export const EmpDrawer = ({
   const { mutateAsync: createEmpAsync } = useCreateEmp()
   const { mutateAsync: updateEmpAsync } = useUpdateEmp()
   const deleteEmpMut = useDeleteEmp()
+  const { mutateAsync: syncEmpPhotoAsync } = useSyncEmpPhoto()
+  const { mutateAsync: syncEmpBioAsync } = useSyncEmpBio()
+
+  const toBioSyncPayload = (draft: BioPhotoDraft, mime: string): EmpBioSyncPayload => {
+    const saved = bioPhotoDraftForSave(draft)
+    if (saved === 'unchanged') return { kind: 'unchanged' }
+    if (saved === 'cleared') return { kind: 'cleared' }
+    return { kind: 'bytes', bytes: saved, mime }
+  }
 
   const form = useForm<UpdateEmpFormValues>({
     resolver: zodResolver(empSchema) as Resolver<UpdateEmpFormValues>,
@@ -220,7 +226,7 @@ export const EmpDrawer = ({
 
   const handlePhotoFileSelect = async (file: File) => {
     if (!isAllowedEmpImageFile(file)) {
-      window.alert(EMP_IMAGE_INVALID_EXTENSION_MESSAGE)
+      window.alert(t('emp:error.photoInvalidType'))
       return
     }
 
@@ -235,7 +241,7 @@ export const EmpDrawer = ({
         return { status: 'loaded', bytes, previewUrl }
       })
     } catch {
-      window.alert(EMP_IMAGE_PROCESS_ERROR_MESSAGE)
+      window.alert(t('emp:error.photoProcessFailed'))
     } finally {
       setPhotoLoading(false)
     }
@@ -274,7 +280,7 @@ export const EmpDrawer = ({
 
   const handleBioFileSelect = async (file: File) => {
     if (!isAllowedBioImageFile(file)) {
-      window.alert(BIO_IMAGE_INVALID_EXTENSION_MESSAGE)
+      window.alert(t('emp:error.bioInvalidType'))
       return
     }
 
@@ -288,9 +294,9 @@ export const EmpDrawer = ({
       })
     } catch (error) {
       if (error instanceof BioImageTooSmallError) {
-        window.alert(error.message)
+        window.alert(t('emp:error.bioTooSmall', { min: BIO_IMAGE_MIN_DIMENSION_PX }))
       } else {
-        window.alert(BIO_IMAGE_PROCESS_ERROR_MESSAGE)
+        window.alert(t('emp:error.bioProcessFailed'))
       }
     } finally {
       setBioLoading(false)
@@ -307,7 +313,7 @@ export const EmpDrawer = ({
   const handleImportProfile = async () => {
     const url = baseProfileUrl?.trim()
     if (!url) {
-      window.alert(BIO_NO_PROFILE_MESSAGE)
+      window.alert(t('emp:error.bioNoProfile'))
       return
     }
 
@@ -322,7 +328,7 @@ export const EmpDrawer = ({
         return createBioPhotoDraftFromBytes(bytes, mime)
       })
     } catch {
-      window.alert(BIO_NO_PROFILE_MESSAGE)
+      window.alert(t('emp:error.bioNoProfile'))
     } finally {
       setBioLoading(false)
     }
@@ -333,11 +339,19 @@ export const EmpDrawer = ({
   }
 
   const handleBioConfirm = async () => {
+    if (!selectedId) return
     setBioSaveError(null)
     setIsSaving(true)
     try {
-      // TODO: API bio 저장 — bioPhotoDraftForSave(bioDraft), representativeCardKey
-      void bioPhotoDraftForSave(bioDraft)
+      const bioMime = bioDraft.status === 'loaded' ? bioDraft.mime : 'image/jpeg'
+      const bioError = await syncEmpBioAsync({
+        empId: selectedId,
+        payload: toBioSyncPayload(bioDraft, bioMime),
+      })
+      if (bioError) {
+        setBioSaveError(bioError)
+        return
+      }
 
       if (bioDraft.status !== 'unchanged') {
         setCommittedBio((prev) => {
@@ -350,8 +364,14 @@ export const EmpDrawer = ({
       if (useAsProfile && bioDraft.status === 'loaded') {
         try {
           const profileBytes = await processEmpPhotoFromBytes(bioDraft.bytes)
-          // TODO: API 프로필 이미지만 업데이트 — profileBytes 전송
-          void profileBytes
+          const photoError = await syncEmpPhotoAsync({
+            empId: selectedId,
+            payload: profileBytes,
+          })
+          if (photoError) {
+            setBioSaveError(photoError)
+            return
+          }
           const previewUrl = URL.createObjectURL(
             new Blob([Uint8Array.from(profileBytes)], { type: 'image/jpeg' }),
           )
@@ -371,8 +391,17 @@ export const EmpDrawer = ({
     }
   }
 
-  const handleBioDeleteConfirm = () => {
-    // TODO: API bio 삭제
+  const handleBioDeleteConfirm = async () => {
+    if (!selectedId) return
+    setBioSaveError(null)
+    const bioError = await syncEmpBioAsync({
+      empId: selectedId,
+      payload: { kind: 'cleared' },
+    })
+    if (bioError) {
+      setBioSaveError(bioError)
+      return
+    }
     setCommittedBio((prev) => {
       revokeBioPhotoPreview(prev)
       return { status: 'cleared' }
@@ -403,8 +432,6 @@ export const EmpDrawer = ({
           (qc.getQueryData<EmpInfo[]>(queryKeys.emps.all) ?? []).map((e) => e.id),
         )
         const payload = toCreateRequest(values)
-        // TODO: API image 필드 확정 후 empPhotoDraftForSave(photoDraft)를 wire payload에 포함
-        void empPhotoDraftForSave(photoDraft)
         const result = await createEmpAsync(payload)
         if (!result.ok) {
           setSaveError(result.message || t('emp:error.saveFailed'))
@@ -415,17 +442,33 @@ export const EmpDrawer = ({
         await qc.refetchQueries({ queryKey: queryKeys.emps.all })
         const fresh = qc.getQueryData<EmpInfo[]>(queryKeys.emps.all) ?? []
         const newId = findCreatedEmpId(fresh, values, beforeIds)
+        if (newId != null) {
+          const photoError = await syncEmpPhotoAsync({
+            empId: newId,
+            payload: empPhotoDraftForSave(photoDraft),
+          })
+          if (photoError) {
+            setSaveError(photoError)
+            return
+          }
+        }
         await onCreated(newId)
         return
       }
 
       if (!selectedId || !emp) return
       const data = toUpdateRequest(values, emp)
-      // TODO: API image 필드 확정 후 empPhotoDraftForSave(photoDraft)를 wire payload에 포함
-      void empPhotoDraftForSave(photoDraft)
       const result = await updateEmpAsync({ id: selectedId, data })
       if (!result.ok) {
         setSaveError(result.message)
+        return
+      }
+      const photoError = await syncEmpPhotoAsync({
+        empId: selectedId,
+        payload: empPhotoDraftForSave(photoDraft),
+      })
+      if (photoError) {
+        setSaveError(photoError)
         return
       }
       setEditing(false)

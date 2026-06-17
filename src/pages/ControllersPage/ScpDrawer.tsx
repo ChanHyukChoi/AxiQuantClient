@@ -1,30 +1,47 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Cpu, Info, Layers } from 'lucide-react'
+import { Check, Cpu, Info, Layers, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { DrawerSelectPrompt } from '@/components/basic/DrawerSelectPrompt'
 import { Modal } from '@/components/primitive/Modal'
 import type { TabItem } from '@/components/primitive/Tab'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
+import { Button } from '@/components/primitive/Button'
 import { ScpDetailFields } from '@/pages/ControllersPage/components/ScpDetailFields'
 import { ScpTitleActions } from '@/pages/ControllersPage/components/ScpTitleActions'
 import { SioWorkspace } from '@/pages/ControllersPage/components/SioWorkspace'
 import { useScpEditor } from '@/pages/ControllersPage/useScpEditor'
 import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
-import type { ScpInfo, SioInfo } from '@/types/api'
+import type { CreateScpRequest, ScpInfo, SioInfo } from '@/types/api'
+
+const CREATE_SCP_PLACEHOLDER: ScpInfo = {
+  id: 0,
+  name: '',
+  active: 1,
+  connstr: '',
+  model: 0,
+  ctype: 0,
+  ext: '',
+}
 
 interface ScpDrawerProps {
   scp: ScpInfo | null
+  createMode?: boolean
   sios: SioInfo[]
   siosLoading: boolean
+  onCreateCancel?: () => void
+  onCreated?: (data: CreateScpRequest) => void | Promise<void>
   onDeleted?: () => void
 }
 
 export const ScpDrawer = ({
   scp,
+  createMode = false,
   sios,
   siosLoading,
+  onCreateCancel,
+  onCreated,
   onDeleted,
 }: ScpDrawerProps) => {
   const { t } = useTranslation(['device', 'common'])
@@ -32,10 +49,17 @@ export const ScpDrawer = ({
 
   const editor = useScpEditor({
     scp,
+    createMode,
+    onCreateCancel,
+    onCreated,
     onDeleted,
   })
 
-  if (!scp) {
+  useEffect(() => {
+    if (createMode) setActiveTab('info')
+  }, [createMode])
+
+  if (!scp && !createMode) {
     return (
       <div
         className="flex flex-1 flex-col min-h-0 overflow-hidden"
@@ -49,6 +73,53 @@ export const ScpDrawer = ({
     )
   }
 
+  if (createMode) {
+    return (
+      <Drawer
+        fill
+        borderLeft={false}
+        header={
+          <DetailTitleBar
+            icon={<Cpu size={14} style={{ color: 'var(--color-accent)' }} />}
+            title={t('device:scp.addTitle')}
+          />
+        }
+        actions={
+          <div className="flex justify-end gap-1.5">
+            <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={editor.handleCancel}>
+              {t('common:cancel')}
+            </Button>
+            <Button
+              variant="accent"
+              size="sm"
+              leftIcon={<Check size={12} />}
+              loading={editor.isSaving}
+              onClick={editor.handleSave}
+            >
+              {t('common:add')}
+            </Button>
+          </div>
+        }
+        footer={
+          editor.actionError ? (
+            <p className="text-[13px] px-1" style={{ color: '#c75c5c' }}>
+              {editor.actionError}
+            </p>
+          ) : undefined
+        }
+      >
+        <ScpDetailFields
+          scp={CREATE_SCP_PLACEHOLDER}
+          editMode
+          register={editor.form.register}
+          statusInTitleBar
+        />
+      </Drawer>
+    )
+  }
+
+  if (!scp) return null
+
   const scpName = entityLabel('scp', scp)
 
   const drawerTabs: TabItem[] = [
@@ -56,7 +127,8 @@ export const ScpDrawer = ({
     {
       key: 'sios',
       label: `${t('device:scp.tab.sios')}${siosLoading ? '' : ` (${sios.length})`}`,
-      icon: <Layers size={12} /> },
+      icon: <Layers size={12} />,
+    },
   ]
 
   return (

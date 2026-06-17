@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ListChecks, ListX } from 'lucide-react'
 
 interface MultiSelectToggleAllButtonProps {
@@ -14,7 +15,8 @@ export const MultiSelectToggleAllButton = ({
   onDeselectAll,
   disabled = false,
 }: MultiSelectToggleAllButtonProps) => {
-  const label = hasSelection ? '전체 해제' : '전체 선택'
+  const { t } = useTranslation('common')
+  const label = hasSelection ? t('deselectAll') : t('selectAll')
 
   return (
     <button

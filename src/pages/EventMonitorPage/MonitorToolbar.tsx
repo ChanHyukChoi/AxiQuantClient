@@ -13,6 +13,7 @@ import {
 } from '@/pages/EventMonitorPage/components/toolbarStyles'
 import type { DatePreset } from '@/pages/EventMonitorPage/utils/dateRange'
 import type { TypeFilter } from '@/pages/EventMonitorPage/utils/eventFilters'
+import type { EventListFilters } from '@/pages/EventMonitorPage/components/EventFilterModal'
 
 export type MonitorMode = 'live' | 'history'
 export type { TypeFilter } from '@/pages/EventMonitorPage/utils/eventFilters'
@@ -35,6 +36,8 @@ interface MonitorToolbarProps {
   onExport: () => void
   onPrint: () => void
   onSearch: () => void
+  listFilters: EventListFilters
+  onApplyFilters: (filters: EventListFilters) => void
 }
 
 const modeBtnStyle = (active: boolean): React.CSSProperties => ({
@@ -63,6 +66,8 @@ export const MonitorToolbar = ({
   onExport,
   onPrint,
   onSearch,
+  listFilters,
+  onApplyFilters,
 }: MonitorToolbarProps) => {
   const { t } = useTranslation('eventMonitor')
   const receiving = mode === 'live' && isConnected && !paused
@@ -140,7 +145,7 @@ export const MonitorToolbar = ({
         <MonitorTypePills typeFilter={typeFilter} onTypeFilterChange={onTypeFilterChange} />
 
         <div className="ml-auto shrink-0">
-          <EventFilterButton scope={mode} />
+          <EventFilterButton scope={mode} filters={listFilters} onApplyFilters={onApplyFilters} />
         </div>
       </div>
 

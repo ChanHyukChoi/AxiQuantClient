@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Printer } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import {
@@ -12,17 +13,22 @@ export const PrintButton = ({
   size = 'md',
   showLabel = true,
   fontSize = 15,
-}: PageActionButtonProps) => (
-  <Button
-    variant="default"
-    size={size}
-    leftIcon={<Printer size={pageActionIconSize(size)} />}
-    onClick={onClick}
-    disabled={disabled}
-    className={className}
-    title="인쇄"
-    style={{ fontSize }}
-  >
-    {showLabel ? '인쇄' : undefined}
-  </Button>
-)
+}: PageActionButtonProps) => {
+  const { t } = useTranslation('common')
+  const label = t('print')
+
+  return (
+    <Button
+      variant="default"
+      size={size}
+      leftIcon={<Printer size={pageActionIconSize(size)} />}
+      onClick={onClick}
+      disabled={disabled}
+      className={className}
+      title={label}
+      style={{ fontSize }}
+    >
+      {showLabel ? label : undefined}
+    </Button>
+  )
+}

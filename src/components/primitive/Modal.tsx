@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from './Button'
 
 interface ModalProps {
@@ -17,13 +18,17 @@ export const Modal = ({
   open,
   title,
   description,
-  confirmLabel = '확인',
-  cancelLabel = '취소',
+  confirmLabel,
+  cancelLabel,
   variant = 'danger',
   loading = false,
   onConfirm,
   onCancel,
 }: ModalProps) => {
+  const { t } = useTranslation('common')
+  const resolvedConfirmLabel = confirmLabel ?? t('confirm')
+  const resolvedCancelLabel = cancelLabel ?? t('cancel')
+
   useEffect(() => {
     if (!open) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,10 +67,10 @@ export const Modal = ({
 
         <div className="flex justify-end gap-2 mt-5">
           <Button variant="default" size="md" onClick={onCancel} disabled={loading}>
-            {cancelLabel}
+            {resolvedCancelLabel}
           </Button>
           <Button variant={variant} size="md" onClick={onConfirm} loading={loading}>
-            {confirmLabel}
+            {resolvedConfirmLabel}
           </Button>
         </div>
       </div>

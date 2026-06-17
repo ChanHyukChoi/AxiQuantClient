@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const LogoSection = () => {
+  const { t } = useTranslation('common')
   const [imgError, setImgError] = useState(false)
 
   return (
@@ -18,7 +20,7 @@ export const LogoSection = () => {
         </span>
       )}
       <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-        출입 관제 시스템
+        {t('loginTagline')}
       </span>
     </div>
   )

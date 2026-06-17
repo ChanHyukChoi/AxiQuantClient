@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/primitive/Button'
 import { SlidersHorizontal } from 'lucide-react'
 import { type PageActionButtonProps } from '@/components/page-actions/types'
@@ -23,14 +24,18 @@ export const FilterButton = ({
   active = false,
   style,
   ...props
-}: FilterButtonProps & { active?: boolean }) => (
-  <Button
-    variant="default"
-    size={size}
-    leftIcon={<SlidersHorizontal size={iconSize} />}
-    style={{ fontSize, ...(active ? filterActiveStyle : {}), ...style }}
-    {...props}
-  >
-    {showLabel ? '필터' : undefined}
-  </Button>
-)
+}: FilterButtonProps & { active?: boolean }) => {
+  const { t } = useTranslation('common')
+
+  return (
+    <Button
+      variant="default"
+      size={size}
+      leftIcon={<SlidersHorizontal size={iconSize} />}
+      style={{ fontSize, ...(active ? filterActiveStyle : {}), ...style }}
+      {...props}
+    >
+      {showLabel ? t('filter') : undefined}
+    </Button>
+  )
+}

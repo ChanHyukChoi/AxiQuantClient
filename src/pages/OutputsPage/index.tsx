@@ -16,6 +16,7 @@ const OUTPUTS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.outputs.v1'
 
 export const OutputsPage = () => {
   const { t } = useTranslation('nav')
+  const { t: tDevice } = useTranslation('device')
   const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
@@ -70,7 +71,7 @@ export const OutputsPage = () => {
               selectedId={selectedGridId ?? undefined}
               onRowClick={handleRowClick}
               onSearch={setSearchQuery}
-              searchPlaceholder="출력 검색..."
+              searchPlaceholder={tDevice('output.searchPlaceholder')}
               totalCount={filteredRows.length}
               loading={isLoading}
               pagination={{
@@ -86,7 +87,7 @@ export const OutputsPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                출력 목록을 불러오지 못했습니다.
+                {tDevice('output.loadError')}
               </p>
             ) : null}
           </>

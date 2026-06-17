@@ -62,8 +62,8 @@ export const CardsPage = () => {
   const [pageSize, setPageSize] = useState(20)
 
   const { data: cardList, isLoading: cardLoading } = useCardList()
-  const { data: empList, isLoading: empLoading } = useEmpList()
-  const { data: accLvList, isLoading: accLvLoading } = useAccLvList()
+  const { data: empList } = useEmpList()
+  const { data: accLvList } = useAccLvList()
   const { data: areaList } = useAreas()
 
   const normalizedCards = useMemo<CardRow[]>(
@@ -76,57 +76,6 @@ export const CardsPage = () => {
       }) ?? [],
     [cardList],
   )
-
-  useEffect(() => {
-    if (!import.meta.env.DEV) return
-    const cardRawCount = Array.isArray(cardList)
-      ? cardList.length
-      : cardList == null
-        ? null
-        : 'not-array'
-    const empRawCount = Array.isArray(empList)
-      ? empList.length
-      : empList == null
-        ? null
-        : 'not-array'
-    const accLvRawCount = Array.isArray(accLvList)
-      ? accLvList.length
-      : accLvList == null
-        ? null
-        : 'not-array'
-    console.info('[CardsPage] Drawer 참조 데이터 (카드·카드사용자·접근권한)', {
-      카드목록: {
-        loading: cardLoading,
-        apiCount: cardRawCount,
-        gridCount: normalizedCards.length,
-        droppedWithoutPrimaryKey: Array.isArray(cardList)
-          ? cardList.length - normalizedCards.length
-          : null,
-      },
-      카드사용자_직원: {
-        loading: empLoading,
-        apiCount: empRawCount,
-        note: '카드 사용자 선택 모달에 사용 (/api/emps)',
-      },
-      접근권한: {
-        loading: accLvLoading,
-        apiCount: accLvRawCount,
-        note: '접근권한 선택 모달에 사용 (/api/acclv)',
-      },
-      filters: listFilters,
-      searchQuery: searchQuery || '(없음)',
-    })
-  }, [
-    cardList,
-    cardLoading,
-    empList,
-    empLoading,
-    accLvList,
-    accLvLoading,
-    normalizedCards.length,
-    listFilters,
-    searchQuery,
-  ])
 
   const empNameMap = useMemo(() => {
     if (!Array.isArray(empList)) return {} as Record<number, string>

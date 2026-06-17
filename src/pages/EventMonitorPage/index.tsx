@@ -18,9 +18,15 @@ import {
 } from '@/pages/EventMonitorPage/utils/dateRange'
 import {
   exportEventsCsv,
+  filterBySearch,
   filterByType,
+  filterByUnacked,
   type TypeFilter,
 } from '@/pages/EventMonitorPage/utils/eventFilters'
+import {
+  defaultEventListFilters,
+  type EventListFilters,
+} from '@/pages/EventMonitorPage/components/EventFilterModal'
 import type { AccessLogParams, AlarmLogParams, EventRecord } from '@/types/api/eventMonitor'
 
 const PAGE_SIZE = 50
@@ -36,6 +42,7 @@ export const EventMonitorPage = () => {
   const [dateFrom, setDateFrom] = useState(formatDateInput(new Date()))
   const [dateTo, setDateTo] = useState(formatDateInput(new Date()))
   const [ackedOverrides, setAckedOverrides] = useState<Record<number, boolean>>({})
+  const [listFilters, setListFilters] = useState<EventListFilters>(defaultEventListFilters)
 
   const live = useLiveEvents()
 
@@ -64,7 +71,7 @@ export const EventMonitorPage = () => {
     typeFilter,
     accessParams,
     alarmParams,
-    searchQuery: '',
+    searchQuery: listFilters.search,
     enabled: mode === 'history',
   })
 
@@ -74,10 +81,11 @@ export const EventMonitorPage = () => {
     [ackedOverrides],
   )
 
-  const liveFiltered = useMemo(
-    () => applyAckOverrides(filterByType(live.events, typeFilter)),
-    [live.events, typeFilter, applyAckOverrides],
-  )
+  const liveFiltered = useMemo(() => {
+    const typed = filterByType(live.events, typeFilter)
+    const searched = filterBySearch(typed, listFilters.search)
+    return applyAckOverrides(filterByUnacked(searched, listFilters.unackedOnly))
+  }, [live.events, typeFilter, listFilters, applyAckOverrides])
 
   const historyFiltered = useMemo(
     () => applyAckOverrides(filterByType(history.events, typeFilter)),
@@ -111,6 +119,7 @@ export const EventMonitorPage = () => {
     setMode(next)
     setSelectedId(null)
     setPage(1)
+    setListFilters(defaultEventListFilters)
   }
 
   const handleSearch = useCallback(() => {
@@ -139,6 +148,8 @@ export const EventMonitorPage = () => {
         onExport={handleExport}
         onPrint={handlePrint}
         onSearch={handleSearch}
+        listFilters={listFilters}
+        onApplyFilters={setListFilters}
       />
 
       <SplitDrawerLayout

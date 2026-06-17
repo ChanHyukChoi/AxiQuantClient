@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { SearchField } from '@/components/primitive/SearchField'
 
 export interface ListPanelItem {
@@ -21,13 +22,15 @@ export const ListPanel = ({
   items,
   selectedId,
   onItemClick,
-  searchPlaceholder = '검색...',
+  searchPlaceholder,
   onSearch,
   totalCount,
   width = 240,
   loading = false,
 }: ListPanelProps) => {
+  const { t } = useTranslation('common')
   const count = totalCount ?? items.length
+  const resolvedSearchPlaceholder = searchPlaceholder ?? t('search')
 
   return (
     <div
@@ -44,7 +47,7 @@ export const ListPanel = ({
             borderBottom: '0.5px solid var(--color-border)',
           }}
         >
-          <SearchField placeholder={searchPlaceholder} onChange={onSearch} />
+          <SearchField placeholder={resolvedSearchPlaceholder} onChange={onSearch} />
         </div>
       )}
 
@@ -55,7 +58,7 @@ export const ListPanel = ({
             className="flex items-center justify-center py-8 text-[14px]"
             style={{ color: 'var(--color-text-subtle)' }}
           >
-            불러오는 중...
+            {t('loading')}
           </div>
         ) : (
           items.map((item) => (
@@ -79,7 +82,7 @@ export const ListPanel = ({
           color: 'var(--color-text-dim)',
         }}
       >
-        전체 {count}건
+        {t('totalCount', { count })}
       </div>
     </div>
   )

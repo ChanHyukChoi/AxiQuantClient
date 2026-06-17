@@ -25,6 +25,9 @@
       "deleteDescription": "\"{{name}}\" 제어기를 삭제하시겠습니까?",
       "resetTitle": "제어기 초기화",
       "resetDescription": "\"{{name}}\" 제어기를 초기화하시겠습니까? 연결된 장치 설정이 모두 삭제될 수 있습니다."
+    },
+    "validation": {
+      "nameRequired": "명칭을 입력하세요"
     }
   },
   "sio": {
@@ -49,9 +52,13 @@
   },
   "input": {
     "invert": "입력 반전",
-    "holdTime": "유지 시간"
+    "holdTime": "유지 시간",
+    "searchPlaceholder": "입력 검색...",
+    "loadError": "입력 목록을 불러오지 못했습니다."
   },
   "output": {
-    "pulseDuration": "지속 시간"
+    "pulseDuration": "지속 시간",
+    "searchPlaceholder": "출력 검색...",
+    "loadError": "출력 목록을 불러오지 못했습니다."
   }
 }

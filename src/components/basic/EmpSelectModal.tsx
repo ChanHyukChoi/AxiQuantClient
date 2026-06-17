@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
@@ -51,14 +52,17 @@ const RadioMark = ({ checked }: { checked: boolean }) => (
 
 export const EmpSelectModal = ({
   open,
-  title = '카드 사용자 선택',
+  title,
   emps,
   selectedId,
   allowClear = true,
-  clearLabel = '선택 안 함',
+  clearLabel,
   onCancel,
   onConfirm,
 }: EmpSelectModalProps) => {
+  const { t } = useTranslation(['emp', 'common'])
+  const modalTitle = title ?? t('emp:selectModal.title')
+  const resolvedClearLabel = clearLabel ?? t('emp:selectModal.clearLabel')
   const [query, setQuery] = useState('')
   const [picked, setPicked] = useState<number | undefined>(selectedId)
 
@@ -93,7 +97,7 @@ export const EmpSelectModal = ({
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={modalTitle}
         className="flex flex-col rounded-md overflow-hidden"
         style={{
           width: 400,
@@ -110,13 +114,13 @@ export const EmpSelectModal = ({
             className="font-medium"
             style={{ color: 'var(--color-text)', fontSize: FONT_SIZE }}
           >
-            {title}
+            {modalTitle}
           </span>
           <button
             type="button"
             onClick={onCancel}
             className="cursor-pointer"
-            style={{ color: 'var(--color-icon)' }}
+            aria-label={t('common:close')}
           >
             <X size={16} />
           </button>
@@ -132,13 +136,13 @@ export const EmpSelectModal = ({
             style={{ borderColor: 'var(--color-border-subtle)' }}
           >
             <span aria-hidden />
-            <span className="app-select-modal-col-header">이름</span>
-            <span className="app-select-modal-col-header">사번</span>
+            <span className="app-select-modal-col-header">{t('emp:field.name')}</span>
+            <span className="app-select-modal-col-header">{t('emp:field.empNo')}</span>
             <span className="app-select-modal-col-header app-select-modal-col-header--center">
-              부서
+              {t('emp:field.dept')}
             </span>
             <span className="app-select-modal-col-header app-select-modal-col-header--center">
-              직급
+              {t('emp:field.lv')}
             </span>
           </div>
         ) : null}
@@ -156,7 +160,7 @@ export const EmpSelectModal = ({
             >
               <RadioMark checked={picked === undefined} />
               <span style={{ color: 'var(--color-text-muted)', fontSize: FONT_SIZE }}>
-                {clearLabel}
+                {resolvedClearLabel}
               </span>
             </button>
           ) : null}
@@ -166,7 +170,7 @@ export const EmpSelectModal = ({
               className="text-center py-8"
               style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}
             >
-              {query.trim() ? '검색 결과가 없습니다.' : '등록된 사용자가 없습니다.'}
+              {query.trim() ? t('common:noSearchResults') : t('emp:selectModal.empty')}
             </p>
           ) : (
             filtered.map((emp, index) => {
@@ -206,7 +210,7 @@ export const EmpSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <Button variant="default" size="md" onClick={onCancel}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -214,7 +218,7 @@ export const EmpSelectModal = ({
             leftIcon={<Check size={15} />}
             onClick={() => onConfirm(picked)}
           >
-            확인
+            {t('common:confirm')}
           </Button>
         </div>
       </div>

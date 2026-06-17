@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Search } from 'lucide-react'
 
 interface SearchFieldProps {
@@ -10,23 +11,27 @@ interface SearchFieldProps {
 }
 
 export const SearchField = ({
-  placeholder = '검색...',
+  placeholder,
   value,
   onChange,
   className = '',
   fill = false,
-}: SearchFieldProps) => (
-  <div
-    className={['app-search-field', fill ? 'app-search-field--fill' : '', className]
-      .filter(Boolean)
-      .join(' ')}
-  >
-    <Search aria-hidden size={14} />
-    <input
-      type="text"
-      placeholder={placeholder}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  </div>
-)
+}: SearchFieldProps) => {
+  const { t } = useTranslation('common')
+
+  return (
+    <div
+      className={['app-search-field', fill ? 'app-search-field--fill' : '', className]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      <Search aria-hidden size={14} />
+      <input
+        type="text"
+        placeholder={placeholder ?? t('search')}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  )
+}

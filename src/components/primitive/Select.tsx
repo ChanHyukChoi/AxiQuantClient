@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createPortal } from 'react-dom'
 import { Check, ChevronDown } from 'lucide-react'
 
@@ -70,11 +71,13 @@ export const Select = ({
   onBlur,
   options,
   disabled = false,
-  placeholder = '선택',
+  placeholder,
   fontSize = 15,
   className = '',
   menuPlacement = 'auto',
 }: SelectProps) => {
+  const { t } = useTranslation('common')
+  const resolvedPlaceholder = placeholder ?? t('select')
   const listboxId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -226,7 +229,7 @@ export const Select = ({
           className="truncate flex-1 min-w-0 text-left"
           style={{ color: selected ? 'var(--color-text)' : 'var(--color-text-dim)' }}
         >
-          {selected?.label ?? placeholder}
+          {selected?.label ?? resolvedPlaceholder}
         </span>
         <ChevronDown
           size={14}

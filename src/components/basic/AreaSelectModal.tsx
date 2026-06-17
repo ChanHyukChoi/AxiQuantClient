@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Badge } from '@/components/primitive/Badge'
@@ -22,12 +23,14 @@ interface AreaSelectModalProps {
 
 export const AreaSelectModal = ({
   open,
-  title = '영역 선택',
+  title,
   areas,
   selectedId,
   onCancel,
   onConfirm,
 }: AreaSelectModalProps) => {
+  const { t } = useTranslation(['area', 'common'])
+  const modalTitle = title ?? t('area:selectModal.title')
   const [query, setQuery] = useState('')
   const [picked, setPicked] = useState<number | undefined>(selectedId)
 
@@ -56,7 +59,7 @@ export const AreaSelectModal = ({
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={modalTitle}
         className="flex flex-col rounded-md overflow-hidden"
         style={{
           width: 380,
@@ -70,13 +73,14 @@ export const AreaSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
-            {title}
+            {modalTitle}
           </span>
           <button
             type="button"
             onClick={onCancel}
             className="cursor-pointer"
             style={{ color: 'var(--color-icon)' }}
+            aria-label={t('common:close')}
           >
             <X size={16} />
           </button>
@@ -92,7 +96,7 @@ export const AreaSelectModal = ({
               className="text-[14px] text-center py-8"
               style={{ color: 'var(--color-text-subtle)' }}
             >
-              {query.trim() ? '검색 결과가 없습니다.' : '등록된 영역이 없습니다.'}
+              {query.trim() ? t('common:noSearchResults') : t('area:selectModal.empty')}
             </p>
           ) : (
             filtered.map((area) => {
@@ -129,7 +133,7 @@ export const AreaSelectModal = ({
                   </span>
                   {area.active != null ? (
                     <Badge variant={area.active ? 'on' : 'off'}>
-                      {area.active ? '활성' : '비활성'}
+                      {area.active ? t('common:active') : t('common:inactive')}
                     </Badge>
                   ) : null}
                 </button>
@@ -143,7 +147,7 @@ export const AreaSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <Button variant="default" size="md" onClick={onCancel}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -154,7 +158,7 @@ export const AreaSelectModal = ({
               if (picked != null) onConfirm(picked)
             }}
           >
-            확인
+            {t('common:confirm')}
           </Button>
         </div>
       </div>

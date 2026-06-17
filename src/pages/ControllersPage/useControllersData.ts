@@ -24,8 +24,12 @@ export const useControllersData = () => {
   const { data: sioList, isLoading: siosLoading } = useSios(selectedId ?? 0)
   const sios = sioList ?? []
 
-  const selectScp = (scp: ScpInfo) => {
-    setSelectedId(scp.id)
+  const selectScp = (scp: ScpInfo | number | null) => {
+    if (scp == null) {
+      setSelectedId(null)
+      return
+    }
+    setSelectedId(typeof scp === 'number' ? scp : scp.id)
   }
 
   const onScpDeleted = useCallback(() => {

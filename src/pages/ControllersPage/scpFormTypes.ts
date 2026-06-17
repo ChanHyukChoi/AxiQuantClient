@@ -1,15 +1,24 @@
+import type { TFunction } from 'i18next'
 import { z } from 'zod'
 
-export const scpFormSchema = z.object({
-  name: z.string().min(1, '명칭을 입력하세요'),
-  active: z.number(),
-  connstr: z.string(),
-  model: z.number(),
-  ctype: z.number(),
-  ext: z.string(),
-})
+export const createScpFormSchema = (t: TFunction) =>
+  z.object({
+    name: z.string().min(1, t('device:scp.validation.nameRequired')),
+    active: z.number(),
+    connstr: z.string(),
+    model: z.number(),
+    ctype: z.number(),
+    ext: z.string(),
+  })
 
-export type ScpFormValues = z.infer<typeof scpFormSchema>
+export type ScpFormValues = {
+  name: string
+  active: number
+  connstr: string
+  model: number
+  ctype: number
+  ext: string
+}
 
 export const scpToForm = (scp: {
   name: string

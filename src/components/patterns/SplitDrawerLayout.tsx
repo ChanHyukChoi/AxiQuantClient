@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   SPLIT_DRAWER_DEFAULT_WIDTH,
   SPLIT_DRAWER_MIN_WIDTH,
@@ -27,6 +28,7 @@ export const SplitDrawerLayout = ({
   defaultDrawerWidth = SPLIT_DRAWER_DEFAULT_WIDTH,
   storageKey = SPLIT_DRAWER_WIDTH_STORAGE_KEY,
 }: SplitDrawerLayoutProps) => {
+  const { t } = useTranslation('common')
   const containerRef = useRef<HTMLDivElement>(null)
   const { drawerWidth, maxDrawerWidth, onResizePointerDown } = useResizableDrawerWidth({
     containerRef,
@@ -59,7 +61,7 @@ export const SplitDrawerLayout = ({
         <div
           role="separator"
           aria-orientation="vertical"
-          aria-label="패널 너비 조절"
+          aria-label={t('resizePanel')}
           onPointerDown={onResizePointerDown}
           className="flex-shrink-0 touch-none self-stretch"
           style={{

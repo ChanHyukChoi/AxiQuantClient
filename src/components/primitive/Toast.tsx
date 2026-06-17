@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { useToastStore } from '@/stores/toastStore'
 
 export const ToastHost = () => {
+  const { t } = useTranslation('common')
   const { toasts, dismiss } = useToastStore()
 
   if (toasts.length === 0) return null
@@ -29,7 +31,7 @@ export const ToastHost = () => {
             onClick={() => dismiss(toast.id)}
             className="flex-shrink-0 p-0 border-0 bg-transparent cursor-pointer"
             style={{ color: 'var(--color-text-dim)' }}
-            aria-label="닫기"
+            aria-label={t('close')}
           >
             <X size={14} />
           </button>

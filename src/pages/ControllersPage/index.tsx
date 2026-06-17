@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Cpu } from 'lucide-react'
@@ -7,7 +7,6 @@ import { SplitDrawerLayout } from '@/components/patterns/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
 import { PageHeader } from '@/layouts/PageHeader'
 import { useGridLayout } from '@/hooks/ui/useGridLayout'
-import { ScpCreateModal } from '@/pages/ControllersPage/components/ScpCreateModal'
 import { ScpDrawer } from '@/pages/ControllersPage/ScpDrawer'
 import { useScpColumns } from '@/pages/ControllersPage/useScpColumns'
 import { useControllersData } from '@/pages/ControllersPage/useControllersData'
@@ -19,7 +18,8 @@ const CONTROLLERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.controllers.v1'
 export const ControllersPage = () => {
   const { t } = useTranslation(['nav', 'device'])
   const qc = useQueryClient()
-  const [createOpen, setCreateOpen] = useState(false)
+  const selectionBeforeCreateRef = useRef<number | null>(null)
+  const [createMode, setCreateMode] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
@@ -46,15 +46,32 @@ export const ControllersPage = () => {
   }, [])
 
   const handleRowClick = (row: ScpInfo) => {
+    if (createMode) {
+      setCreateMode(false)
+      selectionBeforeCreateRef.current = null
+    }
     selectScp(row)
+  }
+
+  const handleAddClick = () => {
+    selectionBeforeCreateRef.current = selectedId
+    setCreateMode(true)
+    selectScp(null)
+  }
+
+  const handleCreateCancel = () => {
+    setCreateMode(false)
+    selectScp(selectionBeforeCreateRef.current)
+    selectionBeforeCreateRef.current = null
   }
 
   const handleCreated = useCallback(
     async (data: CreateScpRequest) => {
-      setCreateOpen(false)
+      setCreateMode(false)
+      selectionBeforeCreateRef.current = null
       const list = await fetchScpList(qc)
       const created = list?.find((s) => s.name === data.name)
-      if (created) selectScp(created)
+      if (created) selectScp(created.id)
     },
     [qc, selectScp],
   )
@@ -71,7 +88,7 @@ export const ControllersPage = () => {
       <PageHeader
         title={t('menu.controllers')}
         icon={<Cpu size={15} />}
-        actions={<AddButton onClick={() => setCreateOpen(true)} />}
+        actions={<AddButton onClick={handleAddClick} />}
       />
 
       <SplitDrawerLayout
@@ -108,17 +125,14 @@ export const ControllersPage = () => {
         drawer={
           <ScpDrawer
             scp={selectedScp}
+            createMode={createMode}
             sios={sios}
             siosLoading={siosLoading}
+            onCreateCancel={handleCreateCancel}
+            onCreated={handleCreated}
             onDeleted={onScpDeleted}
           />
         }
-      />
-
-      <ScpCreateModal
-        open={createOpen}
-        onCancel={() => setCreateOpen(false)}
-        onCreated={handleCreated}
       />
     </div>
   )

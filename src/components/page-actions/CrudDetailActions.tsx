@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Check, Pencil, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 
@@ -22,6 +23,8 @@ export const CrudDetailActions = ({
   onSave,
   onCancel,
 }: CrudDetailActionsProps) => {
+  const { t } = useTranslation('common')
+
   if (editMode) {
     return (
       <div className="flex items-center gap-1.5 shrink-0">
@@ -32,7 +35,7 @@ export const CrudDetailActions = ({
           disabled={disabled}
           onClick={onCancel}
         >
-          취소
+          {t('cancel')}
         </Button>
         <Button
           variant="accent"
@@ -42,7 +45,7 @@ export const CrudDetailActions = ({
           disabled={disabled}
           onClick={onSave}
         >
-          저장
+          {t('save')}
         </Button>
       </div>
     )
@@ -58,7 +61,7 @@ export const CrudDetailActions = ({
         disabled={disabled}
         onClick={onDelete}
       >
-        삭제
+        {t('delete')}
       </Button>
       <Button
         variant="accent"
@@ -67,7 +70,7 @@ export const CrudDetailActions = ({
         disabled={disabled}
         onClick={onEdit}
       >
-        수정
+        {t('edit')}
       </Button>
     </div>
   )

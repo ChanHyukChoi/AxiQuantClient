@@ -16,6 +16,11 @@ export const filterBySearch = (rows: EventRecord[], q: string): EventRecord[] =>
   )
 }
 
+export const filterByUnacked = (rows: EventRecord[], unackedOnly: boolean): EventRecord[] => {
+  if (!unackedOnly) return rows
+  return rows.filter((r) => r.type === 'alarm' && !r.acked)
+}
+
 export const exportEventsCsv = (events: EventRecord[], filenamePrefix = 'event-history'): void => {
   const t = i18n.getFixedT(null, 'eventMonitor')
   const header = [

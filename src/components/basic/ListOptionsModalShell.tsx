@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export const LIST_OPTIONS_FONT_SIZE = 15
 export const LIST_OPTIONS_MODAL_WIDTH = 360
@@ -41,7 +42,7 @@ const tabBtnClass = (active: boolean) =>
 
 export const ListOptionsModalShell = ({
   open,
-  title = '목록 옵션',
+  title,
   tabs,
   activeTab,
   onTabChange,
@@ -50,6 +51,9 @@ export const ListOptionsModalShell = ({
   children,
   footer,
 }: ListOptionsModalShellProps) => {
+  const { t } = useTranslation('common')
+  const resolvedTitle = title ?? t('listOptions')
+
   useEffect(() => {
     if (!open) return
     const onKeyDown = (e: KeyboardEvent) => {
@@ -75,7 +79,7 @@ export const ListOptionsModalShell = ({
           className="font-medium mb-3"
           style={{ color: 'var(--color-text)', fontSize: LIST_OPTIONS_FONT_SIZE }}
         >
-          {title}
+          {resolvedTitle}
         </p>
 
         <div className="flex gap-1.5 mb-3">

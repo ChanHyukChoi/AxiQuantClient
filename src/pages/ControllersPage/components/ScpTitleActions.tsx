@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { RotateCcw } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { CrudDetailActions } from '@/components/page-actions'
@@ -27,6 +28,8 @@ export const ScpTitleActions = ({
   onDelete,
   onReset,
 }: ScpTitleActionsProps) => {
+  const { t } = useTranslation('common')
+
   if (!hasScp) return null
 
   if (editMode) {
@@ -49,7 +52,7 @@ export const ScpTitleActions = ({
         loading={isResetting}
         onClick={onReset}
       >
-        초기화
+        {t('reset')}
       </Button>
       <CrudDetailActions
         editMode={false}

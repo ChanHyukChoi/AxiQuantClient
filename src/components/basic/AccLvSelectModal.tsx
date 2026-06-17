@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, X } from 'lucide-react'
 import { MultiSelectToggleAllButton } from '@/components/basic/MultiSelectToggleAllButton'
 import { Badge } from '@/components/primitive/Badge'
@@ -25,19 +26,21 @@ interface AccLvSelectModalProps {
   onConfirm: (ids: number[]) => void
 }
 
-const formatDescription = (description?: string): string => {
+const formatDescription = (description: string | undefined, empty: string): string => {
   const t = description?.trim() ?? ''
-  return t !== '' ? t : '—'
+  return t !== '' ? t : empty
 }
 
 export const AccLvSelectModal = ({
   open,
-  title = '접근 권한 선택',
+  title,
   items,
   selectedIds,
   onCancel,
   onConfirm,
 }: AccLvSelectModalProps) => {
+  const { t } = useTranslation(['access', 'common'])
+  const modalTitle = title ?? t('access:selectModal.title')
   const [query, setQuery] = useState('')
   const [checked, setChecked] = useState<Set<number>>(() => new Set(selectedIds))
 
@@ -88,7 +91,7 @@ export const AccLvSelectModal = ({
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-label={modalTitle}
         className="flex flex-col rounded-md overflow-hidden"
         style={{
           width: 480,
@@ -105,13 +108,14 @@ export const AccLvSelectModal = ({
             className="font-medium"
             style={{ color: 'var(--color-text)', fontSize: FONT_SIZE }}
           >
-            {title}
+            {modalTitle}
           </span>
           <button
             type="button"
             onClick={onCancel}
             className="cursor-pointer"
             style={{ color: 'var(--color-icon)' }}
+            aria-label={t('common:close')}
           >
             <X size={16} />
           </button>
@@ -133,10 +137,10 @@ export const AccLvSelectModal = ({
         {showColumnHeader ? (
           <div className="app-select-modal-header-row app-select-modal-acclv-grid">
             <span aria-hidden />
-            <span className="app-select-modal-col-header">권한명</span>
-            <span className="app-select-modal-col-header">설명</span>
+            <span className="app-select-modal-col-header">{t('access:field.name')}</span>
+            <span className="app-select-modal-col-header">{t('access:field.description')}</span>
             <span className="app-select-modal-col-header app-select-modal-col-header--center">
-              상태
+              {t('common:status')}
             </span>
           </div>
         ) : null}
@@ -147,7 +151,7 @@ export const AccLvSelectModal = ({
               className="text-center py-8"
               style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}
             >
-              {query.trim() ? '검색 결과가 없습니다.' : '등록된 접근 권한이 없습니다.'}
+              {query.trim() ? t('common:noSearchResults') : t('access:selectModal.empty')}
             </p>
           ) : (
             filtered.map((item) => {
@@ -178,13 +182,13 @@ export const AccLvSelectModal = ({
                   </span>
                   <span
                     className="app-select-modal-cell app-select-modal-cell--muted"
-                    title={formatDescription(item.description)}
+                    title={formatDescription(item.description, t('common:empty'))}
                   >
-                    {formatDescription(item.description)}
+                    {formatDescription(item.description, t('common:empty'))}
                   </span>
                   <span className="app-select-modal-cell app-select-modal-cell--center">
                     <Badge variant={isActive ? 'on' : 'off'}>
-                      {isActive ? '활성' : '비활성'}
+                      {isActive ? t('common:active') : t('common:inactive')}
                     </Badge>
                   </span>
                 </div>
@@ -198,7 +202,7 @@ export const AccLvSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <Button variant="default" size="md" onClick={onCancel}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -206,7 +210,7 @@ export const AccLvSelectModal = ({
             leftIcon={<Check size={15} />}
             onClick={() => onConfirm(Array.from(checked))}
           >
-            확인 ({checked.size})
+            {t('common:confirmCount', { count: checked.size })}
           </Button>
         </div>
       </div>

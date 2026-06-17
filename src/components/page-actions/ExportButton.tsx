@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Download } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import {
@@ -12,17 +13,22 @@ export const ExportButton = ({
   size = 'md',
   showLabel = true,
   fontSize = 15,
-}: PageActionButtonProps) => (
-  <Button
-    variant="default"
-    size={size}
-    leftIcon={<Download size={pageActionIconSize(size)} />}
-    onClick={onClick}
-    disabled={disabled}
-    className={className}
-    title="내보내기"
-    style={{ fontSize }}
-  >
-    {showLabel ? '내보내기' : undefined}
-  </Button>
-)
+}: PageActionButtonProps) => {
+  const { t } = useTranslation('common')
+  const label = t('export')
+
+  return (
+    <Button
+      variant="default"
+      size={size}
+      leftIcon={<Download size={pageActionIconSize(size)} />}
+      onClick={onClick}
+      disabled={disabled}
+      className={className}
+      title={label}
+      style={{ fontSize }}
+    >
+      {showLabel ? label : undefined}
+    </Button>
+  )
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Search } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import {
@@ -12,18 +13,23 @@ export const SearchButton = ({
   size = 'md',
   showLabel = true,
   fontSize = 15,
-  title = '검색',
-}: PageActionButtonProps) => (
-  <Button
-    variant="accent"
-    size={size}
-    leftIcon={<Search size={pageActionIconSize(size)} />}
-    onClick={onClick}
-    disabled={disabled}
-    className={className}
-    title={title}
-    style={{ fontSize }}
-  >
-    {showLabel ? '검색' : undefined}
-  </Button>
-)
+  title,
+}: PageActionButtonProps) => {
+  const { t } = useTranslation('common')
+  const label = t('search')
+
+  return (
+    <Button
+      variant="accent"
+      size={size}
+      leftIcon={<Search size={pageActionIconSize(size)} />}
+      onClick={onClick}
+      disabled={disabled}
+      className={className}
+      title={title ?? label}
+      style={{ fontSize }}
+    >
+      {showLabel ? label : undefined}
+    </Button>
+  )
+}

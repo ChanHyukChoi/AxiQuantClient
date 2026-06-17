@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import type { DeviceTreeNode as DeviceTreeNodeData } from '@/lib/device/buildTree'
 import {
@@ -25,6 +26,7 @@ export const DeviceTreeNode = ({
   onToggle,
   onSelect,
 }: DeviceTreeNodeProps) => {
+  const { t } = useTranslation('common')
   const hasChildren = (node.children?.length ?? 0) > 0
   const isExpanded = expandedKeys.has(node.key)
   const isSelected = selectedKey === node.key
@@ -60,7 +62,7 @@ export const DeviceTreeNode = ({
               onClick={handleChevronClick}
               className="flex items-center justify-center p-0 border-0 bg-transparent cursor-pointer"
               style={{ color: 'var(--color-text-dim)' }}
-              aria-label={isExpanded ? '접기' : '펼치기'}
+              aria-label={isExpanded ? t('collapse') : t('expand')}
             >
               {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
             </button>
@@ -93,7 +95,7 @@ export const DeviceTreeNode = ({
               height: 7,
               backgroundColor: statusDotColor(node.active),
             }}
-            title={node.active !== 0 ? '활성' : '비활성'}
+            title={node.active !== 0 ? t('active') : t('inactive')}
           />
         ) : null}
       </TreeRow>

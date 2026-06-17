@@ -7,6 +7,7 @@ import {
   toolbarFilterRowClass,
   toolbarShellStyle,
 } from '@/pages/EventMonitorPage/components/toolbarStyles'
+import type { EventListFilters } from '@/pages/EventMonitorPage/components/EventFilterModal'
 import type { DatePreset } from '@/pages/EventMonitorPage/utils/dateRange'
 import type { TypeFilter } from '@/pages/EventMonitorPage/utils/eventFilters'
 
@@ -22,6 +23,8 @@ interface HistoryToolbarBProps {
   onExport: () => void
   onPrint: () => void
   onSearch: () => void
+  listFilters: EventListFilters
+  onApplyFilters: (filters: EventListFilters) => void
 }
 
 export const HistoryToolbarB = ({
@@ -36,13 +39,15 @@ export const HistoryToolbarB = ({
   onExport,
   onPrint,
   onSearch,
+  listFilters,
+  onApplyFilters,
 }: HistoryToolbarBProps) => (
   <div className="flex flex-col flex-shrink-0" style={toolbarShellStyle}>
     <div className={toolbarFilterRowClass}>
       <MonitorTypePills typeFilter={typeFilter} onTypeFilterChange={onTypeFilterChange} />
 
       <div className="flex items-center gap-1 ml-auto shrink-0">
-        <EventFilterButton scope="history" />
+        <EventFilterButton scope="history" filters={listFilters} onApplyFilters={onApplyFilters} />
         <ExportButton size="sm" showLabel={false} onClick={onExport} />
         <PrintButton size="sm" showLabel={false} onClick={onPrint} />
       </div>

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
@@ -151,6 +152,7 @@ export const Grid = <T extends { id: number }>({
   onColumnReorder,
   pagination,
 }: GridProps<T>) => {
+  const { t } = useTranslation('common')
   const [sort, setSort] = useState<SortState | null>(null)
   const [draggingKey, setDraggingKey] = useState<string | null>(null)
   const [dragOverKey, setDragOverKey] = useState<string | null>(null)
@@ -171,6 +173,7 @@ export const Grid = <T extends { id: number }>({
     () => pageSizeOptions.map((n) => ({ value: String(n), label: `${n}` })),
     [pageSizeOptions],
   )
+  const resolvedSearchPlaceholder = searchPlaceholder ?? t('search')
   const isColumnDragging = draggingKey != null
   const tableWidth = useMemo(
     () => columns.reduce((sum, col) => sum + colWidth(col), 0),
@@ -355,7 +358,7 @@ export const Grid = <T extends { id: number }>({
         }}
       >
         {onSearch && (
-          <SearchField placeholder={searchPlaceholder} onChange={onSearch} />
+          <SearchField placeholder={resolvedSearchPlaceholder} onChange={onSearch} />
         )}
         {actions && (
           <div className="flex items-center gap-1.5 ml-auto shrink-0">{actions}</div>
@@ -476,7 +479,7 @@ export const Grid = <T extends { id: number }>({
                         data-col-resize
                         role="separator"
                         aria-orientation="vertical"
-                        aria-label={`${col.header} 너비 조절`}
+                        aria-label={t('resizeColumn', { header: col.header })}
                         draggable={false}
                         onDragStart={(e) => e.preventDefault()}
                         onMouseDown={(e) => {
@@ -514,7 +517,7 @@ export const Grid = <T extends { id: number }>({
                   className="text-center py-8"
                   style={{ color: 'var(--color-text-subtle)', fontSize: 'var(--font-size-md)' }}
                 >
-                  불러오는 중...
+                  {t('loading')}
                 </td>
               </tr>
             ) : columns.length === 0 ? (
@@ -524,7 +527,7 @@ export const Grid = <T extends { id: number }>({
                   className="text-center py-8"
                   style={{ color: 'var(--color-text-subtle)', fontSize: 'var(--font-size-md)' }}
                 >
-                  표시할 컬럼이 없습니다. 목록 옵션에서 컬럼을 선택하세요.
+                  {t('gridNoColumns')}
                 </td>
               </tr>
             ) : (
@@ -554,7 +557,7 @@ export const Grid = <T extends { id: number }>({
           fontSize: 'var(--font-size-md)',
         }}
       >
-        <span>전체 {count}건</span>
+        <span>{t('totalCount', { count })}</span>
         {pagination ? (
           <div className="flex items-center gap-2">
             <div className="shrink-0" style={{ width: 80 }}>

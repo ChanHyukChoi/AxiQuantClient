@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
 import {
-  scpFormSchema,
+  createScpFormSchema,
   scpToForm,
   scpToUpdatePayload,
   type ScpFormValues,
@@ -15,12 +16,31 @@ import {
 } from '@/hooks/api/useDeviceControl'
 import type { CreateScpRequest, ScpInfo } from '@/types/api'
 
+const CREATE_DEFAULTS: ScpFormValues = {
+  name: '',
+  active: 1,
+  connstr: '',
+  model: 0,
+  ctype: 0,
+  ext: '',
+}
+
 interface UseScpEditorOptions {
   scp: ScpInfo | null
+  createMode?: boolean
+  onCreateCancel?: () => void
+  onCreated?: (data: CreateScpRequest) => void | Promise<void>
   onDeleted?: () => void
 }
 
-export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
+export const useScpEditor = ({
+  scp,
+  createMode = false,
+  onCreateCancel,
+  onCreated,
+  onDeleted,
+}: UseScpEditorOptions) => {
+  const { t } = useTranslation(['common', 'device'])
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [resetOpen, setResetOpen] = useState(false)
@@ -32,24 +52,23 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
   const createScpMut = useCreateScp()
 
   const form = useForm<ScpFormValues>({
-    resolver: zodResolver(scpFormSchema),
-    defaultValues: scpToForm({
-      name: '',
-      active: 1,
-      connstr: '',
-      model: 0,
-      ctype: 0,
-      ext: '',
-    }),
+    resolver: zodResolver(createScpFormSchema(t)),
+    defaultValues: CREATE_DEFAULTS,
   })
 
   useEffect(() => {
+    if (createMode) {
+      setEditMode(false)
+      setActionError(null)
+      form.reset(CREATE_DEFAULTS)
+      return
+    }
     setEditMode(false)
     setActionError(null)
     if (scp) form.reset(scpToForm(scp))
-  }, [scp?.id, scp, form])
+  }, [scp?.id, scp, createMode, form])
 
-  const buildPayload = (values: ScpFormValues) => ({
+  const buildPayload = (values: ScpFormValues): CreateScpRequest => ({
     name: values.name.trim(),
     active: Number(values.active) || 0,
     connstr: values.connstr ?? '',
@@ -66,6 +85,12 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
   }
 
   const handleCancel = () => {
+    if (createMode) {
+      setActionError(null)
+      form.reset(CREATE_DEFAULTS)
+      onCreateCancel?.()
+      return
+    }
     if (!scp) return
     setEditMode(false)
     setActionError(null)
@@ -73,13 +98,24 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
   }
 
   const handleSave = form.handleSubmit(async (values) => {
-    if (!scp) return
     setActionError(null)
     const payload = buildPayload(values)
 
+    if (createMode) {
+      const ok = await createScpMut.mutateAsync(payload)
+      if (ok) {
+        form.reset(CREATE_DEFAULTS)
+        await onCreated?.(payload)
+      } else {
+        setActionError(t('error.addFailed'))
+      }
+      return
+    }
+
+    if (!scp) return
     const ok = await updateScpMut.mutateAsync({ id: scp.id, data: payload })
     if (ok) setEditMode(false)
-    else setActionError('저장하지 못했습니다.')
+    else setActionError(t('error.saveFailed'))
   })
 
   const handleToggleActive = async (active: boolean) => {
@@ -89,7 +125,7 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
     const payload = { ...scpToUpdatePayload(scp), active: nextActive }
 
     const ok = await updateScpMut.mutateAsync({ id: scp.id, data: payload })
-    if (!ok) setActionError('활성 상태를 변경하지 못했습니다.')
+    if (!ok) setActionError(t('error.toggleActiveFailed'))
   }
 
   const handleDeleteConfirm = async () => {
@@ -101,7 +137,7 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
       setDeleteOpen(false)
       onDeleted?.()
     } else {
-      setActionError('삭제하지 못했습니다.')
+      setActionError(t('error.deleteFailed'))
     }
   }
 
@@ -111,11 +147,8 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
 
     const ok = await resetScpMut.mutateAsync(scp.id)
     if (ok) setResetOpen(false)
-    else setActionError('초기화하지 못했습니다.')
+    else setActionError(t('error.resetFailed'))
   }
-
-  const createScp = async (data: CreateScpRequest): Promise<boolean> =>
-    createScpMut.mutateAsync(data)
 
   const isSaving = updateScpMut.isPending || createScpMut.isPending
   const isDeleting = deleteScpMut.isPending
@@ -123,7 +156,7 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
 
   return {
     form,
-    editMode,
+    editMode: createMode ? true : editMode,
     deleteOpen,
     resetOpen,
     actionError,
@@ -135,10 +168,8 @@ export const useScpEditor = ({ scp, onDeleted }: UseScpEditorOptions) => {
     handleToggleActive,
     handleDeleteConfirm,
     handleResetConfirm,
-    createScp,
     isSaving,
     isDeleting,
     isResetting,
-    createPending: createScpMut.isPending,
   }
 }

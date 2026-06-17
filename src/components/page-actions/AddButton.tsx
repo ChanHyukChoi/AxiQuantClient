@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import {
@@ -16,23 +17,29 @@ export const AddButton = ({
   disabled,
   loading = false,
   className,
-  title = '추가',
+  title,
   size = 'md',
   showLabel = true,
   fontSize = 15,
-  children = '추가',
-}: AddButtonProps) => (
-  <Button
-    variant="accent"
-    size={size}
-    leftIcon={<Plus size={pageActionIconSize(size)} />}
-    onClick={onClick}
-    disabled={disabled}
-    loading={loading}
-    className={className}
-    title={title}
-    style={{ fontSize }}
-  >
-    {showLabel ? children : undefined}
-  </Button>
-)
+  children,
+}: AddButtonProps) => {
+  const { t } = useTranslation('common')
+  const label = children ?? t('add')
+  const resolvedTitle = title ?? t('add')
+
+  return (
+    <Button
+      variant="accent"
+      size={size}
+      leftIcon={<Plus size={pageActionIconSize(size)} />}
+      onClick={onClick}
+      disabled={disabled}
+      loading={loading}
+      className={className}
+      title={resolvedTitle}
+      style={{ fontSize }}
+    >
+      {showLabel ? label : undefined}
+    </Button>
+  )
+}

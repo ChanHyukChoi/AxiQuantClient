@@ -8,6 +8,7 @@ import {
   toolbarFilterRowClass,
   toolbarShellStyle,
 } from '@/pages/EventMonitorPage/components/toolbarStyles'
+import type { EventListFilters } from '@/pages/EventMonitorPage/components/EventFilterModal'
 import type { TypeFilter } from '@/pages/EventMonitorPage/utils/eventFilters'
 
 interface LiveToolbarBProps {
@@ -17,6 +18,8 @@ interface LiveToolbarBProps {
   onTogglePause: () => void
   onClear: () => void
   isConnected: boolean
+  listFilters: EventListFilters
+  onApplyFilters: (filters: EventListFilters) => void
 }
 
 export const LiveToolbarB = ({
@@ -26,6 +29,8 @@ export const LiveToolbarB = ({
   onTogglePause,
   onClear,
   isConnected,
+  listFilters,
+  onApplyFilters,
 }: LiveToolbarBProps) => {
   const { t } = useTranslation('eventMonitor')
   const receiving = isConnected && !paused
@@ -74,7 +79,7 @@ export const LiveToolbarB = ({
       <div className={toolbarFilterRowClass}>
         <MonitorTypePills typeFilter={typeFilter} onTypeFilterChange={onTypeFilterChange} />
         <div className="ml-auto shrink-0">
-          <EventFilterButton scope="live" />
+          <EventFilterButton scope="live" filters={listFilters} onApplyFilters={onApplyFilters} />
         </div>
       </div>
 
