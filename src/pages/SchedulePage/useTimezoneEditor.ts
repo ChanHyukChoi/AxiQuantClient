@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import i18n from '@/lib/i18n'
 import {
   useCreateTimezone,
   useDeleteTimezone,
@@ -7,7 +8,7 @@ import {
 import type { CreateTimezoneRequest, TimezoneInfo } from '@/types/api'
 
 const defaultTimezonePayload = (): CreateTimezoneRequest => ({
-  name: '새 타임존',
+  name: i18n.t('timezone.defaultName', { ns: 'schedule' }),
   intervals: [{ idx: 0, dmask: 127, hmask: 0, stm: '09:00', etm: '18:00' }],
   startTime: '09:00',
   endTime: '18:00',
@@ -63,7 +64,7 @@ export const useTimezoneEditor = ({ item, onDeleted, onCreated }: UseTimezoneEdi
       data: { ...item, name: draftName.trim() || item.name },
     })
     if (ok) setEditMode(false)
-    else setActionError('저장하지 못했습니다.')
+    else setActionError(i18n.t('error.saveFailed', { ns: 'schedule' }))
   }, [item, updateMut, draftName])
 
   const handleAdd = useCallback(async () => {
@@ -73,7 +74,7 @@ export const useTimezoneEditor = ({ item, onDeleted, onCreated }: UseTimezoneEdi
       enterEditOnSelectRef.current = true
       onCreated?.()
     } else {
-      setActionError('추가하지 못했습니다.')
+      setActionError(i18n.t('error.addFailed', { ns: 'schedule' }))
     }
   }, [createMut, onCreated])
 
@@ -84,7 +85,7 @@ export const useTimezoneEditor = ({ item, onDeleted, onCreated }: UseTimezoneEdi
       setDeleteOpen(false)
       onDeleted()
     } else {
-      setActionError('삭제하지 못했습니다.')
+      setActionError(i18n.t('error.deleteFailed', { ns: 'schedule' }))
       setDeleteOpen(false)
     }
   }, [item, deleteMut, onDeleted])

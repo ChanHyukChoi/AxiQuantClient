@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/primitive/Badge'
 import { EmpPhotoSlot } from '@/pages/EmpsPage/components/EmpPhotoSlot'
 import { empDeptLabel, empNoDisplay } from '@/pages/EmpsPage/utils/empHelpers'
@@ -30,6 +31,8 @@ export const EmpSummaryHeader = ({
   onPhotoFileSelect,
   onPhotoClear,
 }: EmpSummaryHeaderProps) => {
+  const { t } = useTranslation(['emp', 'common'])
+
   if (mode === 'empty') {
     return (
       <div className="pb-3 w-full min-w-0" style={{ minHeight: EMP_SUMMARY_HEIGHT + 12 }}>
@@ -44,7 +47,7 @@ export const EmpSummaryHeader = ({
           }}
         >
           <span style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}>
-            목록에서 항목을 선택하세요
+            {t('common:selectRow')}
           </span>
         </div>
       </div>
@@ -55,12 +58,12 @@ export const EmpSummaryHeader = ({
   const displayName = isCreate
     ? name?.trim()
       ? name.trim()
-      : '사용자 추가'
-    : (name?.trim() || '—')
+      : t('emp:summary.addTitle')
+    : (name?.trim() || t('common:empty'))
   const noLabel = isCreate
     ? empNo?.trim()
       ? empNoDisplay(empNo)
-      : '새 사용자 정보를 입력하세요'
+      : t('emp:summary.addHint')
     : empNoDisplay(empNo)
   const deptLabel = empDeptLabel(dept)
 
@@ -110,7 +113,7 @@ export const EmpSummaryHeader = ({
             </div>
             {dept !== 0 ? (
               <div className="flex justify-end items-center mt-2 flex-shrink-0">
-                <Badge variant="card">부서 {deptLabel}</Badge>
+                <Badge variant="card">{t('emp:summary.deptBadge', { dept: deptLabel })}</Badge>
               </div>
             ) : null}
           </div>

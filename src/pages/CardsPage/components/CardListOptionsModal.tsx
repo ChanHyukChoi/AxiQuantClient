@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   LIST_OPTIONS_FONT_SIZE,
   ListOptionsFilterField,
@@ -9,6 +10,10 @@ import { Checkbox } from '@/components/primitive/Checkbox'
 import { Select } from '@/components/primitive/Select'
 import type { GridColumnOption } from '@/hooks/ui/useGridLayout'
 import { CARD_STATUS_VALUES, type CardStatusValue } from '@/pages/CardsPage/formTypes'
+import {
+  cardStatusDisplay,
+  cardTypeDisplay,
+} from '@/pages/CardsPage/utils/cardPageHelpers'
 
 export type CardListFilters = {
   status: 'all' | CardStatusValue
@@ -52,8 +57,17 @@ export const CardListOptionsModal = ({
   onResetLayout,
   onClose,
 }: CardListOptionsModalProps) => {
+  const { t } = useTranslation(['card', 'common'])
   const [tab, setTab] = useState<OptionsTab>(initialTab)
   const [draftFilters, setDraftFilters] = useState(filters)
+
+  const tabs = useMemo(
+    () => [
+      { id: 'filter' as const, label: t('card:filter.dataFilter') },
+      { id: 'columns' as const, label: t('card:filter.columns') },
+    ],
+    [t],
+  )
 
   useEffect(() => {
     if (open) {
@@ -67,10 +81,7 @@ export const CardListOptionsModal = ({
   return (
     <ListOptionsModalShell
       open={open}
-      tabs={[
-        { id: 'filter', label: '데이터 필터' },
-        { id: 'columns', label: '컬럼' },
-      ]}
+      tabs={tabs}
       activeTab={tab}
       onTabChange={(id) => setTab(id as OptionsTab)}
       onClose={onClose}
@@ -86,10 +97,10 @@ export const CardListOptionsModal = ({
                 onClose()
               }}
             >
-              초기화
+              {t('common:reset')}
             </Button>
             <Button variant="default" size="md" onClick={onClose}>
-              취소
+              {t('common:cancel')}
             </Button>
             <Button
               variant="accent"
@@ -99,7 +110,7 @@ export const CardListOptionsModal = ({
                 onClose()
               }}
             >
-              적용
+              {t('common:apply')}
             </Button>
           </>
         ) : (
@@ -112,10 +123,10 @@ export const CardListOptionsModal = ({
                 onClose()
               }}
             >
-              컬럼 초기화
+              {t('card:filter.resetColumns')}
             </Button>
             <Button variant="accent" size="md" onClick={onClose}>
-              닫기
+              {t('common:close')}
             </Button>
           </>
         )
@@ -123,36 +134,42 @@ export const CardListOptionsModal = ({
     >
       {tab === 'filter' ? (
         <div className="flex flex-col gap-3">
-          <ListOptionsFilterField label="상태">
+          <ListOptionsFilterField label={t('card:filter.status')}>
             <Select
               value={draftFilters.status}
               fontSize={LIST_OPTIONS_FONT_SIZE}
-                  onChange={(v) =>
-                    setDraftFilters((d) => ({
-                      ...d,
-                      status: v as CardListFilters['status'],
-                    }))
-                  }
+              onChange={(v) =>
+                setDraftFilters((d) => ({
+                  ...d,
+                  status: v as CardListFilters['status'],
+                }))
+              }
               options={[
-                { value: 'all', label: '전체' },
-                ...CARD_STATUS_VALUES.map((value) => ({ value, label: value })),
+                { value: 'all', label: t('card:filter.all') },
+                ...CARD_STATUS_VALUES.map((value) => ({
+                  value,
+                  label: cardStatusDisplay(value, t),
+                })),
               ]}
             />
           </ListOptionsFilterField>
 
-          <ListOptionsFilterField label="유형">
+          <ListOptionsFilterField label={t('card:filter.type')}>
             <Select
               value={draftFilters.type}
               fontSize={LIST_OPTIONS_FONT_SIZE}
               onChange={(v) => setDraftFilters((d) => ({ ...d, type: v }))}
               options={[
-                { value: 'all', label: '전체' },
-                ...typeOptions.map((t) => ({ value: t, label: t })),
+                { value: 'all', label: t('card:filter.all') },
+                ...typeOptions.map((typeValue) => ({
+                  value: typeValue,
+                  label: cardTypeDisplay(typeValue, t),
+                })),
               ]}
             />
           </ListOptionsFilterField>
 
-          <ListOptionsFilterField label="카드 사용자">
+          <ListOptionsFilterField label={t('card:filter.assignment')}>
             <Select
               value={draftFilters.assignment}
               fontSize={LIST_OPTIONS_FONT_SIZE}
@@ -163,9 +180,9 @@ export const CardListOptionsModal = ({
                 }))
               }
               options={[
-                { value: 'all', label: '전체' },
-                { value: 'assigned', label: '할당됨' },
-                { value: 'unassigned', label: '미할당' },
+                { value: 'all', label: t('card:filter.all') },
+                { value: 'assigned', label: t('card:filter.assigned') },
+                { value: 'unassigned', label: t('card:filter.unassigned') },
               ]}
             />
           </ListOptionsFilterField>
@@ -176,8 +193,7 @@ export const CardListOptionsModal = ({
             className="leading-snug shrink-0"
             style={{ color: 'var(--color-text-muted)', fontSize: LIST_OPTIONS_FONT_SIZE }}
           >
-            표시할 컬럼을 선택하세요. 헤더를 끌어 다른 컬럼 위에 놓으면 순서가 바뀌고, 헤더를
-            클릭하면 정렬됩니다. 오른쪽 경계를 드래그하면 너비를 조절할 수 있습니다.
+            {t('card:filter.columnHelp')}
           </p>
           <ul
             className="flex flex-col gap-1 flex-1 min-h-0 overflow-y-auto app-scrollbar"
@@ -204,7 +220,7 @@ export const CardListOptionsModal = ({
                         fontSize: LIST_OPTIONS_FONT_SIZE,
                       }}
                     >
-                      (필수)
+                      {t('card:filter.required')}
                     </span>
                   )}
                 </span>

@@ -7,8 +7,9 @@ import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { AddButton, CrudDetailActions } from '@/components/page-actions'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { TabToolbar } from '@/layouts/TabToolbar'
+import { useTranslation } from 'react-i18next'
 import { useGridColumnLayout } from '@/hooks/ui/useGridColumnLayout'
-import { BASE_SIO_GRID_COLUMNS } from '@/pages/ControllersPage/components/sioGridColumns'
+import { useSioGridColumns } from '@/pages/ControllersPage/components/sioGridColumns'
 import { SioDetailFields } from '@/pages/ControllersPage/components/SioDetailFields'
 import { useSioEditor } from '@/pages/ControllersPage/useSioEditor'
 import { entityLabel, isDeviceActive } from '@/lib/device/deviceHelpers'
@@ -31,6 +32,8 @@ export const SioWorkspace = ({
   layout = 'stack',
 }: SioWorkspaceProps) => {
   const qc = useQueryClient()
+  const { t } = useTranslation('device')
+  const baseSioColumns = useSioGridColumns()
   const [selectedSioId, setSelectedSioId] = useState<number | null>(null)
   const scpId = scp?.id ?? 0
 
@@ -75,7 +78,7 @@ export const SioWorkspace = ({
     onDeleted: () => setSelectedSioId(null),
   })
 
-  const { columns, layoutGridProps } = useGridColumnLayout(BASE_SIO_GRID_COLUMNS, {
+  const { columns, layoutGridProps } = useGridColumnLayout(baseSioColumns, {
     storageKey: gridStorageKey,
   })
 
@@ -85,7 +88,7 @@ export const SioWorkspace = ({
   if (!scp) {
     return (
       <p className="text-[14px] p-4" style={{ color: 'var(--color-text-subtle)' }}>
-        ????? ???? ????? ??? ? ????.
+        {t('sio.selectScpFirst')}
       </p>
     )
   }

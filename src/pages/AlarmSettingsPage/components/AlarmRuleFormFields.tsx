@@ -1,4 +1,6 @@
+import { useMemo } from 'react'
 import { Cpu } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
@@ -6,8 +8,8 @@ import { Input } from '@/components/primitive/Input'
 import { Select } from '@/components/primitive/Select'
 import {
   ALARM_EVENT_CODE_OPTIONS,
-  ALARM_SOUND_OPTIONS,
-  ALARM_TIMEZONE_OPTIONS,
+  getAlarmSoundOptions,
+  getAlarmTimezoneOptions,
 } from '@/pages/AlarmSettingsPage/alarmRuleTypes'
 import type { AlarmRuleFormValues } from '@/pages/AlarmSettingsPage/formTypes'
 import { isAlarmActive } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
@@ -47,39 +49,43 @@ export const AlarmRuleFormFields = ({
   onOpenDevicePicker,
   layout = 'stack',
 }: AlarmRuleFormFieldsProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
   const { register, watch, setValue } = form
   const values = watch()
 
+  const soundOptions = useMemo(() => getAlarmSoundOptions(t), [t])
+  const timezoneOptions = useMemo(() => getAlarmTimezoneOptions(t), [t])
+
   const scpOptions = [
-    { value: '0', label: '선택...' },
+    { value: '0', label: t('alarm:select.placeholder') },
     ...scps.map((s) => ({ value: String(s.id), label: s.name })),
   ]
 
   if (!editMode) {
     const eventLabel =
       ALARM_EVENT_CODE_OPTIONS.find((o) => o.value === values.eventCode)?.label ??
-      (values.eventCode || '—')
-    const scpLabel = values.scpId > 0 ? (scpNameMap[values.scpId] ?? '—') : '—'
+      (values.eventCode || t('common:empty'))
+    const scpLabel = values.scpId > 0 ? (scpNameMap[values.scpId] ?? t('common:empty')) : t('common:empty')
     const soundLabel =
-      ALARM_SOUND_OPTIONS.find((o) => o.value === values.alarmSound)?.label ?? '—'
+      soundOptions.find((o) => o.value === values.alarmSound)?.label ?? t('common:empty')
     const tzLabel =
-      ALARM_TIMEZONE_OPTIONS.find((o) => o.value === values.timezone)?.label ?? '—'
+      timezoneOptions.find((o) => o.value === values.timezone)?.label ?? t('common:empty')
 
     const identity = (
       <>
-        <InfoField label="명칭">
-          <ReadOnlyValue>{values.name || '—'}</ReadOnlyValue>
+        <InfoField label={t('alarm:field.name')}>
+          <ReadOnlyValue>{values.name || t('common:empty')}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="경보 코드">
+        <InfoField label={t('alarm:field.eventCode')}>
           <ReadOnlyValue>{eventLabel}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="컨트롤러">
+        <InfoField label={t('alarm:field.controller')}>
           <ReadOnlyValue>{scpLabel}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="장치">
-          <ReadOnlyValue>{deviceLabel || '—'}</ReadOnlyValue>
+        <InfoField label={t('alarm:field.device')}>
+          <ReadOnlyValue>{deviceLabel || t('common:empty')}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="타임존">
+        <InfoField label={t('alarm:field.timezone')}>
           <ReadOnlyValue>{tzLabel}</ReadOnlyValue>
         </InfoField>
       </>
@@ -87,19 +93,21 @@ export const AlarmRuleFormFields = ({
 
     const settings = (
       <>
-        <InfoField label="사용 안함">
-          <ReadOnlyValue>{isAlarmActive(values.active) ? '아니오' : '예'}</ReadOnlyValue>
+        <InfoField label={t('alarm:field.disabled')}>
+          <ReadOnlyValue>
+            {isAlarmActive(values.active) ? t('alarm:no') : t('alarm:yes')}
+          </ReadOnlyValue>
         </InfoField>
-        <InfoField label="모니터링">
-          <ReadOnlyValue>{values.monitoring ? '예' : '아니오'}</ReadOnlyValue>
+        <InfoField label={t('alarm:field.monitoring')}>
+          <ReadOnlyValue>{values.monitoring ? t('alarm:yes') : t('alarm:no')}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="인지 필요">
-          <ReadOnlyValue>{values.ackRequired ? '예' : '아니오'}</ReadOnlyValue>
+        <InfoField label={t('alarm:field.ackRequired')}>
+          <ReadOnlyValue>{values.ackRequired ? t('alarm:yes') : t('alarm:no')}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="경보음">
+        <InfoField label={t('alarm:field.alarmSound')}>
           <ReadOnlyValue>{soundLabel}</ReadOnlyValue>
         </InfoField>
-        <InfoField label="경보 우선순위">
+        <InfoField label={t('alarm:field.alarmPriority')}>
           <ReadOnlyValue>{values.priority}</ReadOnlyValue>
         </InfoField>
       </>
@@ -124,30 +132,30 @@ export const AlarmRuleFormFields = ({
 
   const identityEdit = (
     <>
-      <InfoField label="명칭">
+      <InfoField label={t('alarm:field.name')}>
         <Input {...register('name')} />
       </InfoField>
-      <InfoField label="경보 코드">
+      <InfoField label={t('alarm:field.eventCode')}>
         <Select
           value={values.eventCode}
           onChange={(v) => setValue('eventCode', v, { shouldDirty: true })}
           options={[
-            { value: '', label: '선택...' },
+            { value: '', label: t('alarm:select.placeholder') },
             ...ALARM_EVENT_CODE_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
           ]}
         />
       </InfoField>
-      <InfoField label="컨트롤러">
+      <InfoField label={t('alarm:field.controller')}>
         <Select
           value={String(values.scpId)}
           onChange={(v) => setValue('scpId', Number(v), { shouldDirty: true })}
           options={scpOptions}
         />
       </InfoField>
-      <InfoField label="장치">
+      <InfoField label={t('alarm:field.device')}>
         <div className="flex flex-col gap-1.5">
           <p className="text-[14px] truncate" style={{ color: 'var(--color-text-subtle)' }}>
-            {deviceLabel || '미선택'}
+            {deviceLabel || t('alarm:select.deviceNotSelected')}
           </p>
           <Button
             variant="default"
@@ -155,15 +163,15 @@ export const AlarmRuleFormFields = ({
             leftIcon={<Cpu size={12} />}
             onClick={onOpenDevicePicker}
           >
-            장치 선택
+            {t('alarm:select.selectDevice')}
           </Button>
         </div>
       </InfoField>
-      <InfoField label="타임존">
+      <InfoField label={t('alarm:field.timezone')}>
         <Select
           value={values.timezone}
           onChange={(v) => setValue('timezone', v, { shouldDirty: true })}
-          options={ALARM_TIMEZONE_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+          options={timezoneOptions.map((o) => ({ value: o.value, label: o.label }))}
         />
       </InfoField>
     </>
@@ -171,7 +179,7 @@ export const AlarmRuleFormFields = ({
 
   const settingsEdit = (
     <>
-      <InfoField label="사용 안함">
+      <InfoField label={t('alarm:field.disabled')}>
         <label className="flex items-center gap-2 cursor-pointer">
           <Checkbox
             checked={!isAlarmActive(values.active)}
@@ -180,40 +188,40 @@ export const AlarmRuleFormFields = ({
             }
           />
           <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            사용 안함
+            {t('alarm:field.disabled')}
           </span>
         </label>
       </InfoField>
-      <InfoField label="모니터링">
+      <InfoField label={t('alarm:field.monitoring')}>
         <label className="flex items-center gap-2 cursor-pointer">
           <Checkbox
             checked={values.monitoring}
             onChange={(checked) => setValue('monitoring', checked, { shouldDirty: true })}
           />
           <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            모니터링
+            {t('alarm:field.monitoring')}
           </span>
         </label>
       </InfoField>
-      <InfoField label="인지 필요">
+      <InfoField label={t('alarm:field.ackRequired')}>
         <label className="flex items-center gap-2 cursor-pointer">
           <Checkbox
             checked={values.ackRequired}
             onChange={(checked) => setValue('ackRequired', checked, { shouldDirty: true })}
           />
           <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            인지 필요
+            {t('alarm:field.ackRequired')}
           </span>
         </label>
       </InfoField>
-      <InfoField label="경보음">
+      <InfoField label={t('alarm:field.alarmSound')}>
         <Select
           value={values.alarmSound}
           onChange={(v) => setValue('alarmSound', v, { shouldDirty: true })}
-          options={ALARM_SOUND_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+          options={soundOptions.map((o) => ({ value: o.value, label: o.label }))}
         />
       </InfoField>
-      <InfoField label="경보 우선순위">
+      <InfoField label={t('alarm:field.alarmPriority')}>
         <div className="flex flex-col gap-0.5">
           <Input
             type="number"

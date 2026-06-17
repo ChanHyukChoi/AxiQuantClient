@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link2 } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -16,6 +17,7 @@ import { useLinkageData } from '@/pages/LinkagePage/useLinkageData'
 const LINKAGE_GRID_LAYOUT_KEY = 'axiquant.grid.layout.linkage.v1'
 
 export const LinkagePage = () => {
+  const { t } = useTranslation(['nav', 'linkage'])
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
@@ -41,7 +43,7 @@ export const LinkagePage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="연동"
+        title={t('menu.linkage')}
         icon={<Link2 size={15} />}
         actions={
           <>
@@ -67,7 +69,7 @@ export const LinkagePage = () => {
               selectRule(row.id)
             }}
             onSearch={setSearchQuery}
-            searchPlaceholder="명칭 검색..."
+            searchPlaceholder={t('linkage:searchPlaceholder')}
             totalCount={rules.length}
             pagination={{
               page,

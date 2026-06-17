@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { userEditSchema, type UserEditFormValues } from '@/pages/UsersPage/formTypes'
+import { createUserEditSchema, type UserEditFormValues } from '@/pages/UsersPage/formTypes'
 import {
   emptyUserForm,
   formToCreatePayload,
@@ -17,6 +18,8 @@ interface UseUserEditorOptions {
 }
 
 export const useUserEditor = ({ user, onDeleted }: UseUserEditorOptions) => {
+  const { t } = useTranslation('user')
+  const userEditSchema = useMemo(() => createUserEditSchema(t), [t])
   const [isCreating, setIsCreating] = useState(false)
   const [activeTab, setActiveTab] = useState('info')
   const [editMode, setEditMode] = useState(false)
@@ -78,7 +81,7 @@ export const useUserEditor = ({ user, onDeleted }: UseUserEditorOptions) => {
     if (isCreating) {
       const pw = formValues.password?.trim() ?? ''
       if (pw.length < 4) {
-        setSaveError('신규 사용자는 비밀번호(4자 이상)가 필요합니다.')
+        setSaveError(t('error.passwordRequired'))
         return
       }
 

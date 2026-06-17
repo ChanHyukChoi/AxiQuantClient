@@ -1,0 +1,39 @@
+{
+  "searchPlaceholder": "명칭 검색...",
+  "selectRule": "연동 규칙을 선택하세요",
+  "selectRuleWithPeriod": "연동 규칙을 선택하세요.",
+  "field": {
+    "name": "명칭",
+    "summary": "요약"
+  },
+  "when": {
+    "title": "조건 (When)",
+    "empty": "조건이 없습니다.",
+    "column": {
+      "event": "이벤트",
+      "controller": "제어기",
+      "device": "장치",
+      "formula": "수식",
+      "invert": "반전"
+    }
+  },
+  "then": {
+    "title": "동작 (Then)",
+    "empty": "동작이 없습니다.",
+    "column": {
+      "function": "기능",
+      "controller": "제어기",
+      "device": "장치",
+      "mode": "모드"
+    }
+  },
+  "summary": {
+    "invertSuffix": " (반전)"
+  },
+  "yes": "예",
+  "no": "아니오",
+  "action": {
+    "moveUp": "위로",
+    "moveDown": "아래로"
+  }
+}

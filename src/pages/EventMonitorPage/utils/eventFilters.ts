@@ -1,3 +1,4 @@
+import i18n from '@/lib/i18n'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
 export type TypeFilter = 'all' | 'access' | 'alarm'
@@ -16,17 +17,27 @@ export const filterBySearch = (rows: EventRecord[], q: string): EventRecord[] =>
 }
 
 export const exportEventsCsv = (events: EventRecord[], filenamePrefix = 'event-history'): void => {
-  const header = ['일시', '종류', '이벤트', '카드번호', '사용자', '제어기', '장치', 'ACK']
+  const t = i18n.getFixedT(null, 'eventMonitor')
+  const header = [
+    t('field.ts'),
+    t('field.type'),
+    t('field.event'),
+    t('field.cardDetail'),
+    t('field.user'),
+    t('field.controller'),
+    t('field.device'),
+    t('field.ack'),
+  ]
   const lines = events.map((r) =>
     [
       r.ts,
-      r.type === 'alarm' ? '경보' : '출입',
+      r.type === 'alarm' ? t('type.alarm') : t('type.access'),
       r.event,
       r.card,
       r.user,
       r.ctrl,
       r.device,
-      r.type === 'alarm' ? (r.acked ? '확인' : '미확인') : '',
+      r.type === 'alarm' ? (r.acked ? t('ack.confirmed') : t('ack.unconfirmed')) : '',
     ].join(','),
   )
   const csv = [header.join(','), ...lines].join('\n')

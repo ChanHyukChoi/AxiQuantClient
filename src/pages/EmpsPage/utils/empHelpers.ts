@@ -1,22 +1,25 @@
 import { formatEmpBirthForForm } from '@/lib/mappers/empsMappers'
+import i18n from '@/lib/i18n'
 import type { SelectOption } from '@/components/primitive/Select'
 import type { CreateEmpFormValues } from '@/pages/EmpsPage/formTypes'
 import type { CreateEmpRequest, EmpInfo, UpdateEmpRequest } from '@/types/api'
+import type { TFunction } from 'i18next'
 
 export const EMP_NONE_OPTION_VALUE = '0'
 
-export const EMP_DEPT_OPTIONS: SelectOption[] = [
-  { value: EMP_NONE_OPTION_VALUE, label: '선택안함' },
+export const getEmpDeptOptions = (t: TFunction<'emp'>): SelectOption[] => [
+  { value: EMP_NONE_OPTION_VALUE, label: t('noneOption') },
 ]
 
-export const EMP_LV_OPTIONS: SelectOption[] = [
-  { value: EMP_NONE_OPTION_VALUE, label: '선택안함' },
+export const getEmpLvOptions = (t: TFunction<'emp'>): SelectOption[] => [
+  { value: EMP_NONE_OPTION_VALUE, label: t('noneOption') },
 ]
 
 export const empDeptLabel = (dept: number): string =>
-  dept !== 0 ? String(dept) : '선택안함'
+  dept !== 0 ? String(dept) : i18n.t('noneOption', { ns: 'emp' })
 
-export const empLvLabel = (lv: number): string => (lv !== 0 ? String(lv) : '선택안함')
+export const empLvLabel = (lv: number): string =>
+  lv !== 0 ? String(lv) : i18n.t('noneOption', { ns: 'emp' })
 
 /** Grid·드로어 사번 표시 (udef JSON placeholder 제외) */
 export const empNoDisplay = (udef: string | undefined): string => {

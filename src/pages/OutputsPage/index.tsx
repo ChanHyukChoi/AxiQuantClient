@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeftFromLine } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -18,6 +19,7 @@ import { useOutputsData } from '@/pages/OutputsPage/useOutputsData'
 const OUTPUTS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.outputs.v1'
 
 export const OutputsPage = () => {
+  const { t } = useTranslation('nav')
   const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
@@ -57,7 +59,7 @@ export const OutputsPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="출력"
+        title={t('menu.outputs')}
         icon={<ArrowLeftFromLine size={15} />}
         actions={<AddButton onClick={() => undefined} />}
       />

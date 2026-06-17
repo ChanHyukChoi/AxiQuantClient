@@ -1,3 +1,4 @@
+import i18n from '@/lib/i18n'
 import type { InputInfo, ModuleInfo, OutputInfo, ReaderInfo, ScpInfo, SioInfo } from '@/types/api'
 import {
   entityLabel,
@@ -239,7 +240,7 @@ export const buildDeviceTree = ({
     {
       key: GROUP_CONTROLLERS,
       kind: 'group',
-      label: '?�어�?,
+      label: i18n.t('tree.controllers', { ns: 'device' }),
       active: 1,
       scpId: 0,
       entityId: 0,
@@ -248,7 +249,7 @@ export const buildDeviceTree = ({
     {
       key: GROUP_STANDALONE,
       kind: 'group',
-      label: '?�독 리더',
+      label: i18n.t('tree.standaloneReaders', { ns: 'device' }),
       active: 1,
       scpId: 0,
       entityId: 0,
@@ -257,7 +258,7 @@ export const buildDeviceTree = ({
     {
       key: GROUP_MODULES,
       kind: 'group',
-      label: '진단 모니??,
+      label: i18n.t('tree.diagnosticModules', { ns: 'device' }),
       active: 1,
       scpId: 0,
       entityId: 0,

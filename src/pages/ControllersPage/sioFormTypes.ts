@@ -1,12 +1,13 @@
 import { z } from 'zod'
+import i18n from '@/lib/i18n'
 
 export const sioFormSchema = z.object({
   name: z.string().min(1, '명칭을 입력하세요'),
-  active: z.coerce.number().default(0),
-  port: z.coerce.number().default(0),
-  addr: z.coerce.number().default(0),
-  model: z.coerce.number().default(0),
-  ext: z.string().default(''),
+  active: z.number(),
+  port: z.number(),
+  addr: z.number(),
+  model: z.number(),
+  ext: z.string(),
 })
 
 export type SioFormValues = z.infer<typeof sioFormSchema>
@@ -28,7 +29,7 @@ export const sioToForm = (sio: {
 })
 
 export const defaultSioFormValues = (): SioFormValues => ({
-  name: '새 부제어기',
+  name: i18n.t('sio.newDefaultName', { ns: 'device' }),
   active: 1,
   port: 1,
   addr: 0,

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Pause, Play, Trash2 } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { ExportButton, PrintButton, SearchButton } from '@/components/page-actions'
@@ -63,6 +64,7 @@ export const MonitorToolbar = ({
   onPrint,
   onSearch,
 }: MonitorToolbarProps) => {
+  const { t } = useTranslation('eventMonitor')
   const receiving = mode === 'live' && isConnected && !paused
 
   return (
@@ -74,14 +76,14 @@ export const MonitorToolbar = ({
             style={modeBtnStyle(mode === 'live')}
             onClick={() => onModeChange('live')}
           >
-            실시간
+            {t('mode.live')}
           </Button>
           <Button
             size="sm"
             style={modeBtnStyle(mode === 'history')}
             onClick={() => onModeChange('history')}
           >
-            이력 조회
+            {t('mode.history')}
           </Button>
         </div>
 
@@ -99,7 +101,11 @@ export const MonitorToolbar = ({
                 animation: receiving ? 'evt-pulse 1.2s ease-in-out infinite' : undefined,
               }}
             />
-            {receiving ? '수신 중' : paused ? '일시정지' : '대기'}
+            {receiving
+              ? t('status.receiving')
+              : paused
+                ? t('status.paused')
+                : t('status.idle')}
           </div>
         )}
 
@@ -111,14 +117,14 @@ export const MonitorToolbar = ({
                 variant="default"
                 onClick={onTogglePause}
                 leftIcon={paused ? <Play size={14} /> : <Pause size={14} />}
-                title={paused ? '재개' : '일시정지'}
+                title={paused ? t('status.resume') : t('status.pause')}
               />
               <Button
                 size="sm"
                 variant="default"
                 onClick={onClear}
                 leftIcon={<Trash2 size={14} />}
-                title="초기화"
+                title={t('status.clear')}
               />
             </>
           ) : (

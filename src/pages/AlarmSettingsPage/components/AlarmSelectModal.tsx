@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, X } from 'lucide-react'
 import { MultiSelectToggleAllButton } from '@/components/basic/MultiSelectToggleAllButton'
 import { Button } from '@/components/primitive/Button'
@@ -21,6 +22,7 @@ export const AlarmSelectModal = ({
   onCancel,
   onConfirm,
 }: AlarmSelectModalProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
   const [query, setQuery] = useState('')
   const [checked, setChecked] = useState<Set<number>>(() => new Set(selectedIds))
 
@@ -66,7 +68,7 @@ export const AlarmSelectModal = ({
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="경보 선택"
+        aria-label={t('alarm:select.alarmSelectAria')}
         className="flex flex-col rounded-md overflow-hidden"
         style={{
           width: 380,
@@ -80,7 +82,7 @@ export const AlarmSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
-            경보 선택
+            {t('alarm:select.alarmSelectTitle')}
           </span>
           <button
             type="button"
@@ -111,7 +113,7 @@ export const AlarmSelectModal = ({
               className="text-[14px] text-center py-8"
               style={{ color: 'var(--color-text-subtle)' }}
             >
-              {query.trim() ? '검색 결과가 없습니다.' : '등록된 경보가 없습니다.'}
+              {query.trim() ? t('alarm:user.noSearchResults') : t('alarm:select.alarmEmpty')}
             </p>
           ) : (
             filtered.map((alarm) => (
@@ -137,7 +139,7 @@ export const AlarmSelectModal = ({
                   className="text-[14px] flex-1 truncate"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {alarm.name || '경보'}
+                  {alarm.name || t('alarm:rule.fallback')}
                 </span>
               </div>
             ))
@@ -149,7 +151,7 @@ export const AlarmSelectModal = ({
           style={{ borderColor: 'var(--color-border)' }}
         >
           <Button variant="default" size="md" onClick={onCancel}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -157,7 +159,7 @@ export const AlarmSelectModal = ({
             leftIcon={<Check size={12} />}
             onClick={() => onConfirm(Array.from(checked))}
           >
-            확인 ({checked.size})
+            {t('alarm:select.confirmCount', { count: checked.size })}
           </Button>
         </div>
       </div>

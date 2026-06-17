@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next'
+import type { SelectOption } from '@/components/primitive/Select'
 import type { AlarmInfo } from '@/types/api'
 
 /** WPF 경보 설정 UI 확장 필드 (API 미반영분 — 로컬/목업) */
@@ -49,15 +51,15 @@ export const ALARM_EVENT_CODE_OPTIONS = [
   { value: 'output_changed', label: 'Output State Changed' },
 ] as const
 
-export const ALARM_SOUND_OPTIONS = [
-  { value: 'none', label: '사용 안함' },
-  { value: 'beep1', label: '경보음 1' },
-  { value: 'beep2', label: '경보음 2' },
-  { value: 'siren', label: '사이렌' },
-] as const
+export const getAlarmSoundOptions = (t: TFunction<'alarm'>): SelectOption[] => [
+  { value: 'none', label: t('sound.none') },
+  { value: 'beep1', label: t('sound.beep1') },
+  { value: 'beep2', label: t('sound.beep2') },
+  { value: 'siren', label: t('sound.siren') },
+]
 
-export const ALARM_TIMEZONE_OPTIONS = [
-  { value: 'default', label: '기본' },
-  { value: 'always', label: '항상' },
-  { value: 'business', label: '업무시간' },
-] as const
+export const getAlarmTimezoneOptions = (t: TFunction<'alarm'>): SelectOption[] => [
+  { value: 'default', label: t('timezoneOption.default') },
+  { value: 'always', label: t('timezoneOption.always') },
+  { value: 'business', label: t('timezoneOption.business') },
+]

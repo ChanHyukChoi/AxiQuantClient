@@ -1,7 +1,12 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
-import { EVENT_MONITOR_FONT_SIZE, EVENT_MONITOR_GRID_HEADER_FONT_SIZE } from '@/pages/EventMonitorPage/eventMonitorUi'
+import {
+  EVENT_MONITOR_FONT_SIZE,
+  EVENT_MONITOR_GRID_HEADER_FONT_SIZE,
+} from '@/pages/EventMonitorPage/eventMonitorUi'
 import type { EventRecord } from '@/types/api/eventMonitor'
 
 interface EventGridProps {
@@ -26,32 +31,31 @@ const badgeStyle: CSSProperties = {
   borderRadius: 9999,
 }
 
-const TypeBadge = ({ type }: { type: EventRecord['type'] }) => {
+const TypeBadge = ({ type, label }: { type: EventRecord['type']; label: string }) => {
   if (type === 'access') {
     return (
-      <span style={{ ...badgeStyle, background: '#0d2b1a', color: '#4caf7d' }}>
-        출입
-      </span>
+      <span style={{ ...badgeStyle, background: '#0d2b1a', color: '#4caf7d' }}>{label}</span>
     )
   }
-  return (
-    <span style={{ ...badgeStyle, background: '#2b1616', color: '#e06060' }}>
-      경보
-    </span>
-  )
+  return <span style={{ ...badgeStyle, background: '#2b1616', color: '#e06060' }}>{label}</span>
 }
 
-const AckCell = ({ row }: { row: EventRecord }) => {
-  if (row.type !== 'alarm')
-    return <span style={{ color: 'var(--color-text-dim)' }}>—</span>
+const AckCell = ({
+  row,
+  confirmedLabel,
+  unconfirmedLabel,
+  empty,
+}: {
+  row: EventRecord
+  confirmedLabel: string
+  unconfirmedLabel: string
+  empty: string
+}) => {
+  if (row.type !== 'alarm') return <span style={{ color: 'var(--color-text-dim)' }}>{empty}</span>
   return row.acked ? (
-    <span style={{ ...badgeStyle, background: '#0d2b1a', color: '#4caf7d' }}>
-      확인
-    </span>
+    <span style={{ ...badgeStyle, background: '#0d2b1a', color: '#4caf7d' }}>{confirmedLabel}</span>
   ) : (
-    <span style={{ ...badgeStyle, background: '#2b1616', color: '#e06060' }}>
-      미확인
-    </span>
+    <span style={{ ...badgeStyle, background: '#2b1616', color: '#e06060' }}>{unconfirmedLabel}</span>
   )
 }
 
@@ -82,14 +86,27 @@ export const EventGrid = ({
   total,
   onPageChange,
 }: EventGridProps) => {
+  const { t } = useTranslation(['eventMonitor', 'common'])
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
+
+  const headers = useMemo(
+    () => [
+      t('eventMonitor:field.ts'),
+      t('eventMonitor:field.type'),
+      t('eventMonitor:field.event'),
+      t('eventMonitor:field.card'),
+      t('eventMonitor:field.user'),
+      t('eventMonitor:field.controller'),
+      t('eventMonitor:field.device'),
+      t('eventMonitor:field.ack'),
+    ],
+    [t],
+  )
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
       <div className="flex-1 overflow-auto app-scrollbar">
-        <table
-          style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}
-        >
+        <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
           <thead
             style={{
               position: 'sticky',
@@ -99,16 +116,7 @@ export const EventGrid = ({
             }}
           >
             <tr>
-              {[
-                '일시',
-                '종류',
-                '이벤트',
-                '카드 번호',
-                '카드 사용자',
-                '제어기',
-                '장치',
-                'ACK',
-              ].map((h) => (
+              {headers.map((h) => (
                 <th key={h} style={headerCellStyle}>
                   {h}
                 </th>
@@ -119,7 +127,7 @@ export const EventGrid = ({
             {loading ? (
               <tr>
                 <td colSpan={8} className="text-center py-8 app-text-md" style={emptyStyle}>
-                  불러오는 중...
+                  {t('eventMonitor:loading')}
                 </td>
               </tr>
             ) : error ? (
@@ -129,13 +137,13 @@ export const EventGrid = ({
                   className="text-center py-8 app-text-md"
                   style={{ ...emptyStyle, color: '#e06060' }}
                 >
-                  이력을 불러오지 못했습니다.
+                  {t('eventMonitor:loadError')}
                 </td>
               </tr>
             ) : events.length === 0 ? (
               <tr>
                 <td colSpan={8} className="text-center py-8 app-text-md" style={emptyStyle}>
-                  표시할 이벤트가 없습니다.
+                  {t('eventMonitor:empty')}
                 </td>
               </tr>
             ) : (
@@ -150,8 +158,10 @@ export const EventGrid = ({
                       cursor: 'pointer',
                     }}
                     onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLTableRowElement).style.background =
-                        rowHoverBg(row, selected)
+                      ;(e.currentTarget as HTMLTableRowElement).style.background = rowHoverBg(
+                        row,
+                        selected,
+                      )
                     }}
                     onMouseLeave={(e) => {
                       ;(e.currentTarget as HTMLTableRowElement).style.background = rowBg(
@@ -162,15 +172,27 @@ export const EventGrid = ({
                   >
                     <td style={cellStyle}>{row.ts}</td>
                     <td style={cellStyle}>
-                      <TypeBadge type={row.type} />
+                      <TypeBadge
+                        type={row.type}
+                        label={
+                          row.type === 'alarm'
+                            ? t('eventMonitor:type.alarm')
+                            : t('eventMonitor:type.access')
+                        }
+                      />
                     </td>
                     <td style={cellStyle}>{row.event}</td>
-                    <td style={cellStyle}>{row.card || '—'}</td>
-                    <td style={cellStyle}>{row.user || '—'}</td>
-                    <td style={cellStyle}>{row.ctrl || '—'}</td>
-                    <td style={cellStyle}>{row.device || '—'}</td>
+                    <td style={cellStyle}>{row.card || t('common:empty')}</td>
+                    <td style={cellStyle}>{row.user || t('common:empty')}</td>
+                    <td style={cellStyle}>{row.ctrl || t('common:empty')}</td>
+                    <td style={cellStyle}>{row.device || t('common:empty')}</td>
                     <td style={cellStyle}>
-                      <AckCell row={row} />
+                      <AckCell
+                        row={row}
+                        confirmedLabel={t('eventMonitor:ack.confirmed')}
+                        unconfirmedLabel={t('eventMonitor:ack.unconfirmed')}
+                        empty={t('common:empty')}
+                      />
                     </td>
                   </tr>
                 )
@@ -190,11 +212,11 @@ export const EventGrid = ({
         }}
       >
         {mode === 'live' ? (
-          <span>최대 200건 표시</span>
+          <span>{t('eventMonitor:liveMaxHint')}</span>
         ) : (
           <>
             <span>
-              전체 {total}건 · {page} / {totalPages} 페이지
+              {t('eventMonitor:pagination', { total, page, totalPages })}
             </span>
             <div className="flex items-center gap-1">
               <Button

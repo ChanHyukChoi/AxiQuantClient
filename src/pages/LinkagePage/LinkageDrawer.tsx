@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { Link2 } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
@@ -11,6 +12,7 @@ interface LinkageDrawerProps {
 }
 
 export const LinkageDrawer = ({ rule, onEditModeChange }: LinkageDrawerProps) => {
+  const { t } = useTranslation('linkage')
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export const LinkageDrawer = ({ rule, onEditModeChange }: LinkageDrawerProps) =>
           <div className="flex items-center gap-2 py-2">
             <Link2 size={18} style={{ color: 'var(--color-text-dim)' }} />
             <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-              연동 규칙을 선택하세요
+              {t('selectRule')}
             </p>
           </div>
         }

@@ -1,3 +1,5 @@
+import type { TFunction } from 'i18next'
+import type { SelectOption } from '@/components/primitive/Select'
 import type { AlarmPriorityInfo } from '@/types/api'
 
 export interface AlarmPriorityStyle {
@@ -31,8 +33,8 @@ export const DEFAULT_ALARM_PRIORITY_EXTRA: AlarmPriorityExtra = {
   alarmSound: 'none',
 }
 
-export const PRIORITY_BLINK_OPTIONS = [
-  { value: 'off', label: '꺼짐' },
-  { value: 'slow', label: '느림' },
-  { value: 'fast', label: '빠름' },
-] as const
+export const getPriorityBlinkOptions = (t: TFunction<'alarm'>): SelectOption[] => [
+  { value: 'off', label: t('blink.off') },
+  { value: 'slow', label: t('blink.slow') },
+  { value: 'fast', label: t('blink.fast') },
+]

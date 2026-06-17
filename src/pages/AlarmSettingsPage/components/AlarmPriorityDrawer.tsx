@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Check, Pencil, Star, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
@@ -15,6 +16,7 @@ interface AlarmPriorityDrawerProps {
 }
 
 export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
   const hex = normalizeHexColor(item?.alarmFg ?? '#4f9cf9')
 
   const drawerHeader = item ? (
@@ -35,7 +37,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
       </div>
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
-          우선순위 {item.priority}
+          {t('alarm:priority.title', { priority: item.priority })}
         </span>
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full" style={{ background: hex }} />
@@ -50,7 +52,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
     </div>
   ) : (
     <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      좌측 목록에서 우선순위를 선택하세요.
+      {t('alarm:selectPriority')}
     </div>
   )
 
@@ -69,7 +71,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
             leftIcon={<X size={12} />}
             onClick={editor.handleCancel}
           >
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -78,7 +80,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
             loading={editor.isSaving}
             onClick={editor.handleSave}
           >
-            저장
+            {t('common:save')}
           </Button>
         </div>
       </div>
@@ -90,7 +92,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
           leftIcon={<Trash2 size={12} />}
           onClick={() => editor.setDeleteOpen(true)}
         >
-          삭제
+          {t('common:delete')}
         </Button>
         <Button
           variant="accent"
@@ -98,7 +100,7 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
           leftIcon={<Pencil size={12} />}
           onClick={editor.handleEdit}
         >
-          수정
+          {t('common:edit')}
         </Button>
       </>
     )
@@ -118,9 +120,9 @@ export const AlarmPriorityDrawer = ({ item, editor }: AlarmPriorityDrawerProps) 
 
       <Modal
         open={editor.deleteOpen}
-        title="우선순위 삭제"
-        description={`우선순위 ${item?.priority ?? ''} 항목을 삭제하시겠습니까?`}
-        confirmLabel="삭제"
+        title={t('alarm:priority.modal.deleteTitle')}
+        description={t('alarm:priority.modal.deleteDescription', { priority: item?.priority ?? '' })}
+        confirmLabel={t('common:delete')}
         loading={editor.isDeleting}
         onConfirm={editor.handleDeleteConfirm}
         onCancel={() => editor.setDeleteOpen(false)}

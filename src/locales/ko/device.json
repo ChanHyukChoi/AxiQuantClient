@@ -1,0 +1,38 @@
+{
+  "page": {
+    "controllers": "제어기",
+    "inputs": "입력",
+    "outputs": "출력",
+    "readers": "리더"
+  },
+  "scp": {
+    "connstr": "연결문자열",
+    "ctype": "통신유형",
+    "addTitle": "주제어기 추가",
+    "connstrPlaceholder": "연결문자열 (IP:포트)",
+    "modelPlaceholder": "모델",
+    "ctypePlaceholder": "통신유형",
+    "searchPlaceholder": "제어기 검색...",
+    "loadError": "제어기 목록을 불러오지 못했습니다."
+  },
+  "sio": {
+    "selectScpFirst": "왼쪽 목록에서 제어기를 선택하면 부제어기를 편집할 수 있습니다.",
+    "newDefaultName": "새 부제어기"
+  },
+  "grid": {
+    "scp": "주제어기",
+    "sio": "부제어기"
+  },
+  "tree": {
+    "controllers": "제어기",
+    "standaloneReaders": "독립 리더",
+    "diagnosticModules": "진단 모듈"
+  },
+  "input": {
+    "invert": "입력 반전",
+    "holdTime": "유지 시간"
+  },
+  "output": {
+    "pulseDuration": "지속 시간"
+  }
+}

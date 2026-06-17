@@ -1,0 +1,125 @@
+{
+  "searchPlaceholder": "경보 검색...",
+  "rulesLoadError": "경보 목록을 불러오지 못했습니다.",
+  "priorityLoadError": "우선순위 목록을 불러오지 못했습니다.",
+  "selectRule": "좌측 목록에서 경보를 선택하세요.",
+  "selectPriority": "좌측 목록에서 우선순위를 선택하세요.",
+  "loading": "불러오는 중...",
+  "tab": {
+    "rules": "경보 설정",
+    "priority": "우선순위",
+    "mail": "이메일 경보"
+  },
+  "drawerTab": {
+    "general": "일반",
+    "users": "사용자"
+  },
+  "field": {
+    "name": "명칭",
+    "disabled": "사용 안함",
+    "priority": "우선순위",
+    "event": "이벤트",
+    "controller": "컨트롤러",
+    "device": "장치",
+    "eventCode": "경보 코드",
+    "timezone": "타임존",
+    "monitoring": "모니터링",
+    "ackRequired": "인지 필요",
+    "alarmSound": "경보음",
+    "alarmPriority": "경보 우선순위",
+    "users": "사용자",
+    "textColor": "글자색",
+    "bgColor": "배경색",
+    "blinking": "반짝임",
+    "sound": "알람음",
+    "afterAck": "인지 처리 후"
+  },
+  "column": {
+    "alarm": "경보"
+  },
+  "rule": {
+    "fallback": "경보",
+    "newDefaultName": "새 경보",
+    "summary": "{{status}} · 우선순위 {{priority}} · {{controller}}",
+    "userCount": "{{count}}명",
+    "modal": {
+      "deleteTitle": "경보 삭제",
+      "deleteDescription": "「{{name}}」 경보를 삭제하시겠습니까?"
+    }
+  },
+  "priority": {
+    "title": "우선순위 {{priority}}",
+    "onAlarm": "경보 발생",
+    "modal": {
+      "deleteTitle": "우선순위 삭제",
+      "deleteDescription": "우선순위 {{priority}} 항목을 삭제하시겠습니까?"
+    }
+  },
+  "mail": {
+    "fallback": "이메일 경보",
+    "newDefaultName": "새 이메일 경보",
+    "loadError": "이메일 경보 목록을 불러오지 못했습니다.",
+    "empty": "등록된 이메일 경보가 없습니다.",
+    "selectItem": "좌측 목록에서 이메일 경보를 선택하세요.",
+    "summary": "경보 {{alarmCount}} · 수신자 {{emailCount}}",
+    "totalCount": "전체 {{count}}건",
+    "connectedAlarms": "연결 경보",
+    "noAlarmsSelected": "선택된 경보 없음",
+    "recipientEmails": "수신 이메일",
+    "recipients": "수신자",
+    "modal": {
+      "deleteTitle": "이메일 경보 삭제",
+      "deleteDescription": "「{{name}}」 항목을 삭제하시겠습니까?"
+    }
+  },
+  "select": {
+    "placeholder": "선택...",
+    "deviceNotSelected": "미선택",
+    "selectDevice": "장치 선택",
+    "deviceNotConnected": "미연결",
+    "alarmSelectTitle": "경보 선택",
+    "alarmSelectAria": "경보 선택",
+    "alarmEmpty": "등록된 경보가 없습니다.",
+    "confirmCount": "확인 ({{count}})"
+  },
+  "devicePicker": {
+    "title": "장치 선택",
+    "searchPlaceholder": "장치 검색...",
+    "loadError": "장치 목록을 불러오지 못했습니다."
+  },
+  "user": {
+    "searchPlaceholder": "사용자 검색...",
+    "noSearchResults": "검색 결과가 없습니다.",
+    "noUsers": "등록된 사용자가 없습니다."
+  },
+  "sound": {
+    "none": "사용 안함",
+    "beep1": "경보음 1",
+    "beep2": "경보음 2",
+    "siren": "사이렌"
+  },
+  "timezoneOption": {
+    "default": "기본",
+    "always": "항상",
+    "business": "업무시간"
+  },
+  "blink": {
+    "off": "꺼짐",
+    "slow": "느림",
+    "fast": "빠름"
+  },
+  "yes": "예",
+  "no": "아니오",
+  "previewListen": "미리듣기",
+  "error": {
+    "saveFailed": "저장하지 못했습니다.",
+    "addFailed": "추가하지 못했습니다.",
+    "deleteFailed": "삭제하지 못했습니다."
+  },
+  "validation": {
+    "nameRequired": "명칭을 입력하세요",
+    "hexColor": "올바른 HEX 색상(#RRGGBB)을 입력하세요",
+    "emailInvalid": "올바른 이메일 형식이 아닙니다",
+    "emailsMin": "수신 이메일을 1개 이상 추가하세요"
+  }
+}

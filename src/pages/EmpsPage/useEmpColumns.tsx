@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Badge } from '@/components/primitive/Badge'
 import { EmpPhotoSlot } from '@/pages/EmpsPage/components/EmpPhotoSlot'
 import { empNoDisplay } from '@/pages/EmpsPage/utils/empHelpers'
@@ -7,8 +8,10 @@ import type { EmpInfo } from '@/types/api'
 
 const FONT_SIZE = 15
 
-export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
-  useMemo<ColumnDef<EmpInfo>[]>(
+export const useEmpColumns = (empCardCountMap: Record<number, number>) => {
+  const { t } = useTranslation(['emp', 'common'])
+
+  return useMemo<ColumnDef<EmpInfo>[]>(
     () => [
       {
         key: 'photo',
@@ -20,7 +23,7 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
       },
       {
         key: 'name',
-        header: '이름',
+        header: t('emp:field.name'),
         width: 120,
         sortable: true,
         hideable: false,
@@ -32,7 +35,7 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
       },
       {
         key: 'udef',
-        header: '사번',
+        header: t('emp:field.empNo'),
         width: 80,
         sortable: true,
         render: (value) => (
@@ -43,34 +46,34 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
       },
       {
         key: 'dept',
-        header: '부서',
+        header: t('emp:field.dept'),
         width: 90,
         sortable: true,
         render: (value) => {
           const n = typeof value === 'number' ? value : Number(value)
           return (
             <span className="truncate block" style={{ fontSize: FONT_SIZE }}>
-              {Number.isFinite(n) && n !== 0 ? String(n) : '—'}
+              {Number.isFinite(n) && n !== 0 ? String(n) : t('common:empty')}
             </span>
           )
         },
       },
       {
         key: 'lv',
-        header: '직급',
+        header: t('emp:field.lv'),
         width: 60,
         render: (value) => {
           const n = typeof value === 'number' ? value : Number(value)
           return (
             <span className="truncate block" style={{ fontSize: FONT_SIZE }}>
-              {Number.isFinite(n) && n !== 0 ? String(n) : '—'}
+              {Number.isFinite(n) && n !== 0 ? String(n) : t('common:empty')}
             </span>
           )
         },
       },
       {
         key: 'email',
-        header: '이메일',
+        header: t('emp:field.email'),
         width: 140,
         render: (value) =>
           value && String(value).trim() !== '' ? (
@@ -78,22 +81,23 @@ export const useEmpColumns = (empCardCountMap: Record<number, number>) =>
               {String(value)}
             </span>
           ) : (
-            '—'
+            t('common:empty')
           ),
       },
       {
         key: 'cardCount',
-        header: '카드',
+        header: t('emp:field.card'),
         width: 60,
         render: (_, row) => {
           const count = empCardCountMap[row.id] ?? 0
           return count === 0 ? (
-            <Badge variant="off">없음</Badge>
+            <Badge variant="off">{t('emp:cardNone')}</Badge>
           ) : (
-            <Badge variant="on">{count}장</Badge>
+            <Badge variant="on">{t('emp:cardCount', { count })}</Badge>
           )
         },
       },
     ],
-    [empCardCountMap],
+    [empCardCountMap, t],
   )
+}

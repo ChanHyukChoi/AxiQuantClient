@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ClipboardList } from 'lucide-react'
+import i18n from '@/lib/i18n'
 import { AuditGrid } from '@/pages/AuditLogPage/AuditGrid'
 import { AuditToolbar } from '@/pages/AuditLogPage/AuditToolbar'
 import {
@@ -15,6 +17,7 @@ import { useUsers } from '@/hooks/api/useUsers'
 import type { AuditLogParams } from '@/types/api/audit'
 
 export const AuditLogPage = () => {
+  const { t } = useTranslation('nav')
   const [datePreset, setDatePreset] = useState<DatePreset>('today')
   const [dateFrom, setDateFrom] = useState(formatDateInput(new Date()))
   const [dateTo, setDateTo] = useState(formatDateInput(new Date()))
@@ -54,7 +57,16 @@ export const AuditLogPage = () => {
   const total = data?.total ?? 0
 
   const handleExport = useCallback(() => {
-    const header = ['시간', '사용자', '클라이언트', '동작', '데이터유형', '컨트롤러', '데이터']
+    const t = i18n.getFixedT(null, 'audit')
+    const header = [
+      t('export.ts'),
+      t('export.user'),
+      t('export.client'),
+      t('export.action'),
+      t('export.dataType'),
+      t('export.controller'),
+      t('export.data'),
+    ]
     const lines = items.map((r) =>
       [r.ts, r.user, r.clientType, r.actionType, r.dataType, r.controller, r.data].join(','),
     )
@@ -85,7 +97,7 @@ export const AuditLogPage = () => {
         <div className="flex items-center gap-1.5">
           <ClipboardList style={{ width: 15, height: 15, color: 'var(--color-accent)' }} />
           <span className="text-[15px] font-medium" style={{ color: 'var(--color-text)' }}>
-            운영 기록
+            {t('menu.audit')}
           </span>
         </div>
       </div>

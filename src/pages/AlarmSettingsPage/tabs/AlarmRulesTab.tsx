@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
@@ -9,13 +10,14 @@ import {
   SPLIT_DRAWER_MIN_WIDTH,
 } from '@/lib/layout/splitDrawerDefaults'
 import { AlarmRuleDrawer } from '@/pages/AlarmSettingsPage/components/AlarmRuleDrawer'
-import { buildAlarmRuleColumns } from '@/pages/AlarmSettingsPage/useAlarmRuleColumns'
+import { useAlarmRuleColumns } from '@/pages/AlarmSettingsPage/useAlarmRuleColumns'
 import { useAlarmRulesData } from '@/pages/AlarmSettingsPage/useAlarmRulesData'
 import { useAlarmRuleEditor } from '@/pages/AlarmSettingsPage/useAlarmRuleEditor'
 
 const ALARM_RULES_GRID_LAYOUT_KEY = 'axiquant.grid.layout.alarm-rules.v1'
 
 export const AlarmRulesTab = () => {
+  const { t } = useTranslation('alarm')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
@@ -27,11 +29,7 @@ export const AlarmRulesTab = () => {
     onDeleted: data.onRuleDeleted,
   })
 
-  const baseColumns = useMemo(
-    () => buildAlarmRuleColumns(data.scpNameMap),
-    [data.scpNameMap],
-  )
-
+  const baseColumns = useAlarmRuleColumns(data.scpNameMap)
   const { columns, minGridWidth, setColumnWidth, moveColumn } = useGridLayout(baseColumns, {
     storageKey: ALARM_RULES_GRID_LAYOUT_KEY,
   })
@@ -67,7 +65,7 @@ export const AlarmRulesTab = () => {
               selectedId={data.selectedId ?? undefined}
               onRowClick={data.selectRule}
               onSearch={data.setSearchQuery}
-              searchPlaceholder="경보 검색..."
+              searchPlaceholder={t('searchPlaceholder')}
               totalCount={data.filteredRules.length}
               loading={data.isLoading}
               pagination={{
@@ -83,7 +81,7 @@ export const AlarmRulesTab = () => {
             />
             {data.isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                경보 목록을 불러오지 못했습니다.
+                {t('rulesLoadError')}
               </p>
             ) : null}
           </>

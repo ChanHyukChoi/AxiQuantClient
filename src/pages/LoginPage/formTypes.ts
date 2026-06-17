@@ -1,9 +1,11 @@
+import type { TFunction } from 'i18next'
 import { z } from 'zod'
 
-export const loginSchema = z.object({
-  serverUrl: z.string().url('올바른 URL 형식이어야 합니다.'),
-  username: z.string().min(1, '아이디를 입력해주세요.'),
-  password: z.string().min(1, '비밀번호를 입력해주세요.'),
-})
+export const createLoginSchema = (t: TFunction<'auth'>) =>
+  z.object({
+    serverUrl: z.string().url(t('validation.serverUrl')),
+    username: z.string().min(1, t('validation.username')),
+    password: z.string().min(1, t('validation.password')),
+  })
 
-export type LoginFormValues = z.infer<typeof loginSchema>
+export type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>

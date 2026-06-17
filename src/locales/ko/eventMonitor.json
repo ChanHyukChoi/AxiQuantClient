@@ -1,0 +1,54 @@
+{
+  "selectEvent": "이벤트를 선택하세요",
+  "loading": "불러오는 중...",
+  "loadError": "이력을 불러오지 못했습니다.",
+  "empty": "표시할 이벤트가 없습니다.",
+  "liveMaxHint": "최대 200건 표시",
+  "pagination": "전체 {{total}}건 · {{page}} / {{totalPages}} 페이지",
+  "mode": {
+    "live": "실시간",
+    "history": "이력 조회"
+  },
+  "status": {
+    "receiving": "수신 중",
+    "paused": "일시정지",
+    "idle": "대기",
+    "resume": "재개",
+    "pause": "일시정지",
+    "clear": "초기화"
+  },
+  "typeFilter": {
+    "all": "전체",
+    "access": "출입",
+    "alarm": "경보"
+  },
+  "type": {
+    "access": "출입",
+    "alarm": "경보"
+  },
+  "ack": {
+    "confirmed": "확인",
+    "unconfirmed": "미확인",
+    "done": "확인 완료",
+    "button": "경보 확인 (ACK)"
+  },
+  "field": {
+    "ts": "일시",
+    "type": "종류",
+    "event": "이벤트",
+    "card": "카드 번호",
+    "cardDetail": "카드번호",
+    "user": "카드 사용자",
+    "controller": "제어기",
+    "device": "장치",
+    "direction": "방향",
+    "ack": "ACK"
+  },
+  "datePreset": {
+    "today": "오늘",
+    "7d": "7일",
+    "30d": "30일",
+    "180d": "180일"
+  },
+  "filter": "필터"
+}

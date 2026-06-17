@@ -1,0 +1,36 @@
+{
+  "searchPlaceholder": "명칭, 로그인 ID 검색...",
+  "selectUser": "사용자를 선택하세요",
+  "addUser": "사용자 추가",
+  "noName": "(이름 없음)",
+  "field": {
+    "loginId": "로그인 ID",
+    "name": "명칭",
+    "active": "활성",
+    "externalApi": "외부 API",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인"
+  },
+  "status": {
+    "enabled": "사용",
+    "disabled": "미사용"
+  },
+  "tab": {
+    "info": "기본 정보",
+    "permissions": "권한"
+  },
+  "modal": {
+    "deleteTitle": "사용자 삭제",
+    "deleteDescription": "\"{{name}}\" 사용자를 삭제하시겠습니까?"
+  },
+  "error": {
+    "passwordRequired": "신규 사용자는 비밀번호(4자 이상)가 필요합니다."
+  },
+  "validation": {
+    "nameRequired": "명칭을 입력하세요",
+    "loginIdRequired": "로그인 ID를 입력하세요",
+    "passwordMin": "비밀번호는 4자 이상이어야 합니다.",
+    "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+    "permissionsInvalid": "권한 정보가 올바르지 않습니다."
+  }
+}

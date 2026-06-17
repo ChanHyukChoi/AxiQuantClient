@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MapPin } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -17,6 +18,7 @@ import type { AreaInfo } from '@/types/api'
 const AREA_GRID_LAYOUT_KEY = 'axiquant.grid.layout.area.v1'
 
 export const AreaPage = () => {
+  const { t } = useTranslation(['nav', 'area'])
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
@@ -57,7 +59,7 @@ export const AreaPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="영역"
+        title={t('menu.area')}
         icon={<MapPin size={15} />}
         actions={<AddButton onClick={() => undefined} />}
       />
@@ -74,7 +76,7 @@ export const AreaPage = () => {
               data={filteredAreas}
               selectedId={selectedId ?? undefined}
               onRowClick={handleRowClick}
-              searchPlaceholder="영역명 검색..."
+              searchPlaceholder={t('area:searchPlaceholder')}
               onSearch={setSearchQuery}
               totalCount={filteredAreas.length}
               loading={isLoading}
@@ -91,7 +93,7 @@ export const AreaPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                영역 목록을 불러오지 못했습니다.
+                {t('area:loadError')}
               </p>
             ) : null}
           </>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Link2 } from 'lucide-react'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
@@ -17,12 +18,14 @@ export const LinkageWorkspace = ({
   editMode = false,
   titleActions,
 }: LinkageWorkspaceProps) => {
+  const { t } = useTranslation('linkage')
+
   if (!rule) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-2 px-6">
         <Link2 size={28} style={{ color: 'var(--color-text-dim)' }} />
         <p className="app-text-md text-center" style={{ color: 'var(--color-text-subtle)' }}>
-          연동 규칙을 선택하세요.
+          {t('selectRuleWithPeriod')}
         </p>
       </div>
     )

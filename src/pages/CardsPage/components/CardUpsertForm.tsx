@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Controller,
   useFormState,
@@ -26,19 +27,16 @@ import { Select } from '@/components/primitive/Select'
 import { FRow, FieldValue, SectionTitle } from '@/pages/CardsPage/components/CardFieldUi'
 import { CardPinChangeSection } from '@/pages/CardsPage/components/CardPinChangeSection'
 import type { UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
-import { CARD_STATUS_OPTIONS } from '@/pages/CardsPage/formTypes'
 import type { CardRow } from '@/pages/CardsPage/utils/cardPageHelpers'
+import {
+  getCardStatusOptions,
+  getCardTypeOptions,
+} from '@/pages/CardsPage/utils/cardPageHelpers'
 import { empDisplayName } from '@/lib/mappers/empsMappers'
 import type { AccLvInfo, EmpInfo } from '@/types/api'
 
 const FONT_SIZE = 15
 const fieldFontStyle = { fontSize: FONT_SIZE } as const
-
-const CARD_TYPE_OPTIONS = [
-  { value: '직원', label: '직원' },
-  { value: '방문', label: '방문' },
-  { value: '발급', label: '발급' },
-] as const
 
 interface CardUpsertFormProps {
   mode: 'create' | 'edit'
@@ -77,9 +75,13 @@ export const CardUpsertForm = ({
   onExemptApbChange,
   onExemptPinChange,
 }: CardUpsertFormProps) => {
+  const { t } = useTranslation(['card', 'common'])
   const [empModalOpen, setEmpModalOpen] = useState(false)
   const [accLvModalOpen, setAccLvModalOpen] = useState(false)
   const { errors } = useFormState({ control })
+
+  const typeOptions = useMemo(() => getCardTypeOptions(t), [t])
+  const statusOptions = useMemo(() => getCardStatusOptions(t), [t])
 
   const empItems = useMemo(
     () =>
@@ -107,16 +109,17 @@ export const CardUpsertForm = ({
   )
 
   const selectedAccLvLabels = selectedAccLvIds.map(
-    (id) => accLvNameMap[id] ?? accLvList?.find((a) => a.id === id)?.name ?? '접근 권한',
+    (id) =>
+      accLvNameMap[id] ?? accLvList?.find((a) => a.id === id)?.name ?? t('card:accLv.fallback'),
   )
 
   return (
     <div className="app-drawer-form">
-      <SectionTitle fontSize={FONT_SIZE}>카드 정보</SectionTitle>
-      <FRow icon={<CreditCard size={15} />} label="카드 번호" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.info')}</SectionTitle>
+      <FRow icon={<CreditCard size={15} />} label={t('card:field.cardNumber')} fontSize={FONT_SIZE}>
         {mode === 'edit' ? (
           <FieldValue mono fontSize={FONT_SIZE}>
-            {baseCard?.cardNumber?.trim() ? baseCard.cardNumber : '—'}
+            {baseCard?.cardNumber?.trim() ? baseCard.cardNumber : t('common:empty')}
           </FieldValue>
         ) : (
           <Input
@@ -126,14 +129,14 @@ export const CardUpsertForm = ({
           />
         )}
       </FRow>
-      <FRow icon={<Tag size={15} />} label="명칭" fontSize={FONT_SIZE}>
+      <FRow icon={<Tag size={15} />} label={t('card:field.name')} fontSize={FONT_SIZE}>
         <Input
           {...register('name')}
           error={errors.name?.message}
           style={fieldFontStyle}
         />
       </FRow>
-      <FRow icon={<Layers size={15} />} label="유형" fontSize={FONT_SIZE}>
+      <FRow icon={<Layers size={15} />} label={t('card:field.type')} fontSize={FONT_SIZE}>
         <Controller
           name="type"
           control={control}
@@ -142,13 +145,13 @@ export const CardUpsertForm = ({
               value={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
-              options={[...CARD_TYPE_OPTIONS]}
+              options={typeOptions}
               fontSize={FONT_SIZE}
             />
           )}
         />
       </FRow>
-      <FRow icon={<CircleCheck size={15} />} label="상태" fontSize={FONT_SIZE}>
+      <FRow icon={<CircleCheck size={15} />} label={t('card:field.status')} fontSize={FONT_SIZE}>
         <Controller
           name="status"
           control={control}
@@ -157,7 +160,7 @@ export const CardUpsertForm = ({
               value={field.value}
               onChange={field.onChange}
               onBlur={field.onBlur}
-              options={[...CARD_STATUS_OPTIONS]}
+              options={statusOptions}
               fontSize={FONT_SIZE}
             />
           )}
@@ -165,8 +168,8 @@ export const CardUpsertForm = ({
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>사용자</SectionTitle>
-      <FRow icon={<User size={15} />} label="카드 사용자" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.user')}</SectionTitle>
+      <FRow icon={<User size={15} />} label={t('card:field.emp')} fontSize={FONT_SIZE}>
         <Controller
           name="empId"
           control={control}
@@ -174,14 +177,14 @@ export const CardUpsertForm = ({
             const picked =
               field.value != null ? empList?.find((e) => e.id === field.value) : undefined
             const label = (() => {
-              if (field.value == null) return '선택 안 함'
+              if (field.value == null) return t('card:emp.none')
               const fromMap = empNameMap[field.value]
               if (fromMap) return fromMap
               if (picked) {
                 const name = empDisplayName(picked)
                 if (name) return name
               }
-              return '알 수 없는 사용자'
+              return t('card:emp.unknown')
             })()
             const empError = fieldState.error?.message
             return (
@@ -215,10 +218,10 @@ export const CardUpsertForm = ({
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>권한</SectionTitle>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.permission')}</SectionTitle>
       <FRow
         icon={<Shield size={15} />}
-        label="접근 권한"
+        label={t('card:field.accLv')}
         fontSize={FONT_SIZE}
         align="top"
       >
@@ -230,8 +233,8 @@ export const CardUpsertForm = ({
             onClick={() => setAccLvModalOpen(true)}
           >
             {selectedAccLvIds.length > 0
-              ? `${selectedAccLvIds.length}개 선택됨`
-              : '접근 권한 선택'}
+              ? t('card:accLv.selectedCount', { count: selectedAccLvIds.length })
+              : t('card:accLv.select')}
           </button>
           {selectedAccLvLabels.length > 0 ? (
             <div className="app-selected-chips app-scrollbar">
@@ -256,8 +259,8 @@ export const CardUpsertForm = ({
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>기간</SectionTitle>
-      <FRow icon={<CalendarCheck size={15} />} label="활성 일시" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.period')}</SectionTitle>
+      <FRow icon={<CalendarCheck size={15} />} label={t('card:field.activeAt')} fontSize={FONT_SIZE}>
         <Controller
           name="issuedAt"
           control={control}
@@ -273,7 +276,7 @@ export const CardUpsertForm = ({
           )}
         />
       </FRow>
-      <FRow icon={<CalendarX size={15} />} label="비활성 일시" fontSize={FONT_SIZE}>
+      <FRow icon={<CalendarX size={15} />} label={t('card:field.inactiveAt')} fontSize={FONT_SIZE}>
         <Controller
           name="expiredAt"
           control={control}
@@ -291,13 +294,13 @@ export const CardUpsertForm = ({
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>옵션</SectionTitle>
-      <FRow icon={<span />} label="APB 면제" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.options')}</SectionTitle>
+      <FRow icon={<span />} label={t('card:field.exemptApb')} fontSize={FONT_SIZE}>
         <span className="flex justify-end">
           <Checkbox checked={exemptApb} onChange={onExemptApbChange} />
         </span>
       </FRow>
-      <FRow icon={<span />} label="PIN 면제" fontSize={FONT_SIZE}>
+      <FRow icon={<span />} label={t('card:field.exemptPin')} fontSize={FONT_SIZE}>
         <span className="flex justify-end">
           <Checkbox checked={exemptPin} onChange={onExemptPinChange} />
         </span>

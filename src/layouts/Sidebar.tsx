@@ -1,4 +1,6 @@
 import { Link, useRouterState } from '@tanstack/react-router'
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Activity,
   ArrowLeftFromLine,
@@ -19,153 +21,77 @@ import {
 import { SidebarHeader } from '@/layouts/SidebarHeader'
 import { useSidebarStore } from '@/stores/sidebarStore'
 
-// ─── Menu Items ────────────────────────────────────────────────────────────────
-
-interface MenuItem {
+interface MenuItemDef {
   id: string
-  label: string
   path: string
   icon: React.ReactNode
 }
 
-interface MenuGroup {
+interface MenuGroupDef {
   id: string
-  items: MenuItem[]
+  items: MenuItemDef[]
 }
 
 /** WPF 트리 그룹 순서 — 평면 목록 + 구분선 (트리 UI 없음) */
-const MENU_GROUPS: MenuGroup[] = [
+const MENU_GROUPS: MenuGroupDef[] = [
   {
     id: 'access-mgmt',
     items: [
-      {
-        id: 'emps',
-        label: '카드 사용자',
-        path: '/emps',
-        icon: <User size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'cards',
-        label: '카드',
-        path: '/cards',
-        icon: <CreditCard size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'access',
-        label: '접근 권한',
-        path: '/access',
-        icon: <Lock size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'area',
-        label: '영역',
-        path: '/area',
-        icon: <MapPin size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'cardfmt',
-        label: '카드 형식',
-        path: '/cardfmt',
-        icon: <Binary size={28} strokeWidth={2} />,
-      },
+      { id: 'emps', path: '/emps', icon: <User size={28} strokeWidth={2} /> },
+      { id: 'cards', path: '/cards', icon: <CreditCard size={28} strokeWidth={2} /> },
+      { id: 'access', path: '/access', icon: <Lock size={28} strokeWidth={2} /> },
+      { id: 'area', path: '/area', icon: <MapPin size={28} strokeWidth={2} /> },
+      { id: 'cardfmt', path: '/cardfmt', icon: <Binary size={28} strokeWidth={2} /> },
     ],
   },
   {
     id: 'control-monitor',
     items: [
-      {
-        id: 'monitor',
-        label: '이벤트 모니터',
-        path: '/monitor',
-        icon: <Activity size={28} strokeWidth={2} />,
-      },
+      { id: 'monitor', path: '/monitor', icon: <Activity size={28} strokeWidth={2} /> },
     ],
   },
   {
     id: 'alarm-mgmt',
     items: [
-      {
-        id: 'alarm-settings',
-        label: '경보 설정',
-        path: '/alarm-settings',
-        icon: <Bell size={28} strokeWidth={2} />,
-      },
+      { id: 'alarm-settings', path: '/alarm-settings', icon: <Bell size={28} strokeWidth={2} /> },
     ],
   },
   {
     id: 'security-equipment',
     items: [
-      {
-        id: 'controllers',
-        label: '제어기',
-        path: '/controllers',
-        icon: <Cpu size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'readers',
-        label: '리더',
-        path: '/readers',
-        icon: <ScanLine size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'inputs',
-        label: '입력',
-        path: '/inputs',
-        icon: <ArrowRightToLine size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'outputs',
-        label: '출력',
-        path: '/outputs',
-        icon: <ArrowLeftFromLine size={28} strokeWidth={2} />,
-      },
+      { id: 'controllers', path: '/controllers', icon: <Cpu size={28} strokeWidth={2} /> },
+      { id: 'readers', path: '/readers', icon: <ScanLine size={28} strokeWidth={2} /> },
+      { id: 'inputs', path: '/inputs', icon: <ArrowRightToLine size={28} strokeWidth={2} /> },
+      { id: 'outputs', path: '/outputs', icon: <ArrowLeftFromLine size={28} strokeWidth={2} /> },
     ],
   },
   {
     id: 'schedule',
     items: [
-      {
-        id: 'schedule',
-        label: '스케쥴',
-        path: '/schedule',
-        icon: <CalendarClock size={28} strokeWidth={2} />,
-      },
+      { id: 'schedule', path: '/schedule', icon: <CalendarClock size={28} strokeWidth={2} /> },
     ],
   },
   {
     id: 'linkage',
     items: [
-      {
-        id: 'linkage',
-        label: '연동',
-        path: '/linkage',
-        icon: <Link2 size={28} strokeWidth={2} />,
-      },
+      { id: 'linkage', path: '/linkage', icon: <Link2 size={28} strokeWidth={2} /> },
     ],
   },
   {
     id: 'system-mgmt',
     items: [
-      {
-        id: 'audit',
-        label: '운영 기록',
-        path: '/audit',
-        icon: <ClipboardList size={28} strokeWidth={2} />,
-      },
-      {
-        id: 'users',
-        label: '사용자',
-        path: '/users',
-        icon: <UserCog size={28} strokeWidth={2} />,
-      },
+      { id: 'audit', path: '/audit', icon: <ClipboardList size={28} strokeWidth={2} /> },
+      { id: 'users', path: '/users', icon: <UserCog size={28} strokeWidth={2} /> },
     ],
   },
 ]
 
-// ─── Menu List ────────────────────────────────────────────────────────────────
-
 const SIDEBAR_WIDTH_COLLAPSED = 58
 const NAV_PADDING_LEFT = 14
+
+interface MenuItem extends MenuItemDef {
+  label: string
+}
 
 interface MenuListProps {
   isCollapsed: boolean
@@ -182,11 +108,7 @@ const navItemStyle = (active: boolean): React.CSSProperties => ({
   height: '50px',
 })
 
-interface MenuDividerProps {
-  isCollapsed: boolean
-}
-
-const MenuDivider = ({ isCollapsed }: MenuDividerProps) => (
+const MenuDivider = ({ isCollapsed }: { isCollapsed: boolean }) => (
   <li aria-hidden className="list-none" role="separator">
     <div
       style={{
@@ -197,14 +119,17 @@ const MenuDivider = ({ isCollapsed }: MenuDividerProps) => (
   </li>
 )
 
-interface MenuLinkProps {
+const MenuLink = ({
+  item,
+  isCollapsed,
+  isActive,
+  onLinkClick,
+}: {
   item: MenuItem
   isCollapsed: boolean
   isActive: boolean
   onLinkClick?: () => void
-}
-
-const MenuLink = ({ item, isCollapsed, isActive, onLinkClick }: MenuLinkProps) => (
+}) => (
   <Link
     to={item.path}
     title={isCollapsed ? item.label : undefined}
@@ -236,38 +161,50 @@ const MenuLink = ({ item, isCollapsed, isActive, onLinkClick }: MenuLinkProps) =
   </Link>
 )
 
-const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => (
-  <nav className="flex-1 overflow-y-auto app-scrollbar">
-    <ul className="flex flex-col">
-      {MENU_GROUPS.map((group, groupIndex) => (
-        <li key={group.id} className="list-none">
-          <ul className="flex flex-col">
-            {groupIndex > 0 ? <MenuDivider isCollapsed={isCollapsed} /> : null}
-            {group.items.map((item) => {
-              const matchPaths = [item.path]
-              const isActive = matchPaths.some(
-                (p) => currentPath === p || currentPath.startsWith(`${p}/`),
-              )
+const MenuList = ({ isCollapsed, currentPath, onLinkClick }: MenuListProps) => {
+  const { t } = useTranslation('nav')
 
-              return (
-                <li key={item.id}>
-                  <MenuLink
-                    item={item}
-                    isCollapsed={isCollapsed}
-                    isActive={isActive}
-                    onLinkClick={onLinkClick}
-                  />
-                </li>
-              )
-            })}
-          </ul>
-        </li>
-      ))}
-    </ul>
-  </nav>
-)
+  const groups = useMemo(
+    () =>
+      MENU_GROUPS.map((group) => ({
+        ...group,
+        items: group.items.map((item) => ({
+          ...item,
+          label: t(`menu.${item.id}`),
+        })),
+      })),
+    [t],
+  )
 
-// ─── Component ────────────────────────────────────────────────────────────────
+  return (
+    <nav className="flex-1 overflow-y-auto app-scrollbar">
+      <ul className="flex flex-col">
+        {groups.map((group, groupIndex) => (
+          <li key={group.id} className="list-none">
+            <ul className="flex flex-col">
+              {groupIndex > 0 ? <MenuDivider isCollapsed={isCollapsed} /> : null}
+              {group.items.map((item) => {
+                const isActive =
+                  currentPath === item.path || currentPath.startsWith(`${item.path}/`)
+
+                return (
+                  <li key={item.id}>
+                    <MenuLink
+                      item={item}
+                      isCollapsed={isCollapsed}
+                      isActive={isActive}
+                      onLinkClick={onLinkClick}
+                    />
+                  </li>
+                )
+              })}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
 
 export const Sidebar = () => {
   const { isElectron, isCollapsed, isOpen } = useSidebarStore()

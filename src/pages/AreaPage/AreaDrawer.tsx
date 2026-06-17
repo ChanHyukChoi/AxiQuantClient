@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, Info, MapPin, Pencil, ScanLine, Trash2, Users, X } from 'lucide-react'
@@ -6,7 +7,7 @@ import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
-import { areaEditSchema, type AreaEditFormValues } from '@/pages/AreaPage/formTypes'
+import { createAreaEditSchema, type AreaEditFormValues } from '@/pages/AreaPage/formTypes'
 import { AreaInfoTab } from '@/pages/AreaPage/tabs/AreaInfoTab'
 import { AreaOccupantsTab } from '@/pages/AreaPage/tabs/AreaOccupantsTab'
 import { AreaReadersTab } from '@/pages/AreaPage/tabs/AreaReadersTab'
@@ -27,6 +28,8 @@ const areaToForm = (area: AreaInfo): AreaEditFormValues => ({
 })
 
 export const AreaDrawer = ({ area }: AreaDrawerProps) => {
+  const { t } = useTranslation(['area', 'common'])
+  const areaSchema = useMemo(() => createAreaEditSchema(t), [t])
   const [activeTab, setActiveTab] = useState('info')
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -40,7 +43,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
   const deleteAreaMut = useDeleteArea()
 
   const { register, handleSubmit, reset, control } = useForm<AreaEditFormValues>({
-    resolver: zodResolver(areaEditSchema),
+    resolver: zodResolver(areaSchema),
     defaultValues: { name: '', active: 1, occmax: 0, multiocc: 0 },
   })
 
@@ -57,9 +60,9 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
 
   const drawerTabs = area
     ? [
-        { key: 'info', label: '기본정보', icon: <Info size={12} /> },
-        { key: 'readers', label: '연결 리더', icon: <ScanLine size={12} /> },
-        { key: 'occupants', label: '점유 인원', icon: <Users size={12} /> },
+        { key: 'info', label: t('area:tab.info'), icon: <Info size={12} /> },
+        { key: 'readers', label: t('area:tab.readers'), icon: <ScanLine size={12} /> },
+        { key: 'occupants', label: t('area:tab.occupants'), icon: <Users size={12} /> },
       ]
     : undefined
 
@@ -91,7 +94,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
     if (ok) {
       setEditMode(false)
     } else {
-      setSaveError('저장하지 못했습니다. 서버 응답을 확인하세요.')
+      setSaveError(t('area:error.saveFailed'))
     }
   })
 
@@ -111,7 +114,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
     if (ok) {
       setResetOpen(false)
     } else {
-      setActionError('점유 초기화에 실패했습니다.')
+      setActionError(t('area:error.resetFailed'))
     }
   }
 
@@ -120,7 +123,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
     setActionError(null)
     const occset = Math.trunc(Number(occsetInput))
     if (!Number.isFinite(occset) || occset < 0) {
-      setActionError('0 이상의 숫자를 입력하세요.')
+      setActionError(t('area:error.invalidNumber'))
       return
     }
     const ok = await updateAreaMut.mutateAsync({
@@ -131,7 +134,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
       setSetOccOpen(false)
       setActionError(null)
     } else {
-      setActionError('점유 설정에 실패했습니다.')
+      setActionError(t('area:error.setFailed'))
     }
   }
 
@@ -159,8 +162,11 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
           {fallbackAreaName(area.name)}
         </span>
         <span className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
-          {isAreaActive(area.active) ? '활성' : '비활성'} · 점유 {area.occup}/
-          {area.occmax}
+          {t('area:summary.occupancy', {
+            status: isAreaActive(area.active) ? t('common:active') : t('common:inactive'),
+            occup: area.occup,
+            occmax: area.occmax,
+          })}
         </span>
       </div>
     </div>
@@ -183,7 +189,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
             leftIcon={<X size={12} />}
             onClick={handleCancel}
           >
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -192,7 +198,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
             loading={updateAreaMut.isPending}
             onClick={handleSave}
           >
-            저장
+            {t('common:save')}
           </Button>
         </div>
       </div>
@@ -204,7 +210,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
           leftIcon={<Trash2 size={12} />}
           onClick={() => setDeleteOpen(true)}
         >
-          삭제
+          {t('common:delete')}
         </Button>
         <Button
           variant="accent"
@@ -212,7 +218,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
           leftIcon={<Pencil size={12} />}
           onClick={handleEdit}
         >
-          수정
+          {t('common:edit')}
         </Button>
       </>
     )
@@ -221,7 +227,7 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
   const drawerChildren = !area ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
       <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-        목록에서 영역을 선택하세요
+        {t('area:selectRow')}
       </span>
     </div>
   ) : (
@@ -264,9 +270,9 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
 
       <Modal
         open={deleteOpen}
-        title="영역 삭제"
-        description={`"${area?.name ?? ''}" 영역을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`}
-        confirmLabel="삭제"
+        title={t('area:modal.deleteTitle')}
+        description={t('area:modal.deleteDescription', { name: area?.name ?? '' })}
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={deleteAreaMut.isPending}
         onConfirm={handleDeleteConfirm}
@@ -275,13 +281,16 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
 
       <Modal
         open={resetOpen}
-        title="점유 초기화"
+        title={t('area:modal.resetTitle')}
         description={
           actionError && resetOpen
-            ? `현재 점유(${area?.occup ?? 0})와 퇴장 카운트를 0으로 초기화합니다.\n\n${actionError}`
-            : `현재 점유(${area?.occup ?? 0})와 퇴장 카운트를 0으로 초기화합니다.`
+            ? t('area:modal.resetDescriptionWithError', {
+                occup: area?.occup ?? 0,
+                error: actionError,
+              })
+            : t('area:modal.resetDescription', { occup: area?.occup ?? 0 })
         }
-        confirmLabel="초기화"
+        confirmLabel={t('common:reset')}
         variant="danger"
         loading={updateAreaMut.isPending}
         onConfirm={handleResetOccupancyConfirm}
@@ -304,10 +313,10 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
               className="text-[15px] font-medium mb-1"
               style={{ color: 'var(--color-text)' }}
             >
-              점유 설정 (occset)
+              {t('area:occupancy.setTitle')}
             </p>
             <p className="text-[13px] mb-3" style={{ color: 'var(--color-text-muted)' }}>
-              영역 점유 설정값을 입력하세요.
+              {t('area:occupancy.setHint')}
             </p>
             <Input
               type="number"
@@ -328,14 +337,14 @@ export const AreaDrawer = ({ area }: AreaDrawerProps) => {
                   setActionError(null)
                 }}
               >
-                취소
+                {t('common:cancel')}
               </Button>
               <Button
                 variant="accent"
                 loading={updateAreaMut.isPending}
                 onClick={handleSetOccupancyConfirm}
               >
-                적용
+                {t('common:apply')}
               </Button>
             </div>
           </div>

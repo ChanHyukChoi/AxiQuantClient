@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  alarmRuleFormSchema,
+  createAlarmRuleFormSchema,
   type AlarmRuleFormValues,
 } from '@/pages/AlarmSettingsPage/formTypes'
 import type { AlarmRuleDisplay } from '@/pages/AlarmSettingsPage/alarmRuleTypes'
@@ -39,6 +40,8 @@ export const useAlarmRuleEditor = ({
   scpNameMap,
   onDeleted,
 }: UseAlarmRuleEditorOptions) => {
+  const { t } = useTranslation('alarm')
+  const alarmRuleFormSchema = useMemo(() => createAlarmRuleFormSchema(t), [t])
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [devicePickerOpen, setDevicePickerOpen] = useState(false)
@@ -118,20 +121,20 @@ export const useAlarmRuleEditor = ({
       },
     })
     if (ok) setEditMode(false)
-    else setActionError('저장하지 못했습니다.')
+    else setActionError(t('error.saveFailed'))
   })
 
   const handleAdd = useCallback(async () => {
     setActionError(null)
     const ok = await createMut.mutateAsync({
-      name: '새 경보',
+      name: t('rule.newDefaultName'),
       active: 1,
       deviceId: 0,
       deviceType: '',
       eventCondition: '',
     })
-    if (!ok) setActionError('추가하지 못했습니다.')
-  }, [createMut])
+    if (!ok) setActionError(t('error.addFailed'))
+  }, [createMut, t])
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!rule) return
@@ -141,8 +144,8 @@ export const useAlarmRuleEditor = ({
     if (ok) {
       setDeleteOpen(false)
       onDeleted()
-    } else setActionError('삭제하지 못했습니다.')
-  }, [rule, deleteMut, onDeleted])
+    } else setActionError(t('error.deleteFailed'))
+  }, [rule, deleteMut, onDeleted, t])
 
   const handleDevicePick = useCallback(
     (deviceType: string, deviceId: number, label: string) => {

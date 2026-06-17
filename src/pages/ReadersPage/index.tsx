@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ScanLine } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -18,6 +19,7 @@ import { useReadersData } from '@/pages/ReadersPage/useReadersData'
 const READERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.readers.v1'
 
 export const ReadersPage = () => {
+  const { t } = useTranslation('nav')
   const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
@@ -57,7 +59,7 @@ export const ReadersPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="리더"
+        title={t('menu.readers')}
         icon={<ScanLine size={15} />}
         actions={<AddButton onClick={() => undefined} />}
       />

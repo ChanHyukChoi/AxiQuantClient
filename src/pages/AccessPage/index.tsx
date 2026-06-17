@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { DoorOpen } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -20,6 +21,7 @@ import type { AccLvInfo } from '@/types/api'
 const ACCESS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.access.v1'
 
 export const AccessPage = () => {
+  const { t } = useTranslation(['nav', 'access'])
   const qc = useQueryClient()
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
@@ -74,7 +76,7 @@ export const AccessPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="접근 권한"
+        title={t('menu.access')}
         icon={<DoorOpen size={15} />}
         actions={<AddButton onClick={() => setCreateOpen(true)} />}
       />
@@ -90,7 +92,7 @@ export const AccessPage = () => {
             data={filteredList}
             selectedId={selectedId ?? undefined}
             onRowClick={handleRowClick}
-            searchPlaceholder="권한명 검색..."
+            searchPlaceholder={t('access:searchPlaceholder')}
             onSearch={setSearchQuery}
             totalCount={filteredList.length}
             loading={accLvLoading}

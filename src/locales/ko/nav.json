@@ -1,0 +1,55 @@
+{
+  "menu": {
+    "emps": "카드 사용자",
+    "cards": "카드",
+    "access": "접근 권한",
+    "area": "영역",
+    "cardfmt": "카드 형식",
+    "monitor": "이벤트 모니터",
+    "alarm-settings": "경보 설정",
+    "controllers": "제어기",
+    "readers": "리더",
+    "inputs": "입력",
+    "outputs": "출력",
+    "schedule": "스케쥴",
+    "linkage": "연동",
+    "audit": "운영 기록",
+    "users": "사용자"
+  },
+  "permission": {
+    "category": {
+      "accessMgmt": "접근 관리",
+      "eventMonitor": "이벤트 모니터",
+      "alarmSetting": "경보 설정",
+      "securityEquipment": "보안 장비",
+      "schedule": "스케쥴",
+      "linkage": "연동",
+      "systemMgmt": "시스템 관리"
+    },
+    "item": {
+      "cardUser": "카드 사용자",
+      "card": "카드",
+      "accessLevel": "접근 권한",
+      "area": "영역",
+      "cardFormat": "카드 형식",
+      "eventMonitor": "이벤트 모니터",
+      "alarmSetting": "경보 설정",
+      "controller": "제어기",
+      "reader": "리더",
+      "input": "입력",
+      "output": "출력",
+      "schedule": "스케쥴",
+      "linkage": "연동",
+      "audit": "운영 기록",
+      "user": "사용자"
+    },
+    "ui": {
+      "allowAll": "전체 허용",
+      "allowed": "허용됨",
+      "individual": "개별 설정",
+      "read": "읽기",
+      "write": "쓰기",
+      "all": "전체"
+    }
+  }
+}

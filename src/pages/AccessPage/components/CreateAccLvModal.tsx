@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
-import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
+import { createAccLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
 import { useCreateAccLv } from '@/hooks/api/useAccLv'
 
 interface CreateAccLvModalProps {
@@ -14,6 +15,8 @@ interface CreateAccLvModalProps {
 }
 
 export const CreateAccLvModal = ({ open, onCancel, onCreated }: CreateAccLvModalProps) => {
+  const { t } = useTranslation(['access', 'common'])
+  const accLvSchema = useMemo(() => createAccLvSchema(t), [t])
   const { mutate: createAccLv, isPending } = useCreateAccLv()
 
   const { register, handleSubmit, reset, formState } = useForm<AccLvFormValues>({
@@ -58,14 +61,14 @@ export const CreateAccLvModal = ({ open, onCancel, onCreated }: CreateAccLvModal
             className="text-[15px] font-medium"
             style={{ color: 'var(--color-text)' }}
           >
-            접근 권한 추가
+            {t('access:modal.createTitle')}
           </p>
           <button
             type="button"
             onClick={onCancel}
             className="p-1 rounded"
             style={{ color: 'var(--color-text-subtle)' }}
-            aria-label="닫기"
+            aria-label={t('common:close')}
           >
             <X size={14} />
           </button>
@@ -74,17 +77,17 @@ export const CreateAccLvModal = ({ open, onCancel, onCreated }: CreateAccLvModal
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
           <Input
             {...register('name')}
-            placeholder="권한명"
+            placeholder={t('access:field.name')}
             error={formState.errors.name?.message}
             autoFocus
           />
 
           <div className="flex justify-end gap-2 pt-1">
             <Button type="button" variant="default" size="md" onClick={onCancel} disabled={isPending}>
-              취소
+              {t('common:cancel')}
             </Button>
             <Button type="submit" variant="accent" size="md" loading={isPending}>
-              추가
+              {t('common:add')}
             </Button>
           </div>
         </form>

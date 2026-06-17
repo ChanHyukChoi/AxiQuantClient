@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import i18n from '@/lib/i18n'
 import { useCreateHoliday, useDeleteHoliday, useUpdateHoliday } from '@/hooks/api/useHoliday'
 import type { HolidayInfo } from '@/types/api'
 
@@ -72,7 +73,7 @@ export const useHolidayEditor = ({
       },
     })
     if (ok) setEditMode(false)
-    else setActionError('저장하지 못했습니다.')
+    else setActionError(i18n.t('error.saveFailed', { ns: 'schedule' }))
   }, [item, updateMut, draftName, draftDate, draftRecurring])
 
   const handleAdd = useCallback(async () => {
@@ -80,7 +81,7 @@ export const useHolidayEditor = ({
     setActionError(null)
     const ok = await createMut.mutateAsync({
       timezoneId,
-      name: '새 휴일',
+      name: i18n.t('holiday.newDefaultName', { ns: 'schedule' }),
       date: '01-01',
       isRecurring: true,
     })
@@ -88,7 +89,7 @@ export const useHolidayEditor = ({
       enterEditOnSelectRef.current = true
       onCreated?.()
     } else {
-      setActionError('추가하지 못했습니다.')
+      setActionError(i18n.t('error.addFailed', { ns: 'schedule' }))
     }
   }, [timezoneId, createMut, onCreated])
 
@@ -99,7 +100,7 @@ export const useHolidayEditor = ({
       setDeleteOpen(false)
       onDeleted()
     } else {
-      setActionError('삭제하지 못했습니다.')
+      setActionError(i18n.t('error.deleteFailed', { ns: 'schedule' }))
       setDeleteOpen(false)
     }
   }, [item, deleteMut, onDeleted])

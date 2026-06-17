@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Pencil } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Select } from '@/components/primitive/Select'
@@ -27,6 +28,7 @@ export const EmpBioView = ({
   canEdit,
   onStartEdit,
 }: EmpBioViewProps) => {
+  const { t } = useTranslation('emp')
   const hasCards = cards.length > 0
   const repKey = representativeCardKey || defaultRepCardKey(cards)
 
@@ -44,7 +46,7 @@ export const EmpBioView = ({
           className="block"
           style={{ fontSize: FONT_SIZE, color: 'var(--color-text-muted)' }}
         >
-          대표카드
+          {t('bio.repCard')}
         </label>
         <Select
           value={repKey}
@@ -68,7 +70,7 @@ export const EmpBioView = ({
           disabled={!canEdit || !hasCards}
           onClick={onStartEdit}
         >
-          바이오 편집
+          {t('bio.edit')}
         </Button>
       </div>
     </div>

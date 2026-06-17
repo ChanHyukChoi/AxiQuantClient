@@ -1,4 +1,5 @@
 import { Activity, FileCheck, HardDrive, Moon, Server, Shield, Sun, User } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useStatusBar } from '@/hooks/ui/useStatusBar'
 import { useThemeStore } from '@/stores/themeStore'
 
@@ -8,9 +9,17 @@ interface ConnectionBadgeProps {
   connected: boolean
   label: string
   icon: React.ReactNode
+  connectedText: string
+  disconnectedText: string
 }
 
-const ConnectionBadge = ({ connected, label, icon }: ConnectionBadgeProps) => {
+const ConnectionBadge = ({
+  connected,
+  label,
+  icon,
+  connectedText,
+  disconnectedText,
+}: ConnectionBadgeProps) => {
   const statusColor = connected ? 'var(--color-status-normal)' : 'var(--color-status-alarm)'
 
   return (
@@ -22,7 +31,7 @@ const ConnectionBadge = ({ connected, label, icon }: ConnectionBadgeProps) => {
         style={{ width: 6, height: 6, backgroundColor: statusColor }}
       />
       <span className="font-medium" style={{ color: statusColor }}>
-        {connected ? 'CONNECTED' : 'DISCONNECTED'}
+        {connected ? connectedText : disconnectedText}
       </span>
     </span>
   )
@@ -42,12 +51,18 @@ const StatusItem = ({ icon, children, color = 'var(--color-text)' }: StatusItemP
 )
 
 export const StatusBar = () => {
+  const { t } = useTranslation(['layout', 'common'])
   const { theme, toggleTheme } = useThemeStore()
   const { apiConnected, sseConnected, memoryLabel, loginId, roleLabel, license, licenseReady } =
     useStatusBar()
 
   const licenseValid = license?.valid ?? apiConnected
-  const licenseLabel = licenseReady && license ? '라이선스 확인' : apiConnected ? '라이선스 확인' : '라이선스 미확인'
+  const licenseLabel =
+    licenseReady && license
+      ? t('layout:statusBar.licenseVerified')
+      : apiConnected
+        ? t('layout:statusBar.licenseVerified')
+        : t('layout:statusBar.licenseUnverified')
 
   return (
     <footer
@@ -63,11 +78,15 @@ export const StatusBar = () => {
         connected={apiConnected}
         label="API"
         icon={<Server size={12} strokeWidth={2} />}
+        connectedText={t('layout:statusBar.connected')}
+        disconnectedText={t('layout:statusBar.disconnected')}
       />
       <ConnectionBadge
         connected={sseConnected}
-        label="이벤트"
+        label={t('layout:statusBar.events')}
         icon={<Activity size={12} strokeWidth={2} />}
+        connectedText={t('layout:statusBar.connected')}
+        disconnectedText={t('layout:statusBar.disconnected')}
       />
 
       <StatusItem icon={<HardDrive size={12} style={{ color: 'var(--color-icon)' }} />}>
@@ -79,7 +98,12 @@ export const StatusBar = () => {
       <StatusItem icon={<Shield size={12} style={{ color: 'var(--color-icon)' }} />}>{roleLabel}</StatusItem>
 
       <StatusItem
-        icon={<FileCheck size={12} style={{ color: licenseValid ? 'var(--color-status-normal)' : 'var(--color-status-alarm)' }} />}
+        icon={
+          <FileCheck
+            size={12}
+            style={{ color: licenseValid ? 'var(--color-status-normal)' : 'var(--color-status-alarm)' }}
+          />
+        }
         color={licenseValid ? 'var(--color-status-normal)' : 'var(--color-status-alarm)'}
       >
         {licenseLabel}
@@ -88,16 +112,16 @@ export const StatusBar = () => {
       {license ? (
         <>
           <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
-            Key ID : {license.keyId}
+            {t('layout:statusBar.keyId')} : {license.keyId}
           </span>
           <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
-            Max Reader : {license.maxReader}
+            {t('layout:statusBar.maxReader')} : {license.maxReader}
           </span>
           <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
-            Max Client : {license.maxClient}
+            {t('layout:statusBar.maxClient')} : {license.maxClient}
           </span>
           <span className="text-[14px] leading-none shrink-0" style={{ color: 'var(--color-text)' }}>
-            Max Map : {license.maxMap}
+            {t('layout:statusBar.maxMap')} : {license.maxMap}
           </span>
         </>
       ) : null}
@@ -112,7 +136,9 @@ export const StatusBar = () => {
           color: 'var(--color-icon)',
           background: 'transparent',
         }}
-        title={theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환'}
+        title={
+          theme === 'dark' ? t('layout:statusBar.themeToLight') : t('layout:statusBar.themeToDark')
+        }
         onMouseEnter={(e) => {
           e.currentTarget.style.backgroundColor = 'var(--color-btn-hover)'
         }}

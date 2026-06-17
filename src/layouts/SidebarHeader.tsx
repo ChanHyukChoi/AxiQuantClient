@@ -1,4 +1,5 @@
 import { PanelLeft } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useSidebarStore } from '@/stores/sidebarStore'
 
 interface SidebarHeaderProps {
@@ -7,12 +8,13 @@ interface SidebarHeaderProps {
 
 export const SidebarHeader = ({ isCollapsed }: SidebarHeaderProps) => {
   const { toggle } = useSidebarStore()
+  const { t } = useTranslation('layout')
 
   const toggleButton = (
     <button
       type="button"
       onClick={toggle}
-      title={isCollapsed ? '사이드바 펼치기' : '사이드바 접기'}
+      title={isCollapsed ? t('sidebar.expand') : t('sidebar.collapse')}
       className="flex items-center justify-center rounded transition-colors duration-100 shrink-0"
       style={{
         width: 28,

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/primitive/Button'
 import { Select } from '@/components/primitive/Select'
 import {
@@ -18,8 +19,6 @@ export const defaultEmpListFilters: EmpListFilters = {
 export const isEmpFiltersActive = (filters: EmpListFilters): boolean =>
   filters.cardAssignment !== 'all'
 
-const FILTER_TAB = { id: 'filter', label: '데이터 필터' } as const
-
 interface EmpFilterModalProps {
   open: boolean
   filters: EmpListFilters
@@ -33,7 +32,13 @@ export const EmpFilterModal = ({
   onApply,
   onClose,
 }: EmpFilterModalProps) => {
+  const { t } = useTranslation(['emp', 'common'])
   const [draft, setDraft] = useState(filters)
+
+  const filterTab = useMemo(
+    () => ({ id: 'filter', label: t('emp:filter.tab') }) as const,
+    [t],
+  )
 
   useEffect(() => {
     if (open) setDraft(filters)
@@ -42,8 +47,8 @@ export const EmpFilterModal = ({
   return (
     <ListOptionsModalShell
       open={open}
-      tabs={[FILTER_TAB]}
-      activeTab={FILTER_TAB.id}
+      tabs={[filterTab]}
+      activeTab={filterTab.id}
       onTabChange={() => undefined}
       onClose={onClose}
       footer={
@@ -57,10 +62,10 @@ export const EmpFilterModal = ({
               onClose()
             }}
           >
-            초기화
+            {t('common:reset')}
           </Button>
           <Button variant="default" size="md" onClick={onClose}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -70,13 +75,13 @@ export const EmpFilterModal = ({
               onClose()
             }}
           >
-            적용
+            {t('common:apply')}
           </Button>
         </>
       }
     >
       <div className="flex flex-col gap-3">
-        <ListOptionsFilterField label="보유 카드">
+        <ListOptionsFilterField label={t('emp:filter.cardAssignment')}>
           <Select
             value={draft.cardAssignment}
             fontSize={LIST_OPTIONS_FONT_SIZE}
@@ -86,9 +91,9 @@ export const EmpFilterModal = ({
               })
             }
             options={[
-              { value: 'all', label: '전체' },
-              { value: 'has', label: '카드 있음' },
-              { value: 'none', label: '카드 없음' },
+              { value: 'all', label: t('emp:filter.all') },
+              { value: 'has', label: t('emp:filter.hasCard') },
+              { value: 'none', label: t('emp:filter.noCard') },
             ]}
           />
         </ListOptionsFilterField>

@@ -1,11 +1,13 @@
+import { useMemo } from 'react'
 import { Volume2 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
 import { Select } from '@/components/primitive/Select'
-import { PRIORITY_BLINK_OPTIONS } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
-import { ALARM_SOUND_OPTIONS } from '@/pages/AlarmSettingsPage/alarmRuleTypes'
+import { getPriorityBlinkOptions } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
+import { getAlarmSoundOptions } from '@/pages/AlarmSettingsPage/alarmRuleTypes'
 import { AlarmPrioritySamplePreview } from '@/pages/AlarmSettingsPage/components/AlarmPrioritySamplePreview'
 import type { AlarmPriorityFormValues } from '@/pages/AlarmSettingsPage/formTypes'
 import { normalizeHexColor } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
@@ -43,6 +45,7 @@ const ColorField = ({
   onColorChange: (hex: string) => void
   onBgToggle?: (enabled: boolean) => void
 }) => {
+  const { t } = useTranslation('alarm')
   const hex = normalizeHexColor(color)
   return (
     <div className="flex flex-col gap-1.5">
@@ -68,7 +71,7 @@ const ColorField = ({
             <label className="flex items-center gap-1.5 cursor-pointer">
               <Checkbox checked={bgEnabled ?? false} onChange={onBgToggle} />
               <span className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
-                배경색
+                {t('field.bgColor')}
               </span>
             </label>
           ) : null}
@@ -92,6 +95,7 @@ const StyleSection = ({
   fgKey,
   bgKey,
   bgEnabledKey,
+  showBlinking,
 }: {
   title: string
   form: UseFormReturn<AlarmPriorityFormValues>
@@ -99,7 +103,9 @@ const StyleSection = ({
   fgKey: 'alarmFg' | 'ackFg'
   bgKey: 'alarmBg' | 'ackBg'
   bgEnabledKey: 'alarmBgEnabled' | 'ackBgEnabled'
+  showBlinking?: boolean
 }) => {
+  const { t } = useTranslation('alarm')
   const { watch, setValue } = form
   const values = watch()
   const fg = values[fgKey]
@@ -121,16 +127,16 @@ const StyleSection = ({
         fgColor={normalizeHexColor(fg)}
         bgColor={normalizeHexColor(bg)}
         bgEnabled={bgEnabled}
-        blinking={title.includes('경보') ? values.blinking : 'off'}
+        blinking={showBlinking ? values.blinking : 'off'}
       />
       <ColorField
-        label="글자색"
+        label={t('field.textColor')}
         color={fg}
         editMode={editMode}
         onColorChange={(v) => setValue(fgKey, v, { shouldDirty: true })}
       />
       <ColorField
-        label="배경색"
+        label={t('field.bgColor')}
         color={bg}
         bgEnabled={bgEnabled}
         showBgToggle
@@ -147,11 +153,15 @@ export const AlarmPriorityFormFields = ({
   editMode,
   layout = 'stack',
 }: AlarmPriorityFormFieldsProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
   const { register, watch, setValue } = form
   const values = watch()
 
+  const blinkOptions = useMemo(() => getPriorityBlinkOptions(t), [t])
+  const soundOptions = useMemo(() => getAlarmSoundOptions(t), [t])
+
   const priorityField = (
-    <InfoField label="우선순위">
+    <InfoField label={t('alarm:field.priority')}>
       {editMode ? (
         <div className="flex flex-col gap-0.5 max-w-[120px]">
           <Input
@@ -174,18 +184,19 @@ export const AlarmPriorityFormFields = ({
 
   const alarmSection = (
     <StyleSection
-      title="경보 발생"
+      title={t('alarm:priority.onAlarm')}
       form={form}
       editMode={editMode}
       fgKey="alarmFg"
       bgKey="alarmBg"
       bgEnabledKey="alarmBgEnabled"
+      showBlinking
     />
   )
 
   const ackSection = (
     <StyleSection
-      title="인지 처리 후"
+      title={t('alarm:field.afterAck')}
       form={form}
       editMode={editMode}
       fgKey="ackFg"
@@ -196,22 +207,22 @@ export const AlarmPriorityFormFields = ({
 
   const extras = editMode ? (
     <div className="flex flex-col gap-3">
-      <InfoField label="반짝임">
+      <InfoField label={t('alarm:field.blinking')}>
         <Select
           value={values.blinking}
           onChange={(v) => setValue('blinking', v, { shouldDirty: true })}
-          options={PRIORITY_BLINK_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+          options={blinkOptions.map((o) => ({ value: o.value, label: o.label }))}
         />
       </InfoField>
-      <InfoField label="알람음">
+      <InfoField label={t('alarm:field.sound')}>
         <div className="flex items-center gap-2">
           <Select
             value={values.alarmSound}
             onChange={(v) => setValue('alarmSound', v, { shouldDirty: true })}
-            options={ALARM_SOUND_OPTIONS.map((o) => ({ value: o.value, label: o.label }))}
+            options={soundOptions.map((o) => ({ value: o.value, label: o.label }))}
             className="flex-1"
           />
-          <Button variant="default" size="sm" title="미리듣기" disabled>
+          <Button variant="default" size="sm" title={t('alarm:previewListen')} disabled>
             <Volume2 size={14} />
           </Button>
         </div>
@@ -220,12 +231,12 @@ export const AlarmPriorityFormFields = ({
   ) : (
     <div className="flex flex-col gap-2 text-[14px]" style={{ color: 'var(--color-text-muted)' }}>
       <p>
-        <span style={{ color: 'var(--color-text-subtle)' }}>반짝임: </span>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.blinking')}: </span>
         {blinkingLabel(values.blinking)}
       </p>
       <p>
-        <span style={{ color: 'var(--color-text-subtle)' }}>알람음: </span>
-        {ALARM_SOUND_OPTIONS.find((o) => o.value === values.alarmSound)?.label ?? '—'}
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.sound')}: </span>
+        {soundOptions.find((o) => o.value === values.alarmSound)?.label ?? t('common:empty')}
       </p>
     </div>
   )

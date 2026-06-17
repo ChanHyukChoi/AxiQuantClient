@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { AccLvReaderRow } from '@/pages/AccessPage/utils/accLvHelpers'
 
 interface AccLvReaderTableProps {
@@ -7,12 +8,22 @@ interface AccLvReaderTableProps {
 }
 
 export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProps) => {
+  const { t } = useTranslation('access')
   const [hovered, setHovered] = useState<number | null>(null)
+
+  const headers = useMemo(
+    () => [
+      t('readers.column.controller'),
+      t('readers.column.reader'),
+      t('readers.column.timezone'),
+    ],
+    [t],
+  )
 
   if (loading) {
     return (
       <p className="text-[14px] py-4" style={{ color: 'var(--color-text-subtle)' }}>
-        불러오는 중...
+        {t('loading')}
       </p>
     )
   }
@@ -21,7 +32,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
     <table className="w-full border-collapse">
       <thead>
         <tr>
-          {(['주 제어기', '리더', '시간표'] as const).map((header) => (
+          {headers.map((header) => (
             <th
               key={header}
               className="text-[13px] font-medium py-2 px-2.5 text-left"
@@ -44,7 +55,7 @@ export const AccLvReaderTable = ({ rows, loading = false }: AccLvReaderTableProp
               className="text-[14px] py-6 px-2.5 text-center"
               style={{ color: 'var(--color-text-subtle)' }}
             >
-              연결된 리더가 없습니다.
+              {t('readers.empty')}
             </td>
           </tr>
         ) : (

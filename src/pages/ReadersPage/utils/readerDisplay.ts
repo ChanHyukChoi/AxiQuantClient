@@ -1,3 +1,4 @@
+import i18n from '@/lib/i18n'
 import { entityLabel, isStandaloneReader } from '@/lib/device/deviceHelpers'
 import type { ReaderInfo } from '@/types/api'
 
@@ -7,7 +8,7 @@ export type ReaderKindFilter = 'all' | ReaderKind
 export const readerLabel = (reader: ReaderInfo): string => entityLabel('reader', reader)
 
 export const formatReaderAddr = (addr: number): string =>
-  addr > 0 ? `READER ${addr}` : '??
+  addr > 0 ? `READER ${addr}` : i18n.t('empty', { ns: 'common' })
 
 export const formatSioName = (sio: number, sioName?: string): string => {
   if (sioName?.trim()) return sioName
@@ -21,16 +22,8 @@ export const detectReaderKind = (reader: ReaderInfo): ReaderKind => {
   return 'general'
 }
 
-export const readerKindLabel = (kind: ReaderKind): string => {
-  switch (kind) {
-    case 'standalone':
-      return '?¨ë…'
-    case 'bio':
-      return 'ë°”ì´??
-    default:
-      return '?¼ë°˜'
-  }
-}
+export const readerKindLabel = (kind: ReaderKind): string =>
+  i18n.t(`kind.${kind}`, { ns: 'reader' })
 
 const MODE_LABELS: Record<number, string> = {
   0: 'DISABLE',
@@ -67,19 +60,19 @@ export interface ReaderTabDef {
 
 export const tabsForReaderKind = (kind: ReaderKind): ReaderTabDef[] => {
   if (kind === 'standalone') {
-    return [{ key: 'general', label: '?¼ë°˜' }]
+    return [{ key: 'general', label: i18n.t('tab.general', { ns: 'reader' }) }]
   }
   if (kind === 'bio') {
     return [
-      { key: 'general', label: '?¼ë°˜' },
-      { key: 'protocol', label: '?„ë¡œ? ì½œ' },
+      { key: 'general', label: i18n.t('tab.general', { ns: 'reader' }) },
+      { key: 'protocol', label: i18n.t('tab.protocol', { ns: 'reader' }) },
     ]
   }
   return [
-    { key: 'general', label: '?¼ë°˜' },
-    { key: 'mode', label: 'ëª¨ë“œ' },
-    { key: 'apb', label: '?ˆí‹°?¨ìŠ¤ë°? },
-    { key: 'pair', label: '?°ê?ë¦¬ë”' },
-    { key: 'protocol', label: '?„ë¡œ? ì½œ' },
+    { key: 'general', label: i18n.t('tab.general', { ns: 'reader' }) },
+    { key: 'mode', label: i18n.t('tab.mode', { ns: 'reader' }) },
+    { key: 'apb', label: i18n.t('tab.apb', { ns: 'reader' }) },
+    { key: 'pair', label: i18n.t('tab.pair', { ns: 'reader' }) },
+    { key: 'protocol', label: i18n.t('tab.protocol', { ns: 'reader' }) },
   ]
 }

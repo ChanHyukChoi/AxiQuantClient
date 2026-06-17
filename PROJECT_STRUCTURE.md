@@ -630,6 +630,41 @@ PageName/
 
 ---
 
+## 국제화 (i18n)
+
+UI 표시 문자열은 **컴포넌트 JSX에 한글을 직접 넣지 않습니다.** `src/locales/ko/*.json` + `react-i18next`를 사용합니다.
+
+| 경로 | 역할 |
+|------|------|
+| `src/lib/i18n/index.ts` | i18next 초기화 (`main.tsx`에서 import) |
+| `src/locales/ko/common.json` | 공통 라벨 (명칭, 상태, 활성 등) |
+| `src/locales/ko/nav.json` | 사이드바 메뉴·권한 카테고리/항목 |
+| `src/locales/ko/layout.json` | 타이틀바·상태바·사이드바 헤더 |
+| `src/locales/ko/auth.json` | 로그인 폼·검증 메시지 |
+| `src/locales/ko/device.json` | 장치 도메인 (제어기·입출력·리더·트리) |
+| `src/locales/ko/reader.json` | 리더 상세·탭 |
+| `src/locales/ko/emp.json` | 직원 |
+| `src/locales/ko/card.json` | 카드 |
+| `src/locales/ko/area.json` | 영역 |
+| `src/locales/ko/access.json` | 접근 권한 |
+| `src/locales/ko/schedule.json` | 스케줄·타임존 |
+| `src/locales/ko/alarm.json` | 경보 설정 |
+| `src/locales/ko/user.json` | 사용자 |
+| `src/locales/ko/cardFmt.json` | 카드 형식 |
+| `src/locales/ko/linkage.json` | 연동 규칙 |
+| `src/locales/ko/eventMonitor.json` | 이벤트 모니터 |
+| `src/locales/ko/audit.json` | 운영 기록 |
+| `src/locales/ko/entity.json` | 엔티티 표시 fallback (`entityDisplayLabels`) |
+
+**사용 패턴**
+
+- React 컴포넌트: `const { t } = useTranslation('device')` → `t('grid.scp')`
+- 비-React 유틸: `import i18n from '@/lib/i18n'` → `i18n.t('tree.controllers', { ns: 'device' })`
+- 네임스페이스 복수: `useTranslation(['common', 'device'])` → `t('common:name')`
+- Zod: `createXxxSchema(t)` 팩토리 (`formTypes.ts`)
+
+---
+
 ## 부록: 명명 규칙
 
 | 대상 | 규칙 | 예시 |

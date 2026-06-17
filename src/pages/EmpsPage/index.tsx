@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { BadgeCheck } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
@@ -33,6 +34,7 @@ const applyEmpFilters = (
 }
 
 export const EmpsPage = () => {
+  const { t } = useTranslation(['nav', 'common', 'emp'])
   const qc = useQueryClient()
   const selectionBeforeCreateRef = useRef<number | null>(null)
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -124,7 +126,7 @@ export const EmpsPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="카드 사용자"
+        title={t('nav:menu.emps')}
         icon={<BadgeCheck size={15} />}
         actions={
           <>
@@ -146,7 +148,7 @@ export const EmpsPage = () => {
             data={filteredEmps}
             selectedId={selectedId ?? undefined}
             onRowClick={handleRowClick}
-            searchPlaceholder="이름, 사번, 부서 검색..."
+            searchPlaceholder={t('emp:searchPlaceholder')}
             onSearch={setSearchQuery}
             totalCount={filteredEmps.length}
             loading={empLoading}
@@ -159,7 +161,7 @@ export const EmpsPage = () => {
             actions={
               <FilterButton
                 showLabel={false}
-                title="필터"
+                title={t('common:filter')}
                 active={isEmpFiltersActive(listFilters)}
                 onClick={() => setFilterModalOpen(true)}
               />

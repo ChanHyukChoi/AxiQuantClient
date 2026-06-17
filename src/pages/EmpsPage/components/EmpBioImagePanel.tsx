@@ -1,4 +1,5 @@
 import { useRef, type CSSProperties } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Fingerprint, Minus, Plus } from 'lucide-react'
 import { BIO_IMAGE_ACCEPT } from '@/lib/image/bioImageConstants'
 import {
@@ -29,6 +30,7 @@ export const EmpBioImagePanel = ({
   onFileSelect,
   onClear,
 }: EmpBioImagePanelProps) => {
+  const { t } = useTranslation('emp')
   const inputRef = useRef<HTMLInputElement>(null)
   const trimmed = imageUrl?.trim()
 
@@ -51,7 +53,7 @@ export const EmpBioImagePanel = ({
         {editable ? (
           <button
             type="button"
-            aria-label="바이오 이미지 제거"
+            aria-label={t('bio.removeImageAria')}
             disabled={loading}
             onClick={onClear}
             className="absolute top-0.5 left-0.5 flex items-center justify-center rounded"
@@ -77,7 +79,7 @@ export const EmpBioImagePanel = ({
       <>
         <button
           type="button"
-          aria-label="바이오 이미지 불러오기"
+          aria-label={t('bio.loadImageAria')}
           disabled={loading}
           onClick={openFileDialog}
           className="shrink-0 flex items-center justify-center rounded"
@@ -112,7 +114,7 @@ export const EmpBioImagePanel = ({
       }}
     >
       <Fingerprint size={22} style={{ color: 'var(--color-border)' }} />
-      <span>바이오 이미지 없음</span>
+      <span>{t('bio.noImage')}</span>
     </div>
   )
 }

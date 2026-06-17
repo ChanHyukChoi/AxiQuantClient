@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { UseFormRegister } from 'react-hook-form'
 import { Input } from '@/components/primitive/Input'
 import { Checkbox } from '@/components/primitive/Checkbox'
@@ -13,7 +14,6 @@ interface ScpDetailFieldsProps {
   activePending?: boolean
   onToggleActive?: (active: boolean) => void
   layout?: 'stack' | 'columns'
-  /** ?ù?ùù??? ?ù? ?ù?? ?ù?ù??? ???ù? ?ù? ?ù? ?ù? (?ùù?ù??ùù?) */
   statusInTitleBar?: boolean
 }
 
@@ -26,6 +26,7 @@ export const ScpDetailFields = ({
   layout = 'stack',
   statusInTitleBar = false,
 }: ScpDetailFieldsProps) => {
+  const { t } = useTranslation(['common', 'device'])
   const wrapClass =
     layout === 'columns'
       ? 'grid grid-cols-2 gap-x-4 gap-y-3'
@@ -34,19 +35,19 @@ export const ScpDetailFields = ({
   if (editMode) {
     return (
       <div className={wrapClass}>
-        <DetailInfoField label="??">
+        <DetailInfoField label={t('common:name')}>
           <Input {...register('name')} />
         </DetailInfoField>
-        <DetailInfoField label="?ù?????>
+        <DetailInfoField label={t('device:scp.connstr')}>
           <Input {...register('connstr')} />
         </DetailInfoField>
-        <DetailInfoField label="??">
+        <DetailInfoField label={t('common:model')}>
           <Input type="number" {...register('model', { valueAsNumber: true })} />
         </DetailInfoField>
-        <DetailInfoField label="?ù??ù?">
+        <DetailInfoField label={t('device:scp.ctype')}>
           <Input type="number" {...register('ctype', { valueAsNumber: true })} />
         </DetailInfoField>
-        <DetailInfoField label="?ù?">
+        <DetailInfoField label={t('common:status')}>
           <select
             {...register('active', { valueAsNumber: true })}
             className="text-[14px] px-2 py-1 rounded border outline-none w-full"
@@ -56,11 +57,11 @@ export const ScpDetailFields = ({
               color: 'var(--color-text)',
             }}
           >
-            <option value={1}>?ù?</option>
-            <option value={0}>????/option>
+            <option value={1}>{t('common:active')}</option>
+            <option value={0}>{t('common:inactive')}</option>
           </select>
         </DetailInfoField>
-        <DetailInfoField label="?ù?">
+        <DetailInfoField label={t('common:extension')}>
           <Input {...register('ext')} />
         </DetailInfoField>
       </div>
@@ -69,18 +70,18 @@ export const ScpDetailFields = ({
 
   return (
     <div className={wrapClass}>
-      <DetailInfoField label="ID">
+      <DetailInfoField label={t('common:id')}>
         <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
           {scp.id}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="??">
+      <DetailInfoField label={t('common:name')}>
         <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
           {entityLabel('scp', scp)}
         </span>
       </DetailInfoField>
       {statusInTitleBar && !onToggleActive ? null : (
-        <DetailInfoField label="?ù?">
+        <DetailInfoField label={t('common:status')}>
           {onToggleActive ? (
             <Checkbox
               checked={isDeviceActive(scp.active)}
@@ -89,28 +90,28 @@ export const ScpDetailFields = ({
             />
           ) : (
             <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-              {isDeviceActive(scp.active) ? '?ù?' : '????}
+              {isDeviceActive(scp.active) ? t('common:active') : t('common:inactive')}
             </span>
           )}
         </DetailInfoField>
       )}
-      <DetailInfoField label="?ù?????>
+      <DetailInfoField label={t('device:scp.connstr')}>
         <span className="text-[14px] font-mono break-all" style={{ color: 'var(--color-text)' }}>
-          {scp.connstr?.trim() || '??}
+          {scp.connstr?.trim() || t('common:empty')}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="??">
+      <DetailInfoField label={t('common:model')}>
         <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
           {scp.model}
         </span>
       </DetailInfoField>
-      <DetailInfoField label="?ù??ù?">
+      <DetailInfoField label={t('device:scp.ctype')}>
         <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
           {scp.ctype}
         </span>
       </DetailInfoField>
       {scp.ext?.trim() ? (
-        <DetailInfoField label="?ù?">
+        <DetailInfoField label={t('common:extension')}>
           <span className="text-[14px] break-all" style={{ color: 'var(--color-text)' }}>
             {scp.ext}
           </span>

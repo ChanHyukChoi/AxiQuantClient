@@ -1,0 +1,35 @@
+{
+  "loading": "불러오는 중...",
+  "loadError": "운영 기록을 불러오지 못했습니다.",
+  "empty": "표시할 기록이 없습니다.",
+  "totalCount": "전체 {{count}}건",
+  "perPage": "{{count}}건/페이지",
+  "datePreset": {
+    "today": "오늘",
+    "7d": "최근 7일",
+    "30d": "최근 30일"
+  },
+  "filter": {
+    "allUsers": "사용자 전체",
+    "allActions": "동작 전체",
+    "allData": "데이터 전체"
+  },
+  "column": {
+    "ts": "시간",
+    "user": "사용자",
+    "clientType": "클라이언트 유형",
+    "actionType": "동작 유형",
+    "dataType": "데이터 유형",
+    "controller": "컨트롤러",
+    "data": "데이터"
+  },
+  "export": {
+    "ts": "시간",
+    "user": "사용자",
+    "client": "클라이언트",
+    "action": "동작",
+    "dataType": "데이터유형",
+    "controller": "컨트롤러",
+    "data": "데이터"
+  }
+}

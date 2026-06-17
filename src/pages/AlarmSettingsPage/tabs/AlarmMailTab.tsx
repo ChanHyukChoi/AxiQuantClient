@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AddButton } from '@/components/page-actions'
 import { TabToolbar } from '@/layouts/TabToolbar'
 import { AlarmMailDrawer } from '@/pages/AlarmSettingsPage/components/AlarmMailDrawer'
@@ -7,6 +8,7 @@ import { useAlarmMails, useAlarms, useCreateAlarmMail } from '@/hooks/api/useAla
 import type { AlarmMailInfo } from '@/types/api'
 
 export const AlarmMailTab = () => {
+  const { t } = useTranslation('alarm')
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
   const { data: mailList, isLoading, isError } = useAlarmMails()
@@ -19,10 +21,10 @@ export const AlarmMailTab = () => {
   const alarmNameMap = useMemo(() => {
     const map: Record<number, string> = {}
     alarmList.forEach((a) => {
-      map[a.id] = a.name?.trim() || '경보'
+      map[a.id] = a.name?.trim() || t('rule.fallback')
     })
     return map
-  }, [alarmList])
+  }, [alarmList, t])
 
   const selected = useMemo(
     () => items.find((m) => m.id === selectedId) ?? null,
@@ -31,7 +33,7 @@ export const AlarmMailTab = () => {
 
   const handleAdd = async () => {
     const ok = await createMut.mutateAsync({
-      name: '새 이메일 경보',
+      name: t('mail.newDefaultName'),
       alarmIds: [],
       emails: [''],
     })
@@ -44,10 +46,7 @@ export const AlarmMailTab = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <TabToolbar>
-        <AddButton
-          onClick={() => void handleAdd()}
-          loading={createMut.isPending}
-        />
+        <AddButton onClick={() => void handleAdd()} loading={createMut.isPending} />
       </TabToolbar>
       <div className="flex flex-1 overflow-hidden min-h-0">
         <AlarmMailListPane

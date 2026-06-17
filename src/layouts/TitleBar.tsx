@@ -2,6 +2,7 @@ import { WindowRestoreIcon } from '@/components/primitive/icons/WindowRestoreIco
 import { Minus, Square, X } from 'lucide-react'
 import { useThemeStore } from '../stores/themeStore'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { isElectronRuntime } from '@/lib/isElectronRuntime'
 
 export const TitleBar = () => {
@@ -10,6 +11,7 @@ export const TitleBar = () => {
 }
 
 const ElectronTitleBar = () => {
+  const { t } = useTranslation('layout')
   const { theme } = useThemeStore()
   const [isMaximized, setIsMaximized] = useState(false)
   const electronWindow = window.electronAPI!.window
@@ -81,7 +83,7 @@ const ElectronTitleBar = () => {
           style={{ background: 'transparent', color: 'var(--color-icon)' }}
           onMouseEnter={hoverIn}
           onMouseLeave={hoverOut}
-          title="최소화"
+          title={t('titleBar.minimize')}
         >
           <Minus size={12} strokeWidth={1.5} />
         </button>
@@ -92,7 +94,7 @@ const ElectronTitleBar = () => {
           style={{ background: 'transparent', color: 'var(--color-icon)' }}
           onMouseEnter={hoverIn}
           onMouseLeave={hoverOut}
-          title={isMaximized ? '이전 크기로' : '최대화'}
+          title={isMaximized ? t('titleBar.restore') : t('titleBar.maximize')}
         >
           {isMaximized ? (
             <WindowRestoreIcon size={12} />
@@ -107,7 +109,7 @@ const ElectronTitleBar = () => {
           style={{ background: 'transparent', color: 'var(--color-icon)' }}
           onMouseEnter={closeHoverIn}
           onMouseLeave={closeHoverOut}
-          title="닫기"
+          title={t('titleBar.close')}
         >
           <X size={12} strokeWidth={1.5} />
         </button>

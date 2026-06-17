@@ -1,0 +1,26 @@
+{
+  "sidebar": {
+    "expand": "사이드바 펼치기",
+    "collapse": "사이드바 접기"
+  },
+  "titleBar": {
+    "minimize": "최소화",
+    "restore": "이전 크기로",
+    "maximize": "최대화",
+    "close": "닫기"
+  },
+  "statusBar": {
+    "events": "이벤트",
+    "connected": "CONNECTED",
+    "disconnected": "DISCONNECTED",
+    "licenseVerified": "라이선스 확인",
+    "licenseUnverified": "라이선스 미확인",
+    "roleDefault": "일반 사용자",
+    "themeToLight": "라이트 모드로 전환",
+    "themeToDark": "다크 모드로 전환",
+    "keyId": "Key ID",
+    "maxReader": "Max Reader",
+    "maxClient": "Max Client",
+    "maxMap": "Max Map"
+  }
+}

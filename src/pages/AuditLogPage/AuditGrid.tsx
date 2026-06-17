@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { CSSProperties } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
@@ -35,14 +37,26 @@ export const AuditGrid = ({
   onPageChange,
   onPageSizeChange,
 }: AuditGridProps) => {
+  const { t } = useTranslation(['audit', 'common'])
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
+
+  const headers = useMemo(
+    () => [
+      t('audit:column.ts'),
+      t('audit:column.user'),
+      t('audit:column.clientType'),
+      t('audit:column.actionType'),
+      t('audit:column.dataType'),
+      t('audit:column.controller'),
+      t('audit:column.data'),
+    ],
+    [t],
+  )
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden min-w-0">
       <div className="flex-1 overflow-auto app-scrollbar">
-        <table
-          style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}
-        >
+        <table style={{ tableLayout: 'fixed', width: '100%', borderCollapse: 'collapse' }}>
           <thead
             style={{
               position: 'sticky',
@@ -52,15 +66,7 @@ export const AuditGrid = ({
             }}
           >
             <tr>
-              {[
-                '시간',
-                '사용자',
-                '클라이언트 유형',
-                '동작 유형',
-                '데이터 유형',
-                '컨트롤러',
-                '데이터',
-              ].map((h) => (
+              {headers.map((h) => (
                 <th
                   key={h}
                   style={{
@@ -85,7 +91,7 @@ export const AuditGrid = ({
                   className="text-center py-8 text-[14px]"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
-                  불러오는 중...
+                  {t('audit:loading')}
                 </td>
               </tr>
             ) : error ? (
@@ -95,7 +101,7 @@ export const AuditGrid = ({
                   className="text-center py-8 text-[14px]"
                   style={{ color: '#e06060' }}
                 >
-                  운영 기록을 불러오지 못했습니다.
+                  {t('audit:loadError')}
                 </td>
               </tr>
             ) : items.length === 0 ? (
@@ -105,15 +111,15 @@ export const AuditGrid = ({
                   className="text-center py-8 text-[14px]"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
-                  표시할 기록이 없습니다.
+                  {t('audit:empty')}
                 </td>
               </tr>
             ) : (
               items.map((row) => (
                 <tr key={row.id} style={{ background: 'var(--color-bg)' }}>
                   <td style={cellStyle}>{row.ts}</td>
-                  <td style={cellStyle}>{row.user || '—'}</td>
-                  <td style={cellStyle}>{row.clientType || '—'}</td>
+                  <td style={cellStyle}>{row.user || t('common:empty')}</td>
+                  <td style={cellStyle}>{row.clientType || t('common:empty')}</td>
                   <td style={cellStyle}>
                     <span
                       className="inline-flex text-[12px] font-medium px-1.5 py-0.5 rounded-full"
@@ -122,10 +128,10 @@ export const AuditGrid = ({
                       {row.actionType}
                     </span>
                   </td>
-                  <td style={cellStyle}>{row.dataType || '—'}</td>
-                  <td style={cellStyle}>{row.controller || '—'}</td>
+                  <td style={cellStyle}>{row.dataType || t('common:empty')}</td>
+                  <td style={cellStyle}>{row.controller || t('common:empty')}</td>
                   <td style={cellStyle} title={row.data}>
-                    {row.data || '—'}
+                    {row.data || t('common:empty')}
                   </td>
                 </tr>
               ))
@@ -143,7 +149,7 @@ export const AuditGrid = ({
           color: 'var(--color-text-dim)',
         }}
       >
-        <span>전체 {total}건</span>
+        <span>{t('audit:totalCount', { count: total })}</span>
         <div className="flex items-center gap-2">
           <select
             value={pageSize}
@@ -157,7 +163,7 @@ export const AuditGrid = ({
           >
             {[50, 100, 200].map((n) => (
               <option key={n} value={n}>
-                {n}건/페이지
+                {t('audit:perPage', { count: n })}
               </option>
             ))}
           </select>

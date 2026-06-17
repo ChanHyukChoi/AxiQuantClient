@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm, type UseFormRegister } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Binary, Check, Hash, Pencil, Settings, Trash2, X } from 'lucide-react'
@@ -8,7 +9,7 @@ import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
 import { BitVisualizer } from '@/pages/CardFmtPage/BitVisualizer'
 import {
-  cardFmtEditSchema,
+  createCardFmtEditSchema,
   type CardFmtEditFormValues,
 } from '@/pages/CardFmtPage/formTypes'
 import {
@@ -158,6 +159,8 @@ const NumField = ({
 )
 
 export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
+  const { t } = useTranslation(['cardFmt', 'common'])
+  const cardFmtEditSchema = useMemo(() => createCardFmtEditSchema(t), [t])
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -210,7 +213,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
     if (ok) {
       setEditMode(false)
     } else {
-      setSaveError('저장하지 못했습니다. 서버 응답을 확인하세요.')
+      setSaveError(t('cardFmt:error.saveFailed'))
     }
   })
 
@@ -272,7 +275,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
             leftIcon={<X size={12} />}
             onClick={handleCancel}
           >
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -281,7 +284,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
             loading={updateMut.isPending}
             onClick={handleSave}
           >
-            저장
+            {t('common:save')}
           </Button>
         </div>
       </div>
@@ -293,7 +296,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
           leftIcon={<Trash2 size={12} />}
           onClick={() => setDeleteOpen(true)}
         >
-          삭제
+          {t('common:delete')}
         </Button>
         <Button
           variant="accent"
@@ -301,7 +304,7 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
           leftIcon={<Pencil size={12} />}
           onClick={handleEdit}
         >
-          수정
+          {t('common:edit')}
         </Button>
       </>
     )
@@ -310,24 +313,24 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
   const drawerChildren = !cardfmt ? (
     <div className="flex items-center justify-center h-full min-h-[120px]">
       <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-        목록에서 카드 형식을 선택하세요
+        {t('cardFmt:selectItem')}
       </span>
     </div>
   ) : (
     <div>
-      <SectionTitle>기본 정보</SectionTitle>
+      <SectionTitle>{t('cardFmt:section.basic')}</SectionTitle>
 
-      <FRow icon={<Binary size={12} />} label="명칭">
+      <FRow icon={<Binary size={12} />} label={t('cardFmt:field.name')}>
         {editMode ? (
           <Input {...register('name')} style={{ width: 148 }} />
         ) : (
           <span className="text-[15px] text-right" style={{ color: 'var(--color-text)' }}>
-            {display.name || '—'}
+            {display.name || t('common:empty')}
           </span>
         )}
       </FRow>
 
-      <FRow icon={<Settings size={12} />} label="유형">
+      <FRow icon={<Settings size={12} />} label={t('cardFmt:field.type')}>
         <span
           className="inline-flex items-center text-[12px] font-medium px-1.5 py-0.5 rounded-full"
           style={WIEGAND_BADGE_STYLE}
@@ -337,49 +340,49 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
       </FRow>
 
       <NumField
-        label="시설 코드"
+        label={t('cardFmt:field.facility')}
         name="facility"
         value={display.facility}
         editMode={editMode}
         register={register}
       />
       <NumField
-        label="카드 오프셋"
+        label={t('cardFmt:field.idOffset')}
         name="idOffset"
         value={display.idOffset}
         editMode={editMode}
         register={register}
       />
       <NumField
-        label="최소 자릿수"
+        label={t('cardFmt:field.minDigits')}
         name="minDigits"
         value={display.minDigits}
         editMode={editMode}
         register={register}
       />
       <NumField
-        label="최대 자릿수"
+        label={t('cardFmt:field.maxDigits')}
         name="maxDigits"
         value={display.maxDigits}
         editMode={editMode}
         register={register}
       />
 
-      <SectionTitle>비트 구조</SectionTitle>
+      <SectionTitle>{t('cardFmt:section.bitStructure')}</SectionTitle>
 
       {editMode ? (
         <div className="grid grid-cols-2 gap-2 mb-3">
-          <EditNumCell label="총 비트 수" name="totalBits" register={register} />
-          <EditNumCell label="카드 번호 비트 수" name="cardBits" register={register} />
-          <EditNumCell label="시설 코드 시작" name="fcLoc" register={register} />
-          <EditNumCell label="시설 코드 크기" name="fcBits" register={register} />
-          <EditNumCell label="카드번호 시작" name="cardLoc" register={register} />
-          <EditNumCell label="짝수 패리티" name="evenBits" register={register} />
-          <EditNumCell label="짝수 위치" name="evenLoc" register={register} />
-          <EditNumCell label="홀수 패리티" name="oddBits" register={register} />
-          <EditNumCell label="홀수 위치" name="oddLoc" register={register} />
-          <EditNumCell label="발급 비트" name="issueBits" register={register} />
-          <EditNumCell label="발급 위치" name="issueLoc" register={register} />
+          <EditNumCell label={t('cardFmt:field.totalBits')} name="totalBits" register={register} />
+          <EditNumCell label={t('cardFmt:field.cardBits')} name="cardBits" register={register} />
+          <EditNumCell label={t('cardFmt:field.fcLoc')} name="fcLoc" register={register} />
+          <EditNumCell label={t('cardFmt:field.fcBits')} name="fcBits" register={register} />
+          <EditNumCell label={t('cardFmt:field.cardLoc')} name="cardLoc" register={register} />
+          <EditNumCell label={t('cardFmt:field.evenBits')} name="evenBits" register={register} />
+          <EditNumCell label={t('cardFmt:field.evenLoc')} name="evenLoc" register={register} />
+          <EditNumCell label={t('cardFmt:field.oddBits')} name="oddBits" register={register} />
+          <EditNumCell label={t('cardFmt:field.oddLoc')} name="oddLoc" register={register} />
+          <EditNumCell label={t('cardFmt:field.issueBits')} name="issueBits" register={register} />
+          <EditNumCell label={t('cardFmt:field.issueLoc')} name="issueLoc" register={register} />
           <EditNumCell label="funcId" name="funcId" register={register} />
           <EditNumCell label="flags" name="flags" register={register} />
           <div className="col-span-2">
@@ -394,16 +397,16 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-2 mb-3">
-          <BitStatCard label="총 비트 수" value={display.totalBits} />
-          <BitStatCard label="카드 번호 비트 수" value={display.cardBits} />
-          <BitStatCard label="시설 코드 시작" value={display.fcLoc} />
-          <BitStatCard label="시설 코드 크기" value={display.fcBits} />
-          <BitStatCard label="카드번호 시작" value={display.cardLoc} />
-          <BitStatCard label="짝수 패리티" value={display.evenBits} />
+          <BitStatCard label={t('cardFmt:field.totalBits')} value={display.totalBits} />
+          <BitStatCard label={t('cardFmt:field.cardBits')} value={display.cardBits} />
+          <BitStatCard label={t('cardFmt:field.fcLoc')} value={display.fcLoc} />
+          <BitStatCard label={t('cardFmt:field.fcBits')} value={display.fcBits} />
+          <BitStatCard label={t('cardFmt:field.cardLoc')} value={display.cardLoc} />
+          <BitStatCard label={t('cardFmt:field.evenBits')} value={display.evenBits} />
         </div>
       )}
 
-      <SectionTitle>비트 구조 시각화</SectionTitle>
+      <SectionTitle>{t('cardFmt:section.visualization')}</SectionTitle>
       <BitVisualizer fmt={vizSource} />
     </div>
   )
@@ -421,9 +424,9 @@ export const CardFmtDrawer = ({ cardfmt }: CardFmtDrawerProps) => {
 
       <Modal
         open={deleteOpen}
-        title="카드 형식 삭제"
-        description={`"${cardfmt?.name ?? ''}" 형식을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`}
-        confirmLabel="삭제"
+        title={t('cardFmt:modal.deleteTitle')}
+        description={t('cardFmt:modal.deleteDescription', { name: cardfmt?.name ?? '' })}
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={deleteMut.isPending}
         onConfirm={handleDeleteConfirm}

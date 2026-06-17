@@ -1,8 +1,9 @@
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MultiSelectToggleAllButton } from '@/components/basic/MultiSelectToggleAllButton'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { SearchField } from '@/components/primitive/SearchField'
 import { useUsers } from '@/hooks/api/useUsers'
-import { useMemo, useState } from 'react'
 
 interface AlarmUserPermissionListProps {
   selectedUserIds: number[]
@@ -19,6 +20,7 @@ export const AlarmUserPermissionList = ({
   onSelectAll,
   onDeselectAll,
 }: AlarmUserPermissionListProps) => {
+  const { t } = useTranslation('alarm')
   const [query, setQuery] = useState('')
   const { data: users } = useUsers()
 
@@ -48,7 +50,11 @@ export const AlarmUserPermissionList = ({
         className="flex items-center gap-2 flex-shrink-0 px-2 py-1.5"
         style={{ borderBottom: '0.5px solid var(--color-border)' }}
       >
-        <SearchField value={query} onChange={setQuery} placeholder="사용자 검색..." />
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          placeholder={t('user.searchPlaceholder')}
+        />
         {editMode ? (
           <MultiSelectToggleAllButton
             hasSelection={selectedUserIds.length > 0}
@@ -71,7 +77,7 @@ export const AlarmUserPermissionList = ({
             className="text-[13px] text-center py-6"
             style={{ color: 'var(--color-text-subtle)' }}
           >
-            {query.trim() ? '검색 결과가 없습니다.' : '등록된 사용자가 없습니다.'}
+            {query.trim() ? t('user.noSearchResults') : t('user.noUsers')}
           </p>
         ) : (
           filtered.map((user) => {

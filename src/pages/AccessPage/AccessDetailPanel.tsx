@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Shield } from 'lucide-react'
@@ -11,7 +12,7 @@ import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
 import { AccLvReaderEditModal } from '@/pages/AccessPage/components/AccLvReaderEditModal'
 import { AccLvReaderTable } from '@/pages/AccessPage/components/AccLvReaderTable'
-import { accLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
+import { createAccLvSchema, type AccLvFormValues } from '@/pages/AccessPage/formTypes'
 import { toAccLvReaderRows } from '@/pages/AccessPage/utils/accLvHelpers'
 import {
   fallbackAccLvName,
@@ -38,6 +39,8 @@ export const AccessDetailPanel = ({
   onDeleted,
   onEditModeChange,
 }: AccessDetailPanelProps) => {
+  const { t } = useTranslation(['access', 'common'])
+  const accLvSchema = useMemo(() => createAccLvSchema(t), [t])
   const selectedId = accLv?.id ?? 0
   const [editMode, setEditMode] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -75,8 +78,8 @@ export const AccessDetailPanel = ({
 
   const timezoneNameMap = useMemo(() => {
     if (!timezoneList) return {} as Record<number, string>
-    return timezoneList.reduce<Record<number, string>>((acc, t) => {
-      acc[t.id] = fallbackTimezoneName(t.name)
+    return timezoneList.reduce<Record<number, string>>((acc, tz) => {
+      acc[tz.id] = fallbackTimezoneName(tz.name)
       return acc
     }, {})
   }, [timezoneList])
@@ -160,20 +163,20 @@ export const AccessDetailPanel = ({
   const drawerBody = !accLv ? (
     <div className="flex items-center justify-center min-h-[160px]">
       <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-        목록에서 접근 권한을 선택하세요
+        {t('access:selectRow')}
       </span>
     </div>
   ) : (
     <section>
       {accLv.description?.trim() ? (
-        <DetailInfoField label="설명" className="mb-4">
+        <DetailInfoField label={t('access:field.description')} className="mb-4">
           {accLv.description.trim()}
         </DetailInfoField>
       ) : null}
 
       <div className="flex items-center justify-between mb-2">
         <h2 className="app-text-md font-medium" style={{ color: 'var(--color-text)' }}>
-          연결된 리더
+          {t('access:readers.title')}
         </h2>
         {editMode ? (
           <Button
@@ -182,7 +185,7 @@ export const AccessDetailPanel = ({
             onClick={() => setReaderEditOpen(true)}
             disabled={readerLoading}
           >
-            변경
+            {t('access:readers.change')}
           </Button>
         ) : null}
       </div>
@@ -195,7 +198,7 @@ export const AccessDetailPanel = ({
       </div>
 
       <p className="text-[13px] mt-2" style={{ color: 'var(--color-text-dim)' }}>
-        전체 {readerRows.length}건
+        {t('access:totalCount', { count: readerRows.length })}
       </p>
     </section>
   )
@@ -208,9 +211,9 @@ export const AccessDetailPanel = ({
 
       <Modal
         open={deleteModalOpen}
-        title="접근 권한 삭제"
-        description={`"${accLv?.name ?? ''}" 권한을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`}
-        confirmLabel="삭제"
+        title={t('access:modal.deleteTitle')}
+        description={t('access:modal.deleteDescription', { name: accLv?.name ?? '' })}
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={isDeleting}
         onConfirm={handleDeleteConfirm}

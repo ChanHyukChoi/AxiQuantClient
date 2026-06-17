@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowRightToLine } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -18,6 +19,7 @@ import { useInputsData } from '@/pages/InputsPage/useInputsData'
 const INPUTS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.inputs.v1'
 
 export const InputsPage = () => {
+  const { t } = useTranslation('nav')
   const [selectedGridId, setSelectedGridId] = useState<number | null>(null)
   const [editMode, setEditMode] = useState(false)
   const [page, setPage] = useState(1)
@@ -57,7 +59,7 @@ export const InputsPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="입력"
+        title={t('menu.inputs')}
         icon={<ArrowRightToLine size={15} />}
         actions={<AddButton onClick={() => undefined} />}
       />

@@ -1,0 +1,45 @@
+{
+  "kind": {
+    "general": "일반",
+    "standalone": "독립",
+    "bio": "바이오"
+  },
+  "tab": {
+    "general": "일반",
+    "mode": "모드",
+    "apb": "안티패스백",
+    "pair": "페어리더",
+    "protocol": "프로토콜"
+  },
+  "grid": {
+    "defaultMode": "기본모드"
+  },
+  "detail": {
+    "connectionHost": "연결 주소",
+    "deviceManager": "장치 관리자",
+    "sectionBasic": "기본",
+    "kind": "종류",
+    "sectionPinRelay": "핀 · 릴레이",
+    "sectionCardFormat": "카드 형식",
+    "noCardFormats": "등록된 카드 형식이 없습니다.",
+    "defaultMode": "기본 모드",
+    "offlineMode": "오프라인 모드",
+    "keypadMode": "키패드 모드",
+    "apbInArea": "APB 입구 영역",
+    "apbOutArea": "APB 출구 영역",
+    "pairReader": "페어 리더",
+    "paired": "페어링됨",
+    "protocolType": "프로토콜",
+    "baudRate": "통신 속도",
+    "osdpAddress": "OSDP 주소",
+    "bioDeviceManager": "바이오 장치 관리자",
+    "rexUse": "REX 사용",
+    "doorSensor": "도어 센서 사용",
+    "lockRelay": "잠금 릴레이 사용",
+    "unlockRelay": "해제 릴레이 사용",
+    "lockDelay": "잠금 지연",
+    "firstCardUnlock": "첫 카드 잠금 해제",
+    "multiCardUnlock": "다중 카드 잠금 해제",
+    "pinWithCard": "PIN 카드 동시 사용"
+  }
+}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm, useWatch, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
@@ -23,7 +24,7 @@ import { processEmpPhoto } from '@/lib/image/processEmpPhoto'
 import { processEmpPhotoFromBytes } from '@/lib/image/processEmpPhotoFromBytes'
 import { EmpSummaryHeader } from '@/pages/EmpsPage/components/EmpSummaryHeader'
 import { EmpUpsertForm } from '@/pages/EmpsPage/components/EmpUpsertForm'
-import { updateEmpSchema, type UpdateEmpFormValues } from '@/pages/EmpsPage/formTypes'
+import { createEmpSchema, type UpdateEmpFormValues } from '@/pages/EmpsPage/formTypes'
 import { EmpBioTab } from '@/pages/EmpsPage/tabs/EmpBioTab'
 import { EmpCardTab } from '@/pages/EmpsPage/tabs/EmpCardTab'
 import { EmpInfoTab } from '@/pages/EmpsPage/tabs/EmpInfoTab'
@@ -86,6 +87,8 @@ export const EmpDrawer = ({
   onDeleted,
   onEditModeChange,
 }: EmpDrawerProps) => {
+  const { t } = useTranslation(['emp', 'common'])
+  const empSchema = useMemo(() => createEmpSchema(t), [t])
   const selectedId = emp?.id ?? null
   const [editMode, setEditMode] = useState(false)
   const [activeTab, setActiveTab] = useState('info')
@@ -121,7 +124,7 @@ export const EmpDrawer = ({
   const deleteEmpMut = useDeleteEmp()
 
   const form = useForm<UpdateEmpFormValues>({
-    resolver: zodResolver(updateEmpSchema) as Resolver<UpdateEmpFormValues>,
+    resolver: zodResolver(empSchema) as Resolver<UpdateEmpFormValues>,
     defaultValues: FORM_DEFAULTS,
   })
 
@@ -357,7 +360,7 @@ export const EmpDrawer = ({
             return previewUrl
           })
         } catch {
-          setBioSaveError('프로필 이미지 가공에 실패했습니다.')
+          setBioSaveError(t('emp:error.profileProcess'))
           return
         }
       }
@@ -404,10 +407,7 @@ export const EmpDrawer = ({
         void empPhotoDraftForSave(photoDraft)
         const result = await createEmpAsync(payload)
         if (!result.ok) {
-          setSaveError(
-            result.message ||
-              '서버에 저장하지 못했습니다. F12 네트워크에서 응답 상태(4xx/5xx)와 본문을 확인하세요.',
-          )
+          setSaveError(result.message || t('emp:error.saveFailed'))
           return
         }
 
@@ -446,10 +446,7 @@ export const EmpDrawer = ({
       setDeleteError(null)
       onDeleted()
     } else {
-      setDeleteError(
-        result.message ||
-          '삭제하지 못했습니다. 카드·권한 등 다른 데이터가 참조 중이거나 서버가 거부했을 수 있습니다. F12 네트워크 응답을 확인하세요.',
-      )
+      setDeleteError(result.message || t('emp:error.deleteFailed'))
     }
   }
 
@@ -471,19 +468,19 @@ export const EmpDrawer = ({
       ? [
           {
             key: 'info',
-            label: '인적사항',
+            label: t('emp:tab.info'),
             icon: <User size={12} />,
             fontSize: FONT_SIZE,
           },
           {
             key: 'card',
-            label: '카드',
+            label: t('emp:tab.card'),
             icon: <CreditCard size={12} />,
             fontSize: FONT_SIZE,
           },
           {
             key: 'bio',
-            label: '바이오',
+            label: t('emp:tab.bio'),
             icon: <Fingerprint size={12} />,
             fontSize: FONT_SIZE,
           },
@@ -520,7 +517,7 @@ export const EmpDrawer = ({
           leftIcon={<X size={15} />}
           onClick={handleCancelForm}
         >
-          취소
+          {t('common:cancel')}
         </Button>
         <Button
           variant="accent"
@@ -529,7 +526,7 @@ export const EmpDrawer = ({
           loading={isSaving}
           onClick={handleSave}
         >
-          저장
+          {t('common:save')}
         </Button>
       </div>
     </div>
@@ -543,7 +540,7 @@ export const EmpDrawer = ({
           leftIcon={<X size={15} />}
           onClick={handleBioCancel}
         >
-          취소
+          {t('common:cancel')}
         </Button>
         <Button
           variant="danger"
@@ -551,7 +548,7 @@ export const EmpDrawer = ({
           leftIcon={<Trash2 size={15} />}
           onClick={() => setBioDeleteModalOpen(true)}
         >
-          삭제
+          {t('common:delete')}
         </Button>
         <Button
           variant="accent"
@@ -560,7 +557,7 @@ export const EmpDrawer = ({
           loading={isSaving}
           onClick={handleBioConfirm}
         >
-          확인
+          {t('common:confirm')}
         </Button>
       </div>
     </div>
@@ -575,7 +572,7 @@ export const EmpDrawer = ({
           setDeleteModalOpen(true)
         }}
       >
-        삭제
+        {t('common:delete')}
       </Button>
       <Button
         variant="accent"
@@ -584,7 +581,7 @@ export const EmpDrawer = ({
         disabled={bioEditActive}
         onClick={onEditClick}
       >
-        수정
+        {t('common:edit')}
       </Button>
     </>
   ) : null
@@ -642,13 +639,16 @@ export const EmpDrawer = ({
 
       <Modal
         open={deleteModalOpen}
-        title="사용자 삭제"
+        title={t('emp:modal.deleteTitle')}
         description={
           deleteError
-            ? `"${emp?.name}" 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.\n\n${deleteError}`
-            : `"${emp?.name}" 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`
+            ? t('emp:modal.deleteDescriptionWithError', {
+                name: emp?.name ?? '',
+                error: deleteError,
+              })
+            : t('emp:modal.deleteDescription', { name: emp?.name ?? '' })
         }
-        confirmLabel="삭제"
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={deleteEmpMut.isPending}
         onConfirm={handleDeleteConfirm}
@@ -660,9 +660,9 @@ export const EmpDrawer = ({
 
       <Modal
         open={bioDeleteModalOpen}
-        title="바이오 정보 삭제"
-        description={`"${emp?.name}" 사용자의 바이오 정보를 삭제하시겠습니까?`}
-        confirmLabel="삭제"
+        title={t('emp:bio.deleteTitle')}
+        description={t('emp:bio.deleteDescription', { name: emp?.name ?? '' })}
+        confirmLabel={t('common:delete')}
         variant="danger"
         onConfirm={handleBioDeleteConfirm}
         onCancel={() => setBioDeleteModalOpen(false)}

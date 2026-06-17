@@ -1,7 +1,16 @@
+import { useTranslation } from 'react-i18next'
 import { CreditCard, Plus } from 'lucide-react'
 import { Badge } from '@/components/primitive/Badge'
 import { typeBadgeVariant } from '@/pages/CardsPage/components/CardFieldUi'
-import { cardStatusBadgeVariant } from '@/pages/CardsPage/utils/cardPageHelpers'
+import {
+  CARD_STATUS_ACTIVE,
+  CARD_TYPE_DEFAULT,
+} from '@/pages/CardsPage/formTypes'
+import {
+  cardStatusBadgeVariant,
+  cardStatusDisplay,
+  cardTypeDisplay,
+} from '@/pages/CardsPage/utils/cardPageHelpers'
 
 /** 추가·수정·조회 모드 공통 — Badge 행 포함 고정 높이 */
 export const CARD_SUMMARY_HEIGHT = 108
@@ -13,7 +22,6 @@ export interface CardSummaryPanelProps {
   cardNumber: string
   type: string
   status: string
-  /** create 모드: Plus 아이콘·안내 문구 */
   isCreate?: boolean
   createHint?: string
 }
@@ -25,13 +33,17 @@ export const CardSummaryPanel = ({
   type,
   status,
   isCreate = false,
-  createHint = '새 카드 정보를 입력하세요',
+  createHint,
 }: CardSummaryPanelProps) => {
-  const displayName = isCreate ? (name.trim() || '카드 추가') : name.trim() || '—'
-  const displayNumber = isCreate
-    ? cardNumber.trim() || createHint
-    : cardNumber.trim() || '—'
+  const { t } = useTranslation(['card', 'common'])
+  const hint = createHint ?? t('card:summary.createHint')
+  const displayName = isCreate
+    ? name.trim() || t('card:summary.addTitle')
+    : name.trim() || t('common:empty')
+  const displayNumber = isCreate ? cardNumber.trim() || hint : cardNumber.trim() || t('common:empty')
   const numberMono = !isCreate || Boolean(cardNumber.trim())
+  const typeLabel = cardTypeDisplay(type, t)
+  const statusLabel = cardStatusDisplay(status, t)
 
   return (
     <div
@@ -82,8 +94,8 @@ export const CardSummaryPanel = ({
         className="flex justify-end items-center mt-2 gap-1.5 flex-shrink-0"
         style={{ minHeight: 24 }}
       >
-        <Badge variant={typeBadgeVariant(type)}>{type}</Badge>
-        <Badge variant={cardStatusBadgeVariant(status)}>{status}</Badge>
+        <Badge variant={typeBadgeVariant(type)}>{typeLabel}</Badge>
+        <Badge variant={cardStatusBadgeVariant(status)}>{statusLabel}</Badge>
       </div>
     </div>
   )
@@ -101,9 +113,11 @@ export const CardSummaryHeader = ({
   mode,
   name,
   cardNumber,
-  type = '직원',
-  status = '활성',
+  type = CARD_TYPE_DEFAULT,
+  status = CARD_STATUS_ACTIVE,
 }: CardSummaryHeaderProps) => {
+  const { t } = useTranslation('common')
+
   if (mode === 'empty') {
     return (
       <div className="pb-3 w-full min-w-0" style={{ minHeight: CARD_SUMMARY_HEIGHT + 12 }}>
@@ -118,7 +132,7 @@ export const CardSummaryHeader = ({
           }}
         >
           <span style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}>
-            목록에서 항목을 선택하세요
+            {t('selectRow')}
           </span>
         </div>
       </div>

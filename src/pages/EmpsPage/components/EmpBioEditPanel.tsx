@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ImageUp, Scan, UserRound } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Checkbox } from '@/components/primitive/Checkbox'
@@ -36,6 +37,8 @@ export const EmpBioEditPanel = ({
   onClear,
   onImportProfile,
 }: EmpBioEditPanelProps) => {
+  const { t } = useTranslation('emp')
+
   const repCardOptions = cards.map((card) => ({
     value: repCardOptionValue(card),
     label: repCardOptionLabel(card),
@@ -53,14 +56,12 @@ export const EmpBioEditPanel = ({
         />
 
         <div className="flex flex-col gap-2 flex-1 min-w-0">
-          <span
-            style={{ fontSize: 15, color: 'var(--color-text-muted)' }}
-          >
-            바이오 리더
+          <span style={{ fontSize: 15, color: 'var(--color-text-muted)' }}>
+            {t('bio.reader')}
           </span>
           <Select
             value=""
-            options={[{ value: '', label: '선택' }]}
+            options={[{ value: '', label: t('bio.select') }]}
             disabled
             fontSize={FONT_SIZE}
           />
@@ -71,7 +72,7 @@ export const EmpBioEditPanel = ({
             disabled
             className="w-full"
           >
-            스캔
+            {t('bio.scan')}
           </Button>
           <Button
             variant="default"
@@ -90,7 +91,7 @@ export const EmpBioEditPanel = ({
             }}
             className="w-full"
           >
-            이미지 불러오기
+            {t('bio.loadImage')}
           </Button>
           <Button
             variant="default"
@@ -100,7 +101,7 @@ export const EmpBioEditPanel = ({
             onClick={onImportProfile}
             className="w-full"
           >
-            프로필 이미지 가져오기
+            {t('bio.importProfile')}
           </Button>
         </div>
       </div>
@@ -110,7 +111,7 @@ export const EmpBioEditPanel = ({
           className="block"
           style={{ fontSize: FONT_SIZE, color: 'var(--color-text-muted)' }}
         >
-          대표카드
+          {t('bio.repCard')}
         </label>
         <Select
           value={representativeCardKey}
@@ -125,7 +126,7 @@ export const EmpBioEditPanel = ({
         style={{ fontSize: FONT_SIZE, color: 'var(--color-text)' }}
       >
         <Checkbox checked={useAsProfile} onChange={onUseAsProfileChange} size={16} />
-        <span>프로필 이미지로 사용</span>
+        <span>{t('bio.useAsProfile')}</span>
       </label>
     </div>
   )

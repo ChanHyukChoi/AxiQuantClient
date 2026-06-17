@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { CalendarClock } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
@@ -22,6 +23,7 @@ import type { TimezoneInfo } from '@/types/api'
 const TIMEZONE_GRID_LAYOUT_KEY = 'axiquant.grid.layout.timezone.v1'
 
 export const SchedulePage = () => {
+  const { t } = useTranslation(['nav', 'schedule'])
   const qc = useQueryClient()
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
@@ -59,7 +61,7 @@ export const SchedulePage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader title="스케쥴" icon={<CalendarClock size={15} />} />
+      <PageHeader title={t('menu.schedule')} icon={<CalendarClock size={15} />} />
 
       <TabToolbar>
         <AddButton onClick={() => void editor.handleAdd()} loading={editor.isAdding} />
@@ -78,7 +80,7 @@ export const SchedulePage = () => {
               selectedId={data.selectedId ?? undefined}
               onRowClick={handleRowClick}
               onSearch={data.setSearchQuery}
-              searchPlaceholder="타임존 검색..."
+              searchPlaceholder={t('schedule:searchPlaceholder')}
               totalCount={data.filtered.length}
               loading={data.isLoading}
               pagination={{
@@ -94,7 +96,7 @@ export const SchedulePage = () => {
             />
             {data.isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                타임존 목록을 불러오지 못했습니다.
+                {t('schedule:loadError')}
               </p>
             ) : null}
           </>

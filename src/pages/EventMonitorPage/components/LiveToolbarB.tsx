@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Pause, Play, Trash2 } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { EventFilterButton } from '@/pages/EventMonitorPage/components/EventFilterButton'
@@ -26,6 +27,7 @@ export const LiveToolbarB = ({
   onClear,
   isConnected,
 }: LiveToolbarBProps) => {
+  const { t } = useTranslation('eventMonitor')
   const receiving = isConnected && !paused
 
   return (
@@ -44,7 +46,11 @@ export const LiveToolbarB = ({
               animation: receiving ? 'evt-pulse 1.2s ease-in-out infinite' : undefined,
             }}
           />
-          {receiving ? '수신 중' : paused ? '일시정지' : '대기'}
+          {receiving
+            ? t('status.receiving')
+            : paused
+              ? t('status.paused')
+              : t('status.idle')}
         </div>
 
         <div className="flex items-center gap-1 ml-auto shrink-0">
@@ -53,14 +59,14 @@ export const LiveToolbarB = ({
             variant="default"
             onClick={onTogglePause}
             leftIcon={paused ? <Play size={14} /> : <Pause size={14} />}
-            title={paused ? '재개' : '일시정지'}
+            title={paused ? t('status.resume') : t('status.pause')}
           />
           <Button
             size="sm"
             variant="default"
             onClick={onClear}
             leftIcon={<Trash2 size={14} />}
-            title="초기화"
+            title={t('status.clear')}
           />
         </div>
       </div>

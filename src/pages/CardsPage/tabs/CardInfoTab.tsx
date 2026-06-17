@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import {
   CalendarCheck,
   CalendarX,
@@ -17,7 +18,9 @@ import {
 } from '@/pages/CardsPage/components/CardFieldUi'
 import {
   cardStatusBadgeVariant,
+  cardStatusDisplay,
   cardStatusLabel,
+  cardTypeDisplay,
   cardTypeLabel,
   type CardRow,
 } from '@/pages/CardsPage/utils/cardPageHelpers'
@@ -30,54 +33,61 @@ interface CardInfoTabProps {
 }
 
 export const CardInfoTab = ({ card, empNameMap }: CardInfoTabProps) => {
-  const t = cardTypeLabel(card)
-  const s = cardStatusLabel(card)
+  const { t } = useTranslation(['card', 'common'])
+  const wireType = cardTypeLabel(card)
+  const wireStatus = cardStatusLabel(card)
   const empLabel =
-    card.empId != null ? (empNameMap[card.empId] ?? card.empName ?? '—') : '—'
-  const activeAt = card.issuedAt?.trim() ? card.issuedAt : '—'
-  const inactiveAt = card.expiredAt?.trim() ? card.expiredAt : '—'
+    card.empId != null
+      ? (empNameMap[card.empId] ?? card.empName ?? t('common:empty'))
+      : t('common:empty')
+  const activeAt = card.issuedAt?.trim() ? card.issuedAt : t('common:empty')
+  const inactiveAt = card.expiredAt?.trim() ? card.expiredAt : t('common:empty')
 
   return (
     <div>
-      <SectionTitle fontSize={FONT_SIZE}>카드 정보</SectionTitle>
-      <FRow icon={<CreditCard size={15} />} label="카드 번호" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.info')}</SectionTitle>
+      <FRow icon={<CreditCard size={15} />} label={t('card:field.cardNumber')} fontSize={FONT_SIZE}>
         <FieldValue mono fontSize={FONT_SIZE}>
           {card.cardNumber}
         </FieldValue>
       </FRow>
-      <FRow icon={<Tag size={15} />} label="명칭" fontSize={FONT_SIZE}>
-        <FieldValue fontSize={FONT_SIZE}>{card.name?.trim() ? card.name : '—'}</FieldValue>
+      <FRow icon={<Tag size={15} />} label={t('card:field.name')} fontSize={FONT_SIZE}>
+        <FieldValue fontSize={FONT_SIZE}>
+          {card.name?.trim() ? card.name : t('common:empty')}
+        </FieldValue>
       </FRow>
-      <FRow icon={<Layers size={15} />} label="유형" fontSize={FONT_SIZE}>
-        <Badge variant={typeBadgeVariant(t)}>{t}</Badge>
+      <FRow icon={<Layers size={15} />} label={t('card:field.type')} fontSize={FONT_SIZE}>
+        <Badge variant={typeBadgeVariant(wireType)}>{cardTypeDisplay(wireType, t)}</Badge>
       </FRow>
-      <FRow icon={<CircleCheck size={15} />} label="상태" fontSize={FONT_SIZE}>
-        <Badge variant={cardStatusBadgeVariant(s)}>{s}</Badge>
+      <FRow icon={<CircleCheck size={15} />} label={t('card:field.status')} fontSize={FONT_SIZE}>
+        <Badge variant={cardStatusBadgeVariant(wireStatus)}>
+          {cardStatusDisplay(wireStatus, t)}
+        </Badge>
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>사용자</SectionTitle>
-      <FRow icon={<User size={15} />} label="카드 사용자" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.user')}</SectionTitle>
+      <FRow icon={<User size={15} />} label={t('card:field.emp')} fontSize={FONT_SIZE}>
         <FieldValue fontSize={FONT_SIZE}>{empLabel}</FieldValue>
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>기간</SectionTitle>
-      <FRow icon={<CalendarCheck size={15} />} label="활성 일시" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.period')}</SectionTitle>
+      <FRow icon={<CalendarCheck size={15} />} label={t('card:field.activeAt')} fontSize={FONT_SIZE}>
         <FieldValue fontSize={FONT_SIZE}>{activeAt}</FieldValue>
       </FRow>
-      <FRow icon={<CalendarX size={15} />} label="비활성 일시" fontSize={FONT_SIZE}>
+      <FRow icon={<CalendarX size={15} />} label={t('card:field.inactiveAt')} fontSize={FONT_SIZE}>
         <FieldValue fontSize={FONT_SIZE}>{inactiveAt}</FieldValue>
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle fontSize={FONT_SIZE}>옵션</SectionTitle>
-      <FRow icon={<span />} label="APB 면제" fontSize={FONT_SIZE}>
+      <SectionTitle fontSize={FONT_SIZE}>{t('card:section.options')}</SectionTitle>
+      <FRow icon={<span />} label={t('card:field.exemptApb')} fontSize={FONT_SIZE}>
         <span className="flex justify-end">
           <CheckboxLook checked={!!card.exemptApb} />
         </span>
       </FRow>
-      <FRow icon={<span />} label="PIN 면제" fontSize={FONT_SIZE}>
+      <FRow icon={<span />} label={t('card:field.exemptPin')} fontSize={FONT_SIZE}>
         <span className="flex justify-end">
           <CheckboxLook checked={!!card.exemptPin} />
         </span>

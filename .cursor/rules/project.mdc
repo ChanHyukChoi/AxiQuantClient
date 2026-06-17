@@ -31,6 +31,11 @@ alwaysApply: true
 - **`pages/`는 `api/` 직접 호출 금지**
 - 생성 후 목록 재선택: `hooks/api/queryCache.ts`
 
+## UI 문자열 (i18n)
+
+- **JSX에 한글 하드코딩 금지** → `src/locales/ko/*.json` + `useTranslation` / `i18n.t`
+- 상세: `PROJECT_STRUCTURE.md` §국제화
+
 ## 작업 완료 후 필수
 
 ---

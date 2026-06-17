@@ -1,4 +1,5 @@
 import { fallbackDeviceKindLabel, fallbackScpName } from '@/lib/entityDisplayLabels'
+import i18n from '@/lib/i18n'
 import type { AlarmInfo, AlarmMailInfo, AlarmPriorityInfo } from '@/types/api'
 
 export const isAlarmActive = (active: number): boolean => active !== 0
@@ -36,7 +37,7 @@ export const deviceDisplayLabel = (
   deviceId: number,
   scpNameMap?: Record<number, string>,
 ): string => {
-  if (!deviceType || deviceId <= 0) return '미연결'
+  if (!deviceType || deviceId <= 0) return i18n.t('select.deviceNotConnected', { ns: 'alarm' })
   if (deviceType === 'scp' && scpNameMap?.[deviceId]) {
     return fallbackScpName(scpNameMap[deviceId])
   }

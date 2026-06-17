@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Globe, Hash, Key, Lock, Tag, ToggleLeft, ToggleRight } from 'lucide-react'
 import type { UseFormRegister } from 'react-hook-form'
 import { Input } from '@/components/primitive/Input'
@@ -48,70 +49,74 @@ export const UserInfoTab = ({
   values,
   onToggleActive,
   onToggleExternalApi,
-}: UserInfoTabProps) => (
-  <div className="flex flex-col gap-1">
-    <FRow icon={<Tag size={12} />} label="명칭">
-      {editMode ? (
-        <Input {...register('name')} className="max-w-[180px]" />
-      ) : (
-        <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
-          {values.name || '—'}
-        </span>
-      )}
-    </FRow>
+}: UserInfoTabProps) => {
+  const { t } = useTranslation(['user', 'common'])
 
-    <FRow icon={<Hash size={12} />} label="로그인 ID">
-      {editMode ? (
-        <Input {...register('loginId')} className="max-w-[180px] font-mono" />
-      ) : (
-        <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
-          {values.loginId || '—'}
-        </span>
-      )}
-    </FRow>
+  return (
+    <div className="flex flex-col gap-1">
+      <FRow icon={<Tag size={12} />} label={t('user:field.name')}>
+        {editMode ? (
+          <Input {...register('name')} className="max-w-[180px]" />
+        ) : (
+          <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
+            {values.name || t('common:empty')}
+          </span>
+        )}
+      </FRow>
 
-    <FRow icon={<Lock size={12} />} label="활성">
-      {editMode ? (
-        <ToggleBtn on={values.active} onClick={onToggleActive} />
-      ) : (
-        <span
-          className="text-[14px]"
-          style={{ color: values.active ? '#4caf7d' : 'var(--color-text-dim)' }}
-        >
-          {values.active ? '활성' : '비활성'}
-        </span>
-      )}
-    </FRow>
+      <FRow icon={<Hash size={12} />} label={t('user:field.loginId')}>
+        {editMode ? (
+          <Input {...register('loginId')} className="max-w-[180px] font-mono" />
+        ) : (
+          <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
+            {values.loginId || t('common:empty')}
+          </span>
+        )}
+      </FRow>
 
-    <FRow icon={<Globe size={12} />} label="외부 API">
-      {editMode ? (
-        <ToggleBtn on={values.useExternalApi} onClick={onToggleExternalApi} />
-      ) : (
-        <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-          {values.useExternalApi ? '사용' : '미사용'}
-        </span>
-      )}
-    </FRow>
+      <FRow icon={<Lock size={12} />} label={t('user:field.active')}>
+        {editMode ? (
+          <ToggleBtn on={values.active} onClick={onToggleActive} />
+        ) : (
+          <span
+            className="text-[14px]"
+            style={{ color: values.active ? '#4caf7d' : 'var(--color-text-dim)' }}
+          >
+            {values.active ? t('common:active') : t('common:inactive')}
+          </span>
+        )}
+      </FRow>
 
-    {editMode && (
-      <>
-        <FRow icon={<Key size={12} />} label="비밀번호">
-          <Input
-            type="password"
-            {...register('password')}
-            className="max-w-[180px]"
-            autoComplete="new-password"
-          />
-        </FRow>
-        <FRow icon={<Key size={12} />} label="비밀번호 확인">
-          <Input
-            type="password"
-            {...register('confirmPassword')}
-            className="max-w-[180px]"
-            autoComplete="new-password"
-          />
-        </FRow>
-      </>
-    )}
-  </div>
-)
+      <FRow icon={<Globe size={12} />} label={t('user:field.externalApi')}>
+        {editMode ? (
+          <ToggleBtn on={values.useExternalApi} onClick={onToggleExternalApi} />
+        ) : (
+          <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
+            {values.useExternalApi ? t('user:status.enabled') : t('user:status.disabled')}
+          </span>
+        )}
+      </FRow>
+
+      {editMode && (
+        <>
+          <FRow icon={<Key size={12} />} label={t('user:field.password')}>
+            <Input
+              type="password"
+              {...register('password')}
+              className="max-w-[180px]"
+              autoComplete="new-password"
+            />
+          </FRow>
+          <FRow icon={<Key size={12} />} label={t('user:field.confirmPassword')}>
+            <Input
+              type="password"
+              {...register('confirmPassword')}
+              className="max-w-[180px]"
+              autoComplete="new-password"
+            />
+          </FRow>
+        </>
+      )}
+    </div>
+  )
+}

@@ -1,5 +1,7 @@
+import { useTranslation } from 'react-i18next'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
+import { holidayDisplayLabel } from '@/pages/SchedulePage/utils/timezoneDisplay'
 import type { HolidayInfo } from '@/types/api'
 
 interface HolidayDetailFieldsProps {
@@ -12,8 +14,6 @@ interface HolidayDetailFieldsProps {
   onDraftDateChange?: (value: string) => void
   onDraftRecurringChange?: (value: boolean) => void
 }
-
-const holidayLabel = (item: HolidayInfo): string => item.name?.trim() || '휴일'
 
 const InfoField = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div>
@@ -33,46 +33,50 @@ export const HolidayDetailFields = ({
   onDraftNameChange,
   onDraftDateChange,
   onDraftRecurringChange,
-}: HolidayDetailFieldsProps) => (
-  <div className="flex flex-col gap-3 max-w-md">
-    <InfoField label="명칭">
-      {editMode && onDraftNameChange != null ? (
-        <Input value={draftName ?? item.name} onChange={(e) => onDraftNameChange(e.target.value)} />
-      ) : (
-        <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
-          {holidayLabel(item)}
-        </span>
-      )}
-    </InfoField>
-    <InfoField label="날짜">
-      {editMode && onDraftDateChange != null ? (
-        <Input
-          value={draftDate ?? item.date}
-          onChange={(e) => onDraftDateChange(e.target.value)}
-          placeholder="MM-DD 또는 YYYY-MM-DD"
-        />
-      ) : (
-        <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
-          {item.date || '—'}
-        </span>
-      )}
-    </InfoField>
-    <InfoField label="매년 반복">
-      {editMode && onDraftRecurringChange != null ? (
-        <label className="flex items-center gap-2 cursor-pointer">
-          <Checkbox
-            checked={draftRecurring ?? item.isRecurring ?? false}
-            onChange={onDraftRecurringChange}
-          />
-          <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
-            매년 반복
+}: HolidayDetailFieldsProps) => {
+  const { t } = useTranslation(['schedule', 'common'])
+
+  return (
+    <div className="flex flex-col gap-3 max-w-md">
+      <InfoField label={t('schedule:field.name')}>
+        {editMode && onDraftNameChange != null ? (
+          <Input value={draftName ?? item.name} onChange={(e) => onDraftNameChange(e.target.value)} />
+        ) : (
+          <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
+            {holidayDisplayLabel(item)}
           </span>
-        </label>
-      ) : (
-        <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
-          {item.isRecurring ? '예' : '아니오'}
-        </span>
-      )}
-    </InfoField>
-  </div>
-)
+        )}
+      </InfoField>
+      <InfoField label={t('schedule:field.date')}>
+        {editMode && onDraftDateChange != null ? (
+          <Input
+            value={draftDate ?? item.date}
+            onChange={(e) => onDraftDateChange(e.target.value)}
+            placeholder={t('schedule:holiday.datePlaceholder')}
+          />
+        ) : (
+          <span className="text-[15px] font-mono" style={{ color: 'var(--color-text)' }}>
+            {item.date || t('common:empty')}
+          </span>
+        )}
+      </InfoField>
+      <InfoField label={t('schedule:field.recurring')}>
+        {editMode && onDraftRecurringChange != null ? (
+          <label className="flex items-center gap-2 cursor-pointer">
+            <Checkbox
+              checked={draftRecurring ?? item.isRecurring ?? false}
+              onChange={onDraftRecurringChange}
+            />
+            <span className="text-[14px]" style={{ color: 'var(--color-text)' }}>
+              {t('schedule:holiday.recurringLabel')}
+            </span>
+          </label>
+        ) : (
+          <span className="text-[15px]" style={{ color: 'var(--color-text)' }}>
+            {item.isRecurring ? t('schedule:holiday.yes') : t('schedule:holiday.no')}
+          </span>
+        )}
+      </InfoField>
+    </div>
+  )
+}

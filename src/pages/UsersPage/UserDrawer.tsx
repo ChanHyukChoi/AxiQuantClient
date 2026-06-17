@@ -1,12 +1,11 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { User, UserCog } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { DetailTitleBar } from '@/components/basic/DetailTitleBar'
 import { CrudDetailActions } from '@/components/page-actions'
 import { Modal } from '@/components/primitive/Modal'
-import {
-  USER_EDITOR_TABS,
-  UserEditorContent,
-} from '@/pages/UsersPage/components/UserEditorContent'
+import { UserEditorContent } from '@/pages/UsersPage/components/UserEditorContent'
 import type { useUserEditor } from '@/pages/UsersPage/useUserEditor'
 import type { UserInfo } from '@/types/api/user'
 
@@ -18,13 +17,22 @@ interface UserDrawerProps {
 }
 
 export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
+  const { t } = useTranslation(['user', 'common'])
   const { isCreating, editMode, activeTab, values } = editor
   const showUser = user || isCreating
 
+  const editorTabs = useMemo(
+    () => [
+      { key: 'info', label: t('user:tab.info') },
+      { key: 'permissions', label: t('user:tab.permissions') },
+    ],
+    [t],
+  )
+
   const headerTitle = isCreating
-    ? '사용자 추가'
+    ? t('user:addUser')
     : user
-      ? user.name?.trim() || '(이름 없음)'
+      ? user.name?.trim() || t('user:noName')
       : null
 
   return (
@@ -68,12 +76,12 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
             <div className="flex items-center gap-2 py-4">
               <User size={20} style={{ color: 'var(--color-text-dim)' }} />
               <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-                사용자를 선택하세요
+                {t('user:selectUser')}
               </p>
             </div>
           )
         }
-        tabs={showUser ? USER_EDITOR_TABS : undefined}
+        tabs={showUser ? editorTabs : undefined}
         activeTab={activeTab}
         onTabChange={editor.setActiveTab}
         footer={
@@ -104,10 +112,10 @@ export const UserDrawer = ({ user, editor }: UserDrawerProps) => {
 
       <Modal
         open={editor.deleteOpen}
-        title="사용자 삭제"
-        description={user ? `"${user.name}" 사용자를 삭제하시겠습니까?` : ''}
-        confirmLabel="삭제"
-        cancelLabel="취소"
+        title={t('user:modal.deleteTitle')}
+        description={user ? t('user:modal.deleteDescription', { name: user.name }) : ''}
+        confirmLabel={t('common:delete')}
+        cancelLabel={t('common:cancel')}
         variant="danger"
         loading={editor.isDeleting}
         onConfirm={() => void editor.handleDeleteConfirm()}

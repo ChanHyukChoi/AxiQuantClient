@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Check, Clock, Pencil, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
@@ -18,6 +19,7 @@ interface TimezoneDetailPanelProps {
 }
 
 export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPanelProps) => {
+  const { t } = useTranslation(['schedule', 'common'])
   const editMode = editor?.editMode ?? false
 
   const header = item ? (
@@ -44,13 +46,13 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
           {timezoneDisplayName(item)}
         </span>
         <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-          구간 {item.intervals.length}개
+          {t('schedule:timezone.intervalCount', { count: item.intervals.length })}
         </span>
       </div>
     </div>
   ) : (
     <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      좌측 목록에서 타임존을 선택하세요.
+      {t('schedule:selectTimezone')}
     </div>
   )
 
@@ -59,10 +61,10 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
       editMode ? (
         <div className="flex justify-end gap-1.5">
           <Button variant="default" size="sm" leftIcon={<X size={12} />} onClick={editor.handleCancel}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button variant="accent" size="sm" leftIcon={<Check size={12} />} onClick={editor.handleSave}>
-            저장
+            {t('common:save')}
           </Button>
         </div>
       ) : (
@@ -73,10 +75,10 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
             leftIcon={<Trash2 size={12} />}
             onClick={() => editor.setDeleteOpen(true)}
           >
-            삭제
+            {t('common:delete')}
           </Button>
           <Button variant="accent" size="sm" leftIcon={<Pencil size={12} />} onClick={editor.handleEdit}>
-            수정
+            {t('common:edit')}
           </Button>
         </>
       )
@@ -101,9 +103,11 @@ export const TimezoneDetailPanel = ({ item, editor, holidays }: TimezoneDetailPa
       {editor ? (
         <Modal
           open={editor.deleteOpen}
-          title="타임존 삭제"
-          description={`「${item ? timezoneDisplayName(item) : ''}」 타임존을 삭제하시겠습니까?`}
-          confirmLabel="삭제"
+          title={t('schedule:timezone.modal.deleteTitle')}
+          description={t('schedule:timezone.modal.deleteDescription', {
+            name: item ? timezoneDisplayName(item) : '',
+          })}
+          confirmLabel={t('common:delete')}
           onConfirm={editor.handleDeleteConfirm}
           onCancel={() => editor.setDeleteOpen(false)}
         />

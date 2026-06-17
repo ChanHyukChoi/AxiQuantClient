@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowRightLeft } from 'lucide-react'
 import { AreaSelectModal } from '@/components/basic/AreaSelectModal'
 import { Button } from '@/components/primitive/Button'
@@ -26,13 +27,14 @@ export const CardAccessTab = ({
   areaList,
   fontSize = 15,
 }: CardAccessTabProps) => {
+  const { t } = useTranslation(['card', 'common'])
   const [areaModalOpen, setAreaModalOpen] = useState(false)
   const [moveError, setMoveError] = useState<string | null>(null)
 
   const cardId = card.id ?? card.cid
   const { mutateAsync: moveCardAreaAsync, isPending: isMoving } = useMoveCardArea(cardId)
 
-  const area = card.area?.trim() ? card.area : '—'
+  const area = card.area?.trim() ? card.area : t('common:empty')
 
   const areaItems = useMemo(
     () =>
@@ -40,17 +42,17 @@ export const CardAccessTab = ({
         .filter((a) => a.id > 0)
         .map((a) => ({
           id: a.id,
-          name: a.name?.trim() || '영역',
+          name: a.name?.trim() || t('card:area.fallback'),
           active: isAreaActive(a.active),
         })),
-    [areaList],
+    [areaList, t],
   )
 
   const handleMoveConfirm = async (areaId: number) => {
     setMoveError(null)
     const ok = await moveCardAreaAsync({ areaId })
     if (!ok) {
-      setMoveError('영역을 이동하지 못했습니다.')
+      setMoveError(t('card:area.moveFailed'))
       return
     }
     setAreaModalOpen(false)
@@ -59,7 +61,7 @@ export const CardAccessTab = ({
   return (
     <div className="flex flex-col gap-4">
       <section>
-        <SectionTitle fontSize={fontSize}>접근 권한</SectionTitle>
+        <SectionTitle fontSize={fontSize}>{t('card:section.accLv')}</SectionTitle>
         <AccLvGroupCards items={accLvItems} fontSize={fontSize} />
         <div
           className="flex items-center mt-2"
@@ -69,12 +71,12 @@ export const CardAccessTab = ({
             fontSize: 15,
           }}
         >
-          전체 {accLvItems.length}건
+          {t('card:totalCount', { count: accLvItems.length })}
         </div>
       </section>
 
       <section>
-        <SectionTitle fontSize={fontSize}>영역</SectionTitle>
+        <SectionTitle fontSize={fontSize}>{t('card:section.area')}</SectionTitle>
         <LastAreaCard area={area} fontSize={fontSize} />
         <div className="flex flex-col gap-1.5 mt-2">
           <Button
@@ -88,7 +90,7 @@ export const CardAccessTab = ({
             disabled={areaItems.length === 0}
             loading={isMoving}
           >
-            영역 이동
+            {t('card:area.move')}
           </Button>
           {moveError ? (
             <p className="text-[14px]" style={{ color: 'var(--color-danger)' }}>
@@ -100,7 +102,7 @@ export const CardAccessTab = ({
 
       <AreaSelectModal
         open={areaModalOpen}
-        title="이동할 영역 선택"
+        title={t('card:area.moveSelectTitle')}
         areas={areaItems}
         onCancel={() => setAreaModalOpen(false)}
         onConfirm={handleMoveConfirm}

@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { SearchField } from '@/components/primitive/SearchField'
@@ -41,6 +42,7 @@ export const DevicePickerModal = ({
   onCancel,
   onConfirm,
 }: DevicePickerModalProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [expandedKeys, setExpandedKeys] = useState<Set<string>>(
@@ -155,7 +157,7 @@ export const DevicePickerModal = ({
               className="text-[15px] font-medium"
               style={{ color: 'var(--color-text)' }}
             >
-              ??? ???
+              {t('alarm:devicePicker.title')}
             </span>
             <button
               type="button"
@@ -172,7 +174,7 @@ export const DevicePickerModal = ({
             style={{ borderColor: 'var(--color-border)' }}
           >
             <SearchField
-              placeholder="??? ???.."
+              placeholder={t('alarm:devicePicker.searchPlaceholder')}
               value={searchQuery}
               onChange={setSearchQuery}
             />
@@ -184,14 +186,14 @@ export const DevicePickerModal = ({
                 className="text-[14px] text-center py-8"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
-                ????? ??..
+                {t('alarm:loading')}
               </p>
             ) : scpsError ? (
               <p
                 className="text-[14px] text-center py-8 px-3"
                 style={{ color: '#c75c5c' }}
               >
-                ??? ?????????? ???????
+                {t('alarm:devicePicker.loadError')}
               </p>
             ) : (
               tree.map((node) => (
@@ -213,7 +215,7 @@ export const DevicePickerModal = ({
             style={{ borderColor: 'var(--color-border)' }}
           >
             <Button variant="default" size="md" onClick={onCancel}>
-              ??
+              {t('common:cancel')}
             </Button>
             <Button
               variant="accent"
@@ -222,7 +224,7 @@ export const DevicePickerModal = ({
               disabled={!canSelect}
               onClick={handleConfirm}
             >
-              ???
+              {t('common:confirm')}
             </Button>
           </div>
         </div>

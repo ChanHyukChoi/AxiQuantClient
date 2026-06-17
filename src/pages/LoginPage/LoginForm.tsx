@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
 import { axiosInstance } from '@/lib/infra/axios'
 import { isElectronRuntime } from '@/lib/isElectronRuntime'
 import { sseClient } from '@/lib/infra/sse'
 import { useAuthStore } from '@/stores/authStore'
 import { router } from '@/router'
 import { useLogin } from '@/hooks/api/useAuth'
-import { loginSchema, type LoginFormValues } from '@/pages/LoginPage/formTypes'
+import { createLoginSchema, type LoginFormValues } from '@/pages/LoginPage/formTypes'
 import {
   LoginField,
   loginInputBlur,
@@ -16,9 +17,12 @@ import {
 } from '@/pages/LoginPage/LoginField'
 
 export const LoginForm = () => {
+  const { t } = useTranslation('auth')
   const { setAuth } = useAuthStore()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const loginMutation = useLogin()
+
+  const loginSchema = useMemo(() => createLoginSchema(t), [t])
 
   const {
     register,
@@ -41,11 +45,10 @@ export const LoginForm = () => {
     const serverUrl = values.serverUrl.trim()
 
     if (isElectron && !serverUrl) {
-      setErrorMessage('서버 주소를 입력해주세요.')
+      setErrorMessage(t('errorServerRequired'))
       return
     }
 
-    // Electron: 입력한 서버로 직접 연결. Web: Vite /api 프록시(상대 경로).
     axiosInstance.defaults.baseURL = isElectron ? serverUrl : ''
 
     const result = await loginMutation.mutateAsync({
@@ -54,7 +57,7 @@ export const LoginForm = () => {
     })
 
     if (!result) {
-      setErrorMessage('서버 연결 또는 인증에 실패했습니다.')
+      setErrorMessage(t('errorAuthFailed'))
       return
     }
 
@@ -65,7 +68,7 @@ export const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-      <LoginField label="서버 주소" error={errors.serverUrl?.message}>
+      <LoginField label={t('serverUrl')} error={errors.serverUrl?.message}>
         <input
           {...register('serverUrl')}
           type="url"
@@ -76,7 +79,7 @@ export const LoginForm = () => {
         />
       </LoginField>
 
-      <LoginField label="아이디" error={errors.username?.message}>
+      <LoginField label={t('username')} error={errors.username?.message}>
         <input
           {...register('username')}
           type="text"
@@ -88,7 +91,7 @@ export const LoginForm = () => {
         />
       </LoginField>
 
-      <LoginField label="비밀번호" error={errors.password?.message}>
+      <LoginField label={t('password')} error={errors.password?.message}>
         <input
           {...register('password')}
           type="password"
@@ -117,7 +120,7 @@ export const LoginForm = () => {
           cursor: isSubmitting ? 'not-allowed' : 'pointer',
         }}
       >
-        {isSubmitting ? '로그인 중...' : '로그인'}
+        {isSubmitting ? t('loggingIn') : t('login')}
       </button>
     </form>
   )

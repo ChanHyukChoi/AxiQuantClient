@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { CardSummaryPanel } from '@/pages/CardsPage/components/CardSummaryHeader'
 import { cardStatusLabel, cardTypeLabel } from '@/pages/CardsPage/utils/cardPageHelpers'
 import type { CardInfo } from '@/types/api'
@@ -9,13 +10,15 @@ interface EmpCardTabProps {
 }
 
 export const EmpCardTab = ({ cards }: EmpCardTabProps) => {
+  const { t } = useTranslation('emp')
+
   if (cards.length === 0) {
     return (
       <p
         className="text-center py-4"
         style={{ color: 'var(--color-text-subtle)', fontSize: FONT_SIZE }}
       >
-        발급된 카드가 없습니다
+        {t('noCards')}
       </p>
     )
   }

@@ -1,4 +1,4 @@
-import { Info, Shield } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import type { Control, UseFormRegister } from 'react-hook-form'
 import type { UserEditFormValues } from '@/pages/UsersPage/formTypes'
 import { UserInfoTab } from '@/pages/UsersPage/tabs/UserInfoTab'
@@ -18,11 +18,6 @@ interface UserEditorContentProps {
   layout?: 'drawer' | 'split'
 }
 
-export const USER_EDITOR_TABS = [
-  { key: 'info', label: '기본 정보', icon: <Info size={12} /> },
-  { key: 'permissions', label: '권한', icon: <Shield size={12} /> },
-]
-
 export const UserEditorContent = ({
   activeTab,
   editMode,
@@ -35,6 +30,7 @@ export const UserEditorContent = ({
   onPermissionsChange,
   layout = 'drawer',
 }: UserEditorContentProps) => {
+  const { t } = useTranslation('user')
   const canEdit = editMode || isCreating
 
   if (layout === 'split') {
@@ -56,7 +52,7 @@ export const UserEditorContent = ({
               borderBottom: '0.5px solid var(--color-border)',
             }}
           >
-            기본 정보
+            {t('tab.info')}
           </div>
           <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
             <UserInfoTab
@@ -77,7 +73,7 @@ export const UserEditorContent = ({
               color: 'var(--color-text)',
             }}
           >
-            권한
+            {t('tab.permissions')}
           </div>
           <div className="flex-1 p-3 overflow-y-auto app-scrollbar">
             <UserPermissionsTab

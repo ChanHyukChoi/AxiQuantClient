@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import type { CSSProperties } from 'react'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import { Input } from '@/components/primitive/Input'
@@ -15,9 +16,9 @@ const labelStyle: CSSProperties = {
   fontSize: LINKAGE_FONT_SIZE,
 }
 
-const NameValue = ({ name }: { name: string }) => (
+const NameValue = ({ name, empty }: { name: string; empty: string }) => (
   <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
-    {name.trim() || '—'}
+    {name.trim() || empty}
   </span>
 )
 
@@ -26,10 +27,12 @@ export const LinkageGeneralSection = ({
   layout = 'stack',
   editMode = false,
 }: LinkageGeneralSectionProps) => {
+  const { t } = useTranslation(['linkage', 'common'])
+
   if (!rule) {
     return (
       <p className="app-text-md" style={{ color: 'var(--color-text-subtle)' }}>
-        연동 규칙을 선택하세요.
+        {t('linkage:selectRuleWithPeriod')}
       </p>
     )
   }
@@ -37,14 +40,14 @@ export const LinkageGeneralSection = ({
   const nameField = editMode ? (
     <Input defaultValue={rule.name} className="app-text-md max-w-xl" />
   ) : (
-    <NameValue name={rule.name} />
+    <NameValue name={rule.name} empty={t('common:empty')} />
   )
 
   const activeField = editMode ? (
     <label className="flex items-center gap-2 cursor-pointer">
       <Checkbox checked={rule.active} onChange={() => undefined} />
       <span className="app-text-md" style={{ color: 'var(--color-text)' }}>
-        활성
+        {t('common:active')}
       </span>
     </label>
   ) : null
@@ -54,14 +57,14 @@ export const LinkageGeneralSection = ({
       <div className="flex flex-col gap-3">
         <div>
           <span className="app-text-sm block mb-1" style={labelStyle}>
-            명칭
+            {t('linkage:field.name')}
           </span>
           {nameField}
         </div>
         {activeField ? (
           <div>
             <span className="app-text-sm block mb-1" style={labelStyle}>
-              활성
+              {t('common:active')}
             </span>
             {activeField}
           </div>
@@ -77,14 +80,14 @@ export const LinkageGeneralSection = ({
     >
       <div className="flex items-center gap-2 min-w-0 flex-1">
         <span className="app-text-md shrink-0" style={labelStyle}>
-          명칭
+          {t('linkage:field.name')}
         </span>
         <div className="min-w-0 flex-1">{nameField}</div>
       </div>
       {activeField ? (
         <div className="flex items-center gap-2 shrink-0">
           <span className="app-text-md shrink-0" style={labelStyle}>
-            활성
+            {t('common:active')}
           </span>
           {activeField}
         </div>

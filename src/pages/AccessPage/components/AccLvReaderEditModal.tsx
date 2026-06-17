@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, Trash2, X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Select } from '@/components/primitive/Select'
@@ -48,6 +49,7 @@ const ReaderPicker = ({
   readerId: number
   onReaderChange: (readerId: number) => void
 }) => {
+  const { t } = useTranslation('access')
   const { data: readers, isLoading } = useReaders(scpId)
 
   const options = useMemo(
@@ -64,7 +66,7 @@ const ReaderPicker = ({
       <Select
         value=""
         options={[]}
-        placeholder="주 제어기를 먼저 선택"
+        placeholder={t('readers.placeholder.selectControllerFirst')}
         disabled
         className="w-full"
       />
@@ -76,7 +78,7 @@ const ReaderPicker = ({
       value={readerId > 0 ? String(readerId) : ''}
       onChange={(v) => onReaderChange(Number(v))}
       options={options}
-      placeholder={isLoading ? '불러오는 중...' : '리더 선택'}
+      placeholder={isLoading ? t('loading') : t('readers.placeholder.selectReader')}
       disabled={isLoading || options.length === 0}
       className="w-full"
     />
@@ -91,6 +93,7 @@ export const AccLvReaderEditModal = ({
   onCancel,
   onSaved,
 }: AccLvReaderEditModalProps) => {
+  const { t } = useTranslation(['access', 'common'])
   const [drafts, setDrafts] = useState<DraftRow[]>([])
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -118,9 +121,9 @@ export const AccLvReaderEditModal = ({
 
   const timezoneOptions = useMemo(
     () =>
-      (timezoneList ?? []).map((t) => ({
-        value: String(t.id),
-        label: fallbackTimezoneName(t.name),
+      (timezoneList ?? []).map((tz) => ({
+        value: String(tz.id),
+        label: fallbackTimezoneName(tz.name),
       })),
     [timezoneList],
   )
@@ -162,13 +165,13 @@ export const AccLvReaderEditModal = ({
 
     const invalid = drafts.some((d) => d.scpId <= 0 || d.readerId <= 0)
     if (invalid) {
-      setSaveError('주 제어기와 리더를 모두 선택하세요.')
+      setSaveError(t('access:error.selectControllerAndReader'))
       return
     }
 
     const keys = drafts.map((d) => accLvReaderKey(d.scpId, d.readerId))
     if (new Set(keys).size !== keys.length) {
-      setSaveError('동일한 리더 연결이 중복되었습니다.')
+      setSaveError(t('access:error.duplicateReader'))
       return
     }
 
@@ -185,19 +188,19 @@ export const AccLvReaderEditModal = ({
         const draft = draftMap.get(key)
         if (!draft) {
           const ok = await deleteReader.mutateAsync({ scpId: orig.scp, rdrId: orig.rdr })
-          if (!ok) throw new Error('연결 삭제에 실패했습니다.')
+          if (!ok) throw new Error(t('access:error.deleteLinkFailed'))
           continue
         }
         const origTz = orig.tz ?? 0
         if (draft.timezoneId !== origTz) {
           const delOk = await deleteReader.mutateAsync({ scpId: orig.scp, rdrId: orig.rdr })
-          if (!delOk) throw new Error('연결 수정에 실패했습니다.')
+          if (!delOk) throw new Error(t('access:error.updateLinkFailed'))
           const addOk = await addReader.mutateAsync({
             scpId: draft.scpId,
             readerId: draft.readerId,
             tz: draft.timezoneId,
           })
-          if (!addOk) throw new Error('연결 수정에 실패했습니다.')
+          if (!addOk) throw new Error(t('access:error.updateLinkFailed'))
         }
       }
 
@@ -208,13 +211,13 @@ export const AccLvReaderEditModal = ({
             readerId: draft.readerId,
             tz: draft.timezoneId,
           })
-          if (!ok) throw new Error('연결 추가에 실패했습니다.')
+          if (!ok) throw new Error(t('access:error.addLinkFailed'))
         }
       }
 
       onSaved()
     } catch (e) {
-      setSaveError(e instanceof Error ? e.message : '저장하지 못했습니다.')
+      setSaveError(e instanceof Error ? e.message : t('access:error.saveFailed'))
     } finally {
       setSaving(false)
     }
@@ -225,7 +228,7 @@ export const AccLvReaderEditModal = ({
   const resolveScpName = (scpId: number) => fallbackScpName(scpNameMap[scpId])
 
   const resolveReaderLabel = (row: DraftRow) => {
-    if (row.readerId <= 0) return '—'
+    if (row.readerId <= 0) return t('common:empty')
     const orig = readers.find((r) => r.scp === row.scpId && r.rdr === row.readerId)
     return fallbackReaderName(orig?.readerName)
   }
@@ -251,14 +254,14 @@ export const AccLvReaderEditModal = ({
             className="text-[15px] font-medium"
             style={{ color: 'var(--color-text)' }}
           >
-            리더 연결 변경
+            {t('access:readers.editTitle')}
           </p>
           <button
             type="button"
             onClick={onCancel}
             className="p-1 rounded"
             style={{ color: 'var(--color-text-subtle)' }}
-            aria-label="닫기"
+            aria-label={t('common:close')}
           >
             <X size={14} />
           </button>
@@ -270,7 +273,7 @@ export const AccLvReaderEditModal = ({
               className="text-[14px] py-6 text-center"
               style={{ color: 'var(--color-text-subtle)' }}
             >
-              연결된 리더가 없습니다. 아래에서 행을 추가하세요.
+              {t('access:readers.emptyEdit')}
             </p>
           ) : (
             <div className="flex flex-col gap-2">
@@ -284,7 +287,7 @@ export const AccLvReaderEditModal = ({
                     value={row.scpId > 0 ? String(row.scpId) : ''}
                     onChange={(v) => updateRow(row.key, { scpId: Number(v) })}
                     options={scpOptions}
-                    placeholder="주 제어기"
+                    placeholder={t('access:readers.placeholder.controller')}
                     className="w-full"
                   />
                   <ReaderPicker
@@ -296,7 +299,7 @@ export const AccLvReaderEditModal = ({
                     value={row.timezoneId > 0 ? String(row.timezoneId) : ''}
                     onChange={(v) => updateRow(row.key, { timezoneId: Number(v) })}
                     options={timezoneOptions}
-                    placeholder="시간표"
+                    placeholder={t('access:readers.placeholder.timezone')}
                     className="w-full"
                   />
                   <Button
@@ -304,7 +307,10 @@ export const AccLvReaderEditModal = ({
                     variant="default"
                     size="sm"
                     onClick={() => handleRemoveRow(row.key)}
-                    title={`${resolveScpName(row.scpId)} · ${resolveReaderLabel(row)} 삭제`}
+                    title={t('access:readers.removeRow', {
+                      controller: resolveScpName(row.scpId),
+                      reader: resolveReaderLabel(row),
+                    })}
                   >
                     <Trash2 size={12} />
                   </Button>
@@ -322,7 +328,7 @@ export const AccLvReaderEditModal = ({
             className="mt-3"
             disabled={scpOptions.length === 0}
           >
-            행 추가
+            {t('access:readers.addRow')}
           </Button>
 
           {saveError ? (
@@ -337,10 +343,10 @@ export const AccLvReaderEditModal = ({
           style={{ borderTop: '0.5px solid var(--color-border)' }}
         >
           <Button variant="default" size="md" onClick={onCancel} disabled={saving}>
-            취소
+            {t('common:cancel')}
           </Button>
           <Button variant="accent" size="md" onClick={handleSave} loading={saving}>
-            저장
+            {t('common:save')}
           </Button>
         </div>
       </div>

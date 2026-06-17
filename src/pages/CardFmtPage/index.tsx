@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Binary } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -17,6 +18,7 @@ import type { CardfmtInfo } from '@/types/api'
 const CARDFMT_GRID_LAYOUT_KEY = 'axiquant.grid.layout.cardfmt.v1'
 
 export const CardFmtPage = () => {
+  const { t } = useTranslation(['nav', 'cardFmt'])
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [page, setPage] = useState(1)
@@ -57,7 +59,7 @@ export const CardFmtPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="카드 형식"
+        title={t('menu.cardfmt')}
         icon={<Binary size={15} style={{ color: '#7f77dd' }} />}
         actions={<AddButton onClick={() => undefined} />}
       />
@@ -74,7 +76,7 @@ export const CardFmtPage = () => {
               data={filteredItems}
               selectedId={selectedId ?? undefined}
               onRowClick={handleRowClick}
-              searchPlaceholder="형식명 검색..."
+              searchPlaceholder={t('cardFmt:searchPlaceholder')}
               onSearch={setSearchQuery}
               totalCount={filteredItems.length}
               loading={isLoading}
@@ -91,7 +93,7 @@ export const CardFmtPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                카드 형식 목록을 불러오지 못했습니다.
+                {t('cardFmt:loadError')}
               </p>
             ) : null}
           </>

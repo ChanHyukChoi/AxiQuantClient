@@ -1,0 +1,63 @@
+{
+  "searchPlaceholder": "영역명 검색...",
+  "loadError": "영역 목록을 불러오지 못했습니다.",
+  "selectRow": "목록에서 영역을 선택하세요",
+  "field": {
+    "name": "명칭",
+    "active": "활성 여부",
+    "occmax": "최대 수용",
+    "multiocc": "다중 점유"
+  },
+  "section": {
+    "basic": "기본 정보",
+    "occupancy": "현재 점유 현황"
+  },
+  "tab": {
+    "info": "기본정보",
+    "readers": "연결 리더",
+    "occupants": "점유 인원"
+  },
+  "summary": {
+    "occupancy": "{{status}} · 점유 {{occup}}/{{occmax}}"
+  },
+  "multiocc": {
+    "allowed": "허용",
+    "denied": "비허용"
+  },
+  "occupancy": {
+    "current": "현재 점유",
+    "detail": "퇴장 {{occdown}} · 설정 {{occset}}",
+    "reset": "점유 초기화",
+    "set": "점유 설정",
+    "setTitle": "점유 설정 (occset)",
+    "setHint": "영역 점유 설정값을 입력하세요."
+  },
+  "readers": {
+    "empty": "연결된 리더가 없습니다.",
+    "comingSoon": "추후 리더 연결/해제 기능이 추가될 예정입니다."
+  },
+  "occupants": {
+    "empty": "등록된 점유 인원이 없습니다.",
+    "comingSoon": "추후 실시간 SSE 연동이 추가될 예정입니다."
+  },
+  "modal": {
+    "deleteTitle": "영역 삭제",
+    "deleteDescription": "\"{{name}}\" 영역을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "resetTitle": "점유 초기화",
+    "resetDescription": "현재 점유({{occup}})와 퇴장 카운트를 0으로 초기화합니다.",
+    "resetDescriptionWithError": "현재 점유({{occup}})와 퇴장 카운트를 0으로 초기화합니다.\n\n{{error}}"
+  },
+  "error": {
+    "saveFailed": "저장하지 못했습니다. 서버 응답을 확인하세요.",
+    "resetFailed": "점유 초기화에 실패했습니다.",
+    "invalidNumber": "0 이상의 숫자를 입력하세요.",
+    "setFailed": "점유 설정에 실패했습니다."
+  },
+  "validation": {
+    "nameRequired": "명칭을 입력하세요",
+    "occmaxMin": "0 이상이어야 합니다"
+  },
+  "column": {
+    "occupancy": "점유"
+  }
+}

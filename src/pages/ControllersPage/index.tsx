@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { Cpu } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -20,6 +21,7 @@ import type { CreateScpRequest, ScpInfo } from '@/types/api'
 const CONTROLLERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.controllers.v1'
 
 export const ControllersPage = () => {
+  const { t } = useTranslation('nav')
   const qc = useQueryClient()
   const [createOpen, setCreateOpen] = useState(false)
   const [page, setPage] = useState(1)
@@ -71,7 +73,7 @@ export const ControllersPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="제어기"
+        title={t('menu.controllers')}
         icon={<Cpu size={15} />}
         actions={<AddButton onClick={() => setCreateOpen(true)} />}
       />
@@ -89,7 +91,7 @@ export const ControllersPage = () => {
               selectedId={selectedId ?? undefined}
               onRowClick={handleRowClick}
               onSearch={setSearchQuery}
-              searchPlaceholder="제어기 검색..."
+              searchPlaceholder={t('scp.searchPlaceholder')}
               totalCount={filteredScps.length}
               loading={isLoading}
               pagination={{
@@ -105,7 +107,7 @@ export const ControllersPage = () => {
             />
             {isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                제어기 목록을 불러오지 못했습니다.
+                {t('scp.loadError')}
               </p>
             ) : null}
           </>

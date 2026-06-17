@@ -1,0 +1,46 @@
+{
+  "searchPlaceholder": "타임존 검색...",
+  "loadError": "타임존 목록을 불러오지 못했습니다.",
+  "selectTimezone": "좌측 목록에서 타임존을 선택하세요.",
+  "field": {
+    "name": "명칭",
+    "timeRange": "시간 범위",
+    "intervalCount": "구간 수",
+    "intervals": "구간",
+    "date": "날짜",
+    "recurring": "매년 반복"
+  },
+  "column": {
+    "start": "시작",
+    "end": "종료",
+    "interval": "구간",
+    "range": "범위"
+  },
+  "timezone": {
+    "defaultName": "새 타임존",
+    "intervalCount": "구간 {{count}}개",
+    "modal": {
+      "deleteTitle": "타임존 삭제",
+      "deleteDescription": "「{{name}}」 타임존을 삭제하시겠습니까?"
+    }
+  },
+  "holiday": {
+    "title": "휴일",
+    "defaultName": "휴일",
+    "newDefaultName": "새 휴일",
+    "empty": "등록된 휴일이 없습니다.",
+    "datePlaceholder": "MM-DD 또는 YYYY-MM-DD",
+    "recurringLabel": "매년 반복",
+    "yes": "예",
+    "no": "아니오",
+    "modal": {
+      "deleteTitle": "휴일 삭제",
+      "deleteDescription": "「{{name}}」 휴일을 삭제하시겠습니까?"
+    }
+  },
+  "error": {
+    "saveFailed": "저장하지 못했습니다.",
+    "addFailed": "추가하지 못했습니다.",
+    "deleteFailed": "삭제하지 못했습니다."
+  }
+}

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { AddButton } from '@/components/page-actions'
@@ -15,6 +16,7 @@ import { useAlarmPriorityEditor } from '@/pages/AlarmSettingsPage/useAlarmPriori
 const ALARM_PRIORITY_GRID_LAYOUT_KEY = 'axiquant.grid.layout.alarm-priority.v1'
 
 export const AlarmPriorityTab = () => {
+  const { t } = useTranslation('alarm')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
@@ -75,7 +77,7 @@ export const AlarmPriorityTab = () => {
             />
             {data.isError ? (
               <p className="text-[13px] px-3 py-1" style={{ color: 'var(--color-danger)' }}>
-                우선순위 목록을 불러오지 못했습니다.
+                {t('priorityLoadError')}
               </p>
             ) : null}
           </>

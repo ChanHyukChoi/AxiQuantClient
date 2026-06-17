@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Controller, type Control } from 'react-hook-form'
 import type { UseFormRegister } from 'react-hook-form'
 import { Hash, RefreshCw, Settings, SlidersHorizontal, Tag, Users } from 'lucide-react'
@@ -58,25 +59,26 @@ export const AreaInfoTab = ({
   onResetOccupancy,
   onSetOccupancy,
 }: AreaInfoTabProps) => {
+  const { t } = useTranslation(['area', 'common'])
   const ratio = occupancyRatio(area.occup, area.occmax)
   const pct = occupancyPercent(area.occup, area.occmax)
 
   return (
     <div>
-      <SectionTitle>기본 정보</SectionTitle>
+      <SectionTitle>{t('area:section.basic')}</SectionTitle>
 
-      <FRow icon={<Tag size={12} />} label="명칭">
+      <FRow icon={<Tag size={12} />} label={t('area:field.name')}>
         {editMode ? (
           <Input {...register('name')} style={{ width: 148 }} />
         ) : (
           <span className="app-text-lg text-right" style={{ color: 'var(--color-text)' }}>
-            {area.name || '—'}
+            {area.name || t('common:empty')}
           </span>
         )}
       </FRow>
 
       {editMode ? (
-        <FRow icon={<Settings size={12} />} label="활성 여부">
+        <FRow icon={<Settings size={12} />} label={t('area:field.active')}>
           <Controller
             name="active"
             control={control}
@@ -87,7 +89,7 @@ export const AreaInfoTab = ({
                   onChange={(checked) => field.onChange(checked ? 1 : 0)}
                 />
                 <span className="app-text-md" style={{ color: 'var(--color-text-muted)' }}>
-                  활성
+                  {t('common:active')}
                 </span>
               </div>
             )}
@@ -95,7 +97,7 @@ export const AreaInfoTab = ({
         </FRow>
       ) : null}
 
-      <FRow icon={<Users size={12} />} label="최대 수용">
+      <FRow icon={<Users size={12} />} label={t('area:field.occmax')}>
         {editMode ? (
           <Input
             type="number"
@@ -109,7 +111,7 @@ export const AreaInfoTab = ({
         )}
       </FRow>
 
-      <FRow icon={<SlidersHorizontal size={12} />} label="다중 점유">
+      <FRow icon={<SlidersHorizontal size={12} />} label={t('area:field.multiocc')}>
         {editMode ? (
           <Controller
             name="multiocc"
@@ -125,13 +127,13 @@ export const AreaInfoTab = ({
           />
         ) : (
           <span className="app-text-lg text-right" style={{ color: 'var(--color-text)' }}>
-            {area.multiocc !== 0 ? '허용' : '비허용'}
+            {area.multiocc !== 0 ? t('area:multiocc.allowed') : t('area:multiocc.denied')}
           </span>
         )}
       </FRow>
 
       <div className="mt-4" />
-      <SectionTitle>현재 점유 현황</SectionTitle>
+      <SectionTitle>{t('area:section.occupancy')}</SectionTitle>
 
       <div
         className="rounded-md p-3 mb-3"
@@ -143,7 +145,7 @@ export const AreaInfoTab = ({
         <div className="flex items-end justify-between gap-2 mb-2">
           <div>
             <p className="app-text-md mb-0.5" style={{ color: 'var(--color-text-subtle)' }}>
-              현재 점유
+              {t('area:occupancy.current')}
             </p>
             <p
               className="text-[28px] font-semibold leading-none font-mono"
@@ -157,7 +159,7 @@ export const AreaInfoTab = ({
               / {area.occmax} · {pct}%
             </p>
             <p className="app-text-sm mt-0.5" style={{ color: 'var(--color-text-dim)' }}>
-              퇴장 {area.occdown} · 설정 {area.occset}
+              {t('area:occupancy.detail', { occdown: area.occdown, occset: area.occset })}
             </p>
           </div>
         </div>
@@ -184,7 +186,7 @@ export const AreaInfoTab = ({
             onClick={onResetOccupancy}
             disabled={editMode}
           >
-            점유 초기화
+            {t('area:occupancy.reset')}
           </Button>
           <Button
             variant="default"
@@ -193,7 +195,7 @@ export const AreaInfoTab = ({
             onClick={onSetOccupancy}
             disabled={editMode}
           >
-            점유 설정
+            {t('area:occupancy.set')}
           </Button>
         </div>
       </div>

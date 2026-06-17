@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  alarmPriorityFormSchema,
+  createAlarmPriorityFormSchema,
   type AlarmPriorityFormValues,
 } from '@/pages/AlarmSettingsPage/formTypes'
 import type { AlarmPriorityDisplay } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
@@ -34,6 +35,8 @@ const itemToForm = (item: AlarmPriorityDisplay): AlarmPriorityFormValues => ({
 })
 
 export const useAlarmPriorityEditor = ({ item, onDeleted }: UseAlarmPriorityEditorOptions) => {
+  const { t } = useTranslation('alarm')
+  const alarmPriorityFormSchema = useMemo(() => createAlarmPriorityFormSchema(t), [t])
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [actionError, setActionError] = useState<string | null>(null)
@@ -98,7 +101,7 @@ export const useAlarmPriorityEditor = ({ item, onDeleted }: UseAlarmPriorityEdit
       },
     })
     if (ok) setEditMode(false)
-    else setActionError('저장하지 못했습니다.')
+    else setActionError(t('error.saveFailed'))
   })
 
   const handleAdd = useCallback(async () => {
@@ -107,8 +110,8 @@ export const useAlarmPriorityEditor = ({ item, onDeleted }: UseAlarmPriorityEdit
       priority: 50,
       color: '#4f9cf9',
     })
-    if (!ok) setActionError('추가하지 못했습니다.')
-  }, [createMut])
+    if (!ok) setActionError(t('error.addFailed'))
+  }, [createMut, t])
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!item) return
@@ -118,8 +121,8 @@ export const useAlarmPriorityEditor = ({ item, onDeleted }: UseAlarmPriorityEdit
     if (ok) {
       setDeleteOpen(false)
       onDeleted()
-    } else setActionError('삭제하지 못했습니다.')
-  }, [item, deleteMut, onDeleted])
+    } else setActionError(t('error.deleteFailed'))
+  }, [item, deleteMut, onDeleted, t])
 
   return {
     form,

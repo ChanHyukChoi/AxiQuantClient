@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from '@/lib/query/queryKeys'
 import { CreditCard } from 'lucide-react'
@@ -47,6 +48,7 @@ const applyCardFilters = (cards: CardRow[], filters: CardListFilters): CardRow[]
   })
 
 export const CardsPage = () => {
+  const { t } = useTranslation(['nav', 'common', 'card'])
   const qc = useQueryClient()
   const selectionBeforeCreateRef = useRef<number | null>(null)
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -237,7 +239,7 @@ export const CardsPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="카드"
+        title={t('nav:menu.cards')}
         icon={<CreditCard size={15} />}
         actions={
           <>
@@ -260,7 +262,7 @@ export const CardsPage = () => {
             data={filteredCards}
             selectedId={selectedId ?? undefined}
             onRowClick={handleRowClick}
-            searchPlaceholder="카드 번호, 사용자 검색..."
+            searchPlaceholder={t('card:searchPlaceholder')}
             onSearch={setSearchQuery}
             totalCount={filteredCards.length}
             loading={cardLoading}
@@ -277,7 +279,7 @@ export const CardsPage = () => {
             actions={
               <FilterButton
                 showLabel={false}
-                title="필터"
+                title={t('common:filter')}
                 active={isCardFiltersActive(listFilters)}
                 onClick={() => openOptions('filter')}
               />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Shield } from 'lucide-react'
 import { Badge } from '@/components/primitive/Badge'
 
@@ -18,6 +19,8 @@ interface AccLvGroupCardsProps {
 const ACC_LV_VISIBLE_WITHOUT_SCROLL = 2
 
 export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) => {
+  const { t } = useTranslation(['card', 'common'])
+
   if (items.length === 0) {
     return (
       <div
@@ -29,7 +32,7 @@ export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) 
           fontSize: 15,
         }}
       >
-        할당된 권한 그룹이 없습니다
+        {t('card:accLv.noGroups')}
       </div>
     )
   }
@@ -86,7 +89,7 @@ export const AccLvGroupCards = ({ items, fontSize = 15 }: AccLvGroupCardsProps) 
           ) : null}
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <Badge variant={item.isActive ? 'on' : 'off'}>
-              {item.isActive ? '활성' : '비활성'}
+              {item.isActive ? t('common:active') : t('common:inactive')}
             </Badge>
             {item.acttm ? (
               <span

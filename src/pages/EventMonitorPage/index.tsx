@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Activity } from 'lucide-react'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
 import { PageHeader } from '@/layouts/PageHeader'
@@ -30,6 +31,7 @@ const PAGE_SIZE = 50
 const EVENT_GRID_MIN_WIDTH = 640
 
 export const EventMonitorPage = () => {
+  const { t } = useTranslation('nav')
   const [mode, setMode] = useState<MonitorMode>('live')
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -121,7 +123,7 @@ export const EventMonitorPage = () => {
 
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
-      <PageHeader title="이벤트 모니터" icon={<Activity size={15} />} />
+      <PageHeader title={t('menu.monitor')} icon={<Activity size={15} />} />
 
       <MonitorToolbar
         mode={mode}

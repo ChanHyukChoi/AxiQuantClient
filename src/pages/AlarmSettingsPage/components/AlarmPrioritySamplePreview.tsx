@@ -1,4 +1,5 @@
-import { PRIORITY_BLINK_OPTIONS } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
+import i18n from '@/lib/i18n'
+import { getPriorityBlinkOptions } from '@/pages/AlarmSettingsPage/alarmPriorityTypes'
 
 interface AlarmPrioritySamplePreviewProps {
   fgColor: string
@@ -39,5 +40,7 @@ export const AlarmPrioritySamplePreview = ({
   )
 }
 
-export const blinkingLabel = (value: string): string =>
-  PRIORITY_BLINK_OPTIONS.find((o) => o.value === value)?.label ?? value
+export const blinkingLabel = (value: string): string => {
+  const t = i18n.getFixedT(null, 'alarm')
+  return getPriorityBlinkOptions(t).find((o) => o.value === value)?.label ?? value
+}

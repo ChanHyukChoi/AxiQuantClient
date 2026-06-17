@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Controller,
   useWatch,
@@ -59,6 +60,7 @@ export const CardPinChangeSection = ({
   setValue,
   clearErrors,
 }: CardPinChangeSectionProps) => {
+  const { t } = useTranslation('card')
   const changePin = useWatch({ control, name: 'changePin' })
   const pinFieldsEndRef = useRef<HTMLDivElement>(null)
 
@@ -81,7 +83,7 @@ export const CardPinChangeSection = ({
 
   return (
     <>
-      <FRow icon={<span />} label="PIN 변경" fontSize={FONT_SIZE}>
+      <FRow icon={<span />} label={t('field.pinChange')} fontSize={FONT_SIZE}>
         <span className="flex justify-end">
           <Controller
             name="changePin"
@@ -100,7 +102,7 @@ export const CardPinChangeSection = ({
             control={control}
             render={({ field, fieldState }) => (
               <PinInputRow
-                label="PIN"
+                label={t('field.pin')}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -113,7 +115,7 @@ export const CardPinChangeSection = ({
             control={control}
             render={({ field, fieldState }) => (
               <PinInputRow
-                label="PIN 확인"
+                label={t('field.pinConfirm')}
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}

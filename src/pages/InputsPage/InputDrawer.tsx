@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowRightToLine } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
@@ -20,6 +21,7 @@ interface InputDrawerProps {
 }
 
 export const InputDrawer = ({ row, onEditModeChange }: InputDrawerProps) => {
+  const { t } = useTranslation(['common', 'device'])
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -42,7 +44,7 @@ export const InputDrawer = ({ row, onEditModeChange }: InputDrawerProps) => {
     <div className="flex items-center gap-2 py-2">
       <ArrowRightToLine size={18} style={{ color: 'var(--color-text-dim)' }} />
       <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-        ??? ?????.
+        {t('common:selectRow')}
       </p>
     </div>
   )
@@ -61,16 +63,16 @@ export const InputDrawer = ({ row, onEditModeChange }: InputDrawerProps) => {
     <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions ?? undefined}>
       {row ? (
         <div className="max-w-md flex flex-col gap-3">
-          <DetailInfoField label="????">{row.scpName}</DetailInfoField>
-          <DetailInfoField label="????">
+          <DetailInfoField label={t('device:grid.scp')}>{row.scpName}</DetailInfoField>
+          <DetailInfoField label={t('device:grid.sio')}>
             {formatSioName(row.sio, row.sioName)}
           </DetailInfoField>
-          <DetailInfoField label="????">{formatInputAddr(row.addr)}</DetailInfoField>
-          <DetailInfoField label="??">{formatInputMode(row.mode)}</DetailInfoField>
-          <DetailInfoField label="??? ??">{String(row.icvt)}</DetailInfoField>
-          <DetailInfoField label="?? ??">{`${row.holdtime} sec`}</DetailInfoField>
-          <DetailInfoField label="??">
-            {isDeviceActive(row.active) ? '??' : '???'}
+          <DetailInfoField label={t('common:address')}>{formatInputAddr(row.addr)}</DetailInfoField>
+          <DetailInfoField label={t('common:mode')}>{formatInputMode(row.mode)}</DetailInfoField>
+          <DetailInfoField label={t('device:input.invert')}>{String(row.icvt)}</DetailInfoField>
+          <DetailInfoField label={t('device:input.holdTime')}>{`${row.holdtime} sec`}</DetailInfoField>
+          <DetailInfoField label={t('common:status')}>
+            {isDeviceActive(row.active) ? t('common:active') : t('common:inactive')}
           </DetailInfoField>
         </div>
       ) : (

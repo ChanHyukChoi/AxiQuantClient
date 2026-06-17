@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm, useWatch, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
@@ -9,7 +10,12 @@ import { Modal } from '@/components/primitive/Modal'
 import { queryKeys } from '@/lib/query/queryKeys'
 import { CardSummaryHeader } from '@/pages/CardsPage/components/CardSummaryHeader'
 import { CardUpsertForm } from '@/pages/CardsPage/components/CardUpsertForm'
-import { updateCardSchema, type UpdateCardFormValues } from '@/pages/CardsPage/formTypes'
+import {
+  CARD_STATUS_ACTIVE,
+  CARD_TYPE_DEFAULT,
+  createCardSchema,
+  type UpdateCardFormValues,
+} from '@/pages/CardsPage/formTypes'
 import { CardAccessTab } from '@/pages/CardsPage/tabs/CardAccessTab'
 import { CardHistTab } from '@/pages/CardsPage/tabs/CardHistTab'
 import { CardInfoTab } from '@/pages/CardsPage/tabs/CardInfoTab'
@@ -36,8 +42,8 @@ const FORM_DEFAULTS: UpdateCardFormValues = {
   name: '',
   cardNum: '',
   empId: undefined,
-  type: '직원',
-  status: '활성',
+  type: CARD_TYPE_DEFAULT,
+  status: CARD_STATUS_ACTIVE,
   changePin: false,
   pin: '',
   pinConfirm: '',
@@ -74,6 +80,8 @@ export const CardDrawer = ({
   onDeleted,
   onEditModeChange,
 }: CardDrawerProps) => {
+  const { t } = useTranslation(['card', 'common'])
+  const cardSchema = useMemo(() => createCardSchema(t), [t])
   const selectedId = card?.id ?? null
   const [editMode, setEditMode] = useState(false)
   const [activeTab, setActiveTab] = useState('info')
@@ -93,7 +101,7 @@ export const CardDrawer = ({
   const { mutate: deleteCard, isPending: isDeleting } = useDeleteCard()
 
   const form = useForm<UpdateCardFormValues>({
-    resolver: zodResolver(updateCardSchema) as Resolver<UpdateCardFormValues>,
+    resolver: zodResolver(cardSchema) as Resolver<UpdateCardFormValues>,
     defaultValues: FORM_DEFAULTS,
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
@@ -136,13 +144,13 @@ export const CardDrawer = ({
       const acttm = row.acttm?.trim()
       return {
         id: row.alvid,
-        name: accLvNameMap[row.alvid] ?? meta?.name ?? '접근 권한',
+        name: accLvNameMap[row.alvid] ?? meta?.name ?? t('card:accLv.fallback'),
         isActive: (row.state ?? 1) > 0,
         description: meta?.description?.trim() || undefined,
         acttm: acttm || undefined,
       }
     })
-  }, [cardAccLvList, accLvNameMap, accLvList])
+  }, [cardAccLvList, accLvNameMap, accLvList, t])
 
   useEffect(() => {
     if (!editMode || createMode || cardAccLvList == null) return
@@ -201,22 +209,20 @@ export const CardDrawer = ({
         const data = toCreateRequest(values, exemptApb, exemptPin)
         const ok = await createCardAsync(data)
         if (!ok) {
-          setSaveError(
-            '서버에 저장하지 못했습니다. 카드 번호·필수 값을 확인하거나 F12 네트워크 응답을 확인하세요.',
-          )
+          setSaveError(t('card:error.saveFailed'))
           return
         }
 
         const newId = cardIdFromNumber(data.cardNumber)
         if (newId == null) {
-          setSaveError('카드 번호 형식이 올바르지 않습니다.')
+          setSaveError(t('card:error.invalidCardNumber'))
           return
         }
 
         if (selectedAccLvIds.length > 0) {
           const synced = await syncCardAccLvLinks(newId, [], selectedAccLvIds)
           if (!synced) {
-            setSaveError('카드는 저장됐지만 접근 권한 연결에 실패했습니다.')
+            setSaveError(t('card:error.accLvSyncFailed'))
             return
           }
           invalidateAccLv(newId)
@@ -232,13 +238,13 @@ export const CardDrawer = ({
       const data = toUpdateRequest(values, card, exemptApb, exemptPin)
       const ok = await updateCardAsync({ id: selectedId, data })
       if (!ok) {
-        setSaveError('서버에 저장하지 못했습니다. F12 네트워크 응답을 확인하세요.')
+        setSaveError(t('card:error.saveFailedShort'))
         return
       }
 
       const synced = await syncCardAccLvLinks(selectedId, beforeIds, selectedAccLvIds)
       if (!synced) {
-        setSaveError('카드는 저장됐지만 접근 권한 연결에 실패했습니다.')
+        setSaveError(t('card:error.accLvSyncFailed'))
         return
       }
       invalidateAccLv(selectedId)
@@ -276,19 +282,19 @@ export const CardDrawer = ({
       ? [
           {
             key: 'info',
-            label: '기본',
+            label: t('card:tab.info'),
             icon: <CreditCard size={12} />,
             fontSize: FONT_SIZE,
           },
           {
             key: 'access',
-            label: '접근권한',
+            label: t('card:tab.access'),
             icon: <DoorOpen size={12} />,
             fontSize: FONT_SIZE,
           },
           {
             key: 'hist',
-            label: '최근이력',
+            label: t('card:tab.hist'),
             icon: <History size={12} />,
             fontSize: FONT_SIZE,
           },
@@ -315,7 +321,7 @@ export const CardDrawer = ({
           leftIcon={<X size={15} />}
           onClick={handleCancelForm}
         >
-          취소
+          {t('common:cancel')}
         </Button>
         <Button
           variant="accent"
@@ -324,7 +330,7 @@ export const CardDrawer = ({
           loading={isSaving}
           onClick={handleSave}
         >
-          저장
+          {t('common:save')}
         </Button>
       </div>
     </div>
@@ -336,7 +342,7 @@ export const CardDrawer = ({
         leftIcon={<Trash2 size={15} />}
         onClick={() => setDeleteModalOpen(true)}
       >
-        삭제
+        {t('common:delete')}
       </Button>
       <Button
         variant="accent"
@@ -344,7 +350,7 @@ export const CardDrawer = ({
         leftIcon={<Pencil size={15} />}
         onClick={onEditClick}
       >
-        수정
+        {t('common:edit')}
       </Button>
     </>
   ) : null
@@ -403,9 +409,11 @@ export const CardDrawer = ({
 
       <Modal
         open={deleteModalOpen}
-        title="카드 삭제"
-        description={`카드 "${card?.cardNumber ?? ''}"를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`}
-        confirmLabel="삭제"
+        title={t('card:modal.deleteTitle')}
+        description={t('card:modal.deleteDescription', {
+          cardNumber: card?.cardNumber ?? '',
+        })}
+        confirmLabel={t('common:delete')}
         variant="danger"
         loading={isDeleting}
         onConfirm={handleDeleteConfirm}

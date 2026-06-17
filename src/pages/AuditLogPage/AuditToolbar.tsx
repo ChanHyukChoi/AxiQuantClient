@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { ExportButton, PrintButton } from '@/components/page-actions'
 import { ACTION_TYPE_OPTIONS, DATA_TYPE_OPTIONS } from '@/pages/AuditLogPage/utils/auditBadge'
 import type { DatePreset } from '@/pages/EventMonitorPage/utils/dateRange'
@@ -56,87 +57,99 @@ export const AuditToolbar = ({
   onDataTypeChange,
   onExport,
   onPrint,
-}: AuditToolbarProps) => (
-  <div
-    className="flex flex-col flex-shrink-0 gap-2 px-3 py-2"
-    style={{ background: 'var(--color-sidebar)', borderBottom: '0.5px solid var(--color-border)' }}
-  >
-    <div className="flex items-center gap-2 flex-wrap">
-      {(
-        [
-          ['today', '오늘'],
-          ['7d', '최근 7일'],
-          ['30d', '최근 30일'],
-        ] as const
-      ).map(([p, label]) => (
-        <button
-          key={p}
-          type="button"
-          style={presetBtnStyle(datePreset === p)}
-          onClick={() => onDatePresetChange(p)}
+}: AuditToolbarProps) => {
+  const { t } = useTranslation('audit')
+
+  return (
+    <div
+      className="flex flex-col flex-shrink-0 gap-2 px-3 py-2"
+      style={{ background: 'var(--color-sidebar)', borderBottom: '0.5px solid var(--color-border)' }}
+    >
+      <div className="flex items-center gap-2 flex-wrap">
+        {(
+          [
+            ['today', t('datePreset.today')],
+            ['7d', t('datePreset.7d')],
+            ['30d', t('datePreset.30d')],
+          ] as const
+        ).map(([p, label]) => (
+          <button
+            key={p}
+            type="button"
+            style={presetBtnStyle(datePreset === p)}
+            onClick={() => onDatePresetChange(p)}
+          >
+            {label}
+          </button>
+        ))}
+        <input
+          type="date"
+          value={dateFrom}
+          onChange={(e) => {
+            onDatePresetChange('custom')
+            onDateFromChange(e.target.value)
+          }}
+          className="text-[13px] px-1.5 py-1 rounded"
+          style={selectStyle}
+        />
+        <span className="text-[13px]" style={{ color: 'var(--color-text-dim)' }}>
+          ~
+        </span>
+        <input
+          type="date"
+          value={dateTo}
+          onChange={(e) => {
+            onDatePresetChange('custom')
+            onDateToChange(e.target.value)
+          }}
+          className="text-[13px] px-1.5 py-1 rounded"
+          style={selectStyle}
+        />
+
+        <select
+          value={userId === '' ? '' : String(userId)}
+          onChange={(e) => onUserIdChange(e.target.value === '' ? '' : Number(e.target.value))}
+          style={{ ...selectStyle, minWidth: 120 }}
         >
-          {label}
-        </button>
-      ))}
-      <input
-        type="date"
-        value={dateFrom}
-        onChange={(e) => {
-          onDatePresetChange('custom')
-          onDateFromChange(e.target.value)
-        }}
-        className="text-[13px] px-1.5 py-1 rounded"
-        style={selectStyle}
-      />
-      <span className="text-[13px]" style={{ color: 'var(--color-text-dim)' }}>
-        ~
-      </span>
-      <input
-        type="date"
-        value={dateTo}
-        onChange={(e) => {
-          onDatePresetChange('custom')
-          onDateToChange(e.target.value)
-        }}
-        className="text-[13px] px-1.5 py-1 rounded"
-        style={selectStyle}
-      />
+          <option value="">{t('filter.allUsers')}</option>
+          {users.map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.name} ({u.loginId})
+            </option>
+          ))}
+        </select>
 
-      <select
-        value={userId === '' ? '' : String(userId)}
-        onChange={(e) => onUserIdChange(e.target.value === '' ? '' : Number(e.target.value))}
-        style={{ ...selectStyle, minWidth: 120 }}
-      >
-        <option value="">사용자 전체</option>
-        {users.map((u) => (
-          <option key={u.id} value={u.id}>
-            {u.name} ({u.loginId})
-          </option>
-        ))}
-      </select>
+        <select
+          value={actionType}
+          onChange={(e) => onActionTypeChange(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="">{t('filter.allActions')}</option>
+          {ACTION_TYPE_OPTIONS.map((a) => (
+            <option key={a} value={a}>
+              {a}
+            </option>
+          ))}
+        </select>
 
-      <select value={actionType} onChange={(e) => onActionTypeChange(e.target.value)} style={selectStyle}>
-        <option value="">동작 전체</option>
-        {ACTION_TYPE_OPTIONS.map((a) => (
-          <option key={a} value={a}>
-            {a}
-          </option>
-        ))}
-      </select>
+        <select
+          value={dataType}
+          onChange={(e) => onDataTypeChange(e.target.value)}
+          style={selectStyle}
+        >
+          <option value="">{t('filter.allData')}</option>
+          {DATA_TYPE_OPTIONS.map((d) => (
+            <option key={d} value={d}>
+              {d}
+            </option>
+          ))}
+        </select>
 
-      <select value={dataType} onChange={(e) => onDataTypeChange(e.target.value)} style={selectStyle}>
-        <option value="">데이터 전체</option>
-        {DATA_TYPE_OPTIONS.map((d) => (
-          <option key={d} value={d}>
-            {d}
-          </option>
-        ))}
-      </select>
-
-      <div className="flex items-center gap-1 ml-auto">
-        <ExportButton size="sm" showLabel={false} onClick={onExport} />
-        <PrintButton size="sm" showLabel={false} onClick={onPrint} />
+        <div className="flex items-center gap-1 ml-auto">
+          <ExportButton size="sm" showLabel={false} onClick={onExport} />
+          <PrintButton size="sm" showLabel={false} onClick={onPrint} />
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}

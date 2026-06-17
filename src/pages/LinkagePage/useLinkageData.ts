@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { useLinkageList } from '@/hooks/api/useLinkage'
-import type { LinkageRule } from '@/pages/LinkagePage/linkageTypes'
 
 export const useLinkageData = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null)

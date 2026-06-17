@@ -2,11 +2,11 @@ import { z } from 'zod'
 
 export const scpFormSchema = z.object({
   name: z.string().min(1, '명칭을 입력하세요'),
-  active: z.coerce.number().default(0),
-  connstr: z.string().default(''),
-  model: z.coerce.number().default(0),
-  ctype: z.coerce.number().default(0),
-  ext: z.string().default(''),
+  active: z.number(),
+  connstr: z.string(),
+  model: z.number(),
+  ctype: z.number(),
+  ext: z.string(),
 })
 
 export type ScpFormValues = z.infer<typeof scpFormSchema>

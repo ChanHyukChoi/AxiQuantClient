@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { Button } from '@/components/primitive/Button'
 import { Input } from '@/components/primitive/Input'
@@ -29,6 +30,7 @@ export const ScpCreateModal = ({
   onCancel,
   onCreated,
 }: ScpCreateModalProps) => {
+  const { t } = useTranslation(['common', 'device'])
   const { mutate: createScp, isPending } = useCreateScp()
   const { register, handleSubmit, reset, formState } = useForm<ScpFormValues>({
     resolver: zodResolver(scpFormSchema),
@@ -76,14 +78,14 @@ export const ScpCreateModal = ({
             className="text-[15px] font-medium"
             style={{ color: 'var(--color-text)' }}
           >
-            주제어기 추가
+            {t('device:scp.addTitle')}
           </p>
           <button
             type="button"
             onClick={onCancel}
             className="p-1 rounded"
             style={{ color: 'var(--color-text-subtle)' }}
-            aria-label="닫기"
+            aria-label={t('common:close')}
           >
             <X size={14} />
           </button>
@@ -92,30 +94,30 @@ export const ScpCreateModal = ({
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
           <Input
             {...register('name')}
-            placeholder="명칭"
+            placeholder={t('common:name')}
             error={formState.errors.name?.message}
             autoFocus
           />
-          <Input {...register('connstr')} placeholder="연결문자열 (IP:포트)" />
+          <Input {...register('connstr')} placeholder={t('device:scp.connstrPlaceholder')} />
           <div className="grid grid-cols-2 gap-2">
             <Input
               {...register('model', { valueAsNumber: true })}
               type="number"
-              placeholder="모델"
+              placeholder={t('device:scp.modelPlaceholder')}
             />
             <Input
               {...register('ctype', { valueAsNumber: true })}
               type="number"
-              placeholder="통신유형"
+              placeholder={t('device:scp.ctypePlaceholder')}
             />
           </div>
 
           <div className="flex justify-end gap-1.5 pt-1">
             <Button type="button" variant="default" size="sm" onClick={onCancel}>
-              취소
+              {t('common:cancel')}
             </Button>
             <Button type="submit" variant="accent" size="sm" loading={isPending}>
-              추가
+              {t('common:add')}
             </Button>
           </div>
         </form>

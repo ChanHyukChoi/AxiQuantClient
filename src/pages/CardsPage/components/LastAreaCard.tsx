@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { MapPin } from 'lucide-react'
 
 interface LastAreaCardProps {
@@ -5,8 +6,10 @@ interface LastAreaCardProps {
   fontSize?: number
 }
 
-export const LastAreaCard = ({ area, fontSize = 15 }: LastAreaCardProps) => {
-  const hasArea = area.trim().length > 0 && area !== '—'
+export const LastAreaCard = ({ area }: LastAreaCardProps) => {
+  const { t } = useTranslation(['card', 'common'])
+  const empty = t('common:empty')
+  const hasArea = area.trim().length > 0 && area !== empty
 
   return (
     <div
@@ -33,7 +36,7 @@ export const LastAreaCard = ({ area, fontSize = 15 }: LastAreaCardProps) => {
           className="text-[13px] mb-0.5"
           style={{ color: 'var(--color-text-subtle)', fontSize: 15 }}
         >
-          마지막 영역
+          {t('card:area.last')}
         </p>
         <p
           className="font-medium leading-snug break-words"
@@ -42,7 +45,7 @@ export const LastAreaCard = ({ area, fontSize = 15 }: LastAreaCardProps) => {
             fontSize: 15,
           }}
         >
-          {hasArea ? area : '기록 없음'}
+          {hasArea ? area : t('card:area.noRecord')}
         </p>
       </div>
     </div>

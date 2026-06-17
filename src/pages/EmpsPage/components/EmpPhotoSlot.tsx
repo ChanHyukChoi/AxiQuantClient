@@ -1,4 +1,5 @@
 import { useRef, type CSSProperties } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Minus, Plus } from 'lucide-react'
 import {
   EMP_DRAWER_PHOTO_HEIGHT,
@@ -37,6 +38,7 @@ export const EmpPhotoSlot = ({
   onFileSelect,
   onClear,
 }: EmpPhotoSlotProps) => {
+  const { t } = useTranslation('emp')
   const inputRef = useRef<HTMLInputElement>(null)
   const { width, height } = SLOT_SIZE[variant]
   const trimmed = photoUrl?.trim()
@@ -64,7 +66,7 @@ export const EmpPhotoSlot = ({
         {editable ? (
           <button
             type="button"
-            aria-label="이미지 제거"
+            aria-label={t('photo.removeAria')}
             disabled={loading}
             onClick={onClear}
             className="absolute top-0.5 left-0.5 flex items-center justify-center rounded"
@@ -90,7 +92,7 @@ export const EmpPhotoSlot = ({
       <>
         <button
           type="button"
-          aria-label="이미지 불러오기"
+          aria-label={t('photo.loadAria')}
           disabled={loading}
           onClick={openFileDialog}
           className="shrink-0 flex items-center justify-center rounded"

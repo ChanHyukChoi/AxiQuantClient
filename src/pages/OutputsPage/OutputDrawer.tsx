@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeftFromLine } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { ActiveStatusBadge } from '@/components/basic/ActiveStatusBadge'
@@ -19,6 +20,7 @@ interface OutputDrawerProps {
 }
 
 export const OutputDrawer = ({ row, onEditModeChange }: OutputDrawerProps) => {
+  const { t } = useTranslation(['common', 'device'])
   const [editMode, setEditMode] = useState(false)
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export const OutputDrawer = ({ row, onEditModeChange }: OutputDrawerProps) => {
     <div className="flex items-center gap-2 py-2">
       <ArrowLeftFromLine size={18} style={{ color: 'var(--color-text-dim)' }} />
       <p className="text-[14px]" style={{ color: 'var(--color-text-dim)' }}>
-        ??? ?????.
+        {t('common:selectRow')}
       </p>
     </div>
   )
@@ -60,14 +62,14 @@ export const OutputDrawer = ({ row, onEditModeChange }: OutputDrawerProps) => {
     <Drawer fill borderLeft={false} header={drawerHeader} actions={drawerActions ?? undefined}>
       {row ? (
         <div className="max-w-md flex flex-col gap-3">
-          <DetailInfoField label="????">{row.scpName}</DetailInfoField>
-          <DetailInfoField label="????">
+          <DetailInfoField label={t('device:grid.scp')}>{row.scpName}</DetailInfoField>
+          <DetailInfoField label={t('device:grid.sio')}>
             {formatSioName(row.sio, row.sioName)}
           </DetailInfoField>
-          <DetailInfoField label="????">{formatOutputAddr(row.addr)}</DetailInfoField>
-          <DetailInfoField label="?? ??">{`${row.defpulse} sec`}</DetailInfoField>
-          <DetailInfoField label="??">
-            {isDeviceActive(row.active) ? '??' : '???'}
+          <DetailInfoField label={t('common:address')}>{formatOutputAddr(row.addr)}</DetailInfoField>
+          <DetailInfoField label={t('device:output.pulseDuration')}>{`${row.defpulse} sec`}</DetailInfoField>
+          <DetailInfoField label={t('common:status')}>
+            {isDeviceActive(row.active) ? t('common:active') : t('common:inactive')}
           </DetailInfoField>
         </div>
       ) : (

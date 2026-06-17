@@ -1,40 +1,41 @@
+import i18n from '@/lib/i18n'
+
+const t = () => i18n.getFixedT(null, 'entity')
+
 /** UI에 DB id를 노출하지 않는 표시용 fallback */
 
 export const fallbackAccLvName = (name?: string | null): string =>
-  name?.trim() || '접근 권한'
+  name?.trim() || t()('fallback.accLv')
 
-export const fallbackAreaName = (name?: string | null): string => name?.trim() || '영역'
+export const fallbackAreaName = (name?: string | null): string =>
+  name?.trim() || t()('fallback.area')
 
 export const fallbackEmpName = (name?: string | null): string =>
-  name?.trim() || '(이름 없음)'
+  name?.trim() || t()('fallback.emp')
 
 export const fallbackCardFmtName = (name?: string | null): string =>
-  name?.trim() || '카드 형식'
+  name?.trim() || t()('fallback.cardFmt')
 
-export const fallbackAlarmName = (name?: string | null): string => name?.trim() || '경보'
+export const fallbackAlarmName = (name?: string | null): string =>
+  name?.trim() || t()('fallback.alarm')
 
 export const fallbackMailAlarmName = (name?: string | null): string =>
-  name?.trim() || '이메일 경보'
+  name?.trim() || t()('fallback.mailAlarm')
 
 export const fallbackUserName = (name?: string | null): string =>
-  name?.trim() || '(이름 없음)'
+  name?.trim() || t()('fallback.user')
 
 export const fallbackScpName = (name?: string | null): string =>
-  name?.trim() || '주 제어기'
+  name?.trim() || t()('fallback.scp')
 
 export const fallbackReaderName = (name?: string | null): string =>
-  name?.trim() || '리더'
+  name?.trim() || t()('fallback.reader')
 
 export const fallbackTimezoneName = (name?: string | null): string =>
-  name?.trim() || '시간표'
+  name?.trim() || t()('fallback.timezone')
 
 export const fallbackDeviceKindLabel = (kind: string): string => {
-  const labels: Record<string, string> = {
-    scp: '주 제어기',
-    sio: 'SIO',
-    reader: '리더',
-    input: '입력',
-    output: '출력',
-  }
-  return labels[kind.toLowerCase()] ?? kind
+  const key = kind.toLowerCase()
+  const label = t()(`deviceKind.${key}`, { defaultValue: '' })
+  return label || kind
 }

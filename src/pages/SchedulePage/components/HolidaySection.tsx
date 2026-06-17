@@ -1,5 +1,6 @@
 import { Calendar, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/primitive/Button'
 import { Modal } from '@/components/primitive/Modal'
@@ -7,6 +8,7 @@ import { fetchHolidayList } from '@/hooks/api/queryCache'
 import { HolidayDetailFields } from '@/pages/SchedulePage/components/HolidayDetailFields'
 import { useHolidayEditor } from '@/pages/SchedulePage/useHolidayEditor'
 import type { ScheduleHolidaysApi } from '@/pages/SchedulePage/useScheduleHolidays'
+import { holidayDisplayLabel } from '@/pages/SchedulePage/utils/timezoneDisplay'
 import type { HolidayInfo } from '@/types/api'
 
 interface HolidaySectionProps {
@@ -14,9 +16,8 @@ interface HolidaySectionProps {
   holidays: ScheduleHolidaysApi
 }
 
-const holidayLabel = (item: HolidayInfo): string => item.name?.trim() || '휴일'
-
 export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) => {
+  const { t } = useTranslation(['schedule', 'common'])
   const qc = useQueryClient()
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const items = holidays.itemsByTimezone(timezoneId)
@@ -55,7 +56,7 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
         <div className="flex items-center gap-1.5 min-w-0">
           <Calendar size={14} style={{ color: 'var(--color-accent)' }} />
           <span className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
-            휴일
+            {t('schedule:holiday.title')}
           </span>
           <span className="text-[13px]" style={{ color: 'var(--color-text-subtle)' }}>
             ({items.length})
@@ -68,7 +69,7 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
           onClick={() => void editor.handleAdd()}
           loading={editor.isAdding}
         >
-          추가
+          {t('common:add')}
         </Button>
       </div>
 
@@ -84,7 +85,7 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
             className="text-[13px] text-center py-5"
             style={{ color: 'var(--color-text-subtle)' }}
           >
-            등록된 휴일이 없습니다.
+            {t('schedule:holiday.empty')}
           </p>
         ) : (
           <ul>
@@ -105,13 +106,13 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
                       className="text-[14px] truncate"
                       style={{ color: 'var(--color-text)' }}
                     >
-                      {holidayLabel(row)}
+                      {holidayDisplayLabel(row)}
                     </span>
                     <span
                       className="text-[13px] font-mono flex-shrink-0"
                       style={{ color: 'var(--color-text-muted)' }}
                     >
-                      {row.date || '—'}
+                      {row.date || t('common:empty')}
                     </span>
                   </button>
                 </li>
@@ -127,10 +128,10 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
             {editor.editMode ? (
               <>
                 <Button variant="default" size="sm" onClick={editor.handleCancel}>
-                  취소
+                  {t('common:cancel')}
                 </Button>
                 <Button variant="accent" size="sm" onClick={() => void editor.handleSave()}>
-                  저장
+                  {t('common:save')}
                 </Button>
               </>
             ) : (
@@ -141,7 +142,7 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
                   leftIcon={<Trash2 size={12} />}
                   onClick={() => editor.setDeleteOpen(true)}
                 >
-                  삭제
+                  {t('common:delete')}
                 </Button>
                 <Button
                   variant="accent"
@@ -149,7 +150,7 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
                   leftIcon={<Pencil size={12} />}
                   onClick={editor.handleEdit}
                 >
-                  수정
+                  {t('common:edit')}
                 </Button>
               </>
             )}
@@ -175,9 +176,11 @@ export const HolidaySection = ({ timezoneId, holidays }: HolidaySectionProps) =>
 
       <Modal
         open={editor.deleteOpen}
-        title="휴일 삭제"
-        description={`「${selectedItem ? holidayLabel(selectedItem) : ''}」 휴일을 삭제하시겠습니까?`}
-        confirmLabel="삭제"
+        title={t('schedule:holiday.modal.deleteTitle')}
+        description={t('schedule:holiday.modal.deleteDescription', {
+          name: selectedItem ? holidayDisplayLabel(selectedItem) : '',
+        })}
+        confirmLabel={t('common:delete')}
         onConfirm={() => void editor.handleDeleteConfirm()}
         onCancel={() => editor.setDeleteOpen(false)}
       />

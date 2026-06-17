@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Bell, Check, Mail, Pencil, Plus, Trash2, X } from 'lucide-react'
@@ -8,7 +9,7 @@ import { Input } from '@/components/primitive/Input'
 import { Modal } from '@/components/primitive/Modal'
 import { AlarmSelectModal } from '@/pages/AlarmSettingsPage/components/AlarmSelectModal'
 import {
-  alarmMailSchema,
+  createAlarmMailSchema,
   type AlarmMailFormValues,
 } from '@/pages/AlarmSettingsPage/formTypes'
 import { mailToUpdatePayload } from '@/pages/AlarmSettingsPage/utils/alarmHelpers'
@@ -34,6 +35,8 @@ export const AlarmMailDrawer = ({
   alarmNameMap,
   onDeleted,
 }: AlarmMailDrawerProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
+  const alarmMailSchema = useMemo(() => createAlarmMailSchema(t), [t])
   const [editMode, setEditMode] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [alarmSelectOpen, setAlarmSelectOpen] = useState(false)
@@ -42,12 +45,10 @@ export const AlarmMailDrawer = ({
   const updateMut = useUpdateAlarmMail()
   const deleteMut = useDeleteAlarmMail()
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm<AlarmMailFormValues>(
-    {
-      resolver: zodResolver(alarmMailSchema),
-      defaultValues: { name: '', alarmIds: [], emails: [''] },
-    },
-  )
+  const { register, handleSubmit, reset, setValue, watch } = useForm<AlarmMailFormValues>({
+    resolver: zodResolver(alarmMailSchema),
+    defaultValues: { name: '', alarmIds: [], emails: [''] },
+  })
 
   const alarmIds = watch('alarmIds')
   const emails = watch('emails')
@@ -84,7 +85,7 @@ export const AlarmMailDrawer = ({
       },
     })
     if (ok) setEditMode(false)
-    else setSaveError('\uc800\uc7a5\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.')
+    else setSaveError(t('alarm:error.saveFailed'))
   })
 
   const handleDeleteConfirm = async () => {
@@ -140,21 +141,19 @@ export const AlarmMailDrawer = ({
           className="text-[15px] font-medium truncate"
           style={{ color: 'var(--color-text)' }}
         >
-          {item.name?.trim() || '이메일 경보'}
+          {item.name?.trim() || t('alarm:mail.fallback')}
         </span>
         <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-          {'\uacbd\ubcf4 '}
-          {item.alarmIds?.length ?? 0}
-          {' \u00b7 \uc218\uc2e0\uc790 '}
-          {item.emails?.length ?? 0}
+          {t('alarm:mail.summary', {
+            alarmCount: item.alarmIds?.length ?? 0,
+            emailCount: item.emails?.length ?? 0,
+          })}
         </span>
       </div>
     </div>
   ) : (
     <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      {
-        '\uc88c\uce21 \ubaa9\ub85d\uc5d0\uc11c \uc774\uba54\uc77c \uacbd\ubcf4\ub97c \uc120\ud0dd\ud558\uc138\uc694.'
-      }
+      {t('alarm:mail.selectItem')}
     </div>
   )
 
@@ -173,7 +172,7 @@ export const AlarmMailDrawer = ({
             leftIcon={<X size={12} />}
             onClick={handleCancel}
           >
-            {'\ucde8\uc18c'}
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -182,7 +181,7 @@ export const AlarmMailDrawer = ({
             loading={updateMut.isPending}
             onClick={handleSave}
           >
-            {'\uc800\uc7a5'}
+            {t('common:save')}
           </Button>
         </div>
       </div>
@@ -194,7 +193,7 @@ export const AlarmMailDrawer = ({
           leftIcon={<Trash2 size={12} />}
           onClick={() => setDeleteOpen(true)}
         >
-          {'\uc0ad\uc81c'}
+          {t('common:delete')}
         </Button>
         <Button
           variant="accent"
@@ -202,7 +201,7 @@ export const AlarmMailDrawer = ({
           leftIcon={<Pencil size={12} />}
           onClick={handleEdit}
         >
-          {'\uc218\uc815'}
+          {t('common:edit')}
         </Button>
       </>
     )
@@ -218,7 +217,7 @@ export const AlarmMailDrawer = ({
                 className="text-[13px] font-medium"
                 style={{ color: 'var(--color-text-subtle)' }}
               >
-                {'\uba85\uce6d'}
+                {t('alarm:field.name')}
               </span>
               <Input {...register('name')} />
             </div>
@@ -229,7 +228,7 @@ export const AlarmMailDrawer = ({
                   className="text-[13px] font-medium"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
-                  {'\uc5f0\uacb0 \uacbd\ubcf4'}
+                  {t('alarm:mail.connectedAlarms')}
                 </span>
                 <Button
                   variant="default"
@@ -237,7 +236,7 @@ export const AlarmMailDrawer = ({
                   leftIcon={<Bell size={12} />}
                   onClick={() => setAlarmSelectOpen(true)}
                 >
-                  {'\uacbd\ubcf4 \uc120\ud0dd'}
+                  {t('alarm:select.alarmSelectTitle')}
                 </Button>
               </div>
               <div className="flex flex-wrap gap-1.5">
@@ -246,7 +245,7 @@ export const AlarmMailDrawer = ({
                     className="text-[13px]"
                     style={{ color: 'var(--color-text-dim)' }}
                   >
-                    {'\uc120\ud0dd\ub41c \uacbd\ubcf4 \uc5c6\uc74c'}
+                    {t('alarm:mail.noAlarmsSelected')}
                   </span>
                 ) : (
                   alarmIds.map((id) => (
@@ -259,7 +258,7 @@ export const AlarmMailDrawer = ({
                         border: '0.5px solid var(--color-border)',
                       }}
                     >
-                      {alarmNameMap[id] ?? '경보'}
+                      {alarmNameMap[id] ?? t('alarm:rule.fallback')}
                       <button
                         type="button"
                         className="cursor-pointer"
@@ -280,7 +279,7 @@ export const AlarmMailDrawer = ({
                   className="text-[13px] font-medium"
                   style={{ color: 'var(--color-text-subtle)' }}
                 >
-                  {'\uc218\uc2e0 \uc774\uba54\uc77c'}
+                  {t('alarm:mail.recipientEmails')}
                 </span>
                 <Button
                   variant="default"
@@ -288,7 +287,7 @@ export const AlarmMailDrawer = ({
                   leftIcon={<Plus size={12} />}
                   onClick={addEmailRow}
                 >
-                  {'\ucd94\uac00'}
+                  {t('common:add')}
                 </Button>
               </div>
               {emails.map((email, index) => (
@@ -312,20 +311,20 @@ export const AlarmMailDrawer = ({
           >
             <p>
               <span style={{ color: 'var(--color-text-subtle)' }}>
-                {'\uc5f0\uacb0 \uacbd\ubcf4: '}
+                {t('alarm:mail.connectedAlarms')}:{' '}
               </span>
               {(item.alarmIds ?? []).length === 0
-                ? '\u2014'
+                ? t('common:empty')
                 : (item.alarmIds ?? [])
-                    .map((id) => alarmNameMap[id] ?? '경보')
+                    .map((id) => alarmNameMap[id] ?? t('alarm:rule.fallback'))
                     .join(', ')}
             </p>
             <p>
               <span style={{ color: 'var(--color-text-subtle)' }}>
-                {'\uc218\uc2e0\uc790: '}
+                {t('alarm:mail.recipients')}:{' '}
               </span>
               {(item.emails ?? []).length === 0
-                ? '\u2014'
+                ? t('common:empty')
                 : (item.emails ?? []).join(', ')}
             </p>
           </div>
@@ -345,9 +344,9 @@ export const AlarmMailDrawer = ({
 
       <Modal
         open={deleteOpen}
-        title={'\uc774\uba54\uc77c \uacbd\ubcf4 \uc0ad\uc81c'}
-        description={`\u300c${item?.name ?? ''}\u300d \ud56d\ubaa9\uc744 \uc0ad\uc81c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?`}
-        confirmLabel={'\uc0ad\uc81c'}
+        title={t('alarm:mail.modal.deleteTitle')}
+        description={t('alarm:mail.modal.deleteDescription', { name: item?.name ?? '' })}
+        confirmLabel={t('common:delete')}
         loading={deleteMut.isPending}
         onConfirm={handleDeleteConfirm}
         onCancel={() => setDeleteOpen(false)}

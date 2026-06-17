@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { UserCog } from 'lucide-react'
 import { Grid } from '@/components/primitive/Grid'
 import { SplitDrawerLayout } from '@/components/layout/SplitDrawerLayout'
@@ -18,6 +19,7 @@ import type { UserInfo } from '@/types/api/user'
 const USERS_GRID_LAYOUT_KEY = 'axiquant.grid.layout.users.v1'
 
 export const UsersPage = () => {
+  const { t } = useTranslation(['nav', 'user'])
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(20)
 
@@ -52,7 +54,7 @@ export const UsersPage = () => {
   return (
     <div className="flex flex-col flex-1 overflow-hidden">
       <PageHeader
-        title="사용자"
+        title={t('menu.users')}
         icon={<UserCog size={15} />}
         actions={<AddButton onClick={editor.handleAdd} />}
       />
@@ -68,7 +70,7 @@ export const UsersPage = () => {
             data={data.filtered}
             selectedId={editor.isCreating ? undefined : (data.selectedId ?? undefined)}
             onRowClick={handleRowClick}
-            searchPlaceholder="명칭, 로그인 ID 검색..."
+            searchPlaceholder={t('user:searchPlaceholder')}
             onSearch={data.setSearchQuery}
             totalCount={data.filtered.length}
             loading={data.isLoading}

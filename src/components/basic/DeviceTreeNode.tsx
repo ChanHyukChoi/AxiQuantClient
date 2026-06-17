@@ -1,5 +1,5 @@
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import type { DeviceTreeNode } from '@/lib/device/buildTree'
+import type { DeviceTreeNode as DeviceTreeNodeData } from '@/lib/device/buildTree'
 import {
   DEVICE_ICON_COLORS,
   DEVICE_ICONS,
@@ -9,7 +9,7 @@ import {
 } from '@/lib/device/deviceHelpers'
 
 interface DeviceTreeNodeProps {
-  node: DeviceTreeNode
+  node: DeviceTreeNodeData
   depth: number
   selectedKey: string | null
   expandedKeys: Set<string>

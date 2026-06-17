@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Bell, Check, Pencil, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/primitive/Drawer'
 import { Button } from '@/components/primitive/Button'
@@ -28,19 +29,23 @@ interface AlarmRuleDrawerProps {
 
 type DrawerSection = 'general' | 'users'
 
-const DRAWER_TABS: TabItem[] = [
-  { key: 'general', label: '일반' },
-  { key: 'users', label: '사용자' },
-]
-
 export const AlarmRuleDrawer = ({
   rule,
   scps,
   scpNameMap,
   editor,
 }: AlarmRuleDrawerProps) => {
+  const { t } = useTranslation(['alarm', 'common'])
   const [section, setSection] = useState<DrawerSection>('general')
   const userIds = editor.form.watch('userIds')
+
+  const drawerTabs = useMemo<TabItem[]>(
+    () => [
+      { key: 'general', label: t('alarm:drawerTab.general') },
+      { key: 'users', label: t('alarm:drawerTab.users') },
+    ],
+    [t],
+  )
 
   const drawerHeader = rule ? (
     <div
@@ -63,17 +68,20 @@ export const AlarmRuleDrawer = ({
           className="text-[15px] font-medium leading-tight truncate"
           style={{ color: 'var(--color-text)' }}
         >
-          {rule.name?.trim() || '경보'}
+          {rule.name?.trim() || t('alarm:rule.fallback')}
         </span>
         <span className="text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-          {isAlarmActive(rule.active) ? '활성' : '비활성'} · 우선순위 {rule.priority} ·{' '}
-          {scpNameForRule(rule, scpNameMap)}
+          {t('alarm:rule.summary', {
+            status: isAlarmActive(rule.active) ? t('common:active') : t('common:inactive'),
+            priority: rule.priority,
+            controller: scpNameForRule(rule, scpNameMap),
+          })}
         </span>
       </div>
     </div>
   ) : (
     <div className="pb-3 text-[14px]" style={{ color: 'var(--color-text-subtle)' }}>
-      좌측 목록에서 경보를 선택하세요.
+      {t('alarm:selectRule')}
     </div>
   )
 
@@ -92,7 +100,7 @@ export const AlarmRuleDrawer = ({
             leftIcon={<X size={12} />}
             onClick={editor.handleCancel}
           >
-            취소
+            {t('common:cancel')}
           </Button>
           <Button
             variant="accent"
@@ -101,7 +109,7 @@ export const AlarmRuleDrawer = ({
             loading={editor.isSaving}
             onClick={editor.handleSave}
           >
-            저장
+            {t('common:save')}
           </Button>
         </div>
       </div>
@@ -113,7 +121,7 @@ export const AlarmRuleDrawer = ({
           leftIcon={<Trash2 size={12} />}
           onClick={() => editor.setDeleteOpen(true)}
         >
-          삭제
+          {t('common:delete')}
         </Button>
         <Button
           variant="accent"
@@ -121,7 +129,7 @@ export const AlarmRuleDrawer = ({
           leftIcon={<Pencil size={12} />}
           onClick={editor.handleEdit}
         >
-          수정
+          {t('common:edit')}
         </Button>
       </>
     )
@@ -133,7 +141,7 @@ export const AlarmRuleDrawer = ({
         {rule ? (
           <div className="flex flex-col gap-3 min-h-0 flex-1">
             <Tab
-              items={DRAWER_TABS}
+              items={drawerTabs}
               activeKey={section}
               onChange={(k) => setSection(k as DrawerSection)}
               fontSize={14}
@@ -176,9 +184,9 @@ export const AlarmRuleDrawer = ({
 
       <Modal
         open={editor.deleteOpen}
-        title="경보 삭제"
-        description={`「${rule?.name ?? ''}」 경보를 삭제하시겠습니까?`}
-        confirmLabel="삭제"
+        title={t('alarm:rule.modal.deleteTitle')}
+        description={t('alarm:rule.modal.deleteDescription', { name: rule?.name ?? '' })}
+        confirmLabel={t('common:delete')}
         loading={editor.isDeleting}
         onConfirm={editor.handleDeleteConfirm}
         onCancel={() => editor.setDeleteOpen(false)}
@@ -193,42 +201,48 @@ const AlarmReadOnly = ({
 }: {
   rule: AlarmRuleDisplay
   scpNameMap: Record<number, string>
-}) => (
-  <div
-    className="flex flex-col gap-3 text-[14px]"
-    style={{ color: 'var(--color-text-muted)' }}
-  >
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>명칭: </span>
-      {rule.name || '—'}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>경보 코드: </span>
-      {eventCodeLabel(rule.eventCode)}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>컨트롤러: </span>
-      {scpNameForRule(rule, scpNameMap)}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>장치: </span>
-      {deviceNameForRule(rule, scpNameMap)}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>우선순위: </span>
-      {rule.priority}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>모니터링: </span>
-      {rule.monitoring ? '예' : '아니오'}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>인지 필요: </span>
-      {rule.ackRequired ? '예' : '아니오'}
-    </p>
-    <p>
-      <span style={{ color: 'var(--color-text-subtle)' }}>사용자: </span>
-      {rule.userIds.length > 0 ? `${rule.userIds.length}명` : '—'}
-    </p>
-  </div>
-)
+}) => {
+  const { t } = useTranslation(['alarm', 'common'])
+
+  return (
+    <div
+      className="flex flex-col gap-3 text-[14px]"
+      style={{ color: 'var(--color-text-muted)' }}
+    >
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.name')}: </span>
+        {rule.name || t('common:empty')}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.eventCode')}: </span>
+        {eventCodeLabel(rule.eventCode)}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.controller')}: </span>
+        {scpNameForRule(rule, scpNameMap)}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.device')}: </span>
+        {deviceNameForRule(rule, scpNameMap)}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.priority')}: </span>
+        {rule.priority}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.monitoring')}: </span>
+        {rule.monitoring ? t('alarm:yes') : t('alarm:no')}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.ackRequired')}: </span>
+        {rule.ackRequired ? t('alarm:yes') : t('alarm:no')}
+      </p>
+      <p>
+        <span style={{ color: 'var(--color-text-subtle)' }}>{t('alarm:field.users')}: </span>
+        {rule.userIds.length > 0
+          ? t('alarm:rule.userCount', { count: rule.userIds.length })
+          : t('common:empty')}
+      </p>
+    </div>
+  )
+}

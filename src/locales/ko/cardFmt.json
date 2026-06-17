@@ -1,0 +1,53 @@
+{
+  "searchPlaceholder": "형식명 검색...",
+  "loadError": "카드 형식 목록을 불러오지 못했습니다.",
+  "selectItem": "목록에서 카드 형식을 선택하세요",
+  "section": {
+    "basic": "기본 정보",
+    "bitStructure": "비트 구조",
+    "visualization": "비트 구조 시각화"
+  },
+  "field": {
+    "name": "명칭",
+    "type": "유형",
+    "facility": "시설 코드",
+    "idOffset": "카드 오프셋",
+    "minDigits": "최소 자릿수",
+    "maxDigits": "최대 자릿수",
+    "totalBits": "총 비트 수",
+    "cardBits": "카드 번호 비트 수",
+    "fcLoc": "시설 코드 시작",
+    "fcBits": "시설 코드 크기",
+    "cardLoc": "카드번호 시작",
+    "evenBits": "짝수 패리티",
+    "evenLoc": "짝수 위치",
+    "oddBits": "홀수 패리티",
+    "oddLoc": "홀수 위치",
+    "issueBits": "발급 비트",
+    "issueLoc": "발급 위치"
+  },
+  "column": {
+    "bits": "비트",
+    "digits": "자릿수"
+  },
+  "bit": {
+    "evenParity": "짝수 패리티",
+    "oddParity": "홀수 패리티",
+    "facility": "시설 코드",
+    "cardNumber": "카드 번호",
+    "other": "기타",
+    "parityShort": "패리티",
+    "zeroBitsHint": "총 비트 수가 0이면 시각화할 수 없습니다."
+  },
+  "modal": {
+    "deleteTitle": "카드 형식 삭제",
+    "deleteDescription": "\"{{name}}\" 형식을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+  },
+  "error": {
+    "saveFailed": "저장하지 못했습니다. 서버 응답을 확인하세요."
+  },
+  "validation": {
+    "nameRequired": "형식명을 입력하세요",
+    "totalBitsMin": "총 비트 수는 1 이상이어야 합니다"
+  }
+}

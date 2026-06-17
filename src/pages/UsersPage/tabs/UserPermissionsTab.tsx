@@ -1,6 +1,7 @@
 import { Check } from 'lucide-react'
 import type { Control } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Checkbox } from '@/components/primitive/Checkbox'
 import {
   PERMISSION_CATEGORIES,
@@ -42,11 +43,12 @@ interface CategoryBulkButtonsProps {
   onChange: (perms: UserPermissions) => void
 }
 
-const CategoryBulkButtons = ({ category, permissions, onChange }: CategoryBulkButtonsProps) => (
-  <div className="flex items-center gap-1 flex-shrink-0">
-    {(['read', 'write', 'all'] as const).map((mode) => {
-      const label = mode === 'read' ? '읽기' : mode === 'write' ? '쓰기' : '전체'
-      return (
+const CategoryBulkButtons = ({ category, permissions, onChange }: CategoryBulkButtonsProps) => {
+  const { t } = useTranslation('nav')
+
+  return (
+    <div className="flex items-center gap-1 flex-shrink-0">
+      {(['read', 'write', 'all'] as const).map((mode) => (
         <button
           key={mode}
           type="button"
@@ -54,12 +56,12 @@ const CategoryBulkButtons = ({ category, permissions, onChange }: CategoryBulkBu
           style={categoryBtnStyle(false)}
           onClick={() => onChange(setCategoryPermissions(permissions, category, mode))}
         >
-          {label}
+          {t(`permission.ui.${mode}`)}
         </button>
-      )
-    })}
-  </div>
-)
+      ))}
+    </div>
+  )
+}
 
 export const UserPermissionsTab = ({
   editMode,
@@ -67,6 +69,7 @@ export const UserPermissionsTab = ({
   permissions,
   onPermissionsChange,
 }: UserPermissionsTabProps) => {
+  const { t } = useTranslation('nav')
   const fullAllow = isFullPermissions(permissions)
 
   return (
@@ -80,7 +83,7 @@ export const UserPermissionsTab = ({
             style={{ border: '0.5px solid var(--color-border)', background: 'var(--color-btn-hover)' }}
           >
             <span className="text-[14px] font-medium" style={{ color: 'var(--color-text)' }}>
-              전체 허용
+              {t('permission.ui.allowAll')}
             </span>
             {editMode ? (
               <button
@@ -97,19 +100,19 @@ export const UserPermissionsTab = ({
               </button>
             ) : (
               <span className="text-[13px]" style={{ color: fullAllow ? '#4caf7d' : 'var(--color-text-dim)' }}>
-                {fullAllow ? '허용됨' : '개별 설정'}
+                {fullAllow ? t('permission.ui.allowed') : t('permission.ui.individual')}
               </span>
             )}
           </div>
 
           {PERMISSION_CATEGORIES.map((cat) => (
-            <section key={cat.category}>
+            <section key={cat.categoryKey}>
               <div
                 className="flex items-center justify-between gap-2 mb-2 pb-1"
                 style={{ borderBottom: '0.5px solid var(--color-border)' }}
               >
                 <p className="text-[13px] font-medium" style={{ color: 'var(--color-text-subtle)' }}>
-                  {cat.category}
+                  {t(`permission.category.${cat.categoryKey}`)}
                 </p>
                 {editMode && !fullAllow ? (
                   <CategoryBulkButtons
@@ -130,7 +133,7 @@ export const UserPermissionsTab = ({
                       style={{ borderBottom: '0.5px solid var(--color-border-subtle)' }}
                     >
                       <span className="text-[14px] flex-1 min-w-0" style={{ color: 'var(--color-text)' }}>
-                        {item.label}
+                        {t(`permission.item.${item.key}`)}
                       </span>
                       <div className="flex items-center gap-3 flex-shrink-0">
                         <label className="flex items-center gap-1.5 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
@@ -147,7 +150,7 @@ export const UserPermissionsTab = ({
                           ) : (
                             <PermIcon checked={p.read} />
                           )}
-                          읽기
+                          {t('permission.ui.read')}
                         </label>
                         {!item.readOnly && (
                           <label className="flex items-center gap-1.5 text-[13px]" style={{ color: 'var(--color-text-muted)' }}>
@@ -170,7 +173,7 @@ export const UserPermissionsTab = ({
                             ) : (
                               <PermIcon checked={p.write} />
                             )}
-                            쓰기
+                            {t('permission.ui.write')}
                           </label>
                         )}
                       </div>
